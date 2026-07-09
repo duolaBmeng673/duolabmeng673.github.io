@@ -1,0 +1,44 @@
+---
+import '../styles/global.css';
+import { siteConfig } from '../config';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = siteConfig.title,
+  description = siteConfig.description,
+} = Astro.props;
+
+const pageTitle = title === siteConfig.title ? title : `${title} | ${siteConfig.title}`;
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content={description} />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="/favicon.svg" />
+    <title>{pageTitle}</title>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="/" aria-label="返回首页">{siteConfig.name}</a>
+      <nav class="nav" aria-label="主导航">
+        <a href="/">首页</a>
+        <a href="/blog/">博客</a>
+        <a href={siteConfig.github} target="_blank" rel="noreferrer">GitHub</a>
+      </nav>
+    </header>
+    <main>
+      <slot />
+    </main>
+    <footer class="site-footer">
+      <span>© {new Date().getFullYear()} {siteConfig.name}</span>
+      <span>Built with Astro and GitHub Pages.</span>
+    </footer>
+  </body>
+</html>

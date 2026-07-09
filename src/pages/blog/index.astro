@@ -1,0 +1,30 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const posts = (await getCollection('blog'))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+---
+
+<BaseLayout title="博客" description="杨雨飞的博客文章列表">
+  <section class="page-intro">
+    <p class="eyebrow">Blog</p>
+    <h1>博客</h1>
+    <p>这里会持续整理学习笔记、项目复盘和对技术问题的思考。</p>
+  </section>
+
+  <section class="post-list" aria-label="文章列表">
+    {posts.map((post) => (
+      <article class="post-row">
+        <div>
+          <p class="post-date">{post.data.pubDate.toLocaleDateString('zh-CN')}</p>
+          <h2><a href={`/blog/${post.id}/`}>{post.data.title}</a></h2>
+          <p>{post.data.description}</p>
+        </div>
+        <div class="mini-tags">
+          {post.data.tags.map((tag) => <span>{tag}</span>)}
+        </div>
+      </article>
+    ))}
+  </section>
+</BaseLayout>

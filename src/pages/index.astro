@@ -1,0 +1,53 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { siteConfig } from '../config';
+
+const posts = (await getCollection('blog'))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 3);
+---
+
+<BaseLayout>
+  <section class="hero">
+    <div class="hero-copy">
+      <p class="eyebrow">Personal Blog</p>
+      <h1>{siteConfig.name}</h1>
+      <p class="lead">{siteConfig.description}</p>
+      <p class="education">{siteConfig.education}</p>
+      <div class="tag-list" aria-label="关注方向">
+        {siteConfig.tags.map((tag) => <span>{tag}</span>)}
+      </div>
+      <div class="actions">
+        <a class="button primary" href="/blog/">阅读博客</a>
+        <a class="button secondary" href={siteConfig.github} target="_blank" rel="noreferrer">访问 GitHub</a>
+      </div>
+    </div>
+    <div class="profile-panel" aria-label="个人资料卡片">
+      <img class="avatar" src="https://github.com/duolaBmeng673.png" alt="杨雨飞的 GitHub 头像" />
+      <div>
+        <p class="panel-label">正在记录</p>
+        <p class="panel-title">学习、工程和长期思考</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-heading">
+      <p class="eyebrow">Latest Posts</p>
+      <h2>最新文章</h2>
+    </div>
+    <div class="post-grid">
+      {posts.map((post) => (
+        <article class="post-card">
+          <p class="post-date">{post.data.pubDate.toLocaleDateString('zh-CN')}</p>
+          <h3><a href={`/blog/${post.id}/`}>{post.data.title}</a></h3>
+          <p>{post.data.description}</p>
+          <div class="mini-tags">
+            {post.data.tags.map((tag) => <span>{tag}</span>)}
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+</BaseLayout>
