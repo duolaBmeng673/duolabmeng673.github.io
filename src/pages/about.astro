@@ -1,0 +1,39 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { siteConfig } from '../config';
+---
+
+<BaseLayout title="关于" description={siteConfig.description}>
+  <section class="about-hero">
+    <div>
+      <p class="eyebrow">About</p>
+      <h1>{siteConfig.name}</h1>
+      <p class="lead">{siteConfig.description}</p>
+    </div>
+    <img class="about-avatar" src="https://github.com/duolaBmeng673.png" alt="杨雨飞的 GitHub 头像" />
+  </section>
+
+  <section class="about-grid" aria-label="个人详情">
+    <article class="detail-panel">
+      <p class="panel-label">Education</p>
+      <h2>{siteConfig.education}</h2>
+      <p>信息安全专业背景，持续关注软件系统、算法能力和 AI 应用之间的连接。</p>
+    </article>
+
+    <article class="detail-panel">
+      <p class="panel-label">Focus</p>
+      <div class="tag-list">
+        {siteConfig.tags.map((tag) => <span>{tag}</span>)}
+      </div>
+    </article>
+
+    <article class="detail-panel wide">
+      <p class="panel-label">Now</p>
+      <h2>记录学习、工程和长期思考</h2>
+      <p>
+        这个博客会作为一个持续更新的知识空间：把项目里的判断、读到的概念、踩过的坑和重新想明白的问题沉淀下来。
+      </p>
+      <a class="text-link" href={siteConfig.github} target="_blank" rel="noreferrer">访问 GitHub</a>
+    </article>
+  </section>
+</BaseLayout>

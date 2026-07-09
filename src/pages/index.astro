@@ -1,7 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { siteConfig } from '../config';
 
 const posts = (await getCollection('blog'))
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
@@ -9,30 +8,37 @@ const posts = (await getCollection('blog'))
 ---
 
 <BaseLayout>
-  <section class="hero">
-    <div class="hero-copy">
-      <p class="eyebrow">Personal Blog</p>
-      <h1>{siteConfig.name}</h1>
-      <p class="lead">{siteConfig.description}</p>
-      <p class="education">{siteConfig.education}</p>
-      <div class="tag-list" aria-label="关注方向">
-        {siteConfig.tags.map((tag) => <span>{tag}</span>)}
-      </div>
-      <div class="actions">
-        <a class="button primary" href="/blog/">阅读博客</a>
-        <a class="button secondary" href={siteConfig.github} target="_blank" rel="noreferrer">访问 GitHub</a>
-      </div>
-    </div>
-    <div class="profile-panel" aria-label="个人资料卡片">
-      <img class="avatar" src="https://github.com/duolaBmeng673.png" alt="杨雨飞的 GitHub 头像" />
-      <div>
-        <p class="panel-label">正在记录</p>
-        <p class="panel-title">学习、工程和长期思考</p>
-      </div>
+  <section class="home-hero">
+    <p class="eyebrow">Personal Knowledge Space</p>
+    <h1>把复杂问题整理成清晰的笔记。</h1>
+    <p class="lead">
+      一个面向工程、算法和 AI 学习的静态博客。这里会放项目复盘、技术笔记，以及那些值得慢慢想明白的问题。
+    </p>
+    <div class="hero-actions">
+      <a class="button primary" href="/blog/">阅读文章</a>
+      <a class="button secondary" href="/about/">个人详情</a>
     </div>
   </section>
 
-  <section class="section">
+  <section class="feature-band" aria-label="关注方向">
+    <article>
+      <span>01</span>
+      <h2>Web 开发</h2>
+      <p>关注前端体验、静态站点、工程化和可维护的产品界面。</p>
+    </article>
+    <article>
+      <span>02</span>
+      <h2>分布式系统</h2>
+      <p>记录系统设计、网络通信、可靠性和工程实践里的关键取舍。</p>
+    </article>
+    <article>
+      <span>03</span>
+      <h2>AI 与算法</h2>
+      <p>整理模型应用、算法训练和安全视角下的问题分析。</p>
+    </article>
+  </section>
+
+  <section class="section latest-section">
     <div class="section-heading">
       <p class="eyebrow">Latest Posts</p>
       <h2>最新文章</h2>
