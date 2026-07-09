@@ -65,8 +65,8 @@ function setupTilt() {
       const x = (event.clientX - rect.left) / rect.width - 0.5;
       const y = (event.clientY - rect.top) / rect.height - 0.5;
 
-      item.style.setProperty('--tilt-x', `${(-y * 6).toFixed(2)}deg`);
-      item.style.setProperty('--tilt-y', `${(x * 7).toFixed(2)}deg`);
+      item.style.setProperty('--tilt-x', `${(-y * 3).toFixed(2)}deg`);
+      item.style.setProperty('--tilt-y', `${(x * 3.5).toFixed(2)}deg`);
       item.style.setProperty('--spot-x', `${event.clientX - rect.left}px`);
       item.style.setProperty('--spot-y', `${event.clientY - rect.top}px`);
     });

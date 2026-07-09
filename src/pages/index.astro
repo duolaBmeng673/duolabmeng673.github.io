@@ -9,34 +9,38 @@ const posts = (await getCollection('blog'))
 
 <BaseLayout>
   <section class="home-hero hero-shell" data-reveal>
-    <div class="hero-kicker">
-      <span></span>
+    <div class="hero-copy">
       <p class="eyebrow">Personal Knowledge Space</p>
+      <p class="hero-persona">Yang Yufei, Information Security</p>
+      <h1>清晰记录技术、系统与思考。</h1>
+      <p class="lead">
+        一个安静的个人知识空间，用来整理 Web 开发、分布式系统、AI 与算法学习里的关键问题。
+      </p>
+      <div class="hero-actions" data-reveal>
+        <a class="button primary" href="/blog/">阅读文章</a>
+        <a class="button secondary" href="/about/">个人详情</a>
+      </div>
     </div>
-    <h1>把复杂问题整理成清晰的笔记。</h1>
-    <p class="lead">
-      一个面向工程、算法和 AI 学习的静态博客。记录项目复盘、技术笔记，以及那些值得慢慢想明白的问题。
-    </p>
-    <div class="hero-actions" data-reveal>
-      <a class="button primary" href="/blog/">阅读文章</a>
-      <a class="button secondary" href="/about/">个人详情</a>
+    <div class="hero-glass" data-tilt aria-label="关注方向概览">
+      <p>Current Focus</p>
+      <span>Web / Distributed Systems / AI</span>
     </div>
   </section>
 
   <section class="feature-band" aria-label="关注方向">
     <article data-reveal data-tilt>
       <span>01</span>
-      <h2>Web 开发</h2>
+      <h2>Web Development</h2>
       <p>关注前端体验、静态站点、工程化和可维护的产品界面。</p>
     </article>
     <article data-reveal data-tilt>
       <span>02</span>
-      <h2>分布式系统</h2>
+      <h2>Distributed Systems</h2>
       <p>记录系统设计、网络通信、可靠性和工程实践里的关键取舍。</p>
     </article>
     <article data-reveal data-tilt>
       <span>03</span>
-      <h2>AI 与算法</h2>
+      <h2>AI & Algorithms</h2>
       <p>整理模型应用、算法训练和安全视角下的问题分析。</p>
     </article>
   </section>
