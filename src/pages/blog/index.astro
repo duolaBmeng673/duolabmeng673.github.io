@@ -7,7 +7,7 @@ const posts = (await getCollection('blog'))
 ---
 
 <BaseLayout title="博客" description="杨雨飞的博客文章列表">
-  <section class="page-intro">
+  <section class="page-intro" data-reveal>
     <p class="eyebrow">Blog</p>
     <h1>博客</h1>
     <p>这里会持续整理学习笔记、项目复盘和对技术问题的思考。</p>
@@ -15,7 +15,7 @@ const posts = (await getCollection('blog'))
 
   <section class="post-list" aria-label="文章列表">
     {posts.map((post) => (
-      <article class="post-row">
+      <article class="post-row" data-reveal data-tilt>
         <div>
           <p class="post-date">{post.data.pubDate.toLocaleDateString('zh-CN')}</p>
           <h2><a href={`/blog/${post.id}/`}>{post.data.title}</a></h2>

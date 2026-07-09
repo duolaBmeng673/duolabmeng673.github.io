@@ -25,6 +25,12 @@ const pageTitle = title === siteConfig.title ? title : `${title} | ${siteConfig.
     <title>{pageTitle}</title>
   </head>
   <body>
+    <div class="ambient-stage" aria-hidden="true">
+      <div class="ambient-arc"></div>
+      <div class="ambient-core"></div>
+      <div class="ambient-noise"></div>
+      <div class="pointer-glow"></div>
+    </div>
     <header class="site-header">
       <a class="brand" href="/" aria-label="返回首页">YYF</a>
       <nav class="nav" aria-label="主导航">
@@ -41,5 +47,8 @@ const pageTitle = title === siteConfig.title ? title : `${title} | ${siteConfig.
       <span>© {new Date().getFullYear()} {siteConfig.name}</span>
       <span>Thoughts, notes, and systems.</span>
     </footer>
+    <script>
+      import '../scripts/site-motion';
+    </script>
   </body>
 </html>

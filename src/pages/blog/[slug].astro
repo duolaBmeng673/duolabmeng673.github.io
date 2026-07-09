@@ -15,7 +15,7 @@ const { Content } = await render(post);
 ---
 
 <BaseLayout title={post.data.title} description={post.data.description}>
-  <article class="article">
+  <article class="article" data-reveal>
     <a class="back-link" href="/blog/">← 返回博客</a>
     <header class="article-header">
       <p class="post-date">{post.data.pubDate.toLocaleDateString('zh-CN')}</p>
