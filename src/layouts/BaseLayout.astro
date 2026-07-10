@@ -23,20 +23,62 @@ const pageTitle = title === siteConfig.title ? title : `${title} | ${siteConfig.
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" href="/favicon.svg" />
     <title>{pageTitle}</title>
+    <script is:inline>
+      try {
+        if (!sessionStorage.getItem('yyf-intro-seen')) {
+          document.documentElement.classList.add('intro-pending');
+        }
+      } catch {
+        document.documentElement.classList.add('intro-pending');
+      }
+    </script>
   </head>
   <body>
+    <svg class="glass-filters" aria-hidden="true" focusable="false" width="0" height="0">
+      <defs>
+        <!-- Liquid-glass refraction: animated turbulence displaces the backdrop -->
+        <filter id="glass-refraction" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
+          <feTurbulence type="fractalNoise" baseFrequency="0.009 0.014" numOctaves="2" seed="7" result="noise">
+            <animate attributeName="baseFrequency" dur="26s" values="0.009 0.014;0.013 0.010;0.009 0.014" repeatCount="indefinite" />
+          </feTurbulence>
+          <feGaussianBlur in="noise" stdDeviation="1.4" result="soft" />
+          <feDisplacementMap in="SourceGraphic" in2="soft" scale="26" xChannelSelector="R" yChannelSelector="G" />
+        </filter>
+        <!-- Stronger displacement reserved for the hero halo edge -->
+        <filter id="glass-refraction-strong" x="-30%" y="-30%" width="160%" height="160%" color-interpolation-filters="sRGB">
+          <feTurbulence type="fractalNoise" baseFrequency="0.006 0.011" numOctaves="3" seed="11" result="noise">
+            <animate attributeName="baseFrequency" dur="34s" values="0.006 0.011;0.010 0.007;0.006 0.011" repeatCount="indefinite" />
+          </feTurbulence>
+          <feGaussianBlur in="noise" stdDeviation="2" result="soft" />
+          <feDisplacementMap in="SourceGraphic" in2="soft" scale="58" xChannelSelector="R" yChannelSelector="G" />
+        </filter>
+      </defs>
+    </svg>
+    <div class="glass-intro" aria-hidden="true">
+      <div class="intro-veil"></div>
+      <div class="intro-halo"></div>
+      <div class="intro-flare"></div>
+      <div class="intro-shard intro-shard-back"></div>
+      <div class="intro-shard intro-shard-mid"></div>
+      <div class="intro-shard intro-shard-front">
+        <span class="intro-lens-core"></span>
+      </div>
+      <div class="intro-wordmark">HELLO</div>
+    </div>
     <div class="ambient-stage" aria-hidden="true">
       <div class="ambient-arc"></div>
       <div class="ambient-core"></div>
+      <div class="ambient-prism"></div>
       <div class="ambient-noise"></div>
       <div class="pointer-glow"></div>
     </div>
     <header class="site-header">
-      <a class="brand" href="/" aria-label="返回首页">YYF</a>
+      <a class="brand" href="/about/" aria-label="查看杨雨飞的个人主页">
+        <img src="https://github.com/duolaBmeng673.png" alt="杨雨飞的 GitHub 头像" />
+      </a>
       <nav class="nav" aria-label="主导航">
         <a href="/">首页</a>
         <a href="/blog/">博客</a>
-        <a href="/about/">关于</a>
         <a href={siteConfig.github} target="_blank" rel="noreferrer">GitHub</a>
       </nav>
     </header>
