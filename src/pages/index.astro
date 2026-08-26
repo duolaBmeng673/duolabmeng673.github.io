@@ -8,23 +8,20 @@ const posts = (await getCollection('blog'))
 ---
 
 <BaseLayout>
-  <section class="home-hero hero-shell" data-reveal>
+  <section class="home-hero hero-shell">
     <div class="hero-copy">
-      <p class="eyebrow">Personal Knowledge Space</p>
-      <p class="hero-persona">你好，我是杨雨飞。</p>
-      <h1>清晰记录技术、系统与思考。</h1>
-      <div class="hero-actions" data-reveal>
-        <a class="button primary" href="/blog/">阅读文章</a>
-        <a class="button secondary" href="/about/">个人详情</a>
+      <p class="eyebrow">duolaBmeng673's blog</p>
+      <h1>Notes on systems,<br />software, and security.</h1>
+      <p class="hero-intro">
+        A personal index for web development, distributed systems, and the work of building clear, reliable software.
+      </p>
+      <div class="hero-actions">
+        <a class="button primary" href="/blog/">Read notes</a>
+        <a class="button secondary" href="/about/">About me</a>
       </div>
     </div>
-    <div class="hero-sculpture" aria-hidden="true">
-      <span class="sculpture-bloom"></span>
-      <span class="sculpture-ribbon ribbon-far"></span>
-      <span class="sculpture-ribbon ribbon-mid"></span>
-      <span class="sculpture-ribbon ribbon-near"></span>
-      <span class="sculpture-glint"></span>
-    </div>
+    <span class="spectrum-corner" aria-hidden="true"></span>
+    <span class="spectrum-wave" aria-hidden="true"></span>
   </section>
 
   <section class="feature-band" aria-label="关注方向">
