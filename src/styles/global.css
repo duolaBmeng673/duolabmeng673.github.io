@@ -1324,7 +1324,11 @@ main,
 
 /* A second, wider edge glow makes the static bands read as glass instead of paint. */
 .spectrum-corner {
-  filter: drop-shadow(0 0 18px rgba(52, 104, 255, 0.28));
+  filter: url(#blog-liquid-glass) drop-shadow(0 0 18px rgba(52, 104, 255, 0.28));
+}
+
+.spectrum-wave {
+  filter: url(#blog-liquid-glass) drop-shadow(0 10px 18px rgba(255, 47, 157, 0.18));
 }
 
 .spectrum-corner::before {
@@ -1344,6 +1348,14 @@ main,
   position: absolute;
   inset: 0;
   clip-path: inherit;
+  pointer-events: none;
+}
+
+.liquid-filter-defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
   pointer-events: none;
 }
 
