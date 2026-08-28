@@ -25,6 +25,74 @@ const pageTitle = title === siteConfig.title ? title : `${title} | ${siteConfig.
     <title>{pageTitle}</title>
   </head>
   <body>
+    <svg class="liquid-filter-defs" aria-hidden="true" focusable="false" width="0" height="0">
+      <defs>
+        <!-- Apple Music-style liquid glass with convex bezel and specular highlights -->
+        <filter id="blog-liquid-glass" x="-30%" y="-30%" width="160%" height="160%" color-interpolation-filters="sRGB">
+          <feImage id="blog-liquid-map" x="0" y="0" width="100%" height="100%" preserveAspectRatio="none" result="liquid-map" />
+
+          <!-- Main refraction displacement -->
+          <feDisplacementMap
+            in="SourceGraphic"
+            in2="liquid-map"
+            scale="32"
+            xChannelSelector="R"
+            yChannelSelector="G"
+            result="refracted"
+          />
+
+          <!-- Subtle blur for smooth glass transition -->
+          <feGaussianBlur in="refracted" stdDeviation="0.6" edgeMode="duplicate" result="soft-refracted" />
+
+          <!-- Enhanced saturation for vibrant backdrop -->
+          <feColorMatrix in="soft-refracted" type="saturate" values="1.4" result="saturated" />
+
+          <!-- Extract specular from blue channel -->
+          <feColorMatrix in="liquid-map" type="matrix"
+            values="0 0 0 0 1
+                    0 0 0 0 1
+                    0 0 0 0 1
+                    0 0 1 0 0" result="specular-raw" />
+
+          <!-- Blur specular for soft rim light -->
+          <feGaussianBlur in="specular-raw" stdDeviation="2.5" result="specular-soft" />
+
+          <!-- Composite specular highlight over refracted image -->
+          <feBlend in="saturated" in2="specular-soft" mode="screen" result="with-specular" />
+
+          <!-- Final subtle sharpening -->
+          <feConvolveMatrix in="with-specular" order="3"
+            kernelMatrix="0 -0.15 0  -0.15 1.6 -0.15  0 -0.15 0"
+            preserveAlpha="true" />
+        </filter>
+
+        <!-- Stronger refraction for hero spectral elements -->
+        <filter id="blog-liquid-glass-strong" x="-35%" y="-35%" width="170%" height="170%" color-interpolation-filters="sRGB">
+          <feImage id="blog-liquid-map-strong" x="0" y="0" width="100%" height="100%" preserveAspectRatio="none" result="liquid-map" />
+
+          <feDisplacementMap
+            in="SourceGraphic"
+            in2="liquid-map"
+            scale="48"
+            xChannelSelector="R"
+            yChannelSelector="G"
+            result="refracted"
+          />
+
+          <feGaussianBlur in="refracted" stdDeviation="0.8" edgeMode="duplicate" result="soft-refracted" />
+          <feColorMatrix in="soft-refracted" type="saturate" values="1.5" result="saturated" />
+
+          <!-- Specular highlight -->
+          <feColorMatrix in="liquid-map" type="matrix"
+            values="0 0 0 0 1
+                    0 0 0 0 1
+                    0 0 0 0 1
+                    0 0 1 0 0" result="specular-raw" />
+          <feGaussianBlur in="specular-raw" stdDeviation="3" result="specular-soft" />
+          <feBlend in="saturated" in2="specular-soft" mode="screen" />
+        </filter>
+      </defs>
+    </svg>
     <header class="site-header">
       <a class="brand" href="/about/" aria-label="查看杨雨飞的个人主页">
         <img src="/github-avatar.png" alt="杨雨飞的 GitHub 头像" />
@@ -42,5 +110,8 @@ const pageTitle = title === siteConfig.title ? title : `${title} | ${siteConfig.
       <span>© {new Date().getFullYear()} {siteConfig.name}</span>
       <span>Thoughts, notes, and systems.</span>
     </footer>
+    <script>
+      import '../scripts/liquid-glass';
+    </script>
   </body>
 </html>
