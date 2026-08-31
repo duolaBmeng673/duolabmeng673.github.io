@@ -1,20 +1,48 @@
 ---
+import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
+
+const posts = (await getCollection('blog'))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 3);
 ---
 
 <BaseLayout bodyClass="home-page">
-  <section class="home-hero hero-shell">
-    <div class="hero-copy">
-      <p class="eyebrow">duolaBmeng673's blog</p>
-      <h1>Notes on systems,<br />software, and security.</h1>
-      <p class="hero-intro">
-        A personal index for web development, distributed systems, and the work of building clear, reliable software.
-      </p>
-      <div class="hero-actions">
-        <a class="button primary" href="/blog/">Read notes</a>
-        <a class="button secondary" href="/about/">About me</a>
+  <section class="home-intro">
+    <div class="home-intro-copy">
+      <p class="eyebrow">duolaBmeng673 / personal notes</p>
+      <h1>Ideas become clearer<br /><span>when they are written down.</span></h1>
+      <p class="home-summary">杨雨飞，哈尔滨工业大学信息安全专业。这里记录 Web 开发、分布式系统、AI 与算法学习中的问题、判断和实践。</p>
+      <div class="home-links">
+        <a class="button primary" href="/blog/">阅读文章 <span aria-hidden="true">↗</span></a>
+        <a class="text-link" href="/about/">关于我 <span aria-hidden="true">→</span></a>
       </div>
     </div>
+    <aside class="home-index" aria-label="站点信息">
+      <span class="index-mark">YYF</span>
+      <p>Information security<br />Web / Systems / AI</p>
+      <span class="index-rule"></span>
+      <p class="index-note">A small, deliberate archive<br />of things worth revisiting.</p>
+    </aside>
   </section>
 
+  <section class="recent-section" aria-labelledby="recent-title">
+    <div class="section-heading">
+      <div><p class="eyebrow">Archive / 01</p><h2 id="recent-title">最近文章</h2></div>
+      <a class="section-link" href="/blog/">查看全部 <span aria-hidden="true">→</span></a>
+    </div>
+    <div class="post-list">
+      {posts.map((post, index) => (
+        <article class="post-row">
+          <span class="post-index">{String(index + 1).padStart(2, '0')}</span>
+          <div class="post-row-main">
+            <p class="post-date">{post.data.pubDate.toLocaleDateString('zh-CN')}</p>
+            <h3><a href={`/blog/${post.id}/`}>{post.data.title}</a></h3>
+            <p class="post-excerpt">{post.data.description}</p>
+          </div>
+          <span class="post-arrow" aria-hidden="true">↗</span>
+        </article>
+      ))}
+    </div>
+  </section>
 </BaseLayout>

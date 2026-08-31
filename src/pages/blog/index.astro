@@ -2,28 +2,27 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 
-const posts = (await getCollection('blog'))
-  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+const posts = (await getCollection('blog')).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 ---
 
-<BaseLayout title="博客" description="杨雨飞的博客文章列表">
-  <section class="page-intro" data-reveal>
-    <p class="eyebrow">Blog</p>
-    <h1>博客</h1>
-    <p>这里会持续整理学习笔记、项目复盘和对技术问题的思考。</p>
-  </section>
+<BaseLayout title="博客" description="杨雨飞的博客文章列表" bodyClass="archive-page">
+  <header class="page-intro">
+    <p class="eyebrow">Writing archive</p>
+    <h1>文章</h1>
+    <p>关于软件、系统、安全和持续学习的记录。按时间倒序整理，保持问题与结论都可以被重新找到。</p>
+  </header>
 
-  <section class="post-list" aria-label="文章列表">
-    {posts.map((post) => (
-      <article class="post-row" data-reveal data-tilt>
-        <div>
+  <section class="archive-list" aria-label="文章列表">
+    {posts.map((post, index) => (
+      <article class="post-row">
+        <span class="post-index">{String(index + 1).padStart(2, '0')}</span>
+        <div class="post-row-main">
           <p class="post-date">{post.data.pubDate.toLocaleDateString('zh-CN')}</p>
           <h2><a href={`/blog/${post.id}/`}>{post.data.title}</a></h2>
-          <p>{post.data.description}</p>
+          <p class="post-excerpt">{post.data.description}</p>
+          <div class="tag-list">{post.data.tags.map((tag) => <span>{tag}</span>)}</div>
         </div>
-        <div class="mini-tags">
-          {post.data.tags.map((tag) => <span>{tag}</span>)}
-        </div>
+        <span class="post-arrow" aria-hidden="true">↗</span>
       </article>
     ))}
   </section>

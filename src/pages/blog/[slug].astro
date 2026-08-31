@@ -15,13 +15,13 @@ const { Content } = await render(post);
 ---
 
 <BaseLayout title={post.data.title} description={post.data.description}>
-  <article class="article" data-reveal>
-    <a class="back-link" href="/blog/">← 返回博客</a>
+  <article class="article">
+    <a class="back-link" href="/blog/">← 返回文章</a>
     <header class="article-header">
       <p class="post-date">{post.data.pubDate.toLocaleDateString('zh-CN')}</p>
       <h1>{post.data.title}</h1>
       <p>{post.data.description}</p>
-      <div class="mini-tags">
+      <div class="tag-list">
         {post.data.tags.map((tag) => <span>{tag}</span>)}
       </div>
     </header>
