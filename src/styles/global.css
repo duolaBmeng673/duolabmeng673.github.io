@@ -93,7 +93,7 @@ h1, h2, h3 { color: var(--ink); font-weight: 560; letter-spacing: 0; line-height
 .home-intro h1 span { color: var(--violet); }
 .home-summary { max-width: 660px; margin-bottom: 30px; color: var(--soft-ink); font-size: 1.02rem; line-height: 1.9; }
 .home-links { display: flex; align-items: center; gap: 24px; }
-.button { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 46px; padding: 0 17px; border: 1px solid var(--line-strong); border-radius: var(--radius-control); font-size: .84rem; font-weight: 560; }
+.button { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 46px; padding: 0 17px; border: 1px solid var(--line-strong); border-radius: var(--radius-surface); font-size: .84rem; font-weight: 560; }
 .button.primary { background: var(--ink); color: var(--bg); }
 .button.primary:hover { background: var(--violet); color: var(--bg); }
 .text-link, .section-link { color: var(--blue); font-size: .84rem; }
