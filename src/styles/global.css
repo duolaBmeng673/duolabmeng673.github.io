@@ -1037,6 +1037,130 @@ main,
   }
 }
 
+/* Typography controls and the shared surface geometry. */
+:root {
+  --font-scale: 1;
+  --surface-radius: 16px;
+  --control-radius: 10px;
+  --soft-ink: rgba(245, 247, 248, 0.86);
+  --muted: rgba(235, 239, 242, 0.72);
+  --quiet: rgba(235, 239, 242, 0.52);
+}
+
+html { font-size: calc(100% * var(--font-scale)); }
+[data-font-bold] body { font-weight: 520; }
+[data-font-bold] h1,
+[data-font-bold] h2,
+[data-font-bold] h3,
+[data-font-bold] .nav,
+[data-font-bold] .button { font-weight: 650; }
+
+.site-header,
+.feature-band article,
+.post-card,
+.post-row,
+.detail-panel,
+.glass-lab-page,
+.button { border-radius: var(--surface-radius) !important; }
+
+.site-header {
+  gap: 18px;
+  padding: 12px 18px;
+}
+
+.nav { font-size: .88rem; font-weight: 520; }
+.nav a { border-radius: var(--control-radius); }
+.hero-intro,
+.lead,
+.post-card p,
+.post-row p,
+.detail-panel p,
+.article-header p { color: var(--soft-ink); }
+.article-body { font-size: 1.06rem; line-height: 2.05; color: rgba(245, 247, 248, .9); }
+.post-date,
+.panel-label,
+.eyebrow { font-size: .76rem; }
+.button { min-height: 48px; font-size: .9rem; }
+
+.type-settings { position: relative; flex: 0 0 auto; }
+.type-settings summary {
+  display: grid;
+  width: 42px;
+  height: 38px;
+  place-items: center;
+  border: 1px solid rgba(255,255,255,.2);
+  border-radius: var(--control-radius);
+  background: rgba(255,255,255,.07);
+  color: var(--soft-ink);
+  font-size: .86rem;
+  font-weight: 650;
+  cursor: pointer;
+  list-style: none;
+}
+.type-settings summary::-webkit-details-marker { display: none; }
+.type-settings summary:hover,
+.type-settings[open] summary { border-color: rgba(255,255,255,.42); color: #fff; }
+.type-settings-panel {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  z-index: 30;
+  display: grid;
+  min-width: 184px;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid rgba(255,255,255,.22);
+  border-radius: var(--surface-radius);
+  background: rgba(11, 13, 20, .88);
+  box-shadow: 0 20px 44px rgba(0,0,0,.5), inset 0 1px rgba(255,255,255,.18);
+  backdrop-filter: blur(22px) saturate(1.18);
+  -webkit-backdrop-filter: blur(22px) saturate(1.18);
+}
+.type-settings-label { color: var(--quiet); font-size: .7rem; letter-spacing: .08em; text-transform: uppercase; }
+.type-size-options { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; }
+.type-size-options button {
+  min-height: 32px;
+  border: 1px solid var(--line);
+  border-radius: var(--control-radius);
+  background: rgba(255,255,255,.05);
+  color: var(--soft-ink);
+  font: inherit;
+  font-size: .78rem;
+  cursor: pointer;
+}
+.type-size-options button.is-active { border-color: var(--blue); background: rgba(143,199,255,.2); color: #fff; }
+.type-bold-toggle { display: flex; align-items: center; justify-content: space-between; gap: 12px; color: var(--soft-ink); font-size: .78rem; cursor: pointer; }
+.type-bold-toggle input { position: absolute; opacity: 0; pointer-events: none; }
+.type-bold-toggle i { position: relative; width: 34px; height: 19px; border-radius: 999px; background: rgba(255,255,255,.16); box-shadow: inset 0 0 0 1px rgba(255,255,255,.22); }
+.type-bold-toggle i::after { content: ""; position: absolute; top: 3px; left: 3px; width: 13px; height: 13px; border-radius: 50%; background: #fff; transition: transform 180ms ease; }
+.type-bold-toggle input:checked + i { background: var(--blue); }
+.type-bold-toggle input:checked + i::after { transform: translateX(15px); }
+
+/* Final live-filter binding. The fallback remains active until textures are ready. */
+[data-liquid-glass-supported="true"].liquid-glass-ready .site-header,
+[data-liquid-glass-supported="true"].liquid-glass-ready .feature-band article,
+[data-liquid-glass-supported="true"].liquid-glass-ready .post-card,
+[data-liquid-glass-supported="true"].liquid-glass-ready .post-row,
+[data-liquid-glass-supported="true"].liquid-glass-ready .detail-panel,
+[data-liquid-glass-supported="true"].liquid-glass-ready .button {
+  backdrop-filter: url("#blog-liquid-glass") saturate(var(--glass-saturation));
+  -webkit-backdrop-filter: url("#blog-liquid-glass") saturate(var(--glass-saturation));
+  background: rgba(12, 14, 22, var(--glass-panel-alpha));
+}
+[data-liquid-glass-supported="true"].liquid-glass-ready .nav a,
+[data-liquid-glass-supported="true"].liquid-glass-ready .tag-list span,
+[data-liquid-glass-supported="true"].liquid-glass-ready .mini-tags span {
+  backdrop-filter: url("#blog-liquid-glass-lite");
+  -webkit-backdrop-filter: url("#blog-liquid-glass-lite");
+}
+
+@media (max-width: 560px) {
+  .site-header { padding: 8px; }
+  .nav { font-size: .78rem; }
+  .nav a { padding: 9px 8px; }
+  .type-settings-panel { right: -4px; }
+}
+
 @media (pointer: coarse) {
   .pointer-glow {
     display: none;
@@ -1125,7 +1249,7 @@ main,
 .motion-toggle i::after { content: ""; position: absolute; top: 3px; left: 3px; width: 14px; height: 14px; border-radius: 50%; background: #fff; transition: transform .2s ease; }
 .motion-toggle input:checked + i { background: var(--blue); }
 .motion-toggle input:checked + i::after { transform: translateX(16px); }
-.lab-scene { position: absolute; inset: -8%; background: url('/lab-abstract.jpg') center / cover no-repeat; transform: scale(1.08); transition: transform 1.2s cubic-bezier(.22,.61,.36,1); }
+.lab-scene { position: absolute; inset: -8%; background: url('/wallpaper.jpg') center / cover no-repeat; transform: scale(1.08); transition: transform 1.2s cubic-bezier(.22,.61,.36,1); }
 [data-background-motion] .lab-scene { animation: lab-drift 24s ease-in-out infinite alternate; }
 [data-page-hidden] .lab-scene { animation-play-state: paused !important; }
 @media (prefers-reduced-motion: reduce) { .lab-scene { animation: none !important; } }
@@ -1580,6 +1704,35 @@ main,
     width: 138.889%;
     height: 156.25%;
   }
+}
+
+/* Keep all remaining surfaces on the same live, rounded glass contract. */
+.site-header,
+.feature-band article,
+.post-card,
+.post-row,
+.detail-panel,
+.button { border-radius: var(--surface-radius) !important; }
+.site-header::before,
+.feature-band article::before,
+.post-card::before,
+.post-row::before,
+.detail-panel::before { display: none !important; }
+[data-liquid-glass-supported="true"].liquid-glass-ready .site-header,
+[data-liquid-glass-supported="true"].liquid-glass-ready .feature-band article,
+[data-liquid-glass-supported="true"].liquid-glass-ready .post-card,
+[data-liquid-glass-supported="true"].liquid-glass-ready .post-row,
+[data-liquid-glass-supported="true"].liquid-glass-ready .detail-panel,
+[data-liquid-glass-supported="true"].liquid-glass-ready .button {
+  backdrop-filter: url("#blog-liquid-glass") saturate(var(--glass-saturation));
+  -webkit-backdrop-filter: url("#blog-liquid-glass") saturate(var(--glass-saturation));
+  background: rgba(12, 14, 22, var(--glass-panel-alpha));
+}
+[data-liquid-glass-supported="true"].liquid-glass-ready .nav a,
+[data-liquid-glass-supported="true"].liquid-glass-ready .tag-list span,
+[data-liquid-glass-supported="true"].liquid-glass-ready .mini-tags span {
+  backdrop-filter: url("#blog-liquid-glass-lite");
+  -webkit-backdrop-filter: url("#blog-liquid-glass-lite");
 }
 
 /* Keep live backdrop pixels; no static wallpaper clones inside surfaces. */

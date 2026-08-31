@@ -54,9 +54,20 @@ const buildSha = import.meta.env.PUBLIC_BUILD_SHA ?? 'local';
       <nav class="nav" aria-label="主导航">
         <a href="/">首页</a>
         <a href="/blog/">博客</a>
-        <a href="/lab/">Lab</a>
         <a href={siteConfig.github} target="_blank" rel="noreferrer">GitHub</a>
       </nav>
+      <details class="type-settings">
+        <summary aria-label="文字设置">Aa</summary>
+        <div class="type-settings-panel">
+          <span class="type-settings-label">文字大小</span>
+          <div class="type-size-options" role="group" aria-label="文字大小">
+            <button type="button" data-font-size="small" aria-pressed="false">小</button>
+            <button type="button" data-font-size="medium" aria-pressed="false">中</button>
+            <button type="button" data-font-size="large" aria-pressed="false">大</button>
+          </div>
+          <label class="type-bold-toggle"><span>加粗文字</span><input type="checkbox" data-font-bold /><i aria-hidden="true"></i></label>
+        </div>
+      </details>
     </header>
     <main>
       <slot />
