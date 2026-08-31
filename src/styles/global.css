@@ -18,6 +18,13 @@
   --pointer-x: 50vw;
   --pointer-y: 36vh;
   --scroll-progress: 0;
+  --glass-panel-alpha: 0.35;
+  --glass-refracted-opacity: 0.7;
+  --glass-backdrop-blur: 9.7px;
+  --glass-saturation: 1.28;
+  --glass-highlight-opacity: 0.72;
+  --glass-specular-opacity: 0.4;
+  --glass-progressive-blur: 1.88px;
   font-family: "SF Mono", ui-monospace, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", "PingFang SC", monospace;
 }
 
@@ -37,7 +44,7 @@ body {
   /* Custom iPad Pro style wallpaper for liquid glass refraction */
   background:
     linear-gradient(145deg, rgba(0, 0, 0, 0.25) 0%, rgba(0, 0, 0, 0.1) 50%, rgba(0, 0, 0, 0.3) 100%),
-    url('/wallpaper.jpg') center/cover fixed no-repeat,
+    url('/wallpaper.jpg') center/cover no-repeat,
     #000;
   color: var(--ink);
   -webkit-font-smoothing: antialiased;
@@ -153,9 +160,9 @@ main {
 .button {
   border: 1px solid rgba(255, 255, 255, 0.22);
   border-radius: 16px;
-  background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: url("#blog-liquid-glass");
-  -webkit-backdrop-filter: url("#blog-liquid-glass");
+  background: rgb(14 16 22 / var(--glass-panel-alpha));
+  backdrop-filter: blur(var(--glass-backdrop-blur)) saturate(var(--glass-saturation));
+  -webkit-backdrop-filter: blur(var(--glass-backdrop-blur)) saturate(var(--glass-saturation));
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.25),
     inset 1px 0 0 rgba(255, 255, 255, 0.1),
@@ -247,6 +254,8 @@ main,
 .hero-copy {
   position: relative;
   z-index: 2;
+  width: min(100%, 760px);
+  min-width: 0;
   max-width: 760px;
 }
 
@@ -633,8 +642,8 @@ main,
   color: var(--soft-ink);
   font-size: 0.7rem;
   font-weight: 340;
-  backdrop-filter: url("#blog-liquid-glass");
-  -webkit-backdrop-filter: url("#blog-liquid-glass");
+  backdrop-filter: blur(12px) saturate(1.2);
+  -webkit-backdrop-filter: blur(12px) saturate(1.2);
 }
 
 .post-list {
@@ -934,6 +943,13 @@ main,
   }
 }
 
+/* Keep live backdrop pixels; no static wallpaper clones inside surfaces. */
+.site-header::before,
+.feature-band article::before,
+.post-card::before,
+.post-row::before,
+.detail-panel::before { display: none !important; }
+
 @media (max-width: 560px) {
   .site-header,
   .site-footer,
@@ -965,7 +981,15 @@ main,
   }
 
   .home-hero h1 {
-    font-size: clamp(2.05rem, 11vw, 3.05rem);
+    max-width: 100%;
+    font-size: clamp(2rem, 9.5vw, 2.65rem);
+    line-height: 1.08;
+    text-wrap: pretty;
+  }
+
+  .hero-intro {
+    max-width: 100%;
+    overflow-wrap: anywhere;
   }
 
   .hero-persona {
@@ -1039,3 +1063,528 @@ main,
     transform: none !important;
   }
 }
+
+/* Kube filter surfaces: the browser samples the real pixels behind each element. */
+[data-liquid-glass-supported="true"] .site-header,
+[data-liquid-glass-supported="true"] .feature-band article,
+[data-liquid-glass-supported="true"] .post-card,
+[data-liquid-glass-supported="true"] .post-row,
+[data-liquid-glass-supported="true"] .detail-panel,
+[data-liquid-glass-supported="true"] .button,
+[data-liquid-glass-supported="true"] .lab-glass-window {
+  backdrop-filter: url("#blog-liquid-glass") saturate(var(--glass-saturation));
+  -webkit-backdrop-filter: url("#blog-liquid-glass") saturate(var(--glass-saturation));
+  background: rgba(12, 14, 22, var(--glass-panel-alpha));
+}
+
+[data-liquid-glass-supported="true"] .nav a,
+[data-liquid-glass-supported="true"] .tag-list span,
+[data-liquid-glass-supported="true"] .mini-tags span {
+  backdrop-filter: url("#blog-liquid-glass-lite");
+  -webkit-backdrop-filter: url("#blog-liquid-glass-lite");
+}
+
+[data-liquid-glass-supported="false"] .site-header,
+[data-liquid-glass-supported="false"] .feature-band article,
+[data-liquid-glass-supported="false"] .post-card,
+[data-liquid-glass-supported="false"] .post-row,
+[data-liquid-glass-supported="false"] .detail-panel,
+[data-liquid-glass-supported="false"] .button,
+[data-liquid-glass-supported="false"] .lab-glass-window {
+  backdrop-filter: blur(var(--glass-backdrop-blur)) saturate(var(--glass-saturation));
+  -webkit-backdrop-filter: blur(var(--glass-backdrop-blur)) saturate(var(--glass-saturation));
+}
+
+[data-liquid-glass-supported="true"] .site-header::before,
+[data-liquid-glass-supported="true"] .feature-band article::before,
+[data-liquid-glass-supported="true"] .post-card::before,
+[data-liquid-glass-supported="true"] .post-row::before,
+[data-liquid-glass-supported="true"] .detail-panel::before {
+  display: none;
+}
+
+/* Fallback surfaces must also show the real page behind them, never a cloned wallpaper. */
+.site-header::before,
+.feature-band article::before,
+.post-card::before,
+.post-row::before,
+.detail-panel::before { display: none; }
+
+.lab-actions { display: flex; align-items: center; gap: 18px; }
+.glass-support { color: var(--green); font-size: .68rem; letter-spacing: .08em; text-transform: uppercase; }
+.profile-control { border: 0; margin: 0; padding: 0 0 16px; border-bottom: 1px solid var(--line); }
+.profile-control legend { margin-bottom: 10px; color: var(--quiet); font-size: .7rem; text-transform: uppercase; letter-spacing: .1em; }
+.profile-options { display: flex; flex-wrap: wrap; gap: 6px; }
+.profile-options button { border: 1px solid var(--line); border-radius: 999px; padding: 7px 10px; background: rgba(255,255,255,.04); color: var(--soft-ink); font: inherit; font-size: .68rem; cursor: pointer; }
+.profile-options button.is-active { border-color: var(--blue); background: rgba(143,199,255,.18); color: #fff; }
+.motion-toggle { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding-top: 18px; color: var(--soft-ink); font-size: .74rem; cursor: pointer; }
+.motion-toggle span { display: grid; gap: 4px; }
+.motion-toggle small { color: var(--quiet); font-size: .64rem; }
+.motion-toggle input { position: absolute; opacity: 0; pointer-events: none; }
+.motion-toggle i { width: 36px; height: 20px; border-radius: 999px; background: rgba(255,255,255,.16); box-shadow: inset 0 0 0 1px rgba(255,255,255,.2); position: relative; }
+.motion-toggle i::after { content: ""; position: absolute; top: 3px; left: 3px; width: 14px; height: 14px; border-radius: 50%; background: #fff; transition: transform .2s ease; }
+.motion-toggle input:checked + i { background: var(--blue); }
+.motion-toggle input:checked + i::after { transform: translateX(16px); }
+.lab-scene { position: absolute; inset: -8%; background: url('/lab-abstract.jpg') center / cover no-repeat; transform: scale(1.08); transition: transform 1.2s cubic-bezier(.22,.61,.36,1); }
+[data-background-motion] .lab-scene { animation: lab-drift 24s ease-in-out infinite alternate; }
+[data-page-hidden] .lab-scene { animation-play-state: paused !important; }
+@media (prefers-reduced-motion: reduce) { .lab-scene { animation: none !important; } }
+.lab-grid { position: absolute; inset: 0; background: linear-gradient(rgba(255,255,255,.12) 1px,transparent 1px), linear-gradient(90deg,rgba(255,255,255,.12) 1px,transparent 1px); background-size: 36px 36px; opacity: .18; mix-blend-mode: overlay; pointer-events: none; }
+.lab-glass-window { display: grid; place-items: end start; }
+.lab-window-copy { position: relative; z-index: 2; display: grid; gap: 8px; padding: 28px; }
+.lab-window-copy strong { color: #fff; font-size: clamp(1.1rem,2vw,1.7rem); font-weight: 520; }
+.lab-window-copy small { color: var(--quiet); font-size: .68rem; }
+.lab-progressive-blur { position: absolute; inset: 0; pointer-events: none; }
+.lab-progressive-blur i { position: absolute; inset: 0; backdrop-filter: blur(1px); mask-image: linear-gradient(to bottom, transparent 0 20%, #000 48%, transparent 72%); opacity: .35; }
+.lab-progressive-blur i:nth-child(2) { backdrop-filter: blur(4px); mask-image: linear-gradient(to bottom, transparent 18%, #000 38%, transparent 58%); opacity: .22; }
+.lab-progressive-blur i:nth-child(3) { backdrop-filter: blur(9px); mask-image: linear-gradient(to bottom, transparent 38%, #000 58%, transparent 78%); opacity: .14; }
+.lab-credit { margin: 26px 0 0; color: var(--quiet); font-size: .68rem; }
+.lab-credit a { color: var(--blue); }
+@keyframes lab-drift { from { transform: scale(1.08) translate3d(-1.5%, -1%, 0); } to { transform: scale(1.12) translate3d(1.5%, 1%, 0); } }
+
+/* Never clone the wallpaper into a panel; backdrop-filter samples the live page instead. */
+.site-header::before,
+.feature-band article::before,
+.post-card::before,
+.post-row::before,
+.detail-panel::before { display: none !important; }
+
+/* Cross-browser liquid glass
+   URL-based backdrop filters are not consistently implemented. These surfaces
+   instead refract an aligned copy of the page background with SVG filter(). */
+[data-reveal],
+[data-reveal].is-visible,
+[data-reveal][data-tilt],
+[data-reveal][data-tilt].is-visible {
+  opacity: 1;
+  filter: none;
+  transform: none;
+}
+
+.liquid-filter-defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.site-header,
+.feature-band article,
+.post-card,
+.post-row,
+.detail-panel {
+  isolation: isolate;
+  overflow: hidden;
+  background: rgb(9 11 16 / var(--glass-panel-alpha));
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.site-header::before,
+.feature-band article::before,
+.post-card::before,
+.post-row::before,
+.detail-panel::before {
+  content: "";
+  position: absolute;
+  inset: -12%;
+  z-index: 0;
+  display: block;
+  background:
+    linear-gradient(145deg, rgba(0, 0, 0, 0.18), rgba(24, 30, 48, 0.08)),
+    url('/wallpaper.jpg') center / cover no-repeat;
+  filter: url("#blog-liquid-glass");
+  opacity: var(--glass-refracted-opacity);
+  transform: scale(1.08);
+  pointer-events: none;
+}
+
+.site-header::after,
+.feature-band article::after,
+.post-card::after,
+.post-row::after,
+.detail-panel::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: block;
+  height: auto;
+  background:
+    radial-gradient(circle at 22% 4%, rgba(255, 255, 255, 0.24), transparent 34%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.13), transparent 38%, rgba(134, 166, 255, 0.08));
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: inherit;
+  opacity: var(--glass-highlight-opacity);
+  pointer-events: none;
+}
+
+.site-header > *,
+.feature-band article > *,
+.post-card > *,
+.post-row > *,
+.detail-panel > * {
+  position: relative;
+  z-index: 2;
+}
+
+.home-page {
+  min-height: 100svh;
+  overflow-x: hidden;
+  background-attachment: scroll;
+}
+
+.home-page main {
+  height: auto;
+}
+
+.home-page .home-hero {
+  display: flex;
+  align-items: center;
+  min-height: calc(100svh - 88px);
+  padding: clamp(52px, 9vh, 108px) clamp(4px, 7vw, 120px);
+}
+
+.home-page .button {
+  background: rgb(12 14 20 / var(--glass-panel-alpha));
+  backdrop-filter: blur(var(--glass-backdrop-blur));
+  -webkit-backdrop-filter: blur(var(--glass-backdrop-blur));
+}
+
+.glass-lab {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 900px;
+  padding: clamp(72px, 10vh, 118px) clamp(4px, 7vw, 120px) clamp(82px, 12vh, 136px);
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+  background: linear-gradient(180deg, rgba(4, 5, 9, 0.1), rgba(0, 0, 0, 0.72));
+}
+
+.glass-lab-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 30px;
+}
+
+.glass-lab-heading .eyebrow {
+  margin: 0 0 6px;
+  color: var(--blue);
+}
+
+.glass-lab-heading h2 {
+  margin: 0;
+  color: var(--ink);
+  font-size: clamp(1.7rem, 3vw, 2.75rem);
+  font-weight: 560;
+  line-height: 1;
+}
+
+.glass-lab-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(280px, 0.65fr);
+  gap: clamp(32px, 5vw, 72px);
+  align-items: stretch;
+}
+
+.glass-lab-preview {
+  position: relative;
+  min-height: 470px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 8px;
+  background:
+    radial-gradient(circle at 18% 22%, rgba(255, 217, 110, 0.84), transparent 17%),
+    radial-gradient(circle at 76% 30%, rgba(75, 208, 255, 0.82), transparent 23%),
+    radial-gradient(circle at 62% 82%, rgba(224, 62, 255, 0.72), transparent 26%),
+    linear-gradient(132deg, rgba(30, 18, 86, 0.34), transparent 52%),
+    url('/wallpaper.jpg') center / cover no-repeat;
+  box-shadow: 0 36px 90px rgba(0, 0, 0, 0.44);
+}
+
+.glass-lab-preview::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(118deg, transparent 34%, rgba(255, 255, 255, 0.12) 48%, transparent 59%);
+  pointer-events: none;
+}
+
+.lab-axis {
+  position: absolute;
+  z-index: 2;
+  background: rgba(255, 255, 255, 0.42);
+  mix-blend-mode: overlay;
+  pointer-events: none;
+}
+
+.lab-axis-horizontal {
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 1px;
+}
+
+.lab-axis-vertical {
+  top: 0;
+  left: 50%;
+  width: 1px;
+  height: 100%;
+}
+
+.lab-glass-window {
+  position: absolute;
+  top: 17%;
+  left: 22%;
+  z-index: 3;
+  width: 56%;
+  height: 66%;
+  overflow: hidden;
+  isolation: isolate;
+  border: 1px solid rgba(255, 255, 255, 0.34);
+  border-radius: 30% 14% 28% 18% / 22% 30% 18% 28%;
+  background: rgb(9 11 16 / var(--glass-panel-alpha));
+  box-shadow:
+    inset 1px 1px 0 rgba(255, 255, 255, 0.46),
+    inset -1px -1px 0 rgba(99, 139, 255, 0.25),
+    0 30px 68px rgba(0, 0, 0, 0.44);
+  transform: rotate(-4deg);
+}
+
+.lab-glass-window::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+  background:
+    radial-gradient(circle at 20% 8%, rgba(255, 255, 255, 0.42), transparent 27%),
+    linear-gradient(132deg, rgba(255, 255, 255, 0.2), transparent 34%, rgba(113, 160, 255, 0.1) 67%, rgba(234, 82, 255, 0.12));
+  opacity: var(--glass-highlight-opacity);
+  filter: blur(var(--glass-progressive-blur));
+  pointer-events: none;
+}
+
+.lab-refracted-scene {
+  position: absolute;
+  top: -25.758%;
+  left: -39.286%;
+  width: 178.572%;
+  height: 151.516%;
+  background:
+    radial-gradient(circle at 18% 22%, rgba(255, 217, 110, 0.84), transparent 17%),
+    radial-gradient(circle at 76% 30%, rgba(75, 208, 255, 0.82), transparent 23%),
+    radial-gradient(circle at 62% 82%, rgba(224, 62, 255, 0.72), transparent 26%),
+    linear-gradient(132deg, rgba(30, 18, 86, 0.34), transparent 52%),
+    url('/wallpaper.jpg') center / cover no-repeat;
+  filter: url("#blog-liquid-glass");
+  opacity: var(--glass-refracted-opacity);
+  transform: scale(1.04);
+}
+
+.lab-glass-index {
+  position: absolute;
+  right: 20px;
+  bottom: 18px;
+  z-index: 2;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 0.64rem;
+  font-weight: 560;
+}
+
+.glass-controls {
+  display: grid;
+  align-content: start;
+  border-top: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.glass-control {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 13px 18px;
+  min-height: 82px;
+  padding: 17px 0 15px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  color: var(--soft-ink);
+  font-size: 0.76rem;
+  font-weight: 560;
+}
+
+.glass-control output {
+  color: var(--blue);
+  font-variant-numeric: tabular-nums;
+}
+
+.glass-control input[type="range"] {
+  grid-column: 1 / -1;
+  width: 100%;
+  height: 18px;
+  margin: 0;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.glass-control input[type="range"]::-webkit-slider-runnable-track {
+  height: 3px;
+  border-radius: 0;
+  background: linear-gradient(90deg, #f4d96d, #6ce7ef 36%, #7197ff 64%, #d66cff);
+}
+
+.glass-control input[type="range"]::-webkit-slider-thumb {
+  width: 16px;
+  height: 16px;
+  margin-top: -6px;
+  appearance: none;
+  border: 2px solid #050609;
+  border-radius: 50%;
+  background: #f7f7f7;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.58), 0 0 18px rgba(122, 168, 255, 0.48);
+}
+
+.glass-control input[type="range"]::-moz-range-track {
+  height: 3px;
+  border: 0;
+  border-radius: 0;
+  background: linear-gradient(90deg, #f4d96d, #6ce7ef 36%, #7197ff 64%, #d66cff);
+}
+
+.glass-control input[type="range"]::-moz-range-thumb {
+  width: 13px;
+  height: 13px;
+  border: 2px solid #050609;
+  border-radius: 50%;
+  background: #f7f7f7;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.58), 0 0 18px rgba(122, 168, 255, 0.48);
+}
+
+.glass-control input[type="range"]:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 5px;
+}
+
+.glass-reset {
+  justify-self: start;
+  margin-top: 22px;
+  border: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.48);
+  padding: 6px 0;
+  background: transparent;
+  color: var(--soft-ink);
+  font: inherit;
+  font-size: 0.72rem;
+  font-weight: 620;
+  cursor: pointer;
+}
+
+.lab-page main {
+  padding-bottom: clamp(70px, 9vw, 130px);
+}
+
+.lab-intro {
+  max-width: 920px;
+  padding-bottom: 42px;
+}
+
+.lab-intro h1 {
+  font-size: clamp(2.35rem, 6vw, 5.4rem);
+}
+
+.glass-lab-page {
+  content-visibility: visible;
+  contain-intrinsic-size: none;
+  padding: 36px clamp(20px, 4vw, 54px) 54px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 8px;
+  background: rgba(3, 5, 10, 0.62);
+}
+
+.glass-lab-page .glass-lab-heading {
+  align-items: center;
+}
+
+.glass-lab-page .glass-reset {
+  margin-top: 0;
+}
+
+.glass-lab-page .glass-lab-layout {
+  grid-template-columns: minmax(0, 1.35fr) minmax(300px, 0.65fr);
+}
+
+.glass-lab-page .glass-controls {
+  min-width: 0;
+}
+
+.glass-lab-page .glass-control {
+  min-height: 75px;
+  padding: 14px 0 12px;
+}
+
+.glass-reset:hover,
+.glass-reset:focus-visible {
+  color: white;
+  border-bottom-color: white;
+}
+
+@media (max-width: 760px) {
+  .home-page .home-hero {
+    min-height: calc(100svh - 70px);
+    padding: 46px 0 32px;
+  }
+
+  .glass-lab {
+    padding: 68px 0 82px;
+  }
+
+  .glass-lab-page {
+    padding: 28px 16px 42px;
+  }
+
+  .glass-lab-heading {
+    display: block;
+    margin-bottom: 24px;
+  }
+
+  .glass-lab-page .glass-reset {
+    margin-top: 18px;
+  }
+
+  .glass-lab-heading .eyebrow {
+    margin-bottom: 12px;
+  }
+
+  .glass-lab-layout {
+    grid-template-columns: 1fr;
+    gap: 34px;
+  }
+
+  .glass-lab-page .glass-lab-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .glass-lab-preview {
+    min-height: 370px;
+  }
+
+  .lab-glass-window {
+    top: 18%;
+    left: 14%;
+    width: 72%;
+    height: 64%;
+  }
+
+  .lab-refracted-scene {
+    top: -28.125%;
+    left: -19.445%;
+    width: 138.889%;
+    height: 156.25%;
+  }
+}
+
+/* Keep live backdrop pixels; no static wallpaper clones inside surfaces. */
+.site-header::before,
+.feature-band article::before,
+.post-card::before,
+.post-row::before,
+.detail-panel::before { display: none !important; }
