@@ -12,7 +12,7 @@ permissions:
 
 concurrency:
   group: pages
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   build:
@@ -29,6 +29,8 @@ jobs:
         run: npm ci
       - name: Build
         run: npm run build
+        env:
+          PUBLIC_BUILD_SHA: ${{ github.sha }}
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
