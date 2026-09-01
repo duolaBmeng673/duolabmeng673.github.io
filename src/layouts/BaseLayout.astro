@@ -37,6 +37,10 @@ const buildSha = import.meta.env.PUBLIC_BUILD_SHA ?? 'local';
         <a href="/blog/">博客</a>
         <a href={siteConfig.github} target="_blank" rel="noreferrer">GitHub</a>
       </nav>
+      <button class="theme-toggle" type="button" data-theme-toggle aria-pressed="false" aria-label="切换到浅色主题" title="切换主题">
+        <span class="theme-mark" aria-hidden="true"></span>
+        <span class="visually-hidden">切换主题</span>
+      </button>
       <details class="type-settings">
         <summary aria-label="文字设置">Aa</summary>
         <div class="type-settings-panel">
