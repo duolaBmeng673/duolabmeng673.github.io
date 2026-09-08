@@ -3,3 +3,8 @@ dist/
 .astro/
 .DS_Store
 npm-debug.log*
+
+# Local source archive and duplicate imports; deployable copies live in
+# src/content/blog/*.md and public/articles/.
+article/
+src/content/blog/*/
