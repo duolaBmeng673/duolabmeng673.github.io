@@ -124,7 +124,7 @@ main,
 .eyebrow, .panel-label { margin: 0 0 14px; color: var(--violet); font-size: .72rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; }
 h1, h2, h3, p { margin-top: 0; }
 h1, h2, h3 { color: var(--ink); font-weight: 560; letter-spacing: 0; line-height: 1.2; }
-.home-intro { display: grid; grid-template-columns: minmax(0, 1fr) 260px; gap: clamp(48px, 10vw, 150px); align-items: end; min-height: 560px; padding: 106px 0 92px; border-bottom: 1px solid var(--line); }
+.home-intro { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: clamp(48px, 10vw, 150px); align-items: center; min-height: 500px; padding: 88px 0 80px; border-bottom: 1px solid var(--line); }
 .home-intro h1 { max-width: 760px; margin-bottom: 27px; font-size: clamp(2.4rem, 5.6vw, 5rem); letter-spacing: -.025em; }
 .home-intro h1 span { color: var(--violet); }
 .home-summary { max-width: 660px; margin-bottom: 30px; color: var(--soft-ink); font-size: 1.02rem; line-height: 1.9; }
@@ -135,12 +135,12 @@ h1, h2, h3 { color: var(--ink); font-weight: 560; letter-spacing: 0; line-height
 .text-link, .section-link { color: var(--blue); font-size: .84rem; }
 .text-link:hover, .section-link:hover { color: #fff; }
 .home-index { align-self: start; padding-top: 9px; color: var(--muted); font-size: .78rem; line-height: 1.8; }
-.tag-index { width: 100%; padding-top: 11px; }
+.tag-index { width: 100%; padding-top: 11px; align-self: center; }
 .tag-index .panel-label { margin-bottom: 18px; }
-.tag-index-list { display: grid; gap: 0; border-top: 1px solid var(--line-strong); }
-.tag-index-list a { display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 10px 0; border-bottom: 1px solid var(--line); color: var(--soft-ink); }
-.tag-index-list a:hover { color: var(--violet); }
-.tag-index-list strong { color: var(--quiet); font-size: .72rem; font-weight: 600; font-variant-numeric: tabular-nums; }
+.tag-index-list { display: flex; flex-wrap: wrap; gap: 9px; }
+.tag-index-list a { display: inline-flex; align-items: baseline; gap: 8px; padding: 8px 11px; border: 1px solid var(--line); border-radius: var(--radius-control); background: var(--panel-translucent); color: var(--soft-ink); font-size: .78rem; line-height: 1.25; }
+.tag-index-list a:hover { border-color: var(--violet); background: var(--surface-hover); color: var(--violet); }
+.tag-index-list strong { color: var(--quiet); font-size: .66rem; font-weight: 600; font-variant-numeric: tabular-nums; }
 
 .recent-section { padding: 74px 0 100px; }
 .section-heading { display: flex; align-items: end; justify-content: space-between; gap: 24px; margin-bottom: 22px; }
