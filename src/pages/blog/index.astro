@@ -5,25 +5,37 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 const posts = (await getCollection('blog')).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 ---
 
-<BaseLayout title="博客" description="杨雨飞的博客文章列表" bodyClass="archive-page">
+<BaseLayout title="文章" description="文章与论文阅读笔记" bodyClass="archive-page">
   <header class="page-intro">
     <p class="eyebrow">Writing archive</p>
     <h1>文章</h1>
-    <p>关于软件、系统、安全和持续学习的记录。按时间倒序整理，保持问题与结论都可以被重新找到。</p>
   </header>
 
   <section class="archive-list" aria-label="文章列表">
     {posts.map((post, index) => (
-      <article class="post-row">
-        <span class="post-index">{String(index + 1).padStart(2, '0')}</span>
-        <div class="post-row-main">
-          <p class="post-date">{post.data.pubDate.toLocaleDateString('zh-CN')}</p>
-          <h2><a href={`/blog/${post.id}/`}>{post.data.title}</a></h2>
-          <p class="post-excerpt">{post.data.description}</p>
-          <div class="tag-list">{post.data.tags.map((tag) => <span>{tag}</span>)}</div>
-        </div>
-        <span class="post-arrow" aria-hidden="true">↗</span>
+      <article class="post-row" data-tags={post.data.tags.join('|')}>
+        <a class="post-row-link" href={`/blog/${post.id}/`} aria-label={`阅读：${post.data.title}`}>
+          <span class="post-index">{String(index + 1).padStart(2, '0')}</span>
+          <div class="post-row-main">
+            <p class="post-date">{post.data.pubDate.toLocaleDateString('zh-CN')}</p>
+            <h2>{post.data.title}</h2>
+            <p class="post-excerpt">{post.data.description}</p>
+            <div class="tag-list">{post.data.tags.map((tag) => <span>{tag}</span>)}</div>
+          </div>
+          <span class="post-arrow" aria-hidden="true">↗</span>
+        </a>
       </article>
     ))}
   </section>
+  <p class="tag-filter-empty" hidden>没有找到这个标签下的文章。<a href="/blog/">显示全部</a></p>
+  <script>
+    const tag = new URLSearchParams(window.location.search).get('tag');
+    if (tag) {
+      const rows = [...document.querySelectorAll<HTMLElement>('[data-tags]')];
+      const visible = rows.filter((row) => row.dataset.tags?.split('|').includes(tag));
+      rows.forEach((row) => { row.hidden = !visible.includes(row); });
+      const empty = document.querySelector<HTMLElement>('.tag-filter-empty');
+      if (empty) empty.hidden = visible.length > 0;
+    }
+  </script>
 </BaseLayout>
