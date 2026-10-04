@@ -9,7 +9,7 @@ tags:
   - "Input/Output"
 ---
 
-# Python ACM / OJ 模式：输入与输出
+# Python ACM/OJ模式：输入与输出
 
 在 LeetCode 中，平台通常负责读取输入、调用函数并检查返回值；在 ACM / OJ 模式中，提交的是一个完整的可执行程序。程序必须自己完成：
 
