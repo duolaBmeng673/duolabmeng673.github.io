@@ -1,11 +1,9 @@
 ---
-import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { getAllPosts } from '../lib/blog';
 
-const posts = (await getCollection('blog'))
-  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
-  .slice(0, 3);
-const allPosts = await getCollection('blog');
+const allPosts = await getAllPosts();
+const posts = allPosts.slice(0, 3);
 const tagCounts = [...allPosts.reduce((counts, post) => {
   post.data.tags.forEach((tag) => counts.set(tag, (counts.get(tag) ?? 0) + 1));
   return counts;
