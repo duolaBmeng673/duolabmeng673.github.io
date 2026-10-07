@@ -5,8 +5,8 @@ pubDate: 2026-10-07
 category: "Computer Science"
 subcategory: "Algorithms"
 series: "ACM / OJ"
-shortTitle: "从三维 DP 到单调队列"
-subtitle: "CI/CD Pipeline Jobs 最小成本问题"
+shortTitle: "CI/CD Pipeline Jobs 最小成本问题"
+subtitle: "从三维 DP 到单调队列"
 tags:
   - "Huawei Examination"
   - "Dynamic Programming"
@@ -14,7 +14,7 @@ tags:
   - "Sliding Window"
 ---
 
-# 从三维 DP 到单调队列：CI/CD Pipeline Jobs 最小成本问题
+# CI/CD Pipeline Jobs 最小成本问题：从三维 DP 到单调队列
 
 ## 1. 题目：恰好执行 t 个任务
 
