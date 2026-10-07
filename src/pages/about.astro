@@ -2,20 +2,13 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { siteConfig } from '../config';
 ---
-
-<BaseLayout title="关于" description={siteConfig.description} bodyClass="about-page">
-  <section class="about-intro">
-    <div>
-      <p class="eyebrow">About the author</p>
-      <h1>杨雨飞<span> / YYF</span></h1>
-      <p class="about-lede">信息安全专业学生，持续学习如何把复杂的技术问题讲清楚、做可靠。</p>
-    </div>
-    <img class="about-avatar" src="/github-avatar.png" alt="杨雨飞的 GitHub 头像" />
-  </section>
-
-  <section class="about-details" aria-label="个人详情">
-    <article class="detail-panel"><p class="panel-label">Background</p><h2>{siteConfig.education}</h2><p>关注软件系统的边界、实现与长期维护，也关心安全视角下的工程取舍。</p></article>
-    <article class="detail-panel"><p class="panel-label">Topics</p><div class="tag-list">{siteConfig.tags.map((tag) => <span>{tag}</span>)}</div></article>
-    <article class="detail-panel detail-panel-wide"><p class="panel-label">Why this site exists</p><h2>记录输入，也检验理解。</h2><p>这里是一个简洁的个人档案：保存读过的内容、做过的项目，以及那些需要反复推敲的技术问题。</p><a class="text-link" href={siteConfig.github} target="_blank" rel="noreferrer">访问 GitHub <span aria-hidden="true">↗</span></a></article>
+<BaseLayout title="About" description={siteConfig.description} bodyClass="about-page">
+  <section class="about-hero"><div><p class="eyebrow">About the author</p><h1>杨雨飞<span> / YYF</span></h1><p class="about-lede">信息安全专业学生，持续学习如何把复杂的技术问题讲清楚、做可靠。</p></div><img class="about-avatar" src="/github-avatar.png" alt="杨雨飞的 GitHub 头像" width="96" height="96" /></section>
+  <section class="about-grid" aria-label="个人信息">
+    <article class="about-panel"><p class="panel-label">Who I am / Background</p><h2>{siteConfig.education}</h2><p>关注软件系统的边界、实现与长期维护，也关心安全视角下的工程取舍。</p></article>
+    <article class="about-panel"><p class="panel-label">Research interests</p><ul class="about-interest-list">{siteConfig.interests.map((interest) => <li>{interest}</li>)}</ul></article>
+    <article class="about-panel"><p class="panel-label">What I write about</p><h2>从论文到具体问题。</h2><p>论文阅读与模型理解：NLP、多模态、计算机视觉和 LLM 表格处理。算法练习：ACM / OJ 输入输出、状态压缩与动态规划。</p><a class="text-link" href="/blog/">Browse the notebook →</a></article>
+    <article class="about-panel"><p class="panel-label">Current focus</p><h2>记录输入，也检验理解。</h2><p>近期笔记围绕论文阅读和算法练习展开。这里保存那些需要反复推敲的技术问题，便于以后回看。</p></article>
+    <article class="about-panel about-links"><p class="panel-label">Code & links</p><p>代码与项目记录在 GitHub，学习笔记保存在这里。</p><a class="text-link" href={siteConfig.github} target="_blank" rel="noreferrer">GitHub / duolaBmeng673 ↗</a></article>
   </section>
 </BaseLayout>

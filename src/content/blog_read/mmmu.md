@@ -2,6 +2,9 @@
 title: "MMMU"
 description: "MMMU 多学科多模态理解与推理基准论文笔记。"
 pubDate: 2026-09-08
+category: "Research"
+subcategory: "Paper Notes"
+series: "Multimodal"
 tags:
   - "Multimodal"
   - "Benchmarks"

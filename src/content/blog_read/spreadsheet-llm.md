@@ -2,6 +2,9 @@
 title: "SpreadsheetLLM"
 description: "SpreadsheetLLM 论文笔记，整理 SheetCompressor 表格编码与压缩方法。"
 pubDate: 2026-09-08
+category: "Research"
+subcategory: "Paper Notes"
+series: "LLM & Tables"
 tags:
   - "LLM"
   - "Spreadsheets"

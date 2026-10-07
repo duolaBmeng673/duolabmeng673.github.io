@@ -1,62 +1,34 @@
 ---
 import { render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getAllPosts } from '../../lib/blog';
-
+import { getAllPosts, getPostTitle, getReadingTime, formatPostDate } from '../../lib/blog';
 export async function getStaticPaths() {
   const posts = await getAllPosts();
-  return posts.map((post) => ({
-    params: { slug: post.id },
-    props: { post },
-  }));
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
 }
-
 const { post } = Astro.props;
 const { Content, headings } = await render(post);
 const sections = headings.filter((heading) => heading.depth >= 2 && heading.depth <= 3);
 ---
-
-<BaseLayout title={post.data.title} description={post.data.description}>
-  <article class="article" data-article-layout>
-    <div class="article-controls">
-      <a class="back-link" href="/blog/">← 返回文章</a>
-      <button class="article-view-toggle" type="button" data-toc-toggle aria-pressed="false">
-        <span aria-hidden="true">☷</span> 显示章节
-      </button>
-    </div>
-    <div class="article-shell">
-      <aside class="article-toc" data-article-toc aria-label="文章章节">
-        <p class="panel-label">章节</p>
-        <nav>
-          <ol>
-            {sections.map((heading) => <li class:list={`toc-level-${heading.depth}`}><a href={`#${heading.slug}`}>{heading.text}</a></li>)}
-          </ol>
-        </nav>
-      </aside>
+<BaseLayout title={post.data.title} description={post.data.description} bodyClass="article-page">
+  <article class:list={['article', { 'has-toc': sections.length > 0 }]}>
+    <a class="back-link" href="/blog/">← Back to Notes</a>
+    <div class="article-layout">
       <div class="article-main">
         <header class="article-header">
-          <p class="post-date">{post.data.pubDate.toLocaleDateString('zh-CN')}</p>
-          <h1>{post.data.title}</h1>
-          <p>{post.data.description}</p>
-          <div class="tag-list">
-            {post.data.tags.map((tag) => <span>{tag}</span>)}
-          </div>
+          <nav class="article-taxonomy" aria-label="文章分类"><a href={`/blog/?category=${encodeURIComponent(post.data.category)}`}>{post.data.category}</a><span aria-hidden="true">·</span><a href={`/blog/?category=${encodeURIComponent(post.data.category)}&subcategory=${encodeURIComponent(post.data.subcategory)}`}>{post.data.subcategory}</a><span aria-hidden="true">·</span><a href={`/blog/?series=${encodeURIComponent(post.data.series)}`}>{post.data.series}</a></nav>
+          <h1 class:list={{ 'title-long': getPostTitle(post).length > 26 }}>{getPostTitle(post)}</h1>
+          {post.data.subtitle && <p class="article-subtitle">{post.data.subtitle}</p>}
+          <p class="article-description">{post.data.description}</p>
+          <div class="article-meta"><time datetime={post.data.pubDate.toISOString()}>{formatPostDate(post.data.pubDate)}</time><span aria-hidden="true">·</span><span>约 {getReadingTime(post)} 分钟阅读</span></div>
+          <div class="tag-list">{post.data.tags.map((tag) => <a href={`/blog/?tag=${encodeURIComponent(tag)}`}>{tag}</a>)}</div>
         </header>
-        <div class="article-body">
-          <Content />
-        </div>
+        {sections.length > 0 && <details class="article-toc-mobile"><summary>Contents <span aria-hidden="true">⌄</span></summary><nav aria-label="移动端文章目录"><ol>{sections.map((heading) => <li class={`toc-level-${heading.depth}`}><a href={`#${heading.slug}`}>{heading.text}</a></li>)}</ol></nav></details>}
+        <div class="article-body"><Content /></div>
+        <footer class="article-end"><span>End of note</span><a href="/blog/">返回 Notes →</a></footer>
       </div>
+      {sections.length > 0 && <aside class="article-toc" aria-label="文章章节"><p class="panel-label">Contents</p><nav><ol>{sections.map((heading) => <li class={`toc-level-${heading.depth}`}><a data-toc-link href={`#${heading.slug}`}>{heading.text}</a></li>)}</ol></nav></aside>}
     </div>
   </article>
-  <script>
-    const layout = document.querySelector<HTMLElement>('[data-article-layout]');
-    const toggle = document.querySelector<HTMLButtonElement>('[data-toc-toggle]');
-    if (layout && toggle) {
-      toggle.addEventListener('click', () => {
-        const expanded = layout.classList.toggle('is-toc-visible');
-        toggle.setAttribute('aria-pressed', String(expanded));
-        toggle.innerHTML = expanded ? '<span aria-hidden="true">×</span> 隐藏章节' : '<span aria-hidden="true">☷</span> 显示章节';
-      });
-    }
-  </script>
+  <script>import '../../scripts/article';</script>
 </BaseLayout>

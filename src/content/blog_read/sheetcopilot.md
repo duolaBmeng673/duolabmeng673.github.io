@@ -2,6 +2,9 @@
 title: "SheetCopilot"
 description: "SheetCopilot 论文笔记，记录自然语言控制电子表格、代理规划与评估框架。"
 pubDate: 2026-09-08
+category: "Research"
+subcategory: "Paper Notes"
+series: "LLM & Tables"
 tags:
   - "LLM"
   - "Spreadsheets"

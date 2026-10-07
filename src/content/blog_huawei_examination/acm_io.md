@@ -2,6 +2,9 @@
 title: "Python ACM / OJ 模式：输入与输出"
 description: "面向机考的 Python 标准输入、数据解析、标准输出、多组测试、EOF 与性能优化笔记。"
 pubDate: 2026-10-04
+category: "Computer Science"
+subcategory: "Algorithms"
+series: "ACM / OJ"
 tags:
   - "Huawei Examination"
   - "ACM/OJ"

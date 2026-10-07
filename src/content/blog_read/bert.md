@@ -2,6 +2,9 @@
 title: "BERT"
 description: "双向 Transformer 编码表示的论文笔记，整理预训练、掩码语言模型与微调方法。"
 pubDate: 2026-09-08
+category: "Research"
+subcategory: "Paper Notes"
+series: "NLP"
 tags:
   - "NLP"
   - "Transformers"

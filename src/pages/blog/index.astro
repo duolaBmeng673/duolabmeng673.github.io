@@ -1,41 +1,22 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getAllPosts } from '../../lib/blog';
-
+import { getAllPosts, getCategorySummaries, getPostHref, getPostTitle, formatPostDate, getTimeline, toSearchRecord } from '../../lib/blog';
 const posts = await getAllPosts();
+const summaries = getCategorySummaries(posts);
+const timeline = getTimeline(posts);
 ---
-
-<BaseLayout title="文章" description="文章与论文阅读笔记" bodyClass="archive-page">
-  <header class="page-intro">
-    <p class="eyebrow">Writing archive</p>
-    <h1>文章</h1>
-  </header>
-
-  <section class="archive-list" aria-label="文章列表">
-    {posts.map((post, index) => (
-      <article class="post-row" data-tags={post.data.tags.join('|')}>
-        <a class="post-row-link" href={`/blog/${post.id}/`} aria-label={`阅读：${post.data.title}`}>
-          <span class="post-index">{String(index + 1).padStart(2, '0')}</span>
-          <div class="post-row-main">
-            <p class="post-date">{post.data.pubDate.toLocaleDateString('zh-CN')}</p>
-            <h2>{post.data.title}</h2>
-            <p class="post-excerpt">{post.data.description}</p>
-            <div class="tag-list">{post.data.tags.map((tag) => <span>{tag}</span>)}</div>
-          </div>
-          <span class="post-arrow" aria-hidden="true">↗</span>
-        </a>
-      </article>
-    ))}
+<BaseLayout title="Notes" description="研究、代码与学习笔记" bodyClass="archive-page">
+  <header class="page-intro"><p class="eyebrow">Writing archive</p><h1>Notes</h1><p>Things I've learned, studied, built, and written down.</p></header>
+  <section class="archive-tools" aria-label="文章筛选与浏览方式">
+    <nav class="filter-row" aria-label="一级分类"><a class="filter-button is-active" href="/blog/" data-category-filter="all" aria-current="true">All <span>{posts.length}</span></a>{summaries.map((summary) => <a class="filter-button" href={`/blog/?category=${encodeURIComponent(summary.category)}`} data-category-filter={summary.category}>{summary.category} <span>{summary.count}</span></a>)}</nav>
+    <div class="archive-actions"><label class="inline-search"><span class="visually-hidden">搜索 Notes</span><input type="search" data-notes-search placeholder="Search notes…" autocomplete="off" /></label><div class="view-switch" role="group" aria-label="浏览方式"><button type="button" class="view-button is-active" data-view-toggle="notes" aria-pressed="true">Notes</button><button type="button" class="view-button" data-view-toggle="timeline" aria-pressed="false">Timeline</button></div></div>
+    <div class="hierarchy-filters"><label>Subcategory<select data-subcategory-filter><option value="">All subcategories</option>{[...new Set(posts.map((post) => post.data.subcategory))].map((name) => <option value={name}>{name}</option>)}</select></label><label>Series<select data-series-filter><option value="">All series</option>{[...new Set(posts.map((post) => post.data.series))].map((name) => <option value={name}>{name}</option>)}</select></label></div>
+    <p class="active-tag" data-active-tag hidden></p>
+    <p class="result-status" data-result-status role="status">{posts.length} notes</p>
   </section>
-  <p class="tag-filter-empty" hidden>没有找到这个标签下的文章。<a href="/blog/">显示全部</a></p>
-  <script>
-    const tag = new URLSearchParams(window.location.search).get('tag');
-    if (tag) {
-      const rows = [...document.querySelectorAll<HTMLElement>('[data-tags]')];
-      const visible = rows.filter((row) => row.dataset.tags?.split('|').includes(tag));
-      rows.forEach((row) => { row.hidden = !visible.includes(row); });
-      const empty = document.querySelector<HTMLElement>('.tag-filter-empty');
-      if (empty) empty.hidden = visible.length > 0;
-    }
-  </script>
+  <section class="notes-view" data-notes-view aria-label="文章列表">{posts.map((post) => <article class="note-row" data-note-row data-id={post.id}><a class="editorial-row" href={getPostHref(post)} aria-label={`阅读：${post.data.title}`}><time datetime={post.data.pubDate.toISOString()}>{formatPostDate(post.data.pubDate)}</time><span class="editorial-main"><span class="note-taxonomy">{post.data.category} · {post.data.subcategory} · {post.data.series}</span><h2>{getPostTitle(post)}</h2>{post.data.subtitle && <span class="note-subtitle">{post.data.subtitle}</span>}<span class="note-description">{post.data.description}</span></span><span class="row-arrow" aria-hidden="true">↗</span></a></article>)}</section>
+  <section class="timeline-view" data-timeline-view hidden aria-label="按时间浏览文章">{timeline.map((year) => <section class="timeline-year" data-timeline-year><h2>{year.year}</h2>{year.months.map((month) => <div class="timeline-month" data-timeline-month><h3>{month.label}</h3><div>{month.posts.map((post) => <a class="timeline-row" data-timeline-row data-id={post.id} href={getPostHref(post)}><time datetime={post.data.pubDate.toISOString()}>{post.data.pubDate.toISOString().slice(5, 10).replace('-', '.')}</time><span><strong>{getPostTitle(post)}</strong><small>{post.data.category} · {post.data.series}</small></span><span aria-hidden="true">↗</span></a>)}</div></div>)}</section>)}</section>
+  <div class="archive-empty" data-archive-empty hidden><p>没有找到匹配的笔记。试试其他关键词或清除筛选。</p><button class="button" type="button" data-clear-filters>清除筛选</button></div>
+  <script is:inline type="application/json" id="notes-index" set:html={JSON.stringify(posts.map((post) => ({ id: post.id, ...toSearchRecord(post) }))).replace(/</g, '\\u003c')} />
+  <script>import '../../scripts/notes';</script>
 </BaseLayout>

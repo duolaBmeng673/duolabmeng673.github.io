@@ -1,327 +1,69 @@
-# Technical Handoff: duolabmeng673.github.io
+# Technical handoff: duolaBmeng673 notebook
 
-This document is for the next Codex agent or engineer taking over the project.
+## Runtime and deployment
 
-## Project Summary
+Astro 7, TypeScript, Markdown content collections, npm. No new dependencies were added for this redesign. `npm run build` runs `astro check && astro build`; `npm run dev` serves a live preview and `npm run preview` serves `dist`.
 
-This is a personal static blog for Yang Yufei, deployed through GitHub Pages at:
+GitHub Actions builds on Node 22 with `npm ci` and `npm run build`, uploads `dist`, and deploys to GitHub Pages when `main` is pushed or the workflow is manually dispatched. The workflow and Astro configuration are unchanged. Never commit `dist`, `.astro`, or `node_modules`.
 
-```text
-https://duolabmeng673.github.io
-```
+## Content contract
 
-The site is built with Astro 7 and uses Markdown content collections for blog posts. The current visual direction is a restrained dark "Liquid Glass inspired" interface: dark background, translucent navigation/panels, subtle pointer glow, reveal-on-scroll animation, and light card tilt interactions.
+Deployable Markdown lives directly in `src/content/blog_read/` and `src/content/blog_huawei_examination/`. The loaders intentionally match `*.{md,mdx}` and exclude the ignored nested source archives. Do not broaden the glob to include duplicate local imports.
 
-Do not use Apple logos, WWDC names, or protected Apple assets. The design should stay inspired by liquid glass UI behavior, not copied from Apple pages.
-
-## Tech Stack
-
-- Runtime/build: Astro `^7.0.7`
-- Type checking: `@astrojs/check`
-- Language: TypeScript + Astro components
-- Content: Markdown files under `src/content/blog`
-- Deployment: GitHub Actions to GitHub Pages
-- Package manager: npm
-
-Useful commands:
-
-```bash
-npm install
-npm run dev
-npm run build
-npm run preview
-```
-
-`npm run build` runs:
-
-```bash
-astro check && astro build
-```
-
-Always run it before committing.
-
-## Repository Structure
-
-Key files:
-
-```text
-astro.config.mjs
-package.json
-tsconfig.json
-.github/workflows/deploy.yml
-src/config.ts
-src/content.config.ts
-src/content/blog/*.md
-src/layouts/BaseLayout.astro
-src/pages/index.astro
-src/pages/about.astro
-src/pages/blog/index.astro
-src/pages/blog/[slug].astro
-src/scripts/site-motion.ts
-src/styles/global.css
-public/favicon.svg
-```
-
-Generated directories that should not be committed:
-
-```text
-node_modules/
-dist/
-.astro/
-```
-
-These are already ignored by `.gitignore`.
-
-## Site Configuration
-
-Shared profile/site data lives in `src/config.ts`.
-
-Current shape:
-
-```ts
-export const siteConfig = {
-  name: '杨雨飞',
-  title: '杨雨飞的博客',
-  description: '哈尔滨工业大学信息安全专业，关注 Web 开发、分布式系统、AI 与算法。',
-  education: '哈尔滨工业大学 信息安全专业',
-  github: 'https://github.com/duolaBmeng673',
-  tags: ['Web 开发', '分布式系统', 'AI', '算法', 'CMU'],
-};
-```
-
-Use this file for global identity/profile changes instead of duplicating values across pages.
-
-## Content Model
-
-Blog posts are Markdown files in:
-
-```text
-src/content/blog/
-```
-
-The collection is defined in `src/content.config.ts` using Astro 7's loader API:
-
-```ts
-const blog = defineCollection({
-  loader: glob({ base: './src/content/blog', pattern: '**/*.{md,mdx}' }),
-  schema: z.object({
-    title: z.string(),
-    description: z.string(),
-    pubDate: z.coerce.date(),
-    tags: z.array(z.string()),
-  }),
-});
-```
-
-Required frontmatter for every post:
+Both collections share `src/content.config.ts`. Required fields: `title`, `description`, `pubDate`, `tags`, `category`, `subcategory`, `series`. The taxonomy fields have explicit enum schemas. `shortTitle` and `subtitle` are optional visual fields; the full original `title` is used for page metadata and search. Do not render missing fields as blank placeholders.
 
 ```yaml
 ---
-title: "文章标题"
-description: "文章摘要"
-pubDate: 2026-07-10
-tags: ["标签1", "标签2"]
+title: "Full original title"
+description: "Short summary"
+pubDate: 2026-10-04
+category: Research
+subcategory: Paper Notes
+series: NLP
+tags: [NLP, Transformers]
 ---
 ```
 
-Routing uses `post.id`, not `post.slug`. In Astro 7 content collections, `id` is the correct field for the current implementation.
+The 14 existing articles keep their file paths, `post.id`, URLs, original tags and body bytes. Only front matter was extended. Detail routes remain `/blog/${post.id}/`. Never change IDs as a side effect of classification.
 
-## Pages and Layout
+Current taxonomy:
 
-### `BaseLayout.astro`
+- Research → Paper Notes → NLP: BERT, GPT-1, Transformers.
+- Research → Paper Notes → Multimodal: CLIP, MathVista, MMMU.
+- Research → Paper Notes → Computer Vision: SqueezerFaceNet, TableSense.
+- Research → Paper Notes → LLM & Tables: LLM for Table Processing Survey, SheetCopilot, SpreadsheetLLM, TableQuest.
+- Computer Science → Algorithms → ACM / OJ: Python ACM / OJ 模式：输入与输出, 最少机器覆盖业务需求：状态压缩 DP.
 
-Responsible for:
+The machine coverage note uses `shortTitle: 最少机器覆盖业务需求` and `subtitle: State Compression DP`; its full title remains unchanged.
 
-- Global `<head>` metadata
-- Shared navigation
-- Shared footer
-- Ambient visual background DOM:
-  - `.ambient-stage`
-  - `.ambient-arc`
-  - `.ambient-core`
-  - `.ambient-noise`
-  - `.pointer-glow`
-- Client-side motion script import:
+## Shared data and pages
 
-```astro
-<script>
-  import '../scripts/site-motion';
-</script>
-```
+`src/lib/blog.ts` centralizes sorted posts, display titles, URLs, category summaries, timeline grouping, estimated reading time and search records. Only categories with articles appear in navigation. Dates represent publication calendar dates and are formatted in UTC to avoid build-host timezone shifts.
 
-Important: do not import `site-motion.ts` in frontmatter. It uses `window`, so it must run only in the browser.
+Home contains identity, research interests, non-empty category summaries, five recent notes, and About/GitHub links. The avatar appears only on About, using the existing local `public/github-avatar.png`.
 
-### `index.astro`
+The Notes archive offers category/subcategory/series filters, local search, existing tag filtering and Notes/Timeline views. Both views use the same content source. Query state is shareable using `category`, `subcategory`, `series`, `tag`, `q` and `view=timeline` parameters. `src/scripts/notes.ts` applies query state, filters rows, hides empty month/year groups and updates counts.
 
-Homepage structure:
+Article pages use a 740px reading column, metadata, linked taxonomy, original tags, sticky desktop H2/H3 TOC and mobile collapsible TOC. `src/scripts/article.ts` updates the active chapter. Markdown rendering and syntax highlighting remain on Astro's existing renderer; no math parser or new content transformation was introduced. Existing math text and formula images are preserved.
 
-- Hero with:
-  - `Personal Knowledge Space`
-  - `Yang Yufei, Information Security`
-  - main Chinese headline
-  - short site description
-  - buttons to blog/about
-  - small glass panel with current focus
-- Three focus cards:
-  - Web Development
-  - Distributed Systems
-  - AI & Algorithms
-- Latest posts, showing up to 3 recent blog entries.
+## Search and preferences
 
-### `about.astro`
+`src/pages/search-index.json.ts` produces `/search-index.json` at build time. It contains the full title, optional display title/subtitle, description, taxonomy, tags, ISO date and original URL for all 14 posts. `src/lib/search.ts` provides case-insensitive matching across whitespace-separated terms.
 
-Personal detail page. Contains:
+`src/scripts/site-search.ts` fetches the index lazily when opening the global dialog. Cmd/Ctrl+K opens it, Escape closes it, and focus returns to the opener. Results are created with text nodes. Loading failure is shown explicitly and reopening retries. Notes has an inline index derived from the same records.
 
-- Name and short profile
-- GitHub avatar loaded from `https://github.com/duolaBmeng673.png`
-- Education panel
-- Focus tags
-- Current writing/learning intent
+The head script applies the theme before paint. `src/scripts/typography.ts` supports Light, Dark and System, listens to OS preference changes in System mode, and preserves size/bold controls. Theme storage uses `duolabmeng673:theme:v2`, with migration from existing explicit light/dark choices in `v1`; new visitors follow System. Storage failures do not prevent rendering.
 
-### Blog Pages
+## Visual system
 
-- `src/pages/blog/index.astro`: full post list.
-- `src/pages/blog/[slug].astro`: static detail route generated from content collection entries.
+`src/styles/global.css` defines a cool paper light palette (#f4f7f2 background, #1d2926 text, #087f76 teal accent, #ba633c warm accent) and deep green-gray dark palette (#12201d background, #edf4ed text, #75d2bd accent, #e0a17d warm accent). Surfaces, borders, code and hover states have separate tokens for each mode.
 
-## Visual System
+Headings use Iowan Old Style / Noto Serif SC / Songti SC / Georgia. Body uses Inter / Noto Sans SC / PingFang SC / system-ui. Code and metadata use SF Mono / ui-monospace / Menlo / Monaco / Consolas. These are local fallback stacks, with no external font requests.
 
-Main stylesheet: `src/styles/global.css`.
+The main container is 1120px, the reading column is 740px, surfaces have at most 8px radius, and motion is limited to small interaction transitions. Breakpoints at 800px and 520px adapt layouts, and the header wraps on phone widths. Focus styles, skip link and reduced-motion support are included.
 
-Current design principles:
+## Verification and content protection
 
-- Dark canvas, not pure decorative noise.
-- Liquid Glass style is reserved for navigation, buttons, hero glass panel, and content cards.
-- Typography should be lighter and calmer than previous versions.
-- Main hero line should not become an oversized heavy billboard.
-- Persona text uses mono-style font and purple color, similar to:
+Run `npm run build` and `git diff --check`. Verify 14 search records, 14 original article routes, linked taxonomy and tag queries, Notes/Timeline views, search shortcuts/results/empty state, theme persistence/System response, TOC and mobile layout.
 
-```text
-Yang Yufei, Information Security
-```
-
-Core visual variables:
-
-```css
---bg: #050509;
---canvas: #0a0a10;
---surface: rgba(255, 255, 255, 0.075);
---surface-solid: rgba(16, 16, 24, 0.78);
---ink: #f5f5f7;
---muted: rgba(245, 245, 247, 0.56);
---violet: #a895ff;
---blue: #8bb8ff;
---green: #8af0cf;
-```
-
-Avoid making the whole page too bright or too noisy. If adding new visual effects, keep article readability first.
-
-## Motion System
-
-Client script: `src/scripts/site-motion.ts`.
-
-It provides three behaviors:
-
-1. Pointer glow
-   - Updates CSS variables:
-
-```css
---pointer-x
---pointer-y
-```
-
-2. Scroll reveal
-   - Elements with `data-reveal` get `.is-visible` when entering viewport.
-
-3. Card tilt
-   - Elements with `data-tilt` receive:
-
-```css
---tilt-x
---tilt-y
---spot-x
---spot-y
-```
-
-Accessibility/performance behavior:
-
-- Disabled when `prefers-reduced-motion: reduce`.
-- Pointer effects disabled unless `(pointer: fine)`.
-- Pointer updates use `requestAnimationFrame`.
-- Tilt is intentionally subtle: around 3 degrees.
-
-When adding new cards, use:
-
-```astro
-<article data-reveal data-tilt>
-  ...
-</article>
-```
-
-For text-only or long-reading areas, prefer only `data-reveal`, not `data-tilt`.
-
-## Deployment
-
-Deployment workflow:
-
-```text
-.github/workflows/deploy.yml
-```
-
-Trigger:
-
-- Push to `main`
-- Manual `workflow_dispatch`
-
-Build job:
-
-```bash
-npm ci
-npm run build
-```
-
-Deploy job:
-
-- Uploads `dist`
-- Uses GitHub Pages deployment action
-
-GitHub Pages source should remain GitHub Actions.
-
-Remote:
-
-```text
-git@github.com:duolaBmeng673/duolabmeng673.github.io.git
-```
-
-Standard release flow:
-
-```bash
-npm run build
-git status --short
-git add .
-git commit -m "Meaningful commit message"
-git push
-```
-
-Then check:
-
-```text
-https://github.com/duolaBmeng673/duolabmeng673.github.io/actions
-https://duolabmeng673.github.io
-```
-
-GitHub Pages can cache for several minutes. If the browser shows stale UI, use a hard refresh.
-
-## Known Notes
-
-- The GitHub Actions logs may show warnings about Node.js 20 deprecation for GitHub-maintained actions. These are not site build failures.
-- Astro preview may require permission to bind a local port in restricted environments.
-- Do not commit `dist`, `.astro`, or `node_modules`.
-- Do not replace the Astro 7 content collection API with the legacy `src/content/config.ts` form. The current project uses `src/content.config.ts`.
-
-## Suggested Next Improvements
-
-- Add RSS feed.
-- Add SEO/Open Graph metadata.
-- Add per-post reading time.
-- Add a projects page if the site becomes more portfolio-oriented.
-- Add a small theme QA checklist with screenshots for desktop/mobile.
+Before/after metadata changes, split each tracked Markdown at the closing front matter delimiter and compare the remaining bytes against the baseline (including trailing blank lines). Also compare original title, description, date and tags. Do not normalize line endings or trim bodies. Ignored nested source archives are not deployed articles and must remain untouched.
