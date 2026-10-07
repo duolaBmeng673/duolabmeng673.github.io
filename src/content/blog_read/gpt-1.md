@@ -1,7 +1,7 @@
 ---
 title: "GPT-1"
 description: "GPT-1 论文笔记，整理无监督预训练与有监督微调结合的语言理解方法。"
-pubDate: 2026-09-08
+pubDate: 2024-07-19
 category: "Research"
 subcategory: "Paper Notes"
 series: "NLP"

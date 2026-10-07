@@ -1,7 +1,7 @@
 ---
 title: "Transformers"
 description: "Transformer 架构论文笔记，整理编码器、解码器与多头注意力机制。"
-pubDate: 2026-09-08
+pubDate: 2024-07-13
 category: "Research"
 subcategory: "Paper Notes"
 series: "NLP"

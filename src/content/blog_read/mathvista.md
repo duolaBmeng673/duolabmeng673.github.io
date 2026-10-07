@@ -1,7 +1,7 @@
 ---
 title: "MathVista"
 description: "MathVista 视觉数学推理基准论文笔记，整理任务类型、数据集与评测设计。"
-pubDate: 2026-09-08
+pubDate: 2024-09-15
 category: "Research"
 subcategory: "Paper Notes"
 series: "Multimodal"

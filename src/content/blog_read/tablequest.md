@@ -1,7 +1,7 @@
 ---
 title: "TableQuest"
 description: "TableQuest 表格理解与推理基准论文笔记，整理任务难度、数据来源与评测结果。"
-pubDate: 2026-09-08
+pubDate: 2025-02-26
 category: "Research"
 subcategory: "Paper Notes"
 series: "LLM & Tables"

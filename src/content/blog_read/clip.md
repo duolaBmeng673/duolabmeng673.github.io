@@ -1,7 +1,7 @@
 ---
 title: "CLIP"
 description: "CLIP 对比语言-图像预训练论文笔记，记录自然语言监督、数据集构建与零样本迁移。"
-pubDate: 2026-09-08
+pubDate: 2024-07-24
 category: "Research"
 subcategory: "Paper Notes"
 series: "Multimodal"

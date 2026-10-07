@@ -1,7 +1,7 @@
 ---
 title: "LLM for Table Processing Survey"
 description: "LLM 表格处理综述笔记，梳理表格类型、任务、数据集与代理式方法。"
-pubDate: 2026-09-08
+pubDate: 2025-02-28
 category: "Research"
 subcategory: "Paper Notes"
 series: "LLM & Tables"

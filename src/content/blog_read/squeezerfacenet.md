@@ -1,7 +1,7 @@
 ---
 title: "SqueezerFaceNet"
 description: "SqueezerFaceNet 轻量人脸识别模型论文笔记，整理网络剪枝与 Taylor 分数方法。"
-pubDate: 2026-09-08
+pubDate: 2024-10-03
 category: "Research"
 subcategory: "Paper Notes"
 series: "Computer Vision"

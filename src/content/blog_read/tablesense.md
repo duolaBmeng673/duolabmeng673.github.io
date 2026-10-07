@@ -1,7 +1,7 @@
 ---
 title: "TableSense"
 description: "TableSense 电子表格表格检测框架论文笔记，记录单元格特征、CNN 与主动学习。"
-pubDate: 2026-09-08
+pubDate: 2025-03-15
 category: "Research"
 subcategory: "Paper Notes"
 series: "Computer Vision"
