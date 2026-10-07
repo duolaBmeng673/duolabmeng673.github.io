@@ -2,26 +2,29 @@ import { matchesQuery, type SearchRecord } from '../lib/search';
 const records: (SearchRecord & { id: string })[] = JSON.parse(document.querySelector('#notes-index')?.textContent ?? '[]');
 const categoryLinks = [...document.querySelectorAll<HTMLAnchorElement>('[data-category-filter]')];
 const viewButtons = [...document.querySelectorAll<HTMLButtonElement>('[data-view-toggle]')];
-const search = document.querySelector<HTMLInputElement>('[data-notes-search]');
+const search = document.querySelector<HTMLInputElement>('[data-search-input]');
 const subcategory = document.querySelector<HTMLSelectElement>('[data-subcategory-filter]');
 const series = document.querySelector<HTMLSelectElement>('[data-series-filter]');
 const empty = document.querySelector<HTMLElement>('[data-archive-empty]');
 const status = document.querySelector<HTMLElement>('[data-result-status]');
 const tagStatus = document.querySelector<HTMLElement>('[data-active-tag]');
+const queryStatus = document.querySelector<HTMLElement>('[data-active-query]');
+const queryLabel = document.querySelector<HTMLElement>('[data-query-label]');
 let category = 'all';
 let view = 'notes';
 let tag = '';
+let query = '';
 const readUrl = () => {
   const params = new URLSearchParams(location.search);
   category = categoryLinks.some((link) => link.dataset.categoryFilter === params.get('category')) ? params.get('category')! : 'all';
   view = params.get('view') === 'timeline' ? 'timeline' : 'notes';
   tag = params.get('tag') ?? '';
-  if (search) search.value = params.get('q') ?? '';
+  query = params.get('q') ?? '';
+  if (search) search.value = query;
   if (subcategory) subcategory.value = params.get('subcategory') ?? '';
   if (series) series.value = params.get('series') ?? '';
 };
 const apply = (writeUrl = true) => {
-  const query = search?.value ?? '';
   const visibleIds = new Set(records.filter((record) =>
     (category === 'all' || record.category === category) &&
     (!subcategory?.value || record.subcategory === subcategory.value) &&
@@ -47,6 +50,8 @@ const apply = (writeUrl = true) => {
   if (empty) empty.hidden = visibleIds.size > 0;
   if (status) status.textContent = `${visibleIds.size} ${visibleIds.size === 1 ? 'note' : 'notes'}`;
   if (tagStatus) { tagStatus.hidden = !tag; tagStatus.textContent = tag ? `Tag: ${tag}` : ''; }
+  if (queryStatus) queryStatus.hidden = !query;
+  if (queryLabel) queryLabel.textContent = query ? `Search: ${query}` : '';
   if (writeUrl) {
     const params = new URLSearchParams();
     if (category !== 'all') params.set('category', category);
@@ -65,11 +70,17 @@ categoryLinks.forEach((link) => link.addEventListener('click', (event) => {
   if (subcategory) subcategory.value = ''; if (series) series.value = ''; apply();
 }));
 viewButtons.forEach((button) => button.addEventListener('click', () => { view = button.dataset.viewToggle ?? 'notes'; apply(); }));
-search?.addEventListener('input', () => apply());
 subcategory?.addEventListener('change', () => { if (series) series.value = ''; apply(); });
 series?.addEventListener('change', () => apply());
 document.querySelector('[data-clear-filters]')?.addEventListener('click', () => {
-  category = 'all'; tag = ''; if (search) search.value = ''; if (subcategory) subcategory.value = ''; if (series) series.value = ''; apply(); search?.focus();
+  category = 'all'; tag = ''; query = '';
+  if (search) { search.value = ''; search.dispatchEvent(new Event('input')); }
+  if (subcategory) subcategory.value = ''; if (series) series.value = ''; apply(); search?.focus();
+});
+document.querySelector('[data-clear-query]')?.addEventListener('click', () => {
+  query = '';
+  if (search) { search.value = ''; search.dispatchEvent(new Event('input')); }
+  apply(); search?.focus();
 });
 window.addEventListener('popstate', () => { readUrl(); apply(false); });
 readUrl(); apply(false);
