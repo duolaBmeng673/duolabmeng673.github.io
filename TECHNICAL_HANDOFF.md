@@ -32,7 +32,7 @@ Current taxonomy:
 - Research → Paper Notes → Multimodal: CLIP, MathVista, MMMU.
 - Research → Paper Notes → Computer Vision: SqueezerFaceNet, TableSense.
 - Research → Paper Notes → LLM & Tables: LLM for Table Processing Survey, SheetCopilot, SpreadsheetLLM, TableQuest.
-- Computer Science → Algorithms → ACM / OJ: Python ACM / OJ 模式：输入与输出, 最少机器覆盖业务需求：状态压缩 DP, 从三维 DP 到单调队列：CI/CD Pipeline Jobs 最小成本问题, 光伏优化器最少安装数量：贪心算法总结, 从频次约束到最优划分.
+- Computer Science → Algorithms → ACM / OJ: Python ACM / OJ 模式：输入与输出, 最少机器覆盖业务需求：状态压缩 DP, 从三维 DP 到单调队列：CI/CD Pipeline Jobs 最小成本问题, 光伏优化器最少安装数量：贪心算法总结, 从频次约束到最优划分, 迷宫最短救援：从 BFS 到状态空间搜索.
 
 The machine coverage note uses `shortTitle: 最少机器覆盖业务需求` and `subtitle: State Compression DP`; its full title remains unchanged.
 
@@ -48,7 +48,7 @@ Article pages use a 740px reading column, metadata, linked taxonomy, original ta
 
 ## Search and preferences
 
-`src/pages/search-index.json.ts` produces `/search-index.json` at build time. It contains the full title, optional display title/subtitle, description, taxonomy, tags, ISO date and original URL for all posts (currently 17). `src/lib/search.ts` provides case-insensitive matching across whitespace-separated terms.
+`src/pages/search-index.json.ts` produces `/search-index.json` at build time. It contains the full title, optional display title/subtitle, description, taxonomy, tags, ISO date and original URL for all posts (currently 18). `src/lib/search.ts` provides case-insensitive matching across whitespace-separated terms.
 
 `src/scripts/site-search.ts` fetches the index lazily from the permanent Header search field, with an anchored result panel. Cmd/Ctrl+K focuses the input; Escape, outside click and leaving the search controls close results. Arrow keys navigate result links, with native Tab/Enter support. Form submission and the all-results link navigate to `/blog/?q=...`, including without JavaScript. Results are created with text nodes and preserve date order, including conditional subtitles. Loading failure is shown inline and subsequent input/focus retries. Notes has an inline index derived from the same records.
 
@@ -64,6 +64,6 @@ The main container is 1120px, the reading column is 740px, surfaces have at most
 
 ## Verification and content protection
 
-Run `npm run build` and `git diff --check`. Verify all search records and article routes (currently 17, including the 14 original routes), linked taxonomy and tag queries, Notes/Timeline views, search shortcuts/results/empty state, theme persistence/System response, TOC and mobile layout.
+Run `npm run build` and `git diff --check`. Verify all search records and article routes (currently 18, including the 14 original routes), linked taxonomy and tag queries, Notes/Timeline views, search shortcuts/results/empty state, theme persistence/System response, TOC and mobile layout.
 
 Before/after metadata changes, split each tracked Markdown at the closing front matter delimiter and compare the remaining bytes against the baseline (including trailing blank lines). Also compare original title, description and tags; validate intentional date changes against the supplied date mapping. Stop and report immediately on any body difference. Do not normalize line endings or trim bodies. Ignored nested source archives are not deployed articles and must remain untouched.
