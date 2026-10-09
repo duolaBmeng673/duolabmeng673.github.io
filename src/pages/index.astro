@@ -12,7 +12,6 @@ const summaries = getCategorySummaries(posts);
       <h1 id="identity-title">duolaBmeng673</h1>
       <p class="identity-name">杨雨飞 / YYF <span>哈尔滨工业大学 · 信息安全</span></p>
       <p class="identity-role">Information Security · AI · Computer Science</p>
-      <p class="identity-lede">研究、代码与学习笔记。<br />记录正在理解的模型、系统和问题。</p>
       <div class="identity-actions"><a class="button primary" href="/blog/">浏览 Notes <span aria-hidden="true">→</span></a><a class="text-link" href="/about/">关于我 ↗</a></div>
     </div>
     <aside class="notebook-index" aria-label="当前笔记主题">
@@ -33,5 +32,5 @@ const summaries = getCategorySummaries(posts);
     <div class="section-heading"><div><p class="eyebrow">Latest entries</p><h2 id="recent-title">Recent notes</h2></div><a class="text-link" href="/blog/?view=timeline">View timeline →</a></div>
     <div class="editorial-list">{posts.slice(0, 5).map((post) => <a class="editorial-row" data-category={post.data.category} href={getPostHref(post)} aria-label={`阅读：${post.data.title}`}><time datetime={post.data.pubDate.toISOString()}>{formatPostDate(post.data.pubDate)}</time><span class="editorial-main"><span class="note-taxonomy">{post.data.category} · {post.data.series}</span><strong>{getPostTitle(post)}</strong>{post.data.subtitle && <em>{post.data.subtitle}</em>}<span class="note-description">{post.data.description}</span></span><span class="row-arrow" aria-hidden="true">↗</span></a>)}</div>
   </section>
-  <section class="home-about"><div><p class="panel-label">The person behind the notes</p><p>我是杨雨飞，信息安全专业学生。用写作检验理解，用代码验证想法。</p></div><div class="home-about-links"><a class="text-link" href="/about/">About →</a><a class="text-link" href={siteConfig.github} target="_blank" rel="noreferrer">GitHub ↗</a></div></section>
+  <div class="home-about-links"><a class="text-link" href="/about/">About →</a><a class="text-link" href={siteConfig.github} target="_blank" rel="noreferrer">GitHub ↗</a></div>
 </BaseLayout>
