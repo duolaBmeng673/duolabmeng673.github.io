@@ -64,7 +64,8 @@ document.querySelectorAll<HTMLElement>('.article-body pre').forEach((pre) => {
 const links = [...document.querySelectorAll<HTMLAnchorElement>('[data-toc-link]')];
 const headings = links.map((link) => document.getElementById(decodeURIComponent(link.hash.slice(1)))).filter((heading): heading is HTMLElement => Boolean(heading));
 const updateCurrent = () => {
-  const current = [...headings].reverse().find((heading) => heading.getBoundingClientRect().top <= 150) ?? headings[0];
+  const visible = headings.filter((heading) => heading.getClientRects().length > 0);
+  const current = [...visible].reverse().find((heading) => heading.getBoundingClientRect().top <= 150) ?? visible[0];
   links.forEach((link) => {
     const active = current?.id === decodeURIComponent(link.hash.slice(1));
     link.classList.toggle('is-current', active);
@@ -72,6 +73,7 @@ const updateCurrent = () => {
   });
 };
 let framePending = false;
+document.addEventListener('study-mode-change', updateCurrent);
 if (headings.length) {
   window.addEventListener('scroll', () => {
     if (framePending) return;

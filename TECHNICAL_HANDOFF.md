@@ -8,9 +8,9 @@ GitHub Actions builds on Node 22 with `npm ci` and `npm run build`, uploads `dis
 
 ## Content contract
 
-Deployable Markdown lives directly in `src/content/blog_read/` and `src/content/blog_huawei_examination/`. The loaders intentionally match `*.{md,mdx}` and exclude the ignored nested source archives. Do not broaden the glob to include duplicate local imports.
+Existing blog Markdown lives directly in `src/content/blog_read/` and `src/content/blog_huawei_examination/`. Those loaders intentionally match `*.{md,mdx}` and exclude the ignored nested source archives. Do not broaden their globs. Study Notes uses a separate recursive `study_notes` collection for `src/content/837考研/**/*.md`, retaining the author's original directories and relative images. Only explicitly `published: true` notes enter public routes and data sources; missing publication state defaults to false.
 
-Both collections share `src/content.config.ts`. Required fields: `title`, `description`, `pubDate`, `tags`, `category`, `subcategory`, `series`. The taxonomy fields have explicit enum schemas. `shortTitle` and `subtitle` are optional visual fields; the full original `title` is used for page metadata and search. Do not render missing fields as blank placeholders.
+The collections share base fields in `src/content.config.ts`: `title`, `description`, `pubDate`, `tags`, `category`, `subcategory`, `series`. The existing blog taxonomy retains its explicit enums; Study Notes uses category/subcategory literals and registered series. `shortTitle` and `subtitle` are optional visual fields; the full original `title` is used for page metadata and search. Do not render missing fields as blank placeholders. Study metadata, publication rules and explicit H2 question mappings are documented in `docs/STUDY_NOTES.md`.
 
 ```yaml
 ---
@@ -33,6 +33,7 @@ Current taxonomy:
 - Research → Paper Notes → Computer Vision: SqueezerFaceNet, TableSense.
 - Research → Paper Notes → LLM & Tables: LLM for Table Processing Survey, SheetCopilot, SpreadsheetLLM, TableQuest.
 - Computer Science → Algorithms → ACM / OJ: Python ACM / OJ 模式：输入与输出, 最少机器覆盖业务需求：状态压缩 DP, 从三维 DP 到单调队列：CI/CD Pipeline Jobs 最小成本问题, 光伏优化器最少安装数量：贪心算法总结, 从频次约束到最优划分, 迷宫最短救援：从 BFS 到状态空间搜索.
+- Study Notes → 考研复习 → HIT 837: 信息安全的基本概念, IPSec协议的组成及工作原理, SSL协议的组成及工作原理, SET 协议体系与关键技术, 信息系统风险评估与控制. These five notes were authorized for publication on 2026-10-24; publication does not imply review completion.
 
 The machine coverage note uses `shortTitle: 最少机器覆盖业务需求` and `subtitle: State Compression DP`; its full title remains unchanged.
 
@@ -42,13 +43,17 @@ The machine coverage note uses `shortTitle: 最少机器覆盖业务需求` and 
 
 Home contains identity, research interests, non-empty category summaries, five recent notes, and About/GitHub links. The avatar appears only on About, using the existing local `public/github-avatar.png`.
 
+`/study-notes/` lists real public series; `/study-notes/837/` groups existing chapters 01, 05 and 06; chapter routes use `/study-notes/837/chapter/{code}/`. Stable `studySlug` IDs generate `/study-notes/837/{slug}/` without exposing original directories. `src/lib/study.ts` centralizes series metadata, publication filtering, chapter grouping and syllabus ordering. Numeric chapter codes order groups; the unique series-wide `order` field orders notes and previous/next links. Global Home/Notes/Timeline/search still sort by descending `pubDate`. The original 18 `/blog/.../` routes use `getBlogPosts()` and retain their IDs and metadata.
+
+`src/components/Article.astro` shares the established article layout between old and study routes. Study pages add a single breadcrumb, syllabus number and real previous/next links. Explicit `questions: [{ id, heading }]` entries reference one existing H2 each; unmatched or duplicate mappings fail validation. `src/scripts/recall.ts` reparents existing rendered nodes without duplicating answers or rendering untrusted strings. Reading is default and remains complete without JavaScript. Recall hides answers and unmarked paragraphs, supports independent/bulk toggles with native buttons, `hidden`, `aria-expanded` and `aria-controls`, and restores full reading on switch back. All 5 notes currently support 37 selected questions; other article types have no recall controls.
+
 The Notes archive offers category/subcategory/series filters, existing tag filtering and Notes/Timeline views. Header search is the sole search input; there is no separate Search navigation item, Notes input or modal. Both views use the same content source. Query state is shareable using `category`, `subcategory`, `series`, `tag`, `q` and `view=timeline` parameters. `src/scripts/notes.ts` reads `q` independently of the input, preserves it across filters/view changes, shows a clearable query label, filters actual rows, hides empty month/year groups and updates counts. Submitting Header search navigates to Notes with the query; typing in Header continues to show global results.
 
 Article pages use a 740px reading column, metadata, linked taxonomy, original tags, sticky desktop H2/H3 TOC and mobile collapsible TOC. `src/scripts/article.ts` updates the active chapter and adds a keyboard-accessible Copy toolbar above each scrolling code block. Copy reads only `code.textContent`, uses the Clipboard API, falls back to local copying, then selects the code with an inline hint if copying fails. Success feedback lasts two seconds. Code uses .95rem desktop / .9rem mobile with 1.75 line height; nested code inherits that size and inline code uses .9em. Astro's existing Sätteri Markdown processor enables its native math feature; a small mdast plugin in `astro.config.mjs` renders `$...$` inline and `$$...$$` display nodes with KaTeX at build time, producing visual HTML and accessible MathML. KaTeX CSS and fonts are bundled locally through BaseLayout, without a CDN or runtime math script. Display formulas scroll horizontally when needed. Strict typography warnings are ignored to support Chinese text; untrusted commands remain disabled, and invalid formula syntax fails the build. Syntax highlighting, fenced code, existing formula images and all Markdown source bytes are preserved.
 
 ## Search and preferences
 
-`src/pages/search-index.json.ts` produces `/search-index.json` at build time. It contains the full title, optional display title/subtitle, description, taxonomy, tags, ISO date and original URL for all posts (currently 18). `src/lib/search.ts` provides case-insensitive matching across whitespace-separated terms.
+`src/pages/search-index.json.ts` produces `/search-index.json` at build time. It contains the full title, optional display title/subtitle, description, taxonomy, tags, ISO date and original URL for all public posts (currently 23: 18 existing + 5 study notes). Study matching also includes subject, chapter, section number and explicit question headings. The existing index does not index full bodies. `src/lib/search.ts` provides case-insensitive matching across whitespace-separated terms. Notes uses collection-prefixed keys to avoid ID collisions across collections.
 
 `src/scripts/site-search.ts` fetches the index lazily from the permanent Header search field, with an anchored result panel. Cmd/Ctrl+K focuses the input; Escape, outside click and leaving the search controls close results. Arrow keys navigate result links, with native Tab/Enter support. Form submission and the all-results link navigate to `/blog/?q=...`, including without JavaScript. Results are created with text nodes and preserve date order, including conditional subtitles. Loading failure is shown inline and subsequent input/focus retries. Notes has an inline index derived from the same records.
 
@@ -64,6 +69,6 @@ The main container is 1120px, the reading column is 740px, surfaces have at most
 
 ## Verification and content protection
 
-Run `npm run build` and `git diff --check`. Verify all search records and article routes (currently 18, including the 14 original routes), linked taxonomy and tag queries, Notes/Timeline views, search shortcuts/results/empty state, theme persistence/System response, TOC and mobile layout.
+Run `npm run build` and `git diff --check`. Verify all 23 public article search records, the 18 unchanged blog routes (including the 14 original routes), 5 study article routes, 3 existing chapter routes and 2 study index routes. Check taxonomy/tag/query filtering and actual visible rows in Notes/Timeline, global search, syllabus prev/next, all recall controls and no-question behavior, themes, TOC and 1440/1024/768/390/320px layouts. There is currently no sitemap or RSS generator; this task does not add one.
 
 Before/after metadata changes, split each tracked Markdown at the closing front matter delimiter and compare the remaining bytes against the baseline (including trailing blank lines). Also compare original title, description and tags; validate intentional date changes against the supplied date mapping. Stop and report immediately on any body difference. Do not normalize line endings or trim bodies. Ignored nested source archives are not deployed articles and must remain untouched.

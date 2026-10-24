@@ -1,0 +1,9 @@
+---
+import Article from '../../../components/Article.astro';
+import { getPublicStudyNotes, getStudySeries } from '../../../lib/study';
+export async function getStaticPaths() {
+  return (await getPublicStudyNotes()).map((post) => ({ params: { series: getStudySeries(post.data.series).slug, slug: post.id }, props: { post } }));
+}
+const { post } = Astro.props;
+---
+<Article post={post} />

@@ -1,16 +1,22 @@
 import { getCollection } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
+import { getPublicStudyNotes, getStudyHref, type StudyPost } from './study';
 
-export type BlogPost = CollectionEntry<'blog_read'> | CollectionEntry<'blog_huawei_examination'>;
+export type BlogPost = CollectionEntry<'blog_read'> | CollectionEntry<'blog_huawei_examination'> | StudyPost;
 
-export const categories = ['Research', 'Computer Science'] as const;
+export const categories = ['Research', 'Computer Science', 'Study Notes'] as const;
 
 export function getPostTitle(post: BlogPost) {
   return post.data.shortTitle ?? post.data.title;
 }
 
 export function getPostHref(post: BlogPost) {
+  if (post.collection === 'study_notes') return getStudyHref(post);
   return `/blog/${post.id}/`;
+}
+
+export function getPostKey(post: BlogPost) {
+  return `${post.collection}:${post.id}`;
 }
 
 export function formatPostDate(date: Date) {
@@ -68,6 +74,7 @@ export function toSearchRecord(post: BlogPost) {
     post.data.category,
     post.data.subcategory,
     post.data.series,
+    ...(post.collection === 'study_notes' ? [post.data.subject, post.data.chapterTitle, post.data.syllabusSection, ...post.data.questions.map((question) => question.heading)] : []),
     ...post.data.tags,
   ].filter(Boolean);
 
@@ -86,7 +93,7 @@ export function toSearchRecord(post: BlogPost) {
   };
 }
 
-export async function getAllPosts(): Promise<BlogPost[]> {
+export async function getBlogPosts() {
   const [readingNotes, examinationNotes] = await Promise.all([
     getCollection('blog_read'),
     getCollection('blog_huawei_examination'),
@@ -95,4 +102,9 @@ export async function getAllPosts(): Promise<BlogPost[]> {
   return [...readingNotes, ...examinationNotes].sort(
     (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
   );
+}
+
+export async function getAllPosts(): Promise<BlogPost[]> {
+  const [blog, study] = await Promise.all([getBlogPosts(), getPublicStudyNotes()]);
+  return [...blog, ...study].sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 }

@@ -16,7 +16,7 @@ const summaries = getCategorySummaries(posts);
     </div>
     <aside class="notebook-index" aria-label="当前笔记主题">
       <p class="panel-label">Inside this notebook</p>
-      {summaries.map((summary) => <a href={`/blog/?category=${encodeURIComponent(summary.category)}`}><span>{summary.subcategories.join(' · ')}</span><span class="index-count">{summary.count} notes</span></a>)}
+      {summaries.map((summary) => <a href={summary.category === 'Study Notes' ? '/study-notes/' : `/blog/?category=${encodeURIComponent(summary.category)}`}><span>{summary.category === 'Study Notes' ? 'Study Notes' : summary.subcategories.join(' · ')}</span><span class="index-count">{summary.count} notes</span></a>)}
       <p>读论文，写代码，回看自己的理解。</p>
     </aside>
   </section>
@@ -26,7 +26,7 @@ const summaries = getCategorySummaries(posts);
   </section>
   <section class="home-section" aria-labelledby="categories-title">
     <div class="section-heading"><div><p class="eyebrow">A map of the archive</p><h2 id="categories-title">Categories</h2></div><a class="text-link" href="/blog/">All notes →</a></div>
-    <div class="category-grid">{summaries.map((summary) => <a class="category-card" data-category={summary.category} href={`/blog/?category=${encodeURIComponent(summary.category)}`}><div><h3>{summary.category}</h3><p class="category-subcategory">{summary.subcategories.join(' · ')}</p><p>{summary.series.join(' · ')}</p></div><span class="category-count">{summary.count} notes <span aria-hidden="true">↗</span></span></a>)}</div>
+    <div class="category-grid">{summaries.map((summary) => <a class="category-card" data-category={summary.category} href={summary.category === 'Study Notes' ? '/study-notes/' : `/blog/?category=${encodeURIComponent(summary.category)}`}><div><h3>{summary.category}</h3><p class="category-subcategory">{summary.subcategories.join(' · ')}</p><p>{summary.category === 'Study Notes' ? '课程笔记、考研复习与系统化学习资料' : summary.series.join(' · ')}</p></div><span class="category-count">{summary.count} notes <span aria-hidden="true">↗</span></span></a>)}</div>
   </section>
   <section class="home-section" aria-labelledby="recent-title">
     <div class="section-heading"><div><p class="eyebrow">Latest entries</p><h2 id="recent-title">Recent notes</h2></div><a class="text-link" href="/blog/?view=timeline">View timeline →</a></div>
