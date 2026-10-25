@@ -14,9 +14,9 @@ const index = study ? ordered.findIndex((note) => note.id === study.id) : -1;
 const previous = ordered[index - 1];
 const next = ordered[index + 1];
 const questions = study?.data.questions.map((question) => {
-  const matches = headings.filter((heading) => heading.depth === 2 && heading.text === question.heading);
-  if (matches.length !== 1) throw new Error(`Question heading must match exactly one H2 in ${post.id}: ${question.heading}`);
-  return { id: question.id, slug: matches[0].slug };
+  const matches = headings.filter((heading) => heading.depth === question.depth && heading.text === question.heading);
+  if (matches.length !== 1) throw new Error(`Question heading must match exactly one H${question.depth} in ${post.id}: ${question.heading}`);
+  return { id: question.id, slug: matches[0].slug, depth: question.depth };
 }) ?? [];
 ---
 <BaseLayout title={post.data.title} description={post.data.description} bodyClass="article-page">

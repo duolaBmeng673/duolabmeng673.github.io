@@ -48,6 +48,7 @@ const studyNotes = defineCollection({
     questions: z.array(z.object({
       id: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
       heading: z.string().trim().min(1),
+      depth: z.number().int().min(2).max(3).default(2),
     })).default([]).superRefine((questions, context) => {
       for (const key of ['id', 'heading'] as const) {
         if (new Set(questions.map((question) => question[key])).size !== questions.length) {
