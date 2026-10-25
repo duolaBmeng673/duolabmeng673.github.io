@@ -9,7 +9,7 @@ subject: "信息安全导论"
 studySlug: "ssl"
 syllabusChapter: "05"
 chapterTitle: "防火墙、入侵检测与安全传输协议"
-order: 502
+order: 504
 published: true
 tags: ["信息安全","SSL","TLS"]
 syllabusSection: "5.c.2"

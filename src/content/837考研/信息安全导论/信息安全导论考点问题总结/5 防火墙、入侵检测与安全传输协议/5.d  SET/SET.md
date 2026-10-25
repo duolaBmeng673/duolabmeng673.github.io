@@ -9,7 +9,7 @@ subject: "信息安全导论"
 studySlug: "set"
 syllabusChapter: "05"
 chapterTitle: "防火墙、入侵检测与安全传输协议"
-order: 503
+order: 505
 published: true
 tags: ["信息安全","SET","数字签名"]
 syllabusSection: "5.d"
