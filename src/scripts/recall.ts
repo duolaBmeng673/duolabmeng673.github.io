@@ -1,78 +1,84 @@
-type Question = { id: string; slug: string; depth: 2 | 3 };
-const data = document.querySelector('#study-questions');
 const body = document.querySelector<HTMLElement>('[data-study-body]');
 const tools = document.querySelector<HTMLElement>('[data-recall-tools]');
-if (data && body && tools) {
-  const questions: Question[] = JSON.parse(data.textContent ?? '[]');
-  const originalHeadings = [...body.children].filter((node): node is HTMLElement => node instanceof HTMLElement && /^H[1-6]$/.test(node.tagName));
-  const contextIds = new Set<string>();
-  for (const question of questions) {
-    let depth: number = question.depth;
-    const index = originalHeadings.findIndex((heading) => heading.id === question.slug);
-    for (let i = index - 1; i >= 0; i--) {
-      const heading = originalHeadings[i];
-      const level = Number(heading.tagName.slice(1));
-      if (level < depth) { contextIds.add(heading.id); depth = level; }
-      if (level === 1) break;
-    }
-  }
-  const entries: { section: HTMLElement; answer: HTMLElement; button: HTMLButtonElement; slug: string }[] = [];
-  const setAnswer = (answer: HTMLElement, button: HTMLButtonElement, visible: boolean) => {
-    answer.hidden = !visible;
-    button.setAttribute('aria-expanded', String(visible));
-    button.textContent = visible ? '收起答案' : '查看答案';
-  };
-  // Reparent rendered nodes, so both modes use the very same answer and Markdown pipeline.
-  for (const question of questions) {
-    const heading = document.getElementById(question.slug);
-    if (!heading || heading.parentElement !== body || heading.tagName !== `H${question.depth}`) continue;
-    const section = document.createElement('section');
-    section.className = 'recall-question';
-    const answer = document.createElement('div');
-    answer.className = 'recall-answer'; answer.id = `answer-${question.id}`;
-    const button = document.createElement('button');
-    button.type = 'button'; button.className = 'recall-toggle'; button.hidden = true;
-    button.setAttribute('aria-controls', answer.id); button.setAttribute('aria-expanded', 'true');
-    button.textContent = '收起答案';
-    body.insertBefore(section, heading);
-    let sibling = heading.nextSibling;
-    section.append(heading, button, answer);
-    while (sibling && !(sibling instanceof HTMLElement && /^H[1-3]$/.test(sibling.tagName) && Number(sibling.tagName.slice(1)) <= question.depth)) {
-      const next = sibling.nextSibling; answer.append(sibling); sibling = next;
-    }
-    button.addEventListener('click', () => setAnswer(answer, button, answer.hidden));
-    entries.push({ section, answer, button, slug: question.slug });
-  }
+if (body && tools) {
+  const nodes = [...body.childNodes];
+  const entries: HTMLDetailsElement[] = [];
+  const stack: { depth: number; content: HTMLElement }[] = [];
+  let headingDepth = 1;
   let mode = 'read';
+  const notify = () => document.dispatchEvent(new Event('study-mode-change'));
+  // Build a hierarchy from rendered nodes. Source Markdown, images, and code stay intact.
+  for (const node of nodes) {
+    const heading = node instanceof HTMLElement && /^H[1-6]$/.test(node.tagName);
+    const label = node instanceof HTMLElement && node.tagName === 'P'
+      && node.children.length === 1 && node.firstElementChild?.tagName === 'STRONG'
+      && node.textContent?.trim() === node.firstElementChild.textContent?.trim();
+    if (heading) headingDepth = Number(node.tagName.slice(1));
+    const depth = heading ? headingDepth : label ? headingDepth + 1 : 0;
+    if (depth > 1) {
+      while (stack.length && stack[stack.length - 1].depth >= depth) stack.pop();
+      const details = document.createElement('details');
+      details.className = 'study-fold'; details.open = true;
+      const summary = document.createElement('summary');
+      if (label) node.classList.add('study-fold-label');
+      summary.append(node);
+      const content = document.createElement('div'); content.className = 'study-fold-content';
+      details.append(summary, content);
+      (stack.at(-1)?.content ?? body).append(details);
+      details.addEventListener('toggle', notify);
+      entries.push(details); stack.push({ depth, content });
+    } else {
+      if (heading) stack.length = 0;
+      (stack.at(-1)?.content ?? body).append(node);
+    }
+  }
   const buttons = [...tools.querySelectorAll<HTMLButtonElement>('[data-study-mode]')];
-  const otherBlocks = [...body.children].filter((node): node is HTMLElement => node instanceof HTMLElement && !entries.some((entry) => entry.section === node));
-  const tocLinks = [...document.querySelectorAll<HTMLAnchorElement>('.article-toc a, .article-toc-mobile a')];
   const changeMode = (next: string) => {
     mode = next;
     body.classList.toggle('is-recalling', mode === 'recall');
-    for (const entry of entries) { entry.button.hidden = mode !== 'recall'; setAnswer(entry.answer, entry.button, mode === 'read'); }
-    for (const node of otherBlocks) node.hidden = mode === 'recall' && !contextIds.has(node.id);
-    for (const link of tocLinks) {
-      const slug = decodeURIComponent(link.hash.slice(1));
-      if (link.parentElement) link.parentElement.hidden = mode === 'recall' && !contextIds.has(slug) && !entries.some((entry) => entry.slug === slug);
-    }
+    entries.forEach((entry) => { entry.open = mode === 'read'; });
     tools.querySelectorAll<HTMLElement>('[data-recall-actions], [data-recall-hint]').forEach((node) => { node.hidden = mode !== 'recall'; });
     buttons.forEach((button) => {
       const active = button.dataset.studyMode === mode;
       button.classList.toggle('is-active', active); button.setAttribute('aria-pressed', String(active));
     });
-    document.dispatchEvent(new Event('study-mode-change'));
+    entries.forEach((entry) => {
+      const summary = entry.querySelector('summary');
+      if (mode === 'read') {
+        summary?.setAttribute('tabindex', '-1');
+        summary?.setAttribute('aria-disabled', 'true');
+      } else {
+        summary?.removeAttribute('tabindex');
+        summary?.removeAttribute('aria-disabled');
+      }
+    });
+    notify();
   };
   buttons.forEach((button) => button.addEventListener('click', () => changeMode(button.dataset.studyMode ?? 'read')));
   tools.querySelectorAll<HTMLButtonElement>('[data-recall-all]').forEach((button) => button.addEventListener('click', () => {
-    entries.forEach((entry) => setAnswer(entry.answer, entry.button, button.dataset.recallAll === 'show'));
+    entries.forEach((entry) => { entry.open = button.dataset.recallAll === 'show'; });
+    notify();
   }));
-  window.addEventListener('hashchange', () => {
-    if (mode !== 'recall') return;
-    const target = document.getElementById(decodeURIComponent(location.hash.slice(1)));
-    const entry = entries.find((entry) => target && entry.answer.contains(target));
-    if (entry) setAnswer(entry.answer, entry.button, true);
-    else if (target && otherBlocks.some((node) => node === target || node.contains(target))) changeMode('read');
-  });
+  const revealTarget = (hash: string) => {
+    let id: string;
+    try { id = decodeURIComponent(hash.slice(1)); } catch { return; }
+    const target = document.getElementById(id);
+    if (!target || !body.contains(target)) return;
+    let ancestor = target.parentElement;
+    while (ancestor && ancestor !== body) {
+      if (ancestor instanceof HTMLDetailsElement) ancestor.open = true;
+      ancestor = ancestor.parentElement;
+    }
+    requestAnimationFrame(() => { target.scrollIntoView({ block: 'start' }); notify(); });
+  };
+  document.querySelectorAll<HTMLAnchorElement>('.article-toc a, .article-toc-mobile a').forEach((link) => link.addEventListener('click', () => revealTarget(link.hash)));
+  window.addEventListener('hashchange', () => revealTarget(location.hash));
+  // Read mode is complete and expanded. The fold controls are only active in recall mode.
+  entries.forEach((entry) => entry.querySelector('summary')?.addEventListener('click', (event) => {
+    if (mode === 'read') event.preventDefault();
+  }));
   if (entries.length) tools.hidden = false;
+  changeMode('read');
+  if (location.hash) revealTarget(location.hash);
 }
+export {};

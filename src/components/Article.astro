@@ -9,15 +9,16 @@ const { Content, headings } = await render(post);
 const sections = headings.filter((heading) => heading.depth >= 2 && heading.depth <= 3);
 const study = post.collection === 'study_notes' ? post : undefined;
 const info = study ? getStudySeries(study.data.series) : undefined;
-const ordered = study ? (await getPublicStudyNotes()).filter((note) => note.data.series === study.data.series) : [];
+const ordered = study ? (await getPublicStudyNotes()).filter((note) => note.data.series === study.data.series && note.data.subject === study.data.subject) : [];
 const index = study ? ordered.findIndex((note) => note.id === study.id) : -1;
 const previous = ordered[index - 1];
 const next = ordered[index + 1];
-const questions = study?.data.questions.map((question) => {
+// Preserve validation of legacy question metadata used by search.
+for (const question of study?.data.questions ?? []) {
   const matches = headings.filter((heading) => heading.depth === question.depth && heading.text === question.heading);
   if (matches.length !== 1) throw new Error(`Question heading must match exactly one H${question.depth} in ${post.id}: ${question.heading}`);
-  return { id: question.id, slug: matches[0].slug, depth: question.depth };
-}) ?? [];
+}
+const canRecall = Boolean(study && headings.some((heading) => heading.depth >= 2));
 ---
 <BaseLayout title={post.data.title} description={post.data.description} bodyClass="article-page">
   <article class:list={['article', { 'has-toc': sections.length > 0 }]}>
@@ -25,17 +26,17 @@ const questions = study?.data.questions.map((question) => {
     <div class="article-layout">
       <div class="article-main">
         <header class="article-header">
-          {study && info ? <nav class="article-taxonomy" aria-label="学习笔记路径"><a href="/study-notes/">Study Notes</a><span aria-hidden="true">/</span><a href={`/study-notes/${info.slug}/`}>{study.data.series}</a><span aria-hidden="true">/</span><a href={getChapterHref(study)}>{study.data.syllabusChapter} {study.data.chapterTitle}</a></nav> : <nav class="article-taxonomy" aria-label="文章分类"><a href={`/blog/?category=${encodeURIComponent(post.data.category)}`}>{post.data.category}</a><span aria-hidden="true">·</span><a href={`/blog/?category=${encodeURIComponent(post.data.category)}&subcategory=${encodeURIComponent(post.data.subcategory)}`}>{post.data.subcategory}</a><span aria-hidden="true">·</span><a href={`/blog/?series=${encodeURIComponent(post.data.series)}`}>{post.data.series}</a></nav>}
+          {study && info ? <nav class="article-taxonomy" aria-label="学习笔记路径"><a href="/study-notes/">Study Notes</a><span aria-hidden="true">/</span><a href={`/study-notes/${info.slug}/`}>{study.data.series}</a><span aria-hidden="true">/</span><span>{study.data.subject}</span><span aria-hidden="true">/</span><a href={getChapterHref(study)}>{study.data.syllabusChapter} {study.data.chapterTitle}</a></nav> : <nav class="article-taxonomy" aria-label="文章分类"><a href={`/blog/?category=${encodeURIComponent(post.data.category)}`}>{post.data.category}</a><span aria-hidden="true">·</span><a href={`/blog/?category=${encodeURIComponent(post.data.category)}&subcategory=${encodeURIComponent(post.data.subcategory)}`}>{post.data.subcategory}</a><span aria-hidden="true">·</span><a href={`/blog/?series=${encodeURIComponent(post.data.series)}`}>{post.data.series}</a></nav>}
           <h1 class:list={{ 'title-long': getPostTitle(post).length > 26 }}>{getPostTitle(post)}</h1>
           {post.data.subtitle && <p class="article-subtitle">{post.data.subtitle}</p>}
           <p class="article-description">{post.data.description}</p>
           <div class="article-meta"><time datetime={post.data.pubDate.toISOString()}>{formatPostDate(post.data.pubDate)}</time><span aria-hidden="true">·</span><span>约 {getReadingTime(post)} 分钟阅读</span>{study?.data.syllabusSection && <><span aria-hidden="true">·</span><span>考纲 {study.data.syllabusSection}</span></>}</div>
           <div class="tag-list">{post.data.tags.map((tag) => <a href={`/blog/?tag=${encodeURIComponent(tag)}`}>{tag}</a>)}</div>
         </header>
-        {questions.length > 0 && <div class="recall-tools" data-recall-tools hidden>
+        {canRecall && <div class="recall-tools" data-recall-tools hidden>
           <div class="view-switch" role="group" aria-label="阅读模式"><button type="button" class="view-button is-active" data-study-mode="read" aria-pressed="true">阅读模式</button><button type="button" class="view-button" data-study-mode="recall" aria-pressed="false">背诵模式</button></div>
-          <div data-recall-actions hidden><button type="button" class="view-button" data-recall-all="show">展开全部答案</button><button type="button" class="view-button" data-recall-all="hide">收起全部答案</button></div>
-          <p data-recall-hint hidden>仅显示已标记的问题；答案直接取自原文。未标记段落请切回阅读模式查看。</p>
+          <div data-recall-actions hidden><button type="button" class="view-button" data-recall-all="show">展开全部内容</button><button type="button" class="view-button" data-recall-all="hide">收起全部内容</button></div>
+          <p data-recall-hint hidden>点击标题独立展开或收起；各级标题与加粗小标题保留原文层次，可同时展开多个内容。</p>
         </div>}
         {sections.length > 0 && <details class="article-toc-mobile"><summary>Contents <span aria-hidden="true">⌄</span></summary><nav aria-label="移动端文章目录"><ol>{sections.map((heading) => <li class={`toc-level-${heading.depth}`}><a href={`#${heading.slug}`}>{heading.text}</a></li>)}</ol></nav></details>}
         <div class="article-body" data-study-body={study ? '' : undefined}><Content /></div>
@@ -45,6 +46,5 @@ const questions = study?.data.questions.map((question) => {
       {sections.length > 0 && <aside class="article-toc" aria-label="文章章节"><p class="panel-label">Contents</p><nav><ol>{sections.map((heading) => <li class={`toc-level-${heading.depth}`}><a data-toc-link href={`#${heading.slug}`}>{heading.text}</a></li>)}</ol></nav></aside>}
     </div>
   </article>
-  {questions.length > 0 && <script is:inline type="application/json" id="study-questions" set:html={JSON.stringify(questions).replace(/</g, '\\u003c')} />}
   <script>import '../scripts/article'; import '../scripts/recall';</script>
 </BaseLayout>

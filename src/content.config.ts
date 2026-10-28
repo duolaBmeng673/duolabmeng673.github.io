@@ -38,7 +38,7 @@ const studyNotes = defineCollection({
     category: z.literal('Study Notes'),
     subcategory: z.literal('考研复习'),
     series: z.enum(['HIT 837']),
-    subject: z.string().trim().min(1),
+    subject: z.enum(['信息安全导论', '网络安全基础']),
     studySlug: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
     syllabusChapter: z.string().regex(/^\d{2}$/),
     chapterTitle: z.string().trim().min(1),

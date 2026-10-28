@@ -61,6 +61,18 @@ document.querySelectorAll<HTMLElement>('.article-body pre').forEach((pre) => {
   tools.append(language, feedback, button);
   wrapper.insertBefore(tools, pre);
 });
+document.querySelectorAll<HTMLImageElement>('.article-body img').forEach((image) => {
+  const src = image.getAttribute('src');
+  if (!src?.endsWith('.svg') || image.closest('a')) return;
+  const link = document.createElement('a');
+  link.href = src; link.target = '_blank'; link.rel = 'noopener';
+  link.className = 'article-svg-link';
+  link.title = '在新标签页查看 SVG 原图';
+  image.replaceWith(link); link.append(image);
+  const hint = document.createElement('span');
+  hint.className = 'svg-hint'; hint.textContent = '查看 SVG 原图 ↗';
+  link.append(hint);
+});
 const links = [...document.querySelectorAll<HTMLAnchorElement>('[data-toc-link]')];
 const headings = links.map((link) => document.getElementById(decodeURIComponent(link.hash.slice(1)))).filter((heading): heading is HTMLElement => Boolean(heading));
 const updateCurrent = () => {

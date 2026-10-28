@@ -9,6 +9,18 @@ export const studySeries = {
   },
 } as const;
 
+export const studyModules = {
+  信息安全导论: { slug: 'information-security', title: '信息安全导论' },
+  网络安全基础: { slug: 'network-security', title: '网络安全基础' },
+} as const;
+
+// Keep all published information-security chapter URLs unchanged.
+export function getChapterKey(post: StudyPost) {
+  return post.data.subject === '信息安全导论'
+    ? post.data.syllabusChapter
+    : `${studyModules[post.data.subject].slug}-${post.data.syllabusChapter}`;
+}
+
 export function getStudySeries(series: string) {
   const info = studySeries[series as keyof typeof studySeries];
   if (!info) throw new Error(`Study series is not registered: ${series}`);
@@ -20,7 +32,7 @@ export function getStudyHref(post: StudyPost) {
 }
 
 export function getChapterHref(post: StudyPost) {
-  return `/study-notes/${getStudySeries(post.data.series).slug}/chapter/${post.data.syllabusChapter}/`;
+  return `/study-notes/${getStudySeries(post.data.series).slug}/chapter/${getChapterKey(post)}/`;
 }
 
 export async function getPublicStudyNotes() {
@@ -29,21 +41,22 @@ export async function getPublicStudyNotes() {
   const orders = new Set<string>();
   for (const post of posts) {
     const route = getStudyHref(post);
-    const order = `${post.data.series}:${post.data.order}`;
+    const order = `${post.data.series}:${post.data.subject}:${post.data.order}`;
     if (routes.has(route) || orders.has(order)) throw new Error(`Duplicate study route/order: ${post.id}`);
     routes.add(route); orders.add(order);
   }
-  return posts.sort((a, b) => a.data.order - b.data.order);
+  return posts.sort((a, b) => Object.keys(studyModules).indexOf(a.data.subject) - Object.keys(studyModules).indexOf(b.data.subject) || a.data.order - b.data.order);
 }
 
 export function getStudyChapters(posts: StudyPost[]) {
-  const chapters = new Map<string, { code: string; title: string; posts: StudyPost[] }>();
+  const chapters = new Map<string, { key: string; subject: StudyPost['data']['subject']; code: string; title: string; posts: StudyPost[] }>();
   for (const post of [...posts].sort((a, b) => a.data.order - b.data.order)) {
     const code = post.data.syllabusChapter;
-    const existing = chapters.get(code);
+    const key = getChapterKey(post);
+    const existing = chapters.get(key);
     if (existing && existing.title !== post.data.chapterTitle) throw new Error(`Conflicting chapter title: ${code}`);
-    if (!existing) chapters.set(code, { code, title: post.data.chapterTitle, posts: [] });
-    chapters.get(code)!.posts.push(post);
+    if (!existing) chapters.set(key, { key, subject: post.data.subject, code, title: post.data.chapterTitle, posts: [] });
+    chapters.get(key)!.posts.push(post);
   }
-  return [...chapters.values()].sort((a, b) => Number(a.code) - Number(b.code));
+  return [...chapters.values()].sort((a, b) => Object.keys(studyModules).indexOf(a.subject) - Object.keys(studyModules).indexOf(b.subject) || Number(a.code) - Number(b.code));
 }
