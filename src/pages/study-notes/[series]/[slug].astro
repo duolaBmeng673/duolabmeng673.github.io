@@ -1,9 +1,15 @@
 ---
 import Article from '../../../components/Article.astro';
-import { getPublicStudyNotes, getStudySeries } from '../../../lib/study';
+import StudyModule from '../../../components/StudyModule.astro';
+import { getPublicStudyNotes, getStudySeries, getStudyModuleSummaries, type StudyPost, type StudyModuleSummary } from '../../../lib/study';
+interface Props { post: StudyPost | null; module: StudyModuleSummary | null }
 export async function getStaticPaths() {
-  return (await getPublicStudyNotes()).map((post) => ({ params: { series: getStudySeries(post.data.series).slug, slug: post.id }, props: { post } }));
+  const posts = await getPublicStudyNotes();
+  return [
+    ...posts.map((post) => ({ params: { series: getStudySeries(post.data.series).slug, slug: post.id }, props: { post, module: null } })),
+    ...getStudyModuleSummaries(posts).map((module) => ({ params: { series: getStudySeries(module.series).slug, slug: module.slug }, props: { post: null, module } })),
+  ];
 }
-const { post } = Astro.props;
+const { post, module } = Astro.props;
 ---
-<Article post={post} />
+{module ? <StudyModule module={module} /> : post && <Article post={post} />}

@@ -3,7 +3,7 @@ import { render } from 'astro:content';
 import { siteConfig } from '../config';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getPostTitle, taxonomyLabel, formatPostDate, type BlogPost } from '../lib/blog';
-import { getChapterHref, getPublicStudyNotes, getStudyHref, getStudySeries } from '../lib/study';
+import { getChapterHref, getPublicStudyNotes, getStudyHref, getStudySeries, getStudyModuleHref, studyModules } from '../lib/study';
 interface Props { post: BlogPost }
 const { post } = Astro.props;
 const { Content, headings } = await render(post);
@@ -23,11 +23,11 @@ const canRecall = Boolean(study && headings.some((heading) => heading.depth >= 2
 ---
 <BaseLayout title={post.data.title} description={post.data.description} bodyClass="article-page" type="article" published={post.data.pubDate} updated={post.data.updatedDate}>
   <article class:list={['article', { 'has-toc': sections.length > 0 }]}>
-    <a class="back-link" href={study && info ? `/study-notes/${info.slug}/` : '/blog/'}>{study ? '← 返回系列目录' : '← 返回技术笔记'}</a>
+    <a class="back-link" href={study ? getStudyModuleHref(study) : '/blog/'}>{study ? '← 返回模块目录' : '← 返回技术笔记'}</a>
     <div class="article-layout">
       <div class="article-main">
         <header class="article-header">
-          {study && info ? <nav class="article-taxonomy" aria-label="学习笔记路径"><a href="/study-notes/">学习笔记</a><span aria-hidden="true">/</span><a href={`/study-notes/${info.slug}/`}>{study.data.series}</a><span aria-hidden="true">/</span><span>{study.data.subject}</span><span aria-hidden="true">/</span><a href={getChapterHref(study)}>{study.data.syllabusChapter} {study.data.chapterTitle}</a></nav> : <nav class="article-taxonomy" aria-label="文章分类"><a href={`/blog/?category=${encodeURIComponent(post.data.category)}`}>{taxonomyLabel(post.data.category)}</a><span aria-hidden="true">·</span><a href={`/blog/?category=${encodeURIComponent(post.data.category)}&subcategory=${encodeURIComponent(post.data.subcategory)}`}>{taxonomyLabel(post.data.subcategory)}</a><span aria-hidden="true">·</span><a href={`/blog/?series=${encodeURIComponent(post.data.series)}`}>{taxonomyLabel(post.data.series)}</a></nav>}
+          {study && info ? <nav class="article-taxonomy" aria-label="学习笔记路径"><a href="/study-notes/">学习笔记</a><span aria-hidden="true">/</span><a href={`/study-notes/${info.slug}/`}>{study.data.series}</a><span aria-hidden="true">/</span><a href={getStudyModuleHref(study)}>{studyModules[study.data.subject].title}</a><span aria-hidden="true">/</span><a href={getChapterHref(study)}>{study.data.syllabusChapter} {study.data.chapterTitle}</a></nav> : <nav class="article-taxonomy" aria-label="文章分类"><a href={`/blog/?category=${encodeURIComponent(post.data.category)}`}>{taxonomyLabel(post.data.category)}</a><span aria-hidden="true">·</span><a href={`/blog/?category=${encodeURIComponent(post.data.category)}&subcategory=${encodeURIComponent(post.data.subcategory)}`}>{taxonomyLabel(post.data.subcategory)}</a><span aria-hidden="true">·</span><a href={`/blog/?series=${encodeURIComponent(post.data.series)}`}>{taxonomyLabel(post.data.series)}</a></nav>}
           <h1 class:list={{ 'title-long': getPostTitle(post).length > 26 }}>{getPostTitle(post)}</h1>
           {post.data.subtitle && <p class="article-subtitle">{post.data.subtitle}</p>}
           <p class="article-description">{post.data.description}</p>
@@ -42,7 +42,7 @@ const canRecall = Boolean(study && headings.some((heading) => heading.depth >= 2
         {sections.length > 0 && <details class="article-toc-mobile"><summary>目录 <span aria-hidden="true">⌄</span></summary><nav aria-label="移动端文章目录"><ol>{sections.map((heading) => <li class={`toc-level-${heading.depth}`}><a href={`#${heading.slug}`}>{heading.text}</a></li>)}</ol></nav></details>}
         <div class="article-body" data-study-body={study ? '' : undefined}><Content /></div>
         {study && <nav class="study-pagination" aria-label="按考纲顺序浏览">{previous ? <a href={getStudyHref(previous)} rel="prev"><small>← 上一个知识点</small><span>{previous.data.title}</span></a> : <span />}{next ? <a href={getStudyHref(next)} rel="next"><small>下一个知识点 →</small><span>{next.data.title}</span></a> : <span />}</nav>}
-        <footer class="article-end"><a href={`${siteConfig.repository}/issues/new?${new URLSearchParams({ title: `笔记勘误：${post.data.title}`, body: `文章：${new URL(Astro.url.pathname, Astro.site).href}\n\n问题与建议：` })}`} target="_blank" rel="noreferrer">发现错误？反馈勘误 ↗</a><a href={study && info ? `/study-notes/${info.slug}/` : '/blog/'}>{study ? '返回系列目录 →' : '返回技术笔记 →'}</a></footer>
+        <footer class="article-end"><a href={`${siteConfig.repository}/issues/new?${new URLSearchParams({ title: `笔记勘误：${post.data.title}`, body: `文章：${new URL(Astro.url.pathname, Astro.site).href}\n\n问题与建议：` })}`} target="_blank" rel="noreferrer">发现错误？反馈勘误 ↗</a><a href={study ? getStudyModuleHref(study) : '/blog/'}>{study ? '返回模块目录 →' : '返回技术笔记 →'}</a></footer>
       </div>
       {sections.length > 0 && <aside class="article-toc" aria-label="文章章节"><p class="panel-label">目录</p><nav><ol>{sections.map((heading) => <li class={`toc-level-${heading.depth}`}><a data-toc-link href={`#${heading.slug}`}>{heading.text}</a></li>)}</ol></nav></aside>}
     </div>

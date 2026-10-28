@@ -10,8 +10,8 @@ export const studySeries = {
 } as const;
 
 export const studyModules = {
-  信息安全导论: { slug: 'information-security', title: '信息安全导论' },
-  网络安全基础: { slug: 'network-security', title: '网络安全基础' },
+  信息安全导论: { slug: 'information-security', title: '信息安全', description: '基本概念、病毒、防火墙、入侵检测、安全传输协议与风险管理。' },
+  网络安全基础: { slug: 'network-security', title: '网络安全', description: '网络协议缺陷、拒绝服务、内存漏洞与 Web 攻击技术。' },
 } as const;
 
 // Keep all published information-security chapter URLs unchanged.
@@ -35,11 +35,28 @@ export function getChapterHref(post: StudyPost) {
   return `/study-notes/${getStudySeries(post.data.series).slug}/chapter/${getChapterKey(post)}/`;
 }
 
+export function getStudyModuleHref(post: StudyPost) {
+  return `/study-notes/${getStudySeries(post.data.series).slug}/${studyModules[post.data.subject].slug}/`;
+}
+
+export function getStudyModuleSummaries(posts: StudyPost[]) {
+  return Object.entries(studySeries).flatMap(([series, info]) =>
+    Object.entries(studyModules).flatMap(([subject, module]) => {
+      const notes = posts.filter((post) => post.data.series === series && post.data.subject === subject)
+        .sort((a, b) => a.data.order - b.data.order);
+      return notes.length ? [{ ...module, series, seriesTitle: info.title, subject, posts: notes, count: notes.length, href: getStudyModuleHref(notes[0]) }] : [];
+    }),
+  );
+}
+
+export type StudyModuleSummary = ReturnType<typeof getStudyModuleSummaries>[number];
+
 export async function getPublicStudyNotes() {
   const posts = await getCollection('study_notes', ({ data }) => data.published && !data.draft && !data.publicationHoldReason);
   const routes = new Set<string>();
   const orders = new Set<string>();
   for (const post of posts) {
+    if (Object.values(studyModules).some((module) => module.slug === post.id)) throw new Error(`Study slug reserved for module: ${post.id}`);
     const route = getStudyHref(post);
     const order = `${post.data.series}:${post.data.subject}:${post.data.order}`;
     if (routes.has(route) || orders.has(order)) throw new Error(`Duplicate study route/order: ${post.id}`);

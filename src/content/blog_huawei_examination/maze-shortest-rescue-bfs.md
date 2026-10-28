@@ -1,6 +1,4 @@
 ---
-draft: true
-publicationHoldReason: "题目公开来源与许可尚未核实，保留个人解题记录，暂不公开正文。"
 title: "迷宫最短救援：从 BFS 到状态空间搜索"
 description: "将持剑状态加入 BFS，预处理怪物危险区域，区分怪物格子与相邻格子的通行规则，求出迷宫救援的最少移动次数。"
 pubDate: 2026-10-09

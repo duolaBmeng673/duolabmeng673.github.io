@@ -38,16 +38,16 @@ npm run preview
 
 提供亮色／暗色／跟随系统主题、字号与加粗设置、中文全文搜索、列表／时间线筛选、目录、代码复制、KaTeX 公式、SVG 插图和按标题折叠背诵。
 
-技术归档默认展示常规笔记；搜索与显式分类／标签／系列筛选覆盖全部公开文章。课程目录与上下篇按课程 `order` 排序；普通列表与时间线按发布日期倒序，搜索列表按相关度排序。
+学习入口直接区分[信息安全](https://duolabmeng673.github.io/study-notes/837/information-security/)与[网络安全](https://duolabmeng673.github.io/study-notes/837/network-security/)，旧 837 地址保留为模块选择页。技术归档默认展示常规笔记；搜索与显式分类／标签／系列筛选覆盖全部公开文章。课程目录与上下篇按课程 `order` 排序；普通列表与时间线按发布日期倒序，搜索列表按相关度排序。
 
 ## 内容维护与公开边界
 
 新增学习笔记请参阅 [维护说明](docs/STUDY_NOTES.md)。学习笔记必须显式设置 `published: true`，且不得为 `draft` 或带有 `publicationHoldReason`，才进入网站。常规笔记同样尊重后两个字段。
 
-公开来源尚未核实的考试题解暂缓展示正文，保留旧 URL 的提示页，不进入搜索、RSS 或 sitemap。**这些字段只控制网站构建，不会隐藏 Git 仓库里的源文件或历史。** 不要提交私人资料、凭据或不应公开的材料。
+当前六篇算法／I/O 笔记均按作者要求公开。若未来确有内容需要暂缓公开，可使用草稿／hold 字段；带 hold 的历史题解保留提示页并排除搜索、RSS 与 sitemap。**这些字段只控制网站构建，不会隐藏 Git 仓库里的源文件或历史。** 不要提交私人资料、凭据或不应公开的材料。
 
 不随意改写文章实质内容或调整旧日期、URL、tags。必要的标题层级、错字、内部链接和元数据修复应保持最小范围；涉及技术结论的改动须有明确依据并记录。
 
-[技术交接](TECHNICAL_HANDOFF.md) · [本轮审计与待确认事项](docs/BLOG_AUDIT.md)
+[技术交接](TECHNICAL_HANDOFF.md) · [定向优化记录](docs/REFINEMENT.md) · [此前审计](docs/BLOG_AUDIT.md)
 
 发现错误可使用文章末尾的勘误入口，或在[项目 Issues](https://github.com/duolaBmeng673/duolabmeng673.github.io/issues)中附上文章链接与问题说明。
