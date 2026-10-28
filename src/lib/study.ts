@@ -36,7 +36,7 @@ export function getChapterHref(post: StudyPost) {
 }
 
 export async function getPublicStudyNotes() {
-  const posts = await getCollection('study_notes', ({ data }) => data.published);
+  const posts = await getCollection('study_notes', ({ data }) => data.published && !data.draft && !data.publicationHoldReason);
   const routes = new Set<string>();
   const orders = new Set<string>();
   for (const post of posts) {

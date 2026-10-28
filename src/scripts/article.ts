@@ -33,11 +33,11 @@ document.querySelectorAll<HTMLElement>('.article-body pre').forEach((pre) => {
   tools.className = 'article-code-tools';
   const language = document.createElement('span');
   language.className = 'code-language';
-  language.textContent = pre.dataset.language ?? [...code.classList].find((name) => name.startsWith('language-'))?.slice(9) ?? 'Code';
+  language.textContent = pre.dataset.language ?? [...code.classList].find((name) => name.startsWith('language-'))?.slice(9) ?? '代码';
   const button = document.createElement('button');
   button.type = 'button';
   button.className = 'code-copy';
-  button.textContent = 'Copy';
+  button.textContent = '复制';
   const feedback = document.createElement('span');
   feedback.className = 'code-copy-feedback';
   feedback.setAttribute('aria-live', 'polite');
@@ -47,9 +47,9 @@ document.querySelectorAll<HTMLElement>('.article-body pre').forEach((pre) => {
     if (await copyText(code.textContent ?? '')) {
       button.textContent = '已复制';
       feedback.textContent = '代码已复制';
-      reset = setTimeout(() => { button.textContent = 'Copy'; feedback.textContent = ''; }, 2000);
+      reset = setTimeout(() => { button.textContent = '复制'; feedback.textContent = ''; }, 2000);
     } else {
-      button.textContent = 'Copy';
+      button.textContent = '复制';
       const range = document.createRange();
       range.selectNodeContents(code);
       const selection = window.getSelection();

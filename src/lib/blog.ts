@@ -23,11 +23,9 @@ export function formatPostDate(date: Date) {
   return date.toLocaleDateString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit', timeZone: 'UTC' });
 }
 
-export function getReadingTime(post: BlogPost) {
-  const body = typeof post.body === 'string' ? post.body : '';
-  const characters = body.replace(/\s+/g, '').length;
-  return Math.max(1, Math.ceil(characters / 500));
-}
+export const categoryLabels: Record<string, string> = { Research: '论文笔记', 'Computer Science': '技术笔记', 'Study Notes': '学习笔记' };
+export const taxonomyLabels: Record<string, string> = { ...categoryLabels, 'Paper Notes': '论文阅读', Algorithms: '算法', NLP: '自然语言处理', Multimodal: '多模态', 'Computer Vision': '计算机视觉', 'LLM & Tables': '大模型与表格' };
+export const taxonomyLabel = (value: string) => taxonomyLabels[value] ?? value;
 
 export function getCategorySummaries(posts: BlogPost[]) {
   return categories
@@ -59,13 +57,14 @@ export function getTimeline(posts: BlogPost[]) {
         .sort(([a], [b]) => b - a)
         .map(([month, monthPosts]) => ({
           month,
-          label: new Date(year, month, 1).toLocaleDateString('en-US', { month: 'long' }),
+          label: `${month + 1} 月`,
           posts: monthPosts,
         })),
     }));
 }
 
-export function toSearchRecord(post: BlogPost) {
+export function toSearchRecord(post: BlogPost, includeBody = true) {
+  const body = includeBody ? (post.body ?? '').replace(/<!--[^]*?-->/g, ' ').replace(/<[^>]+>/g, ' ').replace(/!\[([^\]]*)\]\([^)]*\)/g, '$1').replace(/\[([^\]]+)\]\([^)]*\)/g, '$1').replace(/[`#*_~|>]/g, ' ').replace(/\s+/g, ' ').trim() : '';
   const fields = [
     post.data.title,
     post.data.shortTitle,
@@ -76,6 +75,7 @@ export function toSearchRecord(post: BlogPost) {
     post.data.series,
     ...(post.collection === 'study_notes' ? [post.data.subject, post.data.chapterTitle, post.data.syllabusSection, ...post.data.questions.map((question) => question.heading)] : []),
     ...post.data.tags,
+    ...[post.data.category, post.data.subcategory, post.data.series].map(taxonomyLabel),
   ].filter(Boolean);
 
   return {
@@ -89,14 +89,15 @@ export function toSearchRecord(post: BlogPost) {
     tags: post.data.tags,
     date: post.data.pubDate.toISOString().slice(0, 10),
     href: getPostHref(post),
+    body,
     searchText: fields.join(' ').toLocaleLowerCase(),
   };
 }
 
 export async function getBlogPosts() {
   const [readingNotes, examinationNotes] = await Promise.all([
-    getCollection('blog_read'),
-    getCollection('blog_huawei_examination'),
+    getCollection('blog_read', ({ data }) => !data.draft && !data.publicationHoldReason),
+    getCollection('blog_huawei_examination', ({ data }) => !data.draft && !data.publicationHoldReason),
   ]);
 
   return [...readingNotes, ...examinationNotes].sort(

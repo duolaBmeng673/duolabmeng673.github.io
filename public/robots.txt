@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://duolabmeng673.github.io/sitemap.xml

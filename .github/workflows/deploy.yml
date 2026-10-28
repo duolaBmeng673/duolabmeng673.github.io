@@ -31,6 +31,8 @@ jobs:
         run: npm run build
         env:
           PUBLIC_BUILD_SHA: ${{ github.sha }}
+      - name: Test
+        run: npm test
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:

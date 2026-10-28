@@ -1,4 +1,6 @@
 ---
+draft: true
+publicationHoldReason: "题目公开来源与许可尚未核实，保留个人解题记录，暂不公开正文。"
 title: "从三维 DP 到单调队列：CI/CD Pipeline Jobs 最小成本问题"
 description: "从执行与跳过的三维 DP 出发，将连续跳过限制转化为选中位置的间距约束，再用单调队列把滑动窗口最小值转移优化到 O(n × t)。"
 pubDate: 2026-10-07

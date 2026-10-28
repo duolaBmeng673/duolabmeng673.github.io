@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#f4f7f2"/>
+  <path d="M82 92v446" stroke="#087f76" stroke-width="7"/>
+  <circle cx="1100" cy="110" r="12" fill="#ba633c"/>
+  <text x="128" y="200" fill="#05655f" font-family="system-ui,sans-serif" font-size="24" letter-spacing="3">信息安全 · AI · 计算机科学</text>
+  <text x="124" y="323" fill="#1d2926" font-family="Georgia,serif" font-size="78">duolaBmeng673</text>
+  <path d="M128 378h960" stroke="#d5dfd8" stroke-width="2"/>
+  <text x="128" y="446" fill="#42534d" font-family="system-ui,sans-serif" font-size="30">论文阅读 · 技术笔记 · 系统化学习</text>
+  <text x="128" y="520" fill="#71807a" font-family="monospace" font-size="22">duolabmeng673.github.io</text>
+</svg>

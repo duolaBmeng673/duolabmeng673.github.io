@@ -1,10 +1,13 @@
 ---
 import Article from '../../components/Article.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
 import { getBlogPosts } from '../../lib/blog';
 export async function getStaticPaths() {
   const posts = await getBlogPosts();
-  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+  const held = await getCollection('blog_huawei_examination', ({ data }) => Boolean(data.publicationHoldReason));
+  return [...posts, ...held].map((post) => ({ params: { slug: post.id }, props: { post } }));
 }
 const { post } = Astro.props;
 ---
-<Article post={post} />
+{post.data.publicationHoldReason ? <BaseLayout title="笔记暂未公开" noindex><header class="page-intro"><h1>笔记暂未公开</h1><p>这篇笔记的题目来源及公开条件正在核实，正文暂不展示。</p><p><a class="text-link" href="/blog/">返回技术笔记 →</a></p></header></BaseLayout> : <Article post={post} />}

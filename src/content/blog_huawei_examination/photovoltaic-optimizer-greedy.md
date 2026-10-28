@@ -1,4 +1,6 @@
 ---
+draft: true
+publicationHoldReason: "题目公开来源与许可尚未核实，保留个人解题记录，暂不公开正文。"
 title: "光伏优化器最少安装数量：贪心算法总结"
 description: "从左向右处理相邻覆盖问题，证明优先右侧安装的贪心策略，并比较指针状态压缩与显式覆盖数组两种 Python ACM 实现。"
 pubDate: 2026-10-09

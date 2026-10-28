@@ -4,9 +4,9 @@ import { getPublicStudyNotes, studySeries } from '../../lib/study';
 const posts = await getPublicStudyNotes();
 const series = Object.entries(studySeries).filter(([name]) => posts.some((post) => post.data.series === name));
 ---
-<BaseLayout title="Study Notes" description="课程笔记、考研复习与系统化学习资料。">
-  <header class="page-intro"><p class="eyebrow">Study Notes</p><h1>学习笔记</h1><p>课程笔记、考研复习与系统化学习资料。</p></header>
+<BaseLayout title="学习笔记" description="课程笔记、考研复习与系统化学习资料。">
+  <header class="page-intro"><p class="eyebrow">学习笔记</p><h1>学习笔记</h1><p>课程笔记、考研复习与系统化学习资料。</p></header>
   <section class="study-series-list" aria-label="学习系列">{series.map(([name, info]) => <a class="study-series-row" href={`/study-notes/${info.slug}/`}><div><p class="note-taxonomy">考研复习 · {name}</p><h2>{info.title}</h2><p>{info.description}</p></div><span>{posts.filter((post) => post.data.series === name).length} 篇公开笔记 →</span></a>)}</section>
   <p class="study-status">公开笔记数量不代表复习完成进度。</p>
-  <p class="home-about-links"><a class="text-link" href="/blog/?category=Study%20Notes">在 Notes 中筛选 →</a></p>
+  <p class="home-about-links"><a class="text-link" href="/blog/?category=Study%20Notes">在归档中筛选 →</a></p>
 </BaseLayout>

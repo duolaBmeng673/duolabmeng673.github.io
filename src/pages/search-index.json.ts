@@ -3,7 +3,7 @@ import { getAllPosts, toSearchRecord } from '../lib/blog';
 
 export const GET: APIRoute = async () => {
   const posts = await getAllPosts();
-  return new Response(JSON.stringify(posts.map(toSearchRecord)), {
+  return new Response(JSON.stringify(posts.map((post) => toSearchRecord(post))), {
     headers: { 'Content-Type': 'application/json; charset=utf-8' },
   });
 };

@@ -1,11 +1,10 @@
-import { matchesQuery, type SearchRecord } from '../lib/search';
+import { rankSearch, searchSnippet, loadSearchIndex, type SearchRecord } from '../lib/search';
 const shell = document.querySelector<HTMLElement>('[data-search-shell]');
 const input = document.querySelector<HTMLInputElement>('[data-search-input]');
 const popover = document.querySelector<HTMLElement>('[data-search-popover]');
 const results = document.querySelector<HTMLElement>('[data-search-results]');
 const status = document.querySelector<HTMLElement>('[data-search-status]');
 const allResults = document.querySelector<HTMLAnchorElement>('[data-search-all]');
-let pendingIndex: Promise<SearchRecord[]> | undefined;
 let index: SearchRecord[] | undefined;
 let expanded = false;
 const setExpanded = (value: boolean) => {
@@ -17,8 +16,8 @@ const render = () => {
   if (!input || !results || !status || !index || !popover) return;
   results.replaceChildren();
   if (allResults) allResults.href = `/blog/?${new URLSearchParams({ q: input.value })}`;
-  if (!input.value.trim()) { status.textContent = '输入关键词，搜索标题、分类、系列和标签。'; setExpanded(false); return; }
-  const matches = index.filter((record) => matchesQuery(record, input.value));
+  if (!input.value.trim()) { status.textContent = '输入关键词，搜索标题、标签与正文。'; setExpanded(false); return; }
+  const matches = rankSearch(index, input.value);
   status.textContent = matches.length ? `找到 ${matches.length} 条笔记` : '没有找到匹配的笔记。试试另一个关键词。';
   setExpanded(true);
   for (const record of matches) {
@@ -26,19 +25,12 @@ const render = () => {
     const link = document.createElement('a'); link.className = 'search-result'; link.href = record.href;
     link.dataset.category = record.category;
     const title = document.createElement('strong'); title.textContent = record.shortTitle ?? record.title;
-    const meta = document.createElement('small'); meta.textContent = `${record.category} · ${record.series} / ${record.date}`;
+    const meta = document.createElement('small'); meta.textContent = `${record.category === 'Study Notes' ? '学习笔记' : record.category === 'Research' ? '论文笔记' : '技术笔记'} · ${record.series} / ${record.date}`;
     const subtitle = record.subtitle ? document.createElement('em') : null;
     if (subtitle) { subtitle.textContent = record.subtitle; subtitle.className = 'search-result-subtitle'; }
-    const description = document.createElement('p'); description.textContent = record.description;
+    const description = document.createElement('p'); description.textContent = searchSnippet(record, input.value);
     link.append(title, ...(subtitle ? [subtitle] : []), meta, description); li.append(link); results.append(li);
   }
-};
-const load = () => {
-  pendingIndex ??= fetch('/search-index.json').then(async (response) => {
-    if (!response.ok) throw new Error('Search index unavailable');
-    return await response.json() as SearchRecord[];
-  }).catch((error) => { pendingIndex = undefined; throw error; });
-  return pendingIndex;
 };
 const update = async () => {
   if (!input || !status) return;
@@ -47,7 +39,7 @@ const update = async () => {
   if (allResults) allResults.href = `/blog/?${new URLSearchParams({ q: input.value })}`;
   if (!index) status.textContent = '正在加载笔记索引…';
   try {
-    index = await load();
+    index = await loadSearchIndex();
     if (expanded && shell?.contains(document.activeElement)) render();
   } catch {
     if (expanded) status.textContent = '索引暂时无法加载。请重试，或查看全部结果。';

@@ -2,10 +2,10 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { siteConfig } from '../config';
 ---
-<BaseLayout title="About" description={`杨雨飞 / YYF · ${siteConfig.education} · ${siteConfig.name}`} bodyClass="about-page">
+<BaseLayout title="关于" description={`杨雨飞 / YYF · ${siteConfig.education} · ${siteConfig.name}`} bodyClass="about-page">
   <section class="about-hero"><div><h1>杨雨飞<span> / YYF</span></h1><p class="about-education">{siteConfig.education}</p><p class="about-handle">{siteConfig.name}</p></div><img class="about-avatar" src="/github-avatar.png" alt="杨雨飞的 GitHub 头像" width="96" height="96" /></section>
   <section class="about-grid" aria-label="个人信息">
     <section class="about-panel"><h2>关注方向</h2><ul class="about-interest-list">{siteConfig.interests.map((interest) => <li>{interest}</li>)}</ul></section>
-    <section class="about-panel"><h2>链接</h2><ul class="about-link-list"><li><a class="text-link" href={siteConfig.github} target="_blank" rel="noreferrer">GitHub / {siteConfig.name} ↗</a></li><li><a class="text-link" href="/blog/">Notes →</a></li></ul></section>
+    <section class="about-panel"><h2>链接</h2><ul class="about-link-list"><li><a class="text-link" href={siteConfig.github} target="_blank" rel="noreferrer">GitHub / {siteConfig.name} ↗</a></li><li><a class="text-link" href="/blog/">技术笔记 →</a></li></ul></section>
   </section>
 </BaseLayout>

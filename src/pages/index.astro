@@ -1,36 +1,32 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { getAllPosts, getCategorySummaries, getPostHref, getPostTitle, formatPostDate } from '../lib/blog';
+import NoteList from '../components/NoteList.astro';
+import { getAllPosts, getCategorySummaries, taxonomyLabel } from '../lib/blog';
 import { siteConfig } from '../config';
 const posts = await getAllPosts();
 const summaries = getCategorySummaries(posts);
+const recentGroups = summaries.map(({ category }) => ({ category, posts: posts.filter((post) => post.data.category === category).slice(0, category === 'Research' ? 3 : 2) }));
+const selected = ['llm-table-processing-survey', 'clip', 'acm_io'].map((id) => posts.find((post) => post.id === id)).filter((post) => post !== undefined);
+const interests = [
+  { title: '自然语言处理', description: '从 Transformers、BERT 到 GPT-1，整理语言模型的结构与训练方法。', href: '/blog/?series=NLP' },
+  { title: '多模态与视觉', description: '阅读 CLIP、MathVista、MMMU 与视觉任务相关论文。', href: '/blog/?series=Multimodal' },
+  { title: '大模型与表格', description: '记录表格表示、理解和自动化处理方向的论文。', href: '/blog/?series=LLM%20%26%20Tables' },
+  { title: '算法与信息安全', description: '整理 Python 输入输出，以及 HIT 837 两个安全模块的学习笔记。', href: '/study-notes/837/' },
+];
 ---
 <BaseLayout bodyClass="home-page">
   <section class="identity-section" aria-labelledby="identity-title">
     <div class="identity-copy">
-      <p class="eyebrow">Personal research notebook</p>
+      <p class="eyebrow">信息安全 · AI · 计算机科学</p>
       <h1 id="identity-title">duolaBmeng673</h1>
       <p class="identity-name">杨雨飞 / YYF <span>哈尔滨工业大学 · 信息安全</span></p>
-      <p class="identity-role">Information Security · AI · Computer Science</p>
-      <div class="identity-actions"><a class="button primary" href="/blog/">浏览 Notes <span aria-hidden="true">→</span></a><a class="text-link" href="/about/">关于我 ↗</a></div>
+      <p class="identity-description">整理语言模型、多模态与表格理解论文，也记录算法练习和 HIT 837 学习笔记。</p>
+      <div class="identity-actions"><a class="button primary" href="/blog/">浏览技术笔记 →</a><a class="text-link" href={siteConfig.github}>公开代码 / GitHub ↗</a></div>
     </div>
-    <aside class="notebook-index" aria-label="当前笔记主题">
-      <p class="panel-label">Inside this notebook</p>
-      {summaries.map((summary) => <a href={summary.category === 'Study Notes' ? '/study-notes/' : `/blog/?category=${encodeURIComponent(summary.category)}`}><span>{summary.category === 'Study Notes' ? 'Study Notes' : summary.subcategories.join(' · ')}</span><span class="index-count">{summary.count} notes</span></a>)}
-      <p>读论文，写代码，回看自己的理解。</p>
-    </aside>
+    <aside class="notebook-index" aria-label="笔记入口"><p class="panel-label">笔记索引</p>{summaries.map((summary) => <a href={summary.category === 'Study Notes' ? '/study-notes/' : `/blog/?category=${encodeURIComponent(summary.category)}`}><span>{taxonomyLabel(summary.category)}</span><span class="index-count">{summary.count} 篇</span></a>)}</aside>
   </section>
-  <section class="home-section" aria-labelledby="interests-title">
-    <div class="section-heading"><div><p class="eyebrow">What I follow</p><h2 id="interests-title">Research interests</h2></div></div>
-    <ul class="interest-list">{siteConfig.interests.map((interest) => <li>{interest}</li>)}</ul>
-  </section>
-  <section class="home-section" aria-labelledby="categories-title">
-    <div class="section-heading"><div><p class="eyebrow">A map of the archive</p><h2 id="categories-title">Categories</h2></div><a class="text-link" href="/blog/">All notes →</a></div>
-    <div class="category-grid">{summaries.map((summary) => <a class="category-card" data-category={summary.category} href={summary.category === 'Study Notes' ? '/study-notes/' : `/blog/?category=${encodeURIComponent(summary.category)}`}><div><h3>{summary.category}</h3><p class="category-subcategory">{summary.subcategories.join(' · ')}</p><p>{summary.category === 'Study Notes' ? '课程笔记、考研复习与系统化学习资料' : summary.series.join(' · ')}</p></div><span class="category-count">{summary.count} notes <span aria-hidden="true">↗</span></span></a>)}</div>
-  </section>
-  <section class="home-section" aria-labelledby="recent-title">
-    <div class="section-heading"><div><p class="eyebrow">Latest entries</p><h2 id="recent-title">Recent notes</h2></div><a class="text-link" href="/blog/?view=timeline">View timeline →</a></div>
-    <div class="editorial-list">{posts.slice(0, 5).map((post) => <a class="editorial-row" data-category={post.data.category} href={getPostHref(post)} aria-label={`阅读：${post.data.title}`}><time datetime={post.data.pubDate.toISOString()}>{formatPostDate(post.data.pubDate)}</time><span class="editorial-main"><span class="note-taxonomy">{post.data.category} · {post.data.series}</span><strong>{getPostTitle(post)}</strong>{post.data.subtitle && <em>{post.data.subtitle}</em>}<span class="note-description">{post.data.description}</span></span><span class="row-arrow" aria-hidden="true">↗</span></a>)}</div>
-  </section>
-  <div class="home-about-links"><a class="text-link" href="/about/">About →</a><a class="text-link" href={siteConfig.github} target="_blank" rel="noreferrer">GitHub ↗</a></div>
+  <section class="home-section" aria-labelledby="interests-title"><div class="section-heading"><h2 id="interests-title">关注方向</h2></div><ul class="interest-list">{interests.map((interest) => <li><a href={interest.href}><strong>{interest.title}</strong><span>{interest.description}</span></a></li>)}</ul></section>
+  <section class="home-section" aria-labelledby="selected-title"><div class="section-heading"><h2 id="selected-title">精选阅读</h2><a class="text-link" href="/blog/">查看技术笔记 →</a></div><NoteList posts={selected} /></section>
+  <section class="home-section" aria-labelledby="recent-title"><div class="section-heading"><h2 id="recent-title">近期笔记</h2><span class="section-description">各类按首次发布日期降序</span></div>{recentGroups.map((group) => <section class="recent-group"><header><h3>最新{taxonomyLabel(group.category)}</h3><a class="text-link" href={group.category === 'Study Notes' ? '/study-notes/' : `/blog/?category=${encodeURIComponent(group.category)}`}>查看全部 →</a></header><NoteList posts={group.posts} /></section>)}</section>
+  <div class="home-about-links"><a class="text-link" href="/about/">关于我 →</a><a class="text-link" href={siteConfig.github}>GitHub ↗</a><a class="text-link" href="/rss.xml">RSS 订阅 ↗</a></div>
 </BaseLayout>

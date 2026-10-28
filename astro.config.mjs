@@ -1,6 +1,7 @@
 import { defineConfig } from 'astro/config';
 import { satteri } from '@astrojs/markdown-satteri';
 import katex from 'katex';
+import { articleHeadings } from './src/plugins/article-headings.mjs';
 
 function renderMath(node, context, displayMode) {
   context.replaceNode(node, {
@@ -20,7 +21,7 @@ export default defineConfig({
   markdown: {
     processor: satteri({
       features: { math: true },
-      mdastPlugins: [{
+      mdastPlugins: [articleHeadings, {
         name: 'katex-formulas',
         math: (node, context) => renderMath(node, context, true),
         inlineMath: (node, context) => renderMath(node, context, false),

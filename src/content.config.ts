@@ -16,6 +16,9 @@ const schema = z.object({
   series,
   shortTitle: z.string().trim().min(1).optional(),
   subtitle: z.string().trim().min(1).optional(),
+  updatedDate: z.coerce.date().optional(),
+  draft: z.boolean().default(false),
+  publicationHoldReason: z.string().trim().min(1).optional(),
 });
 
 const blogRead = defineCollection({
