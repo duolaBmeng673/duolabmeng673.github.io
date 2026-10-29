@@ -4,7 +4,7 @@ interface Props { modules: StudyModuleSummary[]; headingLevel?: 'h2' | 'h3' }
 const { modules, headingLevel: Heading = 'h2' } = Astro.props;
 ---
 <div class="study-series-list" aria-label="学习模块">
-  {modules.map((module) => <a class="study-series-row" href={module.href} data-study-module={module.slug}>
+  {modules.map((module) => <a class="study-series-row" data-category="Study Notes" href={module.href} data-study-module={module.slug}>
     <div><p class="note-taxonomy">考研复习 · {module.series}</p><Heading class="module-title">{module.title}</Heading><p>{module.description}</p></div>
     <span class="module-entry"><span>{module.count} 篇公开笔记</span><span>进入模块 →</span></span>
   </a>)}
