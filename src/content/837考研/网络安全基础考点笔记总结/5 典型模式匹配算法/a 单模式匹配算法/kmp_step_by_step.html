@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KMP 手动演算（点击逐步）</title>
+<style>
+body{font-family:system-ui,"PingFang SC","Microsoft YaHei",sans-serif;max-width:800px;margin:16px auto;padding:0 12px;color:#222}
+h1{font-size:18px;margin:0 0 4px}.sub{color:#666;font-size:13px;margin-bottom:10px}
+svg{width:100%;height:auto;cursor:pointer;border:1px solid #ddd;border-radius:8px;display:block}
+svg text{font-family:monospace,"PingFang SC","Microsoft YaHei",sans-serif;text-anchor:middle;dominant-baseline:central}
+.c{stroke:#444;stroke-width:1.5;fill:#fff;transition:fill .25s}.m{fill:#d5f0d5}.ok{fill:#7fd08a}.bad{fill:#f4a3a3}.t{fill:#e3effb}
+.ix{font-size:11px;fill:#888}.lb{font-size:18px;font-weight:bold;fill:#333}.p{font-size:14px;font-weight:bold;fill:#c01c28}
+.mv{transition:transform .45s ease}
+.bar{display:flex;gap:8px;align-items:center;margin:10px 0;flex-wrap:wrap}
+button{padding:6px 14px;border:1px solid #888;border-radius:6px;background:#f5f5f5;cursor:pointer;font-size:14px}
+button:disabled{opacity:.4;cursor:default}.st{font-size:14px;color:#555}
+#msg{border-left:4px solid #1a5fb4;background:#f3f7fd;padding:8px 12px;font-size:15px;line-height:1.6;min-height:48px}
+#msg.bad{border-color:#c01c28;background:#fdf3f3}#msg.done{border-color:#2e8b3d;background:#f1faf2}
+table{border-collapse:collapse;margin-top:12px;font-family:monospace}td{border:1px solid #9bb;padding:5px 14px;text-align:center}
+td.h{background:#fff3b0;font-weight:bold}td.l{background:#e9eef7}
+</style></head><body>
+<h1>KMP 手动演算：S = acabaabaabcacaabc，T = abaabc</h1>
+<div class="sub">点击图形、点「下一步」或按 → 键前进；← 键后退。</div>
+<svg id="sv" viewBox="0 0 740 240"></svg>
+<div class="bar"><button id="pv">上一步</button><button id="nx">下一步</button><button id="rs">重置</button><span class="st" id="st"></span></div>
+<div id="msg"></div>
+<table id="tb"></table>
+<script>
+const S="acabaabaabcacaabc",T="abaabc",n=S.length,m=T.length,W=40,X0=50;
+const next=[-1];for(let j=0,k=-1;j<m-1;){if(k<0||T[j]==T[k]){j++;k++;next[j]=k}else k=next[k]}
+// 预先模拟 KMP，记录每一步
+const st=[];let i=0,j=0,trial=1;
+while(j<m){
+  if(S[i]==T[j]){st.push({i,j,ph:'ok',trial,msg:`S[${i}]=<b>${S[i]}</b> 与 T[${j}]=<b>${T[j]}</b> 相等：匹配成功，i++，j++`});i++;j++}
+  else{const nj=next[j];
+    st.push({i,j,ph:'bad',trial,msg:nj<0?`S[${i}]=<b>${S[i]}</b> ≠ T[${j}]=<b>${T[j]}</b>，失配。next[${j}]=-1：模式串滑出当前位置，<b>i++，j=0</b>`
+      :`S[${i}]=<b>${S[i]}</b> ≠ T[${j}]=<b>${T[j]}</b>，失配。j=next[${j}]=<b>${nj}</b>，<b>i 不动</b>，模式串右滑 ${j-nj} 位`});
+    if(nj<0){i++;j=0}else j=nj;trial++}
+}
+st.push({i:i-1,j:m-1,ph:'done',trial:trial-0,msg:`j 到达 m=${m}，<b>匹配成功</b>！起始下标 = i−m = ${i}−${m} = <b>${i-m}</b>，即 S[${i-m}..${i-1}]="${T}"`});
+// 画静态结构
+let h='';
+for(let k=0;k<n;k++)h+=`<rect class="c" id="s${k}" x="${X0+k*W}" y="50" width="${W}" height="40"/><text x="${X0+k*W+W/2}" y="70">${S[k]}</text><text class="ix" x="${X0+k*W+W/2}" y="104">${k}</text>`;
+h+=`<text class="lb" x="24" y="70">S</text><text class="lb" x="24" y="150">T</text><g class="mv" id="tg">`;
+for(let k=0;k<m;k++)h+=`<rect class="c" id="t${k}" x="${X0+k*W}" y="130" width="${W}" height="40"/><text x="${X0+k*W+W/2}" y="150">${T[k]}</text><text class="ix" x="${X0+k*W+W/2}" y="184">${k}</text>`;
+h+=`</g><g class="mv" id="pi"><path d="M0 24V46M-5 40L0 46L5 40" stroke="#c01c28" stroke-width="2" fill="none"/><text class="p" id="pit" y="12"></text></g>`;
+h+=`<g class="mv" id="pj"><path d="M0 214V192M-5 198L0 192L5 198" stroke="#c01c28" stroke-width="2" fill="none"/><text class="p" id="pjt" y="228"></text></g>`;
+sv.innerHTML=h;
+document.getElementById('tb').innerHTML='<tr><td class="l">j</td>'+[...T].map((_,k)=>`<td>${k}</td>`).join('')+'</tr><tr><td class="l">T[j]</td>'+[...T].map(c=>`<td>${c}</td>`).join('')+'</tr><tr><td class="l">next[j]</td>'+next.map((v,k)=>`<td data-j="${k}">${v}</td>`).join('')+'</tr>';
+let cur=0;
+function render(){
+  const s=st[cur],off=s.i-s.j,end=s.ph=='done';
+  for(let k=0;k<n;k++){let c='c';if(k>=off&&k<(end?s.i+1:s.i))c+=end?' ok':' m';if(k==s.i&&!end)c+=s.ph=='ok'?' ok':' bad';document.getElementById('s'+k).setAttribute('class',c)}
+  for(let k=0;k<m;k++){let c='c t';if(end)c='c ok';else if(k<s.j)c='c m';else if(k==s.j)c='c '+(s.ph=='ok'?'ok':'bad');document.getElementById('t'+k).setAttribute('class',c)}
+  document.getElementById('tg').style.transform=`translateX(${off*W}px)`;
+  const x=X0+s.i*W+W/2;
+  document.getElementById('pi').style.transform=`translateX(${x}px)`;document.getElementById('pj').style.transform=`translateX(${x}px)`;
+  pit.textContent='i='+s.i;pjt.textContent='j='+s.j;
+  document.getElementById('st').textContent=end?`完成 · 共 ${st.length-1} 次比较`:`第 ${s.trial} 趟 · 步骤 ${cur+1}/${st.length-1}`;
+  const mg=document.getElementById('msg');mg.innerHTML=s.msg;mg.className=s.ph=='bad'?'bad':end?'done':'';
+  document.querySelectorAll('td[data-j]').forEach(td=>{td.className=(+td.dataset.j==s.j?'h':'')});
+  pv.disabled=cur==0;nx.disabled=cur==st.length-1;
+}
+const go=d=>{cur=Math.max(0,Math.min(st.length-1,cur+d));render()};
+sv.onclick=()=>go(1);nx.onclick=()=>go(1);pv.onclick=()=>go(-1);rs.onclick=()=>{cur=0;render()};
+addEventListener('keydown',e=>{if(e.key=='ArrowRight')go(1);if(e.key=='ArrowLeft')go(-1)});
+render();
+</script></body></html>

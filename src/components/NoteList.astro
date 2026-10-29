@@ -1,6 +1,6 @@
 ---
 import { getPostHref, getPostTitle, formatPostDate, taxonomyLabel, type BlogPost } from '../lib/blog';
-interface Props { posts: BlogPost[] }
-const { posts } = Astro.props;
+interface Props { posts: BlogPost[]; grouped?: boolean }
+const { posts, grouped = false } = Astro.props;
 ---
-<div class="editorial-list">{posts.map((post) => <a class="editorial-row" data-category={post.data.category} href={getPostHref(post)} aria-label={`阅读：${post.data.title}`}><time datetime={post.data.pubDate.toISOString()}>{formatPostDate(post.data.pubDate)}</time><span class="editorial-main"><span class="note-taxonomy">{taxonomyLabel(post.data.category)} · {taxonomyLabel(post.data.series)}</span><strong>{getPostTitle(post)}</strong>{post.data.subtitle && <em>{post.data.subtitle}</em>}<span class="note-description">{post.data.description}</span></span><span class="row-arrow" aria-hidden="true">↗</span></a>)}</div>
+<div class="editorial-list">{posts.map((post) => <a class="editorial-row" data-category={post.data.category} href={getPostHref(post)} aria-label={`阅读：${post.data.title}`}><time datetime={post.data.pubDate.toISOString()}>{formatPostDate(post.data.pubDate)}</time><span class="editorial-main"><span class="note-taxonomy">{!grouped && <>{taxonomyLabel(post.data.category)} · </>}{taxonomyLabel(post.data.series)}{post.collection === 'study_notes' && <> · {post.data.subject}</>}</span><span class="editorial-title"><strong>{getPostTitle(post)}</strong>{post.data.subtitle && <em>{post.data.subtitle}</em>}</span><span class="note-description">{post.data.description}</span></span><span class="row-arrow" aria-hidden="true">→</span></a>)}</div>

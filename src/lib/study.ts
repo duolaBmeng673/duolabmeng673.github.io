@@ -11,7 +11,7 @@ export const studySeries = {
 
 export const studyModules = {
   信息安全导论: { slug: 'information-security', title: '信息安全', description: '基本概念、病毒、防火墙、入侵检测、安全传输协议与风险管理。' },
-  网络安全基础: { slug: 'network-security', title: '网络安全', description: '网络协议缺陷、拒绝服务、内存漏洞与 Web 攻击技术。' },
+  网络安全基础: { slug: 'network-security', title: '网络安全', description: '网络攻击、数据获取、扫描技术与模式匹配算法。' },
 } as const;
 
 // Keep all published information-security chapter URLs unchanged.

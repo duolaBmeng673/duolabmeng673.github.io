@@ -63,7 +63,7 @@ const image = new URL('/og-default.png', Astro.site);
           <form class="header-search-form" data-search-form action="/blog/" method="get">
             <label for="header-search-input" class="visually-hidden">搜索文章</label>
             <input id="header-search-input" data-search-input type="search" name="q" placeholder="搜索全部笔记…" autocomplete="off" aria-controls="header-search-results" aria-expanded="false" />
-            <kbd aria-hidden="true">⌘K</kbd>
+            <kbd aria-hidden="true" data-search-shortcut>Ctrl K</kbd>
           </form>
           <div id="header-search-results" class="search-popover" data-search-popover hidden>
             <p class="search-status" data-search-status role="status">输入关键词，搜索标题、标签与正文。</p>
@@ -72,9 +72,12 @@ const image = new URL('/og-default.png', Astro.site);
           </div>
         </div>
         <div class="header-tools">
-          <label class="theme-control"><span class="visually-hidden">主题模式</span>
-            <select data-theme-select aria-label="主题模式"><option value="system">跟随系统</option><option value="light">浅色</option><option value="dark">深色</option></select>
-          </label>
+          <button class="theme-control" type="button" data-theme-cycle aria-label="切换主题" aria-describedby="theme-state" title="跟随系统 → 浅色 → 深色">
+            <svg data-theme-icon="system" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8m-4-4v4"/></svg>
+            <svg data-theme-icon="light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 1v3m0 16v3M1 12h3m16 0h3M4 4l2 2m12 12 2 2M4 20l2-2M18 6l2-2"/></svg>
+            <svg data-theme-icon="dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M20 15A9 9 0 0 1 9 4a9 9 0 1 0 11 11Z"/></svg>
+            <span id="theme-state" class="visually-hidden" role="status"><span data-theme-icon="system">当前主题：跟随系统</span><span data-theme-icon="light">当前主题：浅色</span><span data-theme-icon="dark">当前主题：深色</span></span>
+          </button>
           <details class="type-settings">
             <summary aria-label="文字设置">Aa</summary>
             <div class="type-settings-panel">

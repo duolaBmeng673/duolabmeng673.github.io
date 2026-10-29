@@ -70,7 +70,7 @@ document.querySelectorAll<HTMLImageElement>('.article-body img').forEach((image)
   link.title = '在新标签页查看 SVG 原图';
   image.replaceWith(link); link.append(image);
   const hint = document.createElement('span');
-  hint.className = 'svg-hint'; hint.textContent = '查看 SVG 原图 ↗';
+  hint.className = 'svg-hint'; hint.textContent = '查看 SVG 原图 →';
   link.append(hint);
 });
 const links = [...document.querySelectorAll<HTMLAnchorElement>('[data-toc-link]')];

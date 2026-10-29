@@ -39,7 +39,8 @@ test('any future publication holds stay out of public discovery and retain safe 
 });
 test('all public articles have one H1, real images and article-level metadata', () => {
   for (const post of index) {
-    const html = read('dist' + post.href + 'index.html');
+    // Embedded documents have their own outline; inspect only the article document.
+    const html = read('dist' + post.href + 'index.html').replace(/\ssrcdoc="[^"]*"/g, '');
     assert.equal((html.match(/<h1(?:\s|>)/g) ?? []).length, 1, post.href);
     assert.ok(html.includes('lang="zh-CN"'));
     assert.ok(html.includes('property="og:type" content="article"'));
@@ -64,7 +65,7 @@ test('new Web note is in the syllabus, full-text index, RSS and sitemap', () => 
 test('study entry points select independent modules and preserve existing chapter and article navigation', () => {
   const modules = {
     'information-security': ['security-basics', 'traditional-computer-viruses', 'firewall-netfilter', 'intrusion-detection-snort', 'ipsec', 'ssl', 'set', 'risk-management'],
-    'network-security': ['network-protocol-vulnerabilities', 'dos-ddos-attacks', 'format-string-buffer-overflow', 'web-attack-techniques'],
+    'network-security': ['network-protocol-vulnerabilities', 'dos-ddos-attacks', 'format-string-buffer-overflow', 'web-attack-techniques', 'network-packet-capture', 'packet-capture-bpf', 'libpcap-winpcap', 'host-discovery', 'port-scanning', 'kmp-algorithm'],
   };
   const prefix = '/study-notes/837/';
   for (const entry of ['dist/study-notes/index.html', 'dist/study-notes/837/index.html']) {

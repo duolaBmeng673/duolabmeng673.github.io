@@ -2,6 +2,7 @@
 import { render } from 'astro:content';
 import { siteConfig } from '../config';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import HeadingText from './HeadingText.astro';
 import { getPostTitle, taxonomyLabel, formatPostDate, type BlogPost } from '../lib/blog';
 import { getChapterHref, getPublicStudyNotes, getStudyHref, getStudySeries, getStudyModuleHref, studyModules } from '../lib/study';
 interface Props { post: BlogPost }
@@ -39,12 +40,12 @@ const canRecall = Boolean(study && headings.some((heading) => heading.depth >= 2
           <div data-recall-actions hidden><button type="button" class="view-button" data-recall-all="show">展开全部内容</button><button type="button" class="view-button" data-recall-all="hide">收起全部内容</button></div>
           <p data-recall-hint hidden>点击标题独立展开或收起；各级标题与加粗小标题保留原文层次，可同时展开多个内容。</p>
         </div>}
-        {sections.length > 0 && <details class="article-toc-mobile"><summary>目录 <span aria-hidden="true">⌄</span></summary><nav aria-label="移动端文章目录"><ol>{sections.map((heading) => <li class={`toc-level-${heading.depth}`}><a href={`#${heading.slug}`}>{heading.text}</a></li>)}</ol></nav></details>}
+        {sections.length > 0 && <details class="article-toc-mobile"><summary>目录 <span aria-hidden="true">⌄</span></summary><nav aria-label="移动端文章目录"><ol>{sections.map((heading) => <li class={`toc-level-${heading.depth}`}><a href={`#${heading.slug}`}><HeadingText text={heading.text} /></a></li>)}</ol></nav></details>}
         <div class="article-body" data-study-body={study ? '' : undefined}><Content /></div>
         {study && <nav class="study-pagination" aria-label="按考纲顺序浏览">{previous ? <a href={getStudyHref(previous)} rel="prev"><small>← 上一个知识点</small><span>{previous.data.title}</span></a> : <span />}{next ? <a href={getStudyHref(next)} rel="next"><small>下一个知识点 →</small><span>{next.data.title}</span></a> : <span />}</nav>}
         <footer class="article-end"><a href={`${siteConfig.repository}/issues/new?${new URLSearchParams({ title: `笔记勘误：${post.data.title}`, body: `文章：${new URL(Astro.url.pathname, Astro.site).href}\n\n问题与建议：` })}`} target="_blank" rel="noreferrer">发现错误？反馈勘误 ↗</a><a href={study ? getStudyModuleHref(study) : '/blog/'}>{study ? '返回模块目录 →' : '返回技术笔记 →'}</a></footer>
       </div>
-      {sections.length > 0 && <aside class="article-toc" aria-label="文章章节"><p class="panel-label">目录</p><nav><ol>{sections.map((heading) => <li class={`toc-level-${heading.depth}`}><a data-toc-link href={`#${heading.slug}`}>{heading.text}</a></li>)}</ol></nav></aside>}
+      {sections.length > 0 && <aside class="article-toc" aria-label="文章章节"><p class="panel-label">目录</p><nav><ol>{sections.map((heading) => <li class={`toc-level-${heading.depth}`}><a data-toc-link href={`#${heading.slug}`}><HeadingText text={heading.text} /></a></li>)}</ol></nav></aside>}
     </div>
   </article>
   <script>import '../scripts/article'; import '../scripts/recall';</script>
