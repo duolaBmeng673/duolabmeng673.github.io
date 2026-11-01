@@ -65,7 +65,7 @@ test('new Web note is in the syllabus, full-text index, RSS and sitemap', () => 
 test('study entry points select independent modules and preserve existing chapter and article navigation', () => {
   const modules = {
     'information-security': ['security-basics', 'traditional-computer-viruses', 'firewall-netfilter', 'intrusion-detection-snort', 'ipsec', 'ssl', 'set', 'risk-management'],
-    'network-security': ['network-protocol-vulnerabilities', 'dos-ddos-attacks', 'format-string-buffer-overflow', 'web-attack-techniques', 'network-packet-capture', 'packet-capture-bpf', 'libpcap-winpcap', 'host-discovery', 'port-scanning', 'kmp-algorithm'],
+    'network-security': ['network-protocol-vulnerabilities', 'dos-ddos-attacks', 'format-string-buffer-overflow', 'web-attack-techniques', 'network-packet-capture', 'packet-capture-bpf', 'libpcap-winpcap', 'host-discovery', 'port-scanning', 'kmp-algorithm', 'bm-algorithm', 'ac-algorithm', 'wm-algorithm', 'decision-tree-c45'],
   };
   const prefix = '/study-notes/837/';
   for (const entry of ['dist/study-notes/index.html', 'dist/study-notes/837/index.html']) {
@@ -98,6 +98,34 @@ test('home keeps identity and four linked directions without the five removed de
   for (const text of ['从 Transformers、BERT 到 GPT-1，整理语言模型的结构与训练方法。', '阅读 CLIP、MathVista、MMMU 与视觉任务相关论文。', '记录表格表示、理解和自动化处理方向的论文。', '整理 Python 输入输出，以及 HIT 837 两个安全模块的学习笔记。', '整理语言模型、多模态与表格理解论文，也记录算法练习和 HIT 837 学习笔记。']) assert.ok(!html.includes(text));
   for (const text of ['自然语言处理', '多模态与视觉', '大模型与表格', '算法与信息安全', '杨雨飞', '哈尔滨工业大学']) assert.ok(html.includes(text));
   assert.ok(html.includes('class="home-section selected-reading"'));
+  assert.ok(html.includes('id="activity-title"'));
+  assert.equal((html.match(/role="gridcell"/g) ?? []).length, 371);
+  assert.equal((html.match(/role="gridcell"[^>]+data-date=/g) ?? []).length, 365);
+  assert.ok(html.includes('过去 365 天综合技术活动日历'));
+});
+
+test('new matching notes are public in syllabus order with local interactive demos', () => {
+  const slugs = ['bm-algorithm', 'ac-algorithm', 'wm-algorithm', 'decision-tree-c45'];
+  const module = read('dist/study-notes/837/network-security/index.html');
+  const positions = slugs.slice(0, 3).map((slug) => module.indexOf(`/study-notes/837/${slug}/`));
+  assert.ok(positions.every((position) => position >= 0));
+  assert.deepEqual(positions, [...positions].sort((a, b) => a - b));
+  for (const slug of slugs) {
+    const route = `/study-notes/837/${slug}/`;
+    const post = index.find((item) => item.href === route);
+    assert.ok(post, route);
+    assert.equal(post.date, slug === 'bm-algorithm' ? '2026-10-30' : '2026-11-01');
+    const html = read(`dist${route}index.html`);
+    if (slug !== 'decision-tree-c45') {
+      assert.ok(html.includes('class="article-interactive"'), `${slug} embeds its local demo`);
+      assert.ok(html.includes('sandbox="allow-scripts"'), `${slug} sandbox is restricted`);
+      assert.ok(html.includes('srcdoc='), `${slug} demo remains on the article page`);
+      assert.ok(!html.includes('src="./'), `${slug} has no dead relative demo link`);
+    }
+    assert.ok(read('dist/sitemap.xml').includes(route));
+    const chapter = slug === 'decision-tree-c45' ? 'network-security-06' : 'network-security-05';
+    assert.ok(read(`dist/study-notes/837/chapter/${chapter}/index.html`).includes(route));
+  }
 });
 
 test('real Chinese, English, mixed, body-only and empty queries find expected published notes', async () => {

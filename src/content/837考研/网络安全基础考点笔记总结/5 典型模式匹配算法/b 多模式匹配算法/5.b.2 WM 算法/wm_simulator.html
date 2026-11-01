@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Wu-Manber 多模式匹配 · 交互模拟</title>
+<style>
+:root{--bg:#f6f7fb;--bd:#e2e8f0;--mu:#6b7280;--b:#2563eb;--bl:#dbeafe;--o:#f59e0b;--ol:#fde68a;--g:#16a34a;--gl:#bbf7d0;--p:#7c3aed;--r:#dc2626}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:#1f2937;font:15px/1.6 system-ui,"PingFang SC","Microsoft YaHei",sans-serif}
+.wrap{max-width:1200px;margin:0 auto;padding:20px 16px 48px}
+h1{font-size:22px;margin:0 0 2px}.sub{color:var(--mu);margin:0 0 16px;font-size:14px}
+.card{background:#fff;border:1px solid var(--bd);border-radius:12px;padding:16px;margin-bottom:16px}
+.card h2{font-size:15px;margin:0 0 10px}
+.grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:16px;align-items:start}
+@media(max-width:960px){.grid{grid-template-columns:1fr}}
+label{display:block;font-size:13px;color:var(--mu);margin:8px 0 4px}
+input,select{width:100%;padding:8px 10px;border:1px solid var(--bd);border-radius:8px;font:14px ui-monospace,Menlo,Consolas,monospace;background:#fff}
+.row{display:flex;gap:10px;flex-wrap:wrap}.row>div{flex:1;min-width:100px}
+.btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+button{padding:8px 14px;border:1px solid var(--bd);background:#fff;border-radius:8px;cursor:pointer;font:inherit}
+button:hover{border-color:var(--b);color:var(--b)}button.pri{background:var(--b);color:#fff;border-color:var(--b)}
+.err{color:var(--r);font-size:13px;margin-top:8px;min-height:18px}
+.chars{display:flex;flex-wrap:wrap;gap:3px;padding:4px 0}
+.ch{width:30px;text-align:center;font:600 16px ui-monospace,Menlo,Consolas,monospace;border-radius:5px;padding:3px 0 0;border:1px solid transparent}
+.ch small{display:block;font:10px system-ui;color:var(--mu);margin-top:1px}
+.ch.win{background:var(--bl)}.ch.gram{background:var(--ol);border-color:var(--o)}
+.ch.pre{box-shadow:inset 0 -3px 0 var(--p)}.ch.hit{background:var(--gl);border-color:var(--g)}
+.leg{font-size:12px;color:var(--mu);display:flex;gap:12px;flex-wrap:wrap;margin-top:6px}
+.leg i{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-2px;margin-right:4px}
+.desc{background:#f8fafc;border-left:4px solid var(--b);border-radius:6px;padding:10px 12px;min-height:96px}
+.desc p{margin:2px 0}.ok{color:var(--g);font-weight:700}.no{color:var(--r);font-weight:700}.tag{font-family:ui-monospace,Menlo,monospace;background:#eef2ff;border-radius:4px;padding:0 4px}
+.cells{display:flex;flex-wrap:wrap;gap:4px}
+.cell{width:52px;text-align:center;border:1px solid var(--bd);border-radius:6px;font:600 14px ui-monospace,Menlo,monospace;padding:1px 0 2px;background:#f8fafc;color:#9ca3af}
+.cell i{display:block;font:11px system-ui;font-style:normal;color:var(--mu);min-height:14px}
+.cell.v{background:#fef3c7;color:#b45309}.cell.z{background:#fee2e2;color:var(--r)}.cell.h{background:#ede9fe;color:var(--p)}
+.cell.cur{outline:3px solid var(--o);outline-offset:1px}
+table{border-collapse:collapse;font:13px ui-monospace,Menlo,monospace}td,th{border:1px solid var(--bd);padding:3px 10px;text-align:center}th{background:#f1f5f9;font-weight:600}
+tr.cur td{background:var(--ol)}tr.okr td{background:var(--gl)}
+.t3{display:flex;gap:18px;flex-wrap:wrap}.t3 h3{font-size:13px;margin:0 0 6px;color:#475569}
+.log{max-height:230px;overflow:auto;margin:0;padding:0;list-style:none;font-size:13px}
+.log li{padding:3px 8px;border-radius:6px;cursor:pointer}.log li:hover{background:#f1f5f9}.log li.on{background:var(--ol);font-weight:600}
+</style></head><body><div class="wrap">
+<h1>Wu-Manber 多模式匹配 · 交互模拟</h1>
+<p class="sub">默认载入 PPT 例题；可自行修改模式集、文本、哈希模数与 B，点击“应用”重新构建四张表。</p>
+
+<div class="card"><h2>输入</h2>
+<label>模式集（用逗号或空格分隔，仅保留字母 a–z，最短长度需 ≥ B）</label><input id="pats" value="thinner, shining, church, touching, thinking">
+<label>文本（大小写不敏感；非字母字符按同一编码 26 处理）</label><input id="text" value="Tomisthinkinghowtobethinner">
+<div class="row"><div><label>哈希模数 mod</label><input id="mod" type="number" min="5" max="97" value="29"></div>
+<div><label>块长 B（前缀长度 B′ 固定为 2）</label><select id="bsel"><option>2</option><option>3</option></select></div></div>
+<div class="btns"><button class="pri" id="apply">应用</button><button id="demo">恢复 PPT 例题</button></div>
+<div class="err" id="err"></div></div>
+
+<div class="grid">
+<div>
+<div class="card"><h2>文本扫描</h2><div id="chars" class="chars"></div>
+<div class="leg"><span><i style="background:var(--bl)"></i>当前窗口（长 m）</span><span><i style="background:var(--ol)"></i>末 B 字符（查 SHIFT）</span><span><i style="box-shadow:inset 0 -3px 0 var(--p);background:#fff;border:1px solid #ddd"></i>窗口前缀（查 PREFIX）</span><span><i style="background:var(--gl)"></i>已匹配</span></div>
+<div class="btns"><button id="rst">⏮ 重置</button><button id="prev">◀ 上一步</button><button class="pri" id="next">下一步 ▶</button><button id="play">⏯ 自动播放</button><button id="end">⏭ 到结束</button></div>
+<p class="sub" style="margin:10px 0 0" id="stat"></p></div>
+<div class="card"><h2>本步说明</h2><div class="desc" id="desc"></div></div>
+<div class="card"><h2>匹配结果</h2><div id="res"></div></div>
+<div class="card"><h2>步骤列表（点击可跳转）</h2><ol class="log" id="log"></ol></div>
+</div>
+<div>
+<div class="card"><h2>SHIFT 表 <span class="sub">（橙：被模式更新过；红：值为 0）</span></h2><div class="cells" id="shiftT"></div></div>
+<div class="card"><h2>HASH 表 <span class="sub">（下标与 SHIFT 相同；紫：非空）</span></h2><div class="cells" id="hashT"></div></div>
+<div class="card"><div class="t3"><div><h3>PREFIX 表</h3><div id="preT"></div></div><div><h3>PAT_PTR 表</h3><div id="ptrT"></div></div><div><h3>参数</h3><div id="par" style="font-size:13px"></div></div></div></div>
+</div></div></div>
+<script>
+const $=id=>document.getElementById(id),esc=s=>s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+const DEF={p:'thinner, shining, church, touching, thinking',t:'Tomisthinkinghowtobethinner'};
+let S=null,idx=-1,timer=null;
+const code=c=>c>='a'&&c<='z'?c.charCodeAt(0)-97:26;
+function build(){
+  const M=+$('mod').value,B=+$('bsel').value,BP=2;
+  const pats=$('pats').value.split(/[\s,，;；]+/).map(s=>s.toLowerCase().replace(/[^a-z]/g,'')).filter(Boolean);
+  const raw=$('text').value,tl=raw.toLowerCase();
+  if(!pats.length)throw'请至少输入一个模式';
+  if(!(M>=5))throw'mod 需 ≥ 5';
+  const m=Math.min(...pats.map(p=>p.length));
+  if(m<B)throw`最短模式长度 ${m} 小于 B=${B}`;
+  if(raw.length<m)throw`文本长度需 ≥ m=${m}`;
+  const H=s=>[...s].reduce((a,c)=>a+code(c),0)%M;
+  const pt=pats.map(p=>p.slice(0,m)),shift=Array(M).fill(m-B+1),grams=Array.from({length:M},()=>[]),hash=Array.from({length:M},()=>[]);
+  pt.forEach((p,i)=>{for(let q=B;q<=m;q++){const g=p.slice(q-B,q),h=H(g);shift[h]=Math.min(shift[h],m-q);if(!grams[h].includes(g))grams[h].push(g)}hash[H(p.slice(m-B))].push(i)});
+  const prefix=pt.map(p=>H(p.slice(0,BP)));
+  const steps=[],n=raw.length,found=[];let pos=m;
+  while(pos<=n){
+    const gram=tl.slice(pos-B,pos),h=H(gram),sv=shift[h],st={pos,gram,h,sv,s:pos-m};
+    if(sv>0){pos+=sv}else{
+      const pre=tl.slice(st.s,st.s+BP);st.pre=pre;st.hp=H(pre);st.c=[];
+      for(const i of hash[h]){const pe=prefix[i]===st.hp,full=pe?tl.startsWith(pats[i],st.s):null;st.c.push({i,pe,full});if(full)found.push({step:steps.length,i,s:st.s})}
+      pos+=1}
+    steps.push(st)}
+  return{M,B,BP,m,pats,pt,raw,shift,grams,hash,prefix,steps,found}}
+function render(){
+  const D=S,st=idx>=0?D.steps[idx]:null;
+  const hit=new Set();D.found.filter(f=>f.step<=idx).forEach(f=>{for(let k=0;k<D.pats[f.i].length;k++)hit.add(f.s+k)});
+  $('chars').innerHTML=[...D.raw].map((c,k)=>{let cl='ch';if(hit.has(k))cl+=' hit';
+    if(st){if(k>=st.s&&k<st.pos)cl+=' win';if(k>=st.pos-D.B&&k<st.pos)cl+=' gram';if(st.sv===0&&k>=st.s&&k<st.s+D.BP)cl+=' pre'}
+    return`<div class="${cl}">${esc(c)}<small>${k+1}</small></div>`}).join('');
+  // desc
+  let d='';
+  if(!st)d=`<p>准备就绪：m=${D.m}，B=${D.B}，共 ${D.steps.length} 步。扫描从文本第 m=${D.m} 个字符开始。点击“下一步”。</p>`;
+  else{d=`<p><b>第 ${idx+1} 步</b>｜指针 pos=${st.pos}：取末 ${D.B} 字符 <span class="tag">${esc(st.gram)}</span>，hash = <b>${st.h}</b>，SHIFT[${st.h}] = <b>${st.sv}</b></p>`;
+    if(st.sv>0)d+=`<p>SHIFT &gt; 0，不可能匹配 → 文本指针右移 <b>${st.sv}</b> 位（pos → ${st.pos+st.sv}）。</p>`;
+    else{d+=`<p>SHIFT = 0，可能匹配 → 取窗口前缀 <span class="tag">${esc(st.pre)}</span>（文本第 ${st.s+1} 起），hash = <b>${st.hp}</b>；HASH[${st.h}] = {${D.hash[st.h].map(i=>'P'+i).join(', ')}}</p>`;
+      st.c.forEach(c=>{d+=`<p>· P${c.i}（${D.pats[c.i]}）：PREFIX = ${D.prefix[c.i]} ${c.pe?'= '+st.hp+'，前缀相等 → 逐字比较完整模式串：'+(c.full?'<span class="ok">匹配 ✓</span>（文本第 '+(st.s+1)+' 位）':'<span class="no">不匹配 ✗</span>'):'≠ '+st.hp+'，<span class="no">淘汰</span>'}</p>`});
+      d+=`<p>无论是否匹配，文本指针右移 1 位（pos → ${st.pos+1}）。</p>`}}
+  if(st&&idx===D.steps.length-1)d+=`<p><b>扫描结束。</b></p>`;
+  $('desc').innerHTML=d;
+  $('stat').textContent=`步骤 ${idx+1} / ${D.steps.length}`;
+  const fs=D.found.filter(f=>f.step<=idx);
+  $('res').innerHTML=fs.length?fs.map(f=>`<span class="ok">✓ ${D.pats[f.i]}</span>（P${f.i}，文本第 ${f.s+1}–${f.s+D.pats[f.i].length} 位）`).join('<br>'):'<span style="color:var(--mu)">暂无</span>';
+  $('log').innerHTML=D.steps.map((s,k)=>`<li data-k="${k}" class="${k===idx?'on':''}">${k+1}. pos=${s.pos} “${esc(s.gram)}” h=${s.h} SHIFT=${s.sv}${s.sv>0?' → 右移 '+s.sv:' → 校验'+(s.c.some(c=>c.full)?' ✓匹配':'')}</li>`).join('');
+  const on=$('log').querySelector('.on');if(on)on.scrollIntoView({block:'nearest'});
+  // tables
+  const cur=st?st.h:-1;
+  $('shiftT').innerHTML=D.shift.map((v,j)=>`<div class="cell ${v===0?'z':v<D.m-D.B+1?'v':''} ${j===cur?'cur':''}"><i>${j}</i>${v}<i>${esc(D.grams[j].join('/'))}</i></div>`).join('');
+  $('hashT').innerHTML=D.hash.map((l,j)=>`<div class="cell ${l.length?'h':''} ${j===cur?'cur':''}"><i>${j}</i>${l.length?l.map(i=>'P'+i).join(','):'–'}<i></i></div>`).join('');
+  const cand=new Map(st&&st.sv===0?st.c.map(c=>[c.i,c]):[]);
+  $('preT').innerHTML='<table><tr><th>编号</th><th>前缀</th><th>hash</th></tr>'+D.pt.map((p,i)=>`<tr class="${cand.has(i)?(cand.get(i).pe?'okr':'cur'):''}"><td>P${i}</td><td>${p.slice(0,D.BP)}</td><td>${D.prefix[i]}</td></tr>`).join('')+'</table>';
+  $('ptrT').innerHTML='<table><tr><th>编号</th><th>模式串</th></tr>'+D.pats.map((p,i)=>`<tr class="${cand.has(i)&&cand.get(i).pe?(cand.get(i).full?'okr':'cur'):''}"><td>P${i}</td><td>${p}</td></tr>`).join('')+'</table>';
+  $('par').innerHTML=`m = ${D.m}（截断长度）<br>B = ${D.B}，B′ = ${D.BP}<br>mod = ${D.M}<br>SHIFT 初值 = m−B+1 = ${D.m-D.B+1}<br>截断后：${D.pt.join('，')}<br>当前窗口前缀 hash：${st&&st.sv===0?st.hp:'—'}`;}
+function go(k){idx=Math.max(-1,Math.min(S.steps.length-1,k));render()}
+function stop(){clearInterval(timer);timer=null;$('play').textContent='⏯ 自动播放'}
+function apply(){stop();try{S=build();$('err').textContent='';idx=-1;render()}catch(e){$('err').textContent=String(e)}}
+$('apply').onclick=apply;
+$('demo').onclick=()=>{$('pats').value=DEF.p;$('text').value=DEF.t;$('mod').value=29;$('bsel').value=2;apply()};
+$('rst').onclick=()=>{stop();go(-1)};$('prev').onclick=()=>{stop();go(idx-1)};$('next').onclick=()=>{stop();go(idx+1)};$('end').onclick=()=>{stop();go(1e9)};
+$('play').onclick=()=>{if(timer)return stop();$('play').textContent='⏸ 暂停';if(idx>=S.steps.length-1)idx=-1;timer=setInterval(()=>{if(idx>=S.steps.length-1)return stop();go(idx+1)},900)};
+$('log').onclick=e=>{const li=e.target.closest('li');if(li){stop();go(+li.dataset.k)}};
+apply();
+</script></body></html>

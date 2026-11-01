@@ -114,3 +114,13 @@ KMP 文章在原动画所在位置，由 `article-presentation.mjs` 将上传的
 本轮初始快照含 145 个内容／资源文件（包含作者未提交的 Snort 修改）；6 篇新 Markdown 的正文与原始上传逐字节一致，其他 139 个文件完整。迁移后再次建立 145 文件快照，主题阶段全部字节不变。因此相对 Git HEAD 的内容 diff 仍会包含作者原有 Snort 编辑与新增文件，这是已授权的同步阶段变更，不能为追求空 diff 将它们回滚。未更改原文日期、tags、路径、URL 或既有标题锚点。
 
 构建与 12 项现有测试通过；现有测试只更新网络模块的过期文章列表，并使主文档的 H1 检查忽略 iframe 的独立 srcdoc 文档。没有新建测试框架／测试套件。额外一次性校验脚本放在临时目录：51 路由、486 个正文标题及 ID、877 个站内锚点、137 个代码块、84 个公式节点、公开边界、18 篇背诵 DOM、主题与搜索脚本、KMP 手动演算。原生浏览器／截图验收未执行成功，不能宣称五种宽度已无视觉溢出。具体阻塞及 JS gzip 比较见本轮记录。
+
+## 2026-11-01 文章同步、交互演示与 Activity
+
+新增网络安全学习笔记 `bm-algorithm`（2026-10-30）、`ac-algorithm`、`wm-algorithm`，以及聚类章节 `decision-tree-c45`（后三篇 2026-11-01）。均属网络安全基础 HIT 837，排序为 502–504 和 601；页面路径由 `studySlug` 生成。只补 Front Matter；在迁移前后逐篇核对的 52 篇 Markdown 正文 SHA-256 一致，文章正文和原附件没有改写。既有 KMP 文件随作者上传移动到 `5.a.1 KMP算法` 文件夹；studySlug 保持 `kmp-algorithm`，网站路由不变。网络安全现有公开笔记 14 篇，信息安全 8 篇，合计 22 篇。
+
+KMP、BM、AC 和 WM 的本地 HTML 演示在对应 Markdown 引用处嵌入文章。由 `article-presentation.mjs` 显式白名单读取附件；iframe 仅 `allow-scripts`，CSP 禁止联网、表单及外部资源。页面主题通过校验随机内容散列 key 和 iframe Window 的消息同步。ResizeObserver 根据正文实际高度调整嵌入空间，变化量限制在 360–12000px；图表／表格保持各自横向滚动。用户的 HTML 资源保留原样。更新演示时需检查无外部请求、source path、CSP 和页面主题/高度桥接，再跑测试。其余文章中的普通 HTML 链接不会被自动转换。
+
+首页新增 Activity 日历。`src/data/activities.ts` 是将来的 Coding、Research、Learning 手动／导入记录入口，当前为空，不虚构这三类历史。Writing 直接由当前公开文章和学习笔记的 `pubDate` 派生，每篇一次；同日多篇与手动事件按类型相加。记录形状为 `{ date: 'YYYY-MM-DD', type: 'coding' | 'writing' | 'research' | 'learning', count: 正整数, description?: string }`；日期字段按本地日历校验与统计。组件覆盖今天及之前 364 日，按本地日界限计算，星期日分周；闰年及夏令时使用 `Date.setDate` 递增而非固定毫秒间隔。图例分五级。键盘方向键按日／周移动，桌面 tooltip 使用原生 title，移动端选中格的详情显示在日历下方。JavaScript 未运行时仍有构建时静态日历，且没有新依赖。
+
+活动摘要的“活跃日／活动数”只包含日期范围内公开文章发布日期和手工/导入数据，不能解释为 GitHub 全部 commit 或完整个人履历。新发布的文章会计入 Writing；不要用文章日期推断 Coding、Research 或 Learning。当前 40 篇公开文章（12 论文、6 常规技术／算法、22 学习笔记），56 个静态页面；由构建数据动态生成。

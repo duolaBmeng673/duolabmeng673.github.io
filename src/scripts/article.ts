@@ -97,3 +97,21 @@ if (headings.length) {
 document.querySelectorAll<HTMLAnchorElement>('.article-toc-mobile a').forEach((link) => link.addEventListener('click', () => {
   const details = link.closest('details'); if (details) details.open = false;
 }));
+
+// Sandboxed local demos have opaque origins; trust only their Window and build key.
+const demos = [...document.querySelectorAll<HTMLIFrameElement>('iframe[data-demo-key]')];
+const sendDemoTheme = (frame: HTMLIFrameElement) => frame.contentWindow?.postMessage({
+  type: 'blog-demo:theme', key: frame.dataset.demoKey, theme: document.documentElement.dataset.theme ?? 'light',
+}, '*');
+if (demos.length) {
+  window.addEventListener('message', (event: MessageEvent) => {
+    const frame = demos.find((demo) => demo.contentWindow === event.source);
+    if (!frame || !event.data || event.data.key !== frame.dataset.demoKey) return;
+    if (event.data.type === 'blog-demo:ready') sendDemoTheme(frame);
+    if (event.data.type === 'blog-demo:size' && typeof event.data.height === 'number' && Number.isFinite(event.data.height)) {
+      frame.style.height = `${Math.max(360, Math.min(12000, Math.ceil(event.data.height)))}px`;
+    }
+  });
+  demos.forEach((frame) => { frame.addEventListener('load', () => sendDemoTheme(frame)); sendDemoTheme(frame); });
+  new MutationObserver(() => demos.forEach(sendDemoTheme)).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+}

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AC 自动机：初始化与匹配演示</title>
+<style>
+:root{--bg:#fff;--fg:#222;--mut:#777;--node:#dbeafe;--acc:#f59e0b;--fail:#dc2626;--out:#16a34a;color-scheme:light dark}
+@media(prefers-color-scheme:dark){:root{--bg:#1c1c1e;--fg:#eee;--mut:#999;--node:#1e3a5f}}
+body{margin:0;padding:16px;background:var(--bg);color:var(--fg);font:15px/1.6 system-ui,sans-serif;max-width:820px;margin:auto}
+h3{margin:0 0 6px}.ph{color:var(--mut);font-size:13px}
+svg{width:100%;height:auto;border:1px solid var(--mut);border-radius:8px}
+button{padding:6px 16px;margin:8px 6px 8px 0;font-size:14px;cursor:pointer}
+#d{min-height:3.2em;padding:8px 10px;border-left:4px solid var(--acc);background:rgba(128,128,128,.1)}
+table{border-collapse:collapse;margin:6px 0;font-size:13px}td,th{border:1px solid var(--mut);padding:2px 8px;text-align:center}
+.t span{display:inline-block;width:26px;text-align:center;border:1px solid var(--mut);font:600 16px monospace}
+.t .on{background:var(--acc);color:#000}
+</style></head><body>
+<h3>AC 自动机演示　模式集 {he, she, his, hers}　文本 "ushers"</h3>
+<div class="ph" id="ph"></div>
+<svg id="s" viewBox="0 0 600 350"></svg>
+<div><button id="pv">◀ 上一步</button><button id="nx">下一步 ▶</button><button id="rs">重置</button><span id="c" class="ph"></span></div>
+<div id="d"></div>
+<div class="t" id="t"></div>
+<div id="tb"></div>
+<script>
+const P=["he","she","his","hers"],TXT="ushers";
+const pos={0:[50,120],1:[170,120],2:[290,120],8:[410,120],9:[530,120],6:[290,210],7:[410,210],3:[170,300],4:[290,300],5:[410,300]};
+const steps=[],trans={0:{}},f={},out={};let n=0,ph="A";
+const vis={nodes:[0],edges:[],loop:false};
+const snap=(txt,o={})=>steps.push({txt,ph,nodes:[...vis.nodes],edges:vis.edges.map(e=>[...e]),loop:vis.loop,f:{...f},out:JSON.parse(JSON.stringify(out)),ti:-1,found:[],...o});
+// ① 建 Trie + output
+P.forEach(p=>{let s=0;snap(`插入「${p}」，从状态 0 出发`,{cur:0});
+ for(const a of p){const e=trans[s][a];
+  if(e!==undefined){snap(`g(${s},${a})=${e} 已存在，复用该边`,{cur:e,hl:[s,e]});s=e}
+  else{const t=++n;trans[s][a]=t;trans[t]={};vis.nodes.push(t);vis.edges.push([s,t,a]);snap(`新建状态 ${t}，边 ${s}→${t} 标 ${a}`,{cur:t,hl:[s,t]});s=t}}
+ (out[s]=out[s]||[]).push(p);snap(`状态 ${s} 是「${p}」的终点：output(${s})={${out[s]}}`,{cur:s})});
+vis.loop=true;snap("对 h、s 之外的字符给状态 0 加自环 ¬{h,s}，保证 g(0,a)≠fail",{cur:0});
+// ② 求失效函数 f（BFS）
+ph="B";const g=(s,a)=>trans[s][a]!==undefined?trans[s][a]:(s===0?0:undefined);
+const q=[];for(const a in trans[0]){f[trans[0][a]]=0;q.push(trans[0][a])}
+snap("深度 1 的状态 1、3：f=0（单字符没有非空真后缀）");
+while(q.length){const r=q.shift();for(const a in trans[r]){const r2=trans[r][a];q.push(r2);
+ let st=f[r],x=`g(${r},${a})=${r2}；state=f(${r})=${st}`;
+ while(g(st,a)===undefined){const nx=f[st];x+=`；g(${st},${a})=fail，state=f(${st})=${nx}`;st=nx}
+ f[r2]=g(st,a);x+=`；f(${r2})=g(${st},${a})=${f[r2]}`;
+ const add=(out[f[r2]]||[]).filter(w=>!(out[r2]||[]).includes(w));
+ if(add.length){out[r2]=(out[r2]||[]).concat(add);x+=`；并入 output(${f[r2]})，得 output(${r2})={${out[r2]}}`}
+ snap(x,{cur:r2,hl:[r,r2]})}}
+// ③ 匹配
+ph="C";let s=0;const found=[];
+snap("开始扫描：状态 0，文本指针在首字符",{cur:0});
+[...TXT].forEach((a,i)=>{
+ while(g(s,a)===undefined){const nx=f[s];snap(`读 ${a}：g(${s},${a})=fail，失效转移 s=f(${s})=${nx}（文本指针不动）`,{cur:nx,ti:i,found:[...found],jump:[s,nx]});s=nx}
+ const t=g(s,a);let m=`读 ${a}：g(${s},${a})=${t}，进入状态 ${t}，指针前进`;
+ if(out[t]){out[t].forEach(w=>found.push(`${w}（结束于第 ${i+1} 位）`));m+=`；output(${t})={${out[t]}} → 匹配 ${out[t].join("、")}`}
+ s=t;snap(m,{cur:t,ti:i,found:[...found],hl:[t,t]})});
+// 渲染
+const NS="http://www.w3.org/2000/svg",R=18;let k=0;
+function ln(a,b,sh){const[x1,y1]=pos[a],[x2,y2]=pos[b],d=Math.hypot(x2-x1,y2-y1),ux=(x2-x1)/d,uy=(y2-y1)/d;return[x1+ux*R,y1+uy*R,x2-ux*(R+(sh||0)),y2-uy*(R+(sh||0)),ux,uy]}
+function draw(){const c=steps[k];let h=`<defs><marker id="a" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L8,4L0,8z" fill="currentColor"/></marker><marker id="b" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L8,4L0,8z" fill="#dc2626"/></marker></defs><g style="color:var(--fg)">`;
+ c.edges.forEach(([a,b,l])=>{const[x1,y1,x2,y2,ux,uy]=ln(a,b);const on=c.hl&&c.hl[0]==a&&c.hl[1]==b;
+  h+=`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${on?'#f59e0b':'currentColor'}" stroke-width="${on?3:1.5}" marker-end="url(#a)"/><text x="${(x1+x2)/2+uy*11}" y="${(y1+y2)/2-ux*11+5}" text-anchor="middle" font-size="15" fill="currentColor">${l}</text>`});
+ if(c.loop)h+=`<path d="M38,104 C10,60 90,60 62,104" fill="none" stroke="currentColor" marker-end="url(#a)"/><text x="50" y="62" text-anchor="middle" font-size="13" fill="currentColor">¬{h,s}</text>`;
+ for(const t in c.f){const to=c.f[t];if(to===0)continue;const[x1,y1,x2,y2]=ln(+t,to,4),mx=(x1+x2)/2,my=(y1+y2)/2,dx=x2-x1,dy=y2-y1;
+  const on=(c.jump&&c.jump[0]==t&&c.jump[1]==to)||(c.ph=="B"&&c.cur==t);
+  h+=`<path d="M${x1},${y1} Q${mx+dy*.25},${my-dx*.25} ${x2},${y2}" fill="none" stroke="#dc2626" stroke-dasharray="5 3" stroke-width="${on?3:1.3}" opacity="${on?1:.4}" marker-end="url(#b)"/>`}
+ c.nodes.forEach(v=>{const[x,y]=pos[v],o=c.out[v];
+  h+=(o?`<circle cx="${x}" cy="${y}" r="${R+4}" fill="none" stroke="#16a34a" stroke-width="2"/>`:"")+`<circle cx="${x}" cy="${y}" r="${R}" fill="${c.cur===v?'#f59e0b':'var(--node)'}" stroke="currentColor"/><text x="${x}" y="${y+5}" text-anchor="middle" font-size="15" fill="${c.cur===v?'#000':'currentColor'}">${v}</text>`+(o?`<text x="${x}" y="${y+38}" text-anchor="middle" font-size="12" fill="#16a34a">{${o}}</text>`:"")});
+ s_.innerHTML=h+"</g>";
+ ph_.textContent={A:"① 建 Trie，得到转向函数 g 与 output",B:"② BFS 按深度求失效函数 f，并合并 output",C:"③ 扫描文本：g 前进，fail 则按 f 回退"}[c.ph];
+ d_.textContent=c.txt;c_.textContent=`${k+1} / ${steps.length}`;
+ t_.innerHTML=c.ph=="C"?"文本："+[...TXT].map((ch,i)=>`<span class="${i==c.ti?'on':''}">${ch}</span>`).join("")+(c.found.length?"　已匹配："+c.found.join("；"):""):"";
+ const ks=Object.keys(c.f);
+ tb_.innerHTML=`<table><tr><th>状态 i</th>${ks.map(i=>`<td>${i}</td>`).join("")}</tr><tr><th>f(i)</th>${ks.map(i=>`<td>${c.f[i]}</td>`).join("")}</tr></table> `+
+ `<table><tr><th>状态 i</th>${Object.keys(c.out).map(i=>`<td>${i}</td>`).join("")}</tr><tr><th>output(i)</th>${Object.values(c.out).map(v=>`<td>{${v}}</td>`).join("")}</tr></table>`}
+const s_=document.getElementById("s"),ph_=document.getElementById("ph"),d_=document.getElementById("d"),c_=document.getElementById("c"),t_=document.getElementById("t"),tb_=document.getElementById("tb");
+const go=x=>{k=Math.max(0,Math.min(steps.length-1,k+x));draw()};
+pv.onclick=()=>go(-1);nx.onclick=()=>go(1);rs.onclick=()=>{k=0;draw()};
+onkeydown=e=>{if(e.key=="ArrowRight")go(1);if(e.key=="ArrowLeft")go(-1)};draw();
+</script></body></html>

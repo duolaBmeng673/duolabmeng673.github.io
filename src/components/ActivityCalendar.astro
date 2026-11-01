@@ -1,0 +1,90 @@
+---
+import { activityLevel, createActivityCalendar, type ActivityDay, type ActivityRecord, type ActivityType } from '../lib/activity';
+import type { BlogPost } from '../lib/blog';
+interface Props { posts: BlogPost[]; activities: ActivityRecord[] }
+const { posts, activities } = Astro.props;
+const writing: ActivityRecord[] = posts.map((post) => ({
+  date: post.data.pubDate.toISOString().slice(0, 10), type: 'writing', count: 1, description: post.data.title,
+}));
+const data = createActivityCalendar([...activities, ...writing]);
+const weekdayLabels = ['日', '一', '二', '三', '四', '五', '六'];
+const monthLabels = data.columns.map((column, index) => ({
+  index,
+  month: column.find((day) => day?.date.endsWith('-01'))?.date.slice(5, 7),
+})).filter((item) => item.month);
+const names = { coding: 'Coding', writing: 'Writing', research: 'Research', learning: 'Learning' };
+const descriptionFor = (day: ActivityDay) => {
+  const counts = (Object.entries(day.types) as Array<[ActivityType, number]>).filter(([, count]) => count > 0);
+  const total = counts.reduce((sum, [, count]) => sum + count, 0);
+  const items = counts.flatMap(([type, count]) => [`${names[type]}: ${count}`, ...(day.descriptions[type] ?? [])]);
+  return { total, items };
+};
+---
+<section class="activity-section" aria-labelledby="activity-title" data-activity-calendar data-activity-data={JSON.stringify({ activities, writing })}>
+  <div class="activity-heading">
+    <div><h2 id="activity-title">Activity</h2><p class="activity-summary" data-activity-summary>{data.activityDays} 个活跃日 · {data.totalActivities} 次活动</p></div>
+    <div class="activity-legend" aria-label="活动强度图例"><span>少</span>{[0, 1, 2, 3, 4].map((level) => <i class="activity-cell" data-level={level} aria-hidden="true"></i>)}<span>多</span></div>
+  </div>
+  <div class="activity-scroll" tabindex="0" aria-label="过去 365 天综合技术活动日历，按星期分行、按周分列">
+    <div class="activity-calendar" role="grid" aria-labelledby="activity-title" aria-rowcount="7" aria-colcount={data.columns.length} data-start={data.start} data-end={data.end}>
+      <div class="activity-months" aria-hidden="true" style={`--week-count:${data.columns.length}`}><span class="activity-month-spacer"></span>{data.columns.map((_, index) => <span class="activity-month" data-column={index}>{monthLabels.find((label) => label.index === index)?.month ? `${Number(monthLabels.find((label) => label.index === index)?.month)}月` : ''}</span>)}</div>
+      <div class="activity-grid">
+        <div class="activity-weekdays" aria-hidden="true">{weekdayLabels.map((day, index) => <span>{index % 2 === 1 ? day : ''}</span>)}</div>
+      <div class="activity-weeks">{data.columns.map((column, columnIndex) => <div class="activity-week" role="presentation">{column.map((day, rowIndex) => {
+          const { total, items } = day ? descriptionFor(day) : { total: 0, items: [] };
+          const level = activityLevel(day);
+          const dateLabel = day ? new Date(`${day.date}T00:00:00Z`).toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }) : '';
+          const label = day ? `${dateLabel}，${total} 次活动${items.length ? `：${items.join('；')}` : ''}` : '日期范围外';
+          return <button class="activity-cell" type="button" role="gridcell" aria-rowindex={rowIndex + 1} aria-colindex={columnIndex + 1} data-date={day?.date} data-level={level} data-total={total} data-details={JSON.stringify(items)} aria-label={label} tabindex={day?.date === data.end ? 0 : -1} disabled={!day} title={label} aria-selected={day?.date === data.end ? 'true' : 'false'}></button>;
+        })}</div>)}</div>
+      </div>
+    </div>
+  </div>
+  <output class="activity-detail" aria-live="polite">选择一天查看活动</output>
+  <script>
+    import '../scripts/activity-calendar';
+  </script>
+</section>
+
+<style>
+  :global(.activity-section) { padding-top: var(--space-5); }
+  :global(.activity-heading) { display:flex; justify-content:space-between; align-items:end; gap:20px; margin-bottom:14px; }
+  :global(.activity-heading h2) { margin:0 0 4px; font-size:1.7rem; }
+  :global(.activity-summary) { margin:0; color:var(--text-muted); font-size:.82rem; }
+  :global(.activity-legend) { display:flex; align-items:center; gap:4px; color:var(--text-muted); font-size:.7rem; }
+  :global(.activity-months) { display:grid; grid-template-columns:30px repeat(var(--week-count),minmax(0,1fr)); column-gap:3px; }
+  :global(.activity-grid) { display:grid; grid-template-columns:30px minmax(0,1fr); gap:8px; }
+  :global(.activity-months) { margin-bottom:5px; }
+  :global(.activity-month-spacer) { width:30px; margin-right:5px; }
+  :global(.activity-month) { min-width:0; color:var(--text-muted); font-size:.63rem; line-height:1; }
+  :global(.activity-weeks) { display:grid; grid-auto-columns:minmax(0,1fr); grid-auto-flow:column; gap:3px; }
+  :global(.activity-week),:global(.activity-weekdays) { display:grid; grid-template-rows:repeat(7, 13px); gap:3px; }
+  :global(.activity-weekdays) { color:var(--text-muted); font-size:.58rem; line-height:13px; text-align:center; }
+  :global(.activity-cell) { display:block; width:13px; height:13px; min-width:13px; min-height:13px; padding:0; border:1px solid transparent; border-radius:3px; background:var(--surface-soft); }
+  :global(button.activity-cell) { cursor:pointer; }
+  :global(button.activity-cell:disabled) { cursor:default; }
+  :global(.activity-cell[data-level="1"]) { background:#d4e6df; }
+  :global(.activity-cell[data-level="2"]) { background:#9ec8b8; }
+  :global(.activity-cell[data-level="3"]) { background:#5c9f88; }
+  :global(.activity-cell[data-level="4"]) { background:#226b5c; }
+  :global(:root[data-theme="dark"] .activity-cell[data-level="1"]) { background:#30463d; }
+  :global(:root[data-theme="dark"] .activity-cell[data-level="2"]) { background:#416f5d; }
+  :global(:root[data-theme="dark"] .activity-cell[data-level="3"]) { background:#558b71; }
+  :global(:root[data-theme="dark"] .activity-cell[data-level="4"]) { background:#70a58a; }
+  :global(.activity-cell[data-level="0"]) { border-color:var(--border); }
+  :global(button.activity-cell:hover),:global(button.activity-cell[aria-selected="true"]) { outline:2px solid var(--warm); outline-offset:1px; }
+  :global(button.activity-cell:focus-visible) { outline:2px solid var(--focus); outline-offset:2px; z-index:1; }
+  :global(.activity-detail) { display:block; min-height:1.5em; margin:10px 0 0 38px; color:var(--text-muted); font-size:.76rem; }
+  @media(max-width:760px) {
+    :global(.activity-scroll) { max-width:calc(100vw - 64px); overflow-x:auto; padding:3px 3px 8px; scrollbar-color:var(--border-strong) transparent; }
+    :global(.activity-calendar) { width:max-content; }
+    :global(.activity-months) { grid-template-columns:24px repeat(var(--week-count),12px); column-gap:3px; }
+    :global(.activity-grid) { grid-template-columns:24px max-content; gap:6px; }
+    :global(.activity-month-spacer) { width:24px; margin-right:3px; }
+    :global(.activity-week),:global(.activity-weekdays) { grid-template-rows:repeat(7, 12px); gap:3px; }
+    :global(.activity-weeks) { grid-auto-columns:12px; }
+    :global(.activity-weekdays) { line-height:12px; }
+    :global(.activity-cell) { width:12px; height:12px; min-width:12px; min-height:12px; }
+  }
+  @media(max-width:520px) { :global(.activity-heading) { align-items:start; flex-direction:column; } :global(.activity-detail) { margin-left:0; } }
+</style>

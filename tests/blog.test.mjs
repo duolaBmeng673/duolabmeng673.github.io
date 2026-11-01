@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { markdownToHtml, markdownToMdast } from 'satteri';
 import { articleHeadings } from '../src/plugins/article-headings.mjs';
 import { rankSearch, searchSnippet } from '../src/lib/search.ts';
+import { activityLevel, createActivityCalendar } from '../src/lib/activity.ts';
 
 const render = async (source) => (await markdownToHtml(source, { mdastPlugins: [articleHeadings], data: { astro: { frontmatter: { title: '标题' } } } })).html;
 test('outline removes duplicate H1, demotes section trees, and preserves anchor IDs', async () => {
@@ -39,4 +40,27 @@ test('Chinese, full body, mixed technical terms and ranking work without tokeniz
 test('search tie breaking is deterministic and uses date only after score', () => {
   const records=[record('b','ssl',[],'2024-01-01'),record('a','ssl',[],'2024-01-01'),record('c','ssl')];
   assert.deepEqual(rankSearch(records,'ssl').map(r=>r.title),['c','a','b']);
+});
+test('activity calendar uses local dates, sums activity types, and handles leap days and range edges', () => {
+  const today = new Date(2024, 2, 1);
+  const records = [
+    { date: '2024-02-29', type: 'coding', count: 2, description: '实现功能' },
+    { date: '2024-02-29', type: 'research', count: 1 },
+    { date: '2024-02-29', type: 'coding', count: 1 },
+    { date: '2023-03-02', type: 'learning', count: 9 },
+    { date: '2023-03-03', type: 'writing', count: 3 },
+    { date: '2024-03-02', type: 'writing', count: 5 },
+  ];
+  const result = createActivityCalendar(records, today);
+  assert.equal(result.start, '2023-03-03');
+  assert.equal(result.end, '2024-03-01');
+  assert.equal(result.activityDays, 2);
+  assert.equal(result.totalActivities, 7);
+  const leapDay = result.columns.flat().find((day) => day?.date === '2024-02-29');
+  assert.deepEqual(leapDay.types, { coding: 3, writing: 0, research: 1, learning: 0 });
+  assert.deepEqual(leapDay.descriptions.coding, ['实现功能']);
+  assert.equal(activityLevel(leapDay), 3);
+  assert.equal(result.columns.flat().filter(Boolean).length, 365);
+  assert.equal(result.columns.flat().filter((day) => day?.date === '2023-03-02').length, 0);
+  assert.throws(() => createActivityCalendar([{ date: '2024-02-30', type: 'coding', count: 1 }], today), /Invalid activity date/);
 });

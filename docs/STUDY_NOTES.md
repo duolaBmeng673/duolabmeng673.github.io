@@ -7,12 +7,12 @@ Study Notes 沿用 Astro Content Collections 与全站文章模板、TOC、代�
 - `/study-notes/`：已有公开学习系列。
 - `/study-notes/837/`：哈工大 837 模块选择页，保留旧链接，不再混排全部文章。
 - `/study-notes/837/information-security/`：信息安全，当前 8 篇，按考纲分为 01、04、05、06 章。
-- `/study-notes/837/network-security/`：网络安全，当前 4 篇，属于 01 网络攻击。
+- `/study-notes/837/network-security/`：网络安全，当前 14 篇，按网络攻击、数据获取、扫描和匹配／分类算法的考纲顺序排列。
 - 模块依据明确的 `subject` 及实际内容区分，使用公开集合动态计数；总入口直接提供两条模块链接。
 - 信息安全导论：`/study-notes/837/chapter/01/`、`04/`、`05/`、`06/`。
 - 网络安全基础：`/study-notes/837/chapter/network-security-01/`。模块分别分组，不合并同号章节；只列出已有内容，不代表完整考纲。
 - `/study-notes/837/security-basics/`、`ipsec/`、`ssl/`、`set/`、`risk-management/`、`firewall-netfilter/`、`intrusion-detection-snort/`：7 篇既有笔记。
-- 新增 `traditional-computer-viruses/`、`network-protocol-vulnerabilities/`、`dos-ddos-attacks/`、`format-string-buffer-overflow/`，另接入 `web-attack-techniques/`，共 12 篇公开学习笔记。
+- 当前公开学习笔记共 22 篇：信息安全 8 篇、网络安全 14 篇。新增模式匹配笔记为 `bm-algorithm/`、`ac-algorithm/`、`wm-algorithm/`；KMP 页面 ID 与 URL 未变，源附件随作者一起移至 `5.a.1 KMP算法/`。`decision-tree-c45/` 位于第 06 章，沿用真实章序。
 
 原文件保留在 `src/content/837考研/`，图片继续使用原相对路径，由 Astro 打包。本轮 Web 文章仅增加 Front Matter，原正文和资源未改动。发布状态不等于学习完成状态。此前经作者确认的 5 篇初始笔记保持公开，第 6 章原有待复习说明保留。
 

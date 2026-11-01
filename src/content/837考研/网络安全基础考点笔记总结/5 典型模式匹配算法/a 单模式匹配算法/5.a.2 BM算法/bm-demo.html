@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BM 算法逐步演示</title>
+<style>
+:root{--bg:#fff;--fg:#1f2937;--mu:#6b7280;--bd:#cbd5e1;--card:#f8fafc;--ok:#bbf7d0;--okb:#16a34a;--bad:#fecaca;--badb:#dc2626;--pat:#dbeafe;--patb:#60a5fa;--gh:#fef9c3;--ghb:#ca8a04;--hl:#fde68a;--ac:#2563eb}
+@media(prefers-color-scheme:dark){:root{--bg:#111827;--fg:#e5e7eb;--mu:#9ca3af;--bd:#475569;--card:#1f2937;--ok:#14532d;--bad:#7f1d1d;--pat:#1e3a8a;--gh:#422006;--hl:#78350f;--ac:#60a5fa}}
+body{margin:0;padding:16px;background:var(--bg);color:var(--fg);font:15px/1.6 system-ui,"Noto Sans SC","Microsoft YaHei",sans-serif;max-width:1000px;margin:auto}
+h1{font-size:20px;margin:0 0 10px}.ctl{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:8px 0}
+input,select,button{font:inherit;padding:5px 10px;border:1px solid var(--bd);border-radius:6px;background:var(--card);color:var(--fg)}
+input{font-family:ui-monospace,Consolas,monospace;min-width:0}button{cursor:pointer}button:disabled{opacity:.4;cursor:default}button.p{background:var(--ac);color:#fff;border-color:var(--ac)}
+#stage{overflow-x:auto;padding:10px;border:1px solid var(--bd);border-radius:10px;background:var(--card)}
+.lab{font-size:12px;color:var(--mu);margin:6px 0 2px}.row{display:flex;width:max-content}
+.c{box-sizing:border-box;width:34px;height:44px;flex:none;border:1.5px solid var(--bd);border-radius:5px;margin-right:2px;text-align:center;font:700 17px/30px ui-monospace,Consolas,monospace;position:relative;background:var(--bg)}
+.c i{position:absolute;left:0;right:0;bottom:-1px;font:400 10px/12px ui-monospace,monospace;color:var(--mu)}
+.c.ok{background:var(--ok);border-color:var(--okb)}.c.bad{background:var(--bad);border-color:var(--badb)}.c.pat{background:var(--pat);border-color:var(--patb)}
+.c.gh{background:var(--gh);border:1.5px dashed var(--ghb)}.c.hl{outline:3px solid var(--hl)}
+#info{margin:12px 0;padding:10px 14px;border-left:4px solid var(--ac);background:var(--card);border-radius:0 8px 8px 0;min-height:76px}
+#info code{background:var(--bg);padding:1px 5px;border-radius:4px}.bd{color:var(--badb)}.gd{color:var(--okb)}
+table{border-collapse:collapse;margin:4px 0 10px;font-family:ui-monospace,Consolas,monospace;font-size:14px}td,th{border:1px solid var(--bd);padding:3px 10px;text-align:center}th{background:var(--card);font-weight:600}td.hl,th.hl{background:var(--hl);color:#111}
+.st{color:var(--mu);font-size:13px}.err{color:var(--badb)}
+</style></head><body>
+<h1>BM 算法逐步演示（坏字符 + 好后缀）</h1>
+<div class="ctl"><label>文本 T <input id="T" size="30"></label><label>模式 P <input id="P" size="14"></label>
+<select id="pre"></select><button id="load" class="p">载入</button><span id="err" class="err"></span></div>
+<div class="ctl"><button id="first">⏮ 重置</button><button id="prev">◀ 上一步</button><button id="next" class="p">下一步 ▶</button><button id="na">下一次对齐 ⏭</button><span id="pos" class="st"></span></div>
+<div id="stage"></div><div id="info"></div>
+<div class="st" id="stat"></div>
+<div><b>bmBc</b>（失配时查坏字符）<div id="tbc"></div><b>bmGs</b>（失配位置 j 对应的好后缀位移）<div id="tgs"></div></div>
+<p class="st">快捷键：← 上一步　→ 下一步。绿色 = 已匹配（好后缀），红色 = 坏字符，黄色虚线 = 移动后的模式串位置。</p>
+<script>
+/*ALGO*/
+function bmBc(P){const m=P.length,t={};for(let i=0;i<m-1;i++)t[P[i]]=m-1-i;return t}
+function suffixes(x){const m=x.length,s=new Array(m).fill(0);s[m-1]=m;let g=m-1,f=0;
+ for(let i=m-2;i>=0;i--){if(i>g&&s[i+m-1-f]<i-g)s[i]=s[i+m-1-f];else{if(i<g)g=i;f=i;while(g>=0&&x[g]===x[g+m-1-f])g--;s[i]=f-g}}return s}
+function bmGs(x){const m=x.length,s=suffixes(x),b=new Array(m).fill(m);let j=0;
+ for(let i=m-1;i>=0;i--)if(s[i]===i+1)while(j<m-1-i){if(b[j]===m)b[j]=m-1-i;j++}
+ for(let i=0;i<m-1;i++)b[m-1-s[i]]=m-1-i;return b}
+function build(T,P){const n=T.length,m=P.length,bc=bmBc(P),gs=bmGs(P),st=[{k:'init'}];let s=0,al=0,cmp=0;
+ while(s<=n-m){al++;st.push({k:'align',s,al,cmp});let j=m-1;
+  while(j>=0){const ok=P[j]===T[s+j];cmp++;st.push({k:'cmp',s,j,ok,al,cmp});if(!ok)break;j--}
+  if(j<0){const sh=gs[0];st.push({k:'found',s,sh,al,cmp});s+=sh}
+  else{const c=T[s+j],d=m-1-j,raw=c in bc?bc[c]:m,b=raw-d,g=gs[j],sh=Math.max(b,g,1);st.push({k:'shift',s,j,c,d,raw,b,g,sh,al,cmp});s+=sh}}
+ st.push({k:'end',al,cmp});return st}
+/*END*/
+const $=i=>document.getElementById(i),CW=36;
+const PRE=[['引入示例：TCGTGGCAGCGCG / GCGCG','TCGTGGCAGCGCG','GCGCG'],['好后缀胜出：CDECDEGBCDE','ZZZZZZABCDEZZZZZZZZZZZZ','CDECDEGBCDE'],['坏字符规则 2b：NEDLEE','XXELEEXXXXXXNEDLEEXX','NEDLEE'],['课件示例：GCAGAGAG','GCATCGCAGAGAGTATACAGTACG','GCAGAGAG']];
+$('pre').innerHTML=PRE.map((p,i)=>`<option value=${i}>${p[0]}</option>`).join('');
+let T,P,steps,idx,bc,gs;
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function load(){T=Array.from($('T').value);P=Array.from($('P').value);$('err').textContent='';
+ if(!P.length||!T.length||P.length>T.length){$('err').textContent='需要 1 ≤ |P| ≤ |T|';return}
+ bc=bmBc(P);gs=bmGs(P);steps=build(T,P);idx=0;tables();render()}
+function tables(){const cs=[...new Set(P)];
+ $('tbc').innerHTML='<table><tr><th>c</th>'+cs.map(c=>`<th data-c="${esc(c)}">${esc(c)}</th>`).join('')+'<th data-c="*">其他</th></tr><tr><th>bmBc</th>'+cs.map(c=>`<td data-c="${esc(c)}">${c in bc?bc[c]:P.length}</td>`).join('')+`<td data-c="*">${P.length}</td></tr></table>`;
+ $('tgs').innerHTML='<table><tr><th>j</th>'+[...P].map((_,j)=>`<th data-j="${j}">${j}</th>`).join('')+'</tr><tr><th>P[j]</th>'+[...P].map((c,j)=>`<td data-j="${j}">${esc(c)}</td>`).join('')+'</tr><tr><th>bmGs</th>'+gs.map((v,j)=>`<td data-j="${j}">${v}</td>`).join('')+'</tr></table>'}
+function cells(str,cls,off,idxOn){return `<div class="row" style="margin-left:${off*CW}px">`+[...str].map((c,k)=>`<div class="c ${cls[k]||''}">${c===' '?'␣':esc(c)}${idxOn?`<i>${k+off}</i>`:''}</div>`).join('')+'</div>'}
+function render(){const st=steps[idx],m=P.length,n=T.length;let s=st.s??0,ct={},cp={},gh='';
+ if(st.al){for(let q=idx;q>=0;q--){const x=steps[q];if(x.k==='align'&&x.al===st.al)break;if(x.k==='cmp'&&x.al===st.al){const v=x.ok?'ok':'bad';ct[x.s+x.j]=v;cp[x.j]=v}}}
+ for(let j=0;j<m;j++)cp[j]=cp[j]||'pat';
+ let html='<div class="lab">文本 T（数字 = 下标）</div>'+cells(T,ct,0,true);
+ if(st.k!=='init'&&st.k!=='end'){html+='<div class="lab">模式 P（对齐在 s='+s+'）</div>'+cells(P,cp,s,false)}
+ if(st.k==='shift'||st.k==='found'){const g={};for(let j=0;j<m;j++)g[j]='gh';html+='<div class="lab">移动后（右移 '+st.sh+'，s='+(s+st.sh)+'）</div>'+cells(P,g,s+st.sh,false)}
+ $('stage').innerHTML=html;
+ const j=st.j,w=T[s+j];let h='';
+ if(st.k==='init')h=`已完成预处理：<code>m=${m}</code>，bmBc 与 bmGs 见下表。点击“下一步”把模式串与文本串左对齐，开始第一次对齐。`;
+ else if(st.k==='align')h=`<b>第 ${st.al} 次对齐</b>：模式串左端对齐文本下标 <code>s=${s}</code>，指针 <code>j=${m-1}</code>，从模式串最右端开始<b>自右向左</b>比较。`;
+ else if(st.k==='cmp')h=st.ok?`比较 <code>P[${j}]=${esc(P[j])}</code> 与 <code>T[${s+j}]=${esc(w)}</code>：<span class="gd">相等 ✓</span>${j==0?'，已到模式串最左端 → 整个模式串匹配成功':`，<code>j</code> 左移到 ${j-1}`}。`:`比较 <code>P[${j}]=${esc(P[j])}</code> 与 <code>T[${s+j}]=${esc(w)}</code>：<span class="bd">不等 ✗</span>。<br>坏字符 = 文本中的 <code>${esc(w)}</code>；好后缀 = <code>${j<m-1?'P['+(j+1)+'..'+(m-1)+']="'+esc(P.slice(j+1).join(''))+'"':'（空，第一次比较就失配）'}</code>。`;
+ else if(st.k==='shift'){const rule=!(st.c in bc)?'规则 1：坏字符不在模式串中，bmBc='+m:(st.b>0?'规则 2a：最右的 '+esc(st.c)+' 在失配位置左侧':'规则 2b：最右的 '+esc(st.c)+' 在失配位置右侧（会倒退）');
+  h=`计算位移（<code>d=m−1−j=${st.d}</code>）：<br><b>坏字符</b> ${rule}：<code>shift(Bc)=bmBc[${esc(st.c)}]−d=${st.raw}−${st.d}=${st.b}</code>${st.b<=0?'（≤0，不可用）':''}<br><b>好后缀</b>：<code>shift(Gs)=bmGs[${st.j}]=${st.g}</code><br>取较大者并至少为 1：<b><code>shift=max(${st.b}, ${st.g}, 1)=${st.sh}</code></b>，模式串右移 ${st.sh} 位。`}
+ else if(st.k==='found')h=`<span class="gd"><b>匹配成功 ✓</b></span>：在文本下标 <code>${s}</code> 处找到模式串。继续查找时按 <code>bmGs[0]=${st.sh}</code> 右移。`;
+ else h=`匹配结束：共 <b>${st.al}</b> 次对齐、<b>${st.cmp}</b> 次字符比较（文本长度 ${n}）。`;
+ $('info').innerHTML=h;
+ const found=steps.slice(0,idx+1).filter(x=>x.k==='found').map(x=>x.s);
+ $('stat').textContent=`对齐次数 ${st.al??0}　比较次数 ${st.cmp??0}　已找到位置：${found.length?found.join(', '):'无'}`;
+ $('pos').textContent=`步骤 ${idx+1} / ${steps.length}`;
+ document.querySelectorAll('.hl').forEach(e=>e.classList.remove('hl'));
+ if(st.k==='shift'){const key=st.c in bc?st.c:'*';document.querySelectorAll('[data-c]').forEach(e=>{if(e.dataset.c===key)e.classList.add('hl')});document.querySelectorAll(`[data-j="${st.j}"]`).forEach(e=>e.classList.add('hl'))}
+ $('first').disabled=$('prev').disabled=idx===0;$('next').disabled=$('na').disabled=idx===steps.length-1}
+const go=d=>{if(!steps)return;idx=Math.max(0,Math.min(steps.length-1,idx+d));render()};
+$('next').onclick=()=>go(1);$('prev').onclick=()=>go(-1);$('first').onclick=()=>{idx=0;render()};
+$('na').onclick=()=>{let q=idx+1;while(q<steps.length-1&&steps[q].k!=='align')q++;idx=q;render()};
+$('load').onclick=load;$('pre').onchange=()=>{const p=PRE[$('pre').value];$('T').value=p[1];$('P').value=p[2];load()};
+document.addEventListener('keydown',e=>{if(e.target.tagName==='INPUT')return;if(e.key==='ArrowRight')go(1);if(e.key==='ArrowLeft')go(-1)});
+$('pre').onchange();
+</script></body></html>

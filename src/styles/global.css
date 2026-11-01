@@ -470,10 +470,10 @@ main { min-height: calc(100vh - 145px); }
 .selected-reading .editorial-row:first-child .note-description { max-width: 64ch; font-size: .85rem; }
 .priority-badge { display: inline-flex; vertical-align: middle; margin-inline: .3rem; padding: 2px 6px; border-radius: var(--radius-small); background: var(--warm-soft); color: var(--warm-text); font-family: var(--sans); font-size: 0; font-style: normal; font-weight: 600; line-height: 1.5; white-space: nowrap; }
 .priority-badge::after { content: "重点"; font-size: .68rem; }
-.kmp-interactive { display: block; width: 100%; height: 560px; border: 1px solid var(--border-strong); border-radius: var(--radius); background: var(--surface); color-scheme: inherit; }
-.kmp-demo { margin: 1.8em 0; }
-.kmp-fallback { margin-top: 10px; font-size: .85rem; }
-.kmp-fallback summary { color: var(--link); cursor: pointer; }
+.article-interactive { display: block; width: 100%; min-height: 360px; border: 1px solid var(--border-strong); border-radius: var(--radius); background: var(--surface); color-scheme: inherit; }
+.article-demo { margin: 1.8em 0; }
+.interactive-fallback { margin-top: 10px; font-size: .85rem; }
+.interactive-fallback summary { color: var(--link); cursor: pointer; }
 @media (hover: none), (pointer: coarse) { .header-search-form kbd { display: none; } }
 @media (max-width: 520px) {
   .selected-reading .editorial-row:first-child strong { font-size: 1.25rem; }
