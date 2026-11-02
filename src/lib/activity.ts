@@ -14,6 +14,23 @@ export interface ActivityDay {
   descriptions: Partial<Record<ActivityType, string[]>>;
 }
 
+const activityLabels: Record<ActivityType, string> = {
+  coding: '代码开发', writing: '写作', research: '研究', learning: '学习',
+};
+
+export function getActivityDayDetails(day: ActivityDay) {
+  // A calendar date is not an instant: keep its label independent of the viewer's timezone.
+  const [year, month, date] = day.date.split('-');
+  const dateLabel = `${year} 年 ${Number(month)} 月 ${Number(date)} 日`;
+  const groups = activityTypes.filter((type) => day.types[type] > 0).map((type) => ({
+    type, label: activityLabels[type], count: day.types[type], descriptions: [...(day.descriptions[type] ?? [])],
+  }));
+  const total = groups.reduce((sum, group) => sum + group.count, 0);
+  const descriptions = groups.map((group) => `${group.label}：${group.count} 次${group.descriptions.length ? `，${group.descriptions.join('；')}` : ''}`);
+  const label = `${dateLabel}，${total} 次活动：${descriptions.length ? descriptions.join('；') : '当天没有活动'}`;
+  return { dateLabel, total, groups, label };
+}
+
 export function localDateKey(date: Date) {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, '0');

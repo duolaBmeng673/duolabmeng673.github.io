@@ -20,6 +20,11 @@
   --accent: #0e6b5c;
   --accent-strong: #0b5c50;
   --accent-soft: #e3f0ec;
+  --heat-0: color-mix(in srgb, var(--text) 7%, var(--bg));
+  --heat-1: color-mix(in srgb, var(--accent) 25%, var(--bg));
+  --heat-2: color-mix(in srgb, var(--accent) 45%, var(--bg));
+  --heat-3: color-mix(in srgb, var(--accent) 65%, var(--bg));
+  --heat-4: color-mix(in srgb, var(--accent) 85%, var(--bg));
   --warm: #b5532f;
   --warm-text: #9a4524;
   --warm-soft: #f5e8df;
@@ -85,6 +90,10 @@
   --accent: #4db6a0;
   --accent-strong: #81d1bd;
   --accent-soft: #1c2e2a;
+  --heat-1: color-mix(in srgb, var(--accent) 30%, var(--bg));
+  --heat-2: color-mix(in srgb, var(--accent) 46%, var(--bg));
+  --heat-3: color-mix(in srgb, var(--accent) 62%, var(--bg));
+  --heat-4: color-mix(in srgb, var(--accent) 78%, var(--bg));
   --warm: #e08a66;
   --warm-text: #e08a66;
   --warm-soft: #352720;

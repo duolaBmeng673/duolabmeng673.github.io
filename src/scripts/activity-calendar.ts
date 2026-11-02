@@ -1,26 +1,28 @@
-import { activityLevel, createActivityCalendar, localDateKey, type ActivityRecord } from '../lib/activity';
-
-const names = { coding: 'Coding', writing: 'Writing', research: 'Research', learning: 'Learning' } as const;
-const dateLabel = (date: string) => new Date(`${date}T00:00:00Z`).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' });
+import { activityLevel, createActivityCalendar, getActivityDayDetails, localDateKey, type ActivityDay, type ActivityRecord } from '../lib/activity';
 
 document.querySelectorAll<HTMLElement>('[data-activity-calendar]').forEach((root) => {
   const grid = root.querySelector<HTMLElement>('.activity-grid');
   const calendar = root.querySelector<HTMLElement>('.activity-calendar');
   const months = root.querySelector<HTMLElement>('.activity-months');
   const summary = root.querySelector<HTMLElement>('[data-activity-summary]');
-  const detail = root.querySelector<HTMLOutputElement>('.activity-detail');
-  if (!grid || !calendar || !months || !summary || !detail) return;
+  const detailDate = root.querySelector<HTMLTimeElement>('[data-activity-detail-date]');
+  const detailTotal = root.querySelector<HTMLElement>('[data-activity-detail-total]');
+  const detailGroups = root.querySelector<HTMLElement>('[data-activity-detail-groups]');
+  const detailEmpty = root.querySelector<HTMLElement>('[data-activity-detail-empty]');
+  if (!grid || !calendar || !months || !summary || !detailDate || !detailTotal || !detailGroups || !detailEmpty) return;
 
   let records: ActivityRecord[];
+  let data: ReturnType<typeof createActivityCalendar>;
   try {
-    const data = JSON.parse(root.dataset.activityData ?? '{}') as { activities?: ActivityRecord[]; writing?: ActivityRecord[] };
-    records = [...(data.activities ?? []), ...(data.writing ?? [])];
+    const payload = JSON.parse(root.dataset.activityData ?? '{}') as { activities?: ActivityRecord[]; writing?: ActivityRecord[] };
+    records = [...(payload.activities ?? []), ...(payload.writing ?? [])];
+    data = createActivityCalendar(records, new Date());
   } catch {
-    detail.value = '活动记录暂时无法读取';
+    detailEmpty.textContent = '活动记录暂时无法读取，仍可查看上方日历。';
+    detailEmpty.hidden = false;
     return;
   }
 
-  const data = createActivityCalendar(records, new Date());
   calendar.dataset.start = data.start;
   calendar.dataset.end = data.end;
   calendar.setAttribute('aria-colcount', String(data.columns.length));
@@ -48,13 +50,7 @@ document.querySelectorAll<HTMLElement>('[data-activity-calendar]').forEach((root
   const weeks = document.createElement('div');
   weeks.className = 'activity-weeks';
   const buttons: HTMLButtonElement[] = [];
-  const describe = (day: NonNullable<typeof data.columns[number][number]>) => {
-    const counts = Object.entries(day.types).filter(([, count]) => count > 0) as Array<[keyof typeof names, number]>;
-    const total = counts.reduce((sum, [, count]) => sum + count, 0);
-    const items = counts.flatMap(([type, count]) => [`${names[type]}: ${count}`, ...(day.descriptions[type] ?? [])]);
-    const label = `${dateLabel(day.date)}，${total} 次活动${items.length ? `：${items.join('；')}` : ''}`;
-    return { total, items, label };
-  };
+  const days = new Map<string, ActivityDay>();
 
   data.columns.forEach((column, columnIndex) => {
     const week = document.createElement('div');
@@ -67,12 +63,13 @@ document.querySelectorAll<HTMLElement>('[data-activity-calendar]').forEach((root
       cell.setAttribute('role', 'gridcell');
       cell.setAttribute('aria-rowindex', String(rowIndex + 1));
       cell.setAttribute('aria-colindex', String(columnIndex + 1));
+      cell.setAttribute('aria-controls', 'activity-detail');
       if (day) {
-        const { total, items, label } = describe(day);
+        days.set(day.date, day);
+        const { total, label } = getActivityDayDetails(day);
         cell.dataset.date = day.date;
         cell.dataset.level = String(activityLevel(day));
         cell.dataset.total = String(total);
-        cell.dataset.details = JSON.stringify(items);
         cell.setAttribute('aria-label', label);
         cell.title = label;
         cell.disabled = false;
@@ -89,15 +86,36 @@ document.querySelectorAll<HTMLElement>('[data-activity-calendar]').forEach((root
   summary.textContent = `${data.activityDays} 个活跃日 · ${data.totalActivities} 次活动`;
 
   const select = (button: HTMLButtonElement, moveFocus = false) => {
+    const day = days.get(button.dataset.date ?? '');
+    if (!day) return;
     buttons.forEach((cell) => {
       const selected = cell === button;
       cell.tabIndex = selected ? 0 : -1;
       cell.setAttribute('aria-selected', String(selected));
     });
-    const date = button.dataset.date;
-    const total = Number(button.dataset.total ?? 0);
-    const items = JSON.parse(button.dataset.details ?? '[]') as string[];
-    detail.value = `${date ? dateLabel(date) : ''} · ${total} 次活动${items.length ? ` · ${items.join(' · ')}` : ' · 无活动'}`;
+    const { dateLabel, total, groups } = getActivityDayDetails(day);
+    detailDate.dateTime = day.date;
+    detailDate.textContent = dateLabel;
+    detailTotal.textContent = `${total} 次活动`;
+    detailEmpty.hidden = total > 0;
+    detailGroups.replaceChildren();
+    for (const group of groups) {
+      const item = document.createElement('li');
+      const heading = document.createElement('p');
+      heading.className = 'activity-detail-type';
+      heading.textContent = `${group.label} · ${group.count} 次`;
+      item.append(heading);
+      if (group.descriptions.length) {
+        const descriptions = document.createElement('ul');
+        for (const description of group.descriptions) {
+          const entry = document.createElement('li');
+          entry.textContent = description;
+          descriptions.append(entry);
+        }
+        item.append(descriptions);
+      }
+      detailGroups.append(item);
+    }
     if (moveFocus) button.focus();
   };
   const current = buttons.find((button) => button.dataset.date === localDateKey(new Date()))
