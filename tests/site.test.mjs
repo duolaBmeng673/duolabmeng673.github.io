@@ -93,6 +93,23 @@ test('study entry points select independent modules and preserve existing chapte
   }
 });
 
+test('technical archive offers only papers and algorithms while global search retains all notes', () => {
+  const html = read('dist/blog/index.html');
+  assert.deepEqual([...html.matchAll(/data-category-filter="([^"]+)"/g)].map((match) => match[1]), ['all', 'Research', 'Computer Science']);
+  assert.ok(html.includes('算法题解'));
+  const options = [...html.matchAll(/<option\b[^>]*value="([^"]*)"/g)].map((match) => match[1]);
+  assert.ok(!options.includes('HIT 837'));
+  assert.ok(!options.includes('考研复习'));
+  const records = JSON.parse(html.match(/id="notes-index"[^>]*>([^]*?)<\/script>/)[1]);
+  assert.equal(records.length, index.length, 'global queries and legacy tag links retain all public notes');
+  const rows = [...html.matchAll(/<article\b([^>]*data-note-row[^>]*)>/g)].map((match) => match[1]);
+  const technical = index.filter((post) => post.category !== 'Study Notes');
+  assert.equal(rows.filter((attrs) => !/\bhidden\b/.test(attrs)).length, technical.length);
+  for (const path of ['dist/study-notes/index.html', 'dist/study-notes/837/index.html']) {
+    assert.ok(!read(path).includes('/blog/?category=Study%20Notes'));
+  }
+});
+
 test('home keeps identity and four linked directions without the five removed descriptions', () => {
   const html = read('dist/index.html');
   for (const text of ['从 Transformers、BERT 到 GPT-1，整理语言模型的结构与训练方法。', '阅读 CLIP、MathVista、MMMU 与视觉任务相关论文。', '记录表格表示、理解和自动化处理方向的论文。', '整理 Python 输入输出，以及 HIT 837 两个安全模块的学习笔记。', '整理语言模型、多模态与表格理解论文，也记录算法练习和 HIT 837 学习笔记。']) assert.ok(!html.includes(text));

@@ -10,10 +10,13 @@ const subcategory = document.querySelector<HTMLSelectElement>('[data-subcategory
 const series = document.querySelector<HTMLSelectElement>('[data-series-filter]');
 const empty = document.querySelector<HTMLElement>('[data-archive-empty]');
 const status = document.querySelector<HTMLElement>('[data-result-status]');
+const title = document.querySelector<HTMLElement>('[data-archive-title]');
+const description = document.querySelector<HTMLElement>('[data-archive-description]');
 let category = 'all', view = 'notes', tag = '', query = '';
 const readUrl = () => {
   const params = new URLSearchParams(location.search);
-  category = categoryLinks.some((link) => link.dataset.categoryFilter === params.get('category')) ? params.get('category')! : 'all';
+  // Preserve shared links created before Study Notes gained its own entry point.
+  category = params.get('category') === 'Study Notes' || categoryLinks.some((link) => link.dataset.categoryFilter === params.get('category')) ? params.get('category')! : 'all';
   view = params.get('view') === 'timeline' ? 'timeline' : 'notes';
   tag = params.get('tag') ?? ''; query = params.get('q') ?? '';
   if (search) search.value = query;
@@ -50,6 +53,9 @@ const apply = async (writeUrl = true) => {
     if (current !== run) return;
   }
   const regularOnly = category === 'all' && !query && !tag && !subcategory?.value && !series?.value;
+  const sharedSearch = Boolean(query || (tag && category === 'all'));
+  if (title) title.textContent = sharedSearch ? (query ? '搜索结果' : '标签检索') : category === 'Study Notes' ? '学习笔记检索' : '技术笔记';
+  if (description) description.hidden = sharedSearch || category === 'Study Notes';
   const filtered = records.filter((record) =>
     (category === 'all' || record.category === category) && (!regularOnly || record.category !== 'Study Notes') &&
     (!subcategory?.value || record.subcategory === subcategory.value) && (!series?.value || record.series === series.value) &&
