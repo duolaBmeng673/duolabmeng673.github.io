@@ -65,7 +65,7 @@ test('new Web note is in the syllabus, full-text index, RSS and sitemap', () => 
 test('study entry points select independent modules and preserve existing chapter and article navigation', () => {
   const modules = {
     'information-security': ['security-basics', 'traditional-computer-viruses', 'firewall-netfilter', 'intrusion-detection-snort', 'ipsec', 'ssl', 'set', 'risk-management'],
-    'network-security': ['network-protocol-vulnerabilities', 'dos-ddos-attacks', 'format-string-buffer-overflow', 'web-attack-techniques', 'network-packet-capture', 'packet-capture-bpf', 'libpcap-winpcap', 'host-discovery', 'port-scanning', 'kmp-algorithm', 'bm-algorithm', 'ac-algorithm', 'wm-algorithm', 'decision-tree-c45'],
+    'network-security': ['network-protocol-vulnerabilities', 'dos-ddos-attacks', 'format-string-buffer-overflow', 'web-attack-techniques', 'network-packet-capture', 'packet-capture-bpf', 'libpcap-winpcap', 'host-discovery', 'port-scanning', 'kmp-algorithm', 'bm-algorithm', 'ac-algorithm', 'wm-algorithm', 'decision-tree-c45', 'naive-bayes-classification', 'k-means-clustering', 'agglomerative-clustering', 'divisive-clustering', 'dbscan-clustering'],
   };
   const prefix = '/study-notes/837/';
   for (const entry of ['dist/study-notes/index.html', 'dist/study-notes/837/index.html']) {
@@ -126,6 +126,27 @@ test('new matching notes are public in syllabus order with local interactive dem
     const chapter = slug === 'decision-tree-c45' ? 'network-security-06' : 'network-security-05';
     assert.ok(read(`dist/study-notes/837/chapter/${chapter}/index.html`).includes(route));
   }
+});
+
+test('classification and clustering notes are discoverable with math, tables and recall controls', () => {
+  const slugs = ['naive-bayes-classification', 'k-means-clustering', 'agglomerative-clustering', 'divisive-clustering', 'dbscan-clustering'];
+  for (const slug of slugs) {
+    const route = `/study-notes/837/${slug}/`;
+    const post = index.find((item) => item.href === route);
+    assert.ok(post, route);
+    assert.equal(post.date, '2026-11-02');
+    assert.ok(post.searchText.includes('网络安全基础'));
+    for (const file of ['dist/rss.xml', 'dist/sitemap.xml', 'dist/study-notes/837/chapter/network-security-06/index.html']) assert.ok(read(file).includes(route), file);
+    const html = read(`dist${route}index.html`);
+    assert.ok(html.includes('class="katex"'), `${slug} math rendered`);
+    assert.ok(!html.includes('katex-error'), `${slug} has no math errors`);
+    assert.ok(html.includes('<table'));
+    assert.ok(html.includes('data-study-mode="recall"'));
+  }
+  const bayes = read('dist/study-notes/837/naive-bayes-classification/index.html');
+  assert.match(bayes, /src="\/_astro\/naive-bayes-flow\.[^"]+\.svg"/);
+  assert.ok(!index.some((post) => post.title.includes('笔记设计规范')), 'authoring document is not published');
+  assert.ok(!read('dist/sitemap.xml').includes('笔记设计规范'));
 });
 
 test('real Chinese, English, mixed, body-only and empty queries find expected published notes', async () => {

@@ -34,7 +34,7 @@ const blogHuaweiExamination = defineCollection({
 const studyNotes = defineCollection({
   loader: glob({
     base: './src/content/837考研',
-    pattern: '**/*.md',
+    pattern: ['**/*.md', '!笔记设计规范.md'],
     generateId: ({ data, entry }) => typeof data.studySlug === 'string' ? data.studySlug : entry.replace(/\.md$/, ''),
   }),
   schema: schema.omit({ category: true, subcategory: true, series: true }).extend({
