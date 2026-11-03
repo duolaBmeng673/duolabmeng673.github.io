@@ -64,7 +64,7 @@ test('new Web note is in the syllabus, full-text index, RSS and sitemap', () => 
 
 test('study entry points select independent modules and preserve existing chapter and article navigation', () => {
   const modules = {
-    'information-security': ['security-basics', 'traditional-computer-viruses', 'firewall-netfilter', 'intrusion-detection-snort', 'ipsec', 'ssl', 'set', 'risk-management'],
+    'information-security': ['security-basics', 'symmetric-authentication-kerberos', 'public-key-authentication-pki', 'access-control-models', 'windows-authentication-access-control', 'traditional-computer-viruses', 'firewall-netfilter', 'intrusion-detection-snort', 'ipsec', 'ssl', 'set', 'risk-management'],
     'network-security': ['network-protocol-vulnerabilities', 'dos-ddos-attacks', 'format-string-buffer-overflow', 'web-attack-techniques', 'network-packet-capture', 'packet-capture-bpf', 'libpcap-winpcap', 'host-discovery', 'port-scanning', 'kmp-algorithm', 'bm-algorithm', 'ac-algorithm', 'wm-algorithm', 'decision-tree-c45', 'naive-bayes-classification', 'k-means-clustering', 'agglomerative-clustering', 'divisive-clustering', 'dbscan-clustering'],
   };
   const prefix = '/study-notes/837/';

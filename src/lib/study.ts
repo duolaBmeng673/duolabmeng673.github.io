@@ -10,7 +10,7 @@ export const studySeries = {
 } as const;
 
 export const studyModules = {
-  信息安全导论: { slug: 'information-security', title: '信息安全', description: '基本概念、病毒、防火墙、入侵检测、安全传输协议与风险管理。' },
+  信息安全导论: { slug: 'information-security', title: '信息安全', description: '基本概念、身份认证与访问控制、病毒、防火墙、入侵检测、安全传输协议与风险管理。' },
   网络安全基础: { slug: 'network-security', title: '网络安全', description: '网络攻击、数据获取、扫描技术、模式匹配与分类聚类算法。' },
 } as const;
 
