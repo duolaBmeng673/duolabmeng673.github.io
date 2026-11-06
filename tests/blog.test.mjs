@@ -2,10 +2,25 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { markdownToHtml, markdownToMdast } from 'satteri';
 import { articleHeadings } from '../src/plugins/article-headings.mjs';
+import { articleInlineSvg } from '../src/plugins/article-inline-svg.mjs';
 import { rankSearch, searchSnippet } from '../src/lib/search.ts';
 import { activityLevel, createActivityCalendar } from '../src/lib/activity.ts';
 
 const render = async (source) => (await markdownToHtml(source, { mdastPlugins: [articleHeadings], data: { astro: { frontmatter: { title: '标题' } } } })).html;
+test('cryptography SVG blocks retain their bytes in isolated image documents without leaking styles or IDs', () => {
+  const svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 100" aria-label="加密与解密">\n<style>.s{fill:red}</style>\n<defs><marker id="a"/></defs><text class="s">原图</text>\n</svg>';
+  const source = `${svg}\n\n${svg}\n\n\`\`\`html\n${svg}\n\`\`\``;
+  const options = { mdastPlugins: [articleInlineSvg], data: { astro: { frontmatter: { subject: '信息安全导论', syllabusChapter: '02' } } } };
+  const { html } = markdownToHtml(source, options);
+  const images = [...html.matchAll(/<img\b[^>]*src="data:image\/svg\+xml;base64,([^"]+)"[^>]*>/g)];
+  assert.equal(images.length, 2);
+  for (const [, encoded] of images) assert.equal(Buffer.from(encoded, 'base64').toString(), svg);
+  assert.ok(html.includes('alt="加密与解密"'));
+  assert.ok(!html.includes('<style>'));
+  assert.ok(html.includes('<pre'), 'SVG code examples remain code');
+  const untouched = markdownToHtml(svg, { mdastPlugins: [articleInlineSvg] });
+  assert.ok(untouched.html.includes('<svg'), 'other articles keep their existing rendering');
+});
 test('outline removes duplicate H1, demotes section trees, and preserves anchor IDs', async () => {
   const html = await render('# 标题\n\n## 正确章节\n\n# Introduction\n\n## Details\n\n### More');
   assert.ok(!html.includes('<h1'));

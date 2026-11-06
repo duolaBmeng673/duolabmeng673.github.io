@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 670 500" width="670" role="img" aria-label="CBC 密码分组链接模式：加密与解密">
+<style>
+text{font-family:'PingFang SC','Microsoft YaHei','Noto Sans CJK SC',sans-serif;fill:#222;text-anchor:middle;font-size:14px}
+.h{text-anchor:start;font-size:16px;font-weight:bold}
+.t{font-size:11px}
+.d{font-size:20px}
+.bx{fill:#fff;stroke:#444;stroke-width:1.5}
+.y{fill:#fff3bf}.bl{fill:#d0ebff}.g{fill:#d3f9d8}.p{fill:#ffe3e3}.o{fill:#ffd8a8}.v{fill:#e5dbff}
+.dash{fill:none;stroke:#888;stroke-width:1.2;stroke-dasharray:5 4}
+.ln{fill:none;stroke:#444;stroke-width:1.5}
+</style>
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#444"/></marker></defs>
+<rect width="670" height="500" fill="#fff"/>
+<text class="h" x="10" y="18">加密</text>
+<rect class="dash" x="122" y="32" width="498" height="52"/>
+<rect class="dash" x="122" y="192" width="498" height="48"/>
+<rect class="bx y" x="130" y="40" width="120" height="36"/><text x="190" y="63">明文分组 1</text>
+<rect class="bx y" x="290" y="40" width="120" height="36"/><text x="350" y="63">明文分组 2</text>
+<rect class="bx y" x="450" y="40" width="120" height="36"/><text x="510" y="63">明文分组 3</text>
+<rect class="bx o" x="10" y="92" width="64" height="36"/><text class="t" x="42" y="107">初始化向量</text><text x="42" y="121" style="font-size:12px;font-weight:bold">IV</text>
+<circle class="bx" cx="190" cy="110" r="11"/><circle class="bx" cx="350" cy="110" r="11"/><circle class="bx" cx="510" cy="110" r="11"/>
+<path class="ln" d="M179 110H201M190 99V121M339 110H361M350 99V121M499 110H521M510 99V121"/>
+<rect class="bx g" x="155" y="138" width="70" height="32"/><text x="190" y="159">加密</text>
+<rect class="bx g" x="315" y="138" width="70" height="32"/><text x="350" y="159">加密</text>
+<rect class="bx g" x="475" y="138" width="70" height="32"/><text x="510" y="159">加密</text>
+<rect class="bx bl" x="130" y="198" width="120" height="36"/><text x="190" y="221">密文分组 1</text>
+<rect class="bx bl" x="290" y="198" width="120" height="36"/><text x="350" y="221">密文分组 2</text>
+<rect class="bx bl" x="450" y="198" width="120" height="36"/><text x="510" y="221">密文分组 3</text>
+<text class="d" x="600" y="64">···</text><text class="d" x="600" y="222">···</text>
+<text x="648" y="63">明文</text><text x="648" y="221">密文</text>
+<g class="ln" marker-end="url(#a)">
+<path d="M190 76V99"/><path d="M350 76V99"/><path d="M510 76V99"/>
+<path d="M190 121V138"/><path d="M350 121V138"/><path d="M510 121V138"/>
+<path d="M190 170V198"/><path d="M350 170V198"/><path d="M510 170V198"/>
+<path d="M74 110H179"/>
+<path d="M190 184H270V110H339"/><path d="M350 184H430V110H499"/>
+</g>
+<circle cx="190" cy="184" r="2.5" fill="#444"/><circle cx="350" cy="184" r="2.5" fill="#444"/>
+<text class="h" x="10" y="268">解密</text>
+<rect class="dash" x="122" y="282" width="498" height="52"/>
+<rect class="dash" x="122" y="442" width="498" height="48"/>
+<rect class="bx y" x="130" y="290" width="120" height="36"/><text x="190" y="313">明文分组 1</text>
+<rect class="bx y" x="290" y="290" width="120" height="36"/><text x="350" y="313">明文分组 2</text>
+<rect class="bx y" x="450" y="290" width="120" height="36"/><text x="510" y="313">明文分组 3</text>
+<rect class="bx o" x="10" y="342" width="64" height="36"/><text class="t" x="42" y="357">初始化向量</text><text x="42" y="371" style="font-size:12px;font-weight:bold">IV</text>
+<circle class="bx" cx="190" cy="360" r="11"/><circle class="bx" cx="350" cy="360" r="11"/><circle class="bx" cx="510" cy="360" r="11"/>
+<path class="ln" d="M179 360H201M190 349V371M339 360H361M350 349V371M499 360H521M510 349V371"/>
+<rect class="bx p" x="155" y="388" width="70" height="32"/><text x="190" y="409">解密</text>
+<rect class="bx p" x="315" y="388" width="70" height="32"/><text x="350" y="409">解密</text>
+<rect class="bx p" x="475" y="388" width="70" height="32"/><text x="510" y="409">解密</text>
+<rect class="bx bl" x="130" y="448" width="120" height="36"/><text x="190" y="471">密文分组 1</text>
+<rect class="bx bl" x="290" y="448" width="120" height="36"/><text x="350" y="471">密文分组 2</text>
+<rect class="bx bl" x="450" y="448" width="120" height="36"/><text x="510" y="471">密文分组 3</text>
+<text class="d" x="600" y="314">···</text><text class="d" x="600" y="472">···</text>
+<text x="648" y="313">明文</text><text x="648" y="471">密文</text>
+<g class="ln" marker-end="url(#a)">
+<path d="M190 448V420"/><path d="M350 448V420"/><path d="M510 448V420"/>
+<path d="M190 388V371"/><path d="M350 388V371"/><path d="M510 388V371"/>
+<path d="M190 349V326"/><path d="M350 349V326"/><path d="M510 349V326"/>
+<path d="M74 360H179"/>
+<path d="M190 434H270V360H339"/><path d="M350 434H430V360H499"/>
+</g>
+<circle cx="190" cy="434" r="2.5" fill="#444"/><circle cx="350" cy="434" r="2.5" fill="#444"/>
+</svg>

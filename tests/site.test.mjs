@@ -64,7 +64,7 @@ test('new Web note is in the syllabus, full-text index, RSS and sitemap', () => 
 
 test('study entry points select independent modules and preserve existing chapter and article navigation', () => {
   const modules = {
-    'information-security': ['security-basics', 'symmetric-authentication-kerberos', 'public-key-authentication-pki', 'access-control-models', 'windows-authentication-access-control', 'traditional-computer-viruses', 'firewall-netfilter', 'intrusion-detection-snort', 'ipsec', 'ssl', 'set', 'risk-management'],
+    'information-security': ['security-basics', 'classical-ciphers-design-principles', 'symmetric-key-cryptography-des', 'public-key-cryptography-dh-rsa', 'hash-functions-principles', 'symmetric-authentication-kerberos', 'public-key-authentication-pki', 'access-control-models', 'windows-authentication-access-control', 'traditional-computer-viruses', 'firewall-netfilter', 'intrusion-detection-snort', 'ipsec', 'ssl', 'set', 'risk-management'],
     'network-security': ['network-protocol-vulnerabilities', 'dos-ddos-attacks', 'format-string-buffer-overflow', 'web-attack-techniques', 'network-packet-capture', 'packet-capture-bpf', 'libpcap-winpcap', 'host-discovery', 'port-scanning', 'kmp-algorithm', 'bm-algorithm', 'ac-algorithm', 'wm-algorithm', 'decision-tree-c45', 'naive-bayes-classification', 'k-means-clustering', 'agglomerative-clustering', 'divisive-clustering', 'dbscan-clustering'],
   };
   const prefix = '/study-notes/837/';
@@ -91,6 +91,32 @@ test('study entry points select independent modules and preserve existing chapte
       if (i < slugs.length - 1) assert.ok(article.includes(`href="${prefix}${slugs[i + 1]}/" rel="next"`));
     });
   }
+});
+
+test('cryptography notes are public in chapter order with math and isolated diagrams', () => {
+  const slugs = ['classical-ciphers-design-principles', 'symmetric-key-cryptography-des', 'public-key-cryptography-dh-rsa', 'hash-functions-principles'];
+  const chapter = read('dist/study-notes/837/chapter/02/index.html');
+  const diagrams = [2, 7, 2, 0];
+  const positions = slugs.map((slug) => chapter.indexOf(`/study-notes/837/${slug}/`));
+  assert.ok(positions.every((position) => position >= 0));
+  assert.deepEqual(positions, [...positions].sort((a, b) => a - b));
+  slugs.forEach((slug, i) => {
+    const route = `/study-notes/837/${slug}/`;
+    const post = index.find((post) => post.href === route);
+    assert.ok(post, route);
+    assert.equal(post.date, '2026-11-06');
+    assert.equal(post.category, 'Study Notes');
+    for (const file of ['dist/rss.xml', 'dist/sitemap.xml']) assert.ok(read(file).includes(route), file);
+    const html = read(`dist${route}index.html`);
+    assert.ok(html.includes('class="katex"'));
+    assert.ok(!html.includes('katex-error'));
+    assert.ok(html.includes('data-study-mode="recall"'));
+    assert.equal((html.match(/src="data:image\/svg\+xml;base64,/g) ?? []).length, diagrams[i]);
+    assert.ok(!html.includes('<style>'), 'diagram CSS is isolated from the article');
+    if (slug === 'symmetric-key-cryptography-des') {
+      for (const mode of ['ecb', 'cbc', 'cfb', 'ofb', 'ctr']) assert.match(html, new RegExp(`src="/_astro/mode_${mode}\\.[^"]+\\.svg"`));
+    }
+  });
 });
 
 test('technical archive offers only papers and algorithms while global search retains all notes', () => {

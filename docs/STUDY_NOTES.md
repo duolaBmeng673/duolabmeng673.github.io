@@ -6,13 +6,13 @@ Study Notes 沿用 Astro Content Collections 与全站文章模板、TOC、代�
 
 - `/study-notes/`：已有公开学习系列。
 - `/study-notes/837/`：哈工大 837 模块选择页，保留旧链接，不再混排全部文章。
-- `/study-notes/837/information-security/`：信息安全，当前 12 篇，按考纲分为 01、03、04、05、06 章。
+- `/study-notes/837/information-security/`：信息安全，当前 16 篇，按考纲分为 01、02、03、04、05、06 章。
 - `/study-notes/837/network-security/`：网络安全，当前 19 篇，按网络攻击、数据获取、扫描、模式匹配与分类聚类算法的考纲顺序排列。
 - 模块依据明确的 `subject` 及实际内容区分，使用公开集合动态计数；总入口直接提供两条模块链接。
-- 信息安全导论：`/study-notes/837/chapter/01/`、`03/`、`04/`、`05/`、`06/`。
+- 信息安全导论：`/study-notes/837/chapter/01/`、`02/`、`03/`、`04/`、`05/`、`06/`。
 - 网络安全基础：`/study-notes/837/chapter/network-security-01/`、`network-security-02/`、`network-security-03/`、`network-security-05/`、`network-security-06/`。模块分别分组，不合并同号章节；只列出已有内容，不代表完整考纲。
 - `/study-notes/837/security-basics/`、`ipsec/`、`ssl/`、`set/`、`risk-management/`、`firewall-netfilter/`、`intrusion-detection-snort/`：7 篇既有笔记。
-- 当前公开学习笔记共 31 篇：信息安全 12 篇、网络安全 19 篇。第 06 章依次包含 `decision-tree-c45/`、`naive-bayes-classification/`、`k-means-clustering/`、`agglomerative-clustering/`、`divisive-clustering/`、`dbscan-clustering/`；章内依考纲顺序排列。所有既有文章 ID 与 URL 保持不变。
+- 当前公开学习笔记共 35 篇：信息安全 16 篇、网络安全 19 篇。第 06 章依次包含 `decision-tree-c45/`、`naive-bayes-classification/`、`k-means-clustering/`、`agglomerative-clustering/`、`divisive-clustering/`、`dbscan-clustering/`；章内依考纲顺序排列。所有既有文章 ID 与 URL 保持不变。
 
 原文件保留在 `src/content/837考研/`，图片继续使用原相对路径，由 Astro 打包。本轮 Web 文章仅增加 Front Matter，原正文和资源未改动。发布状态不等于学习完成状态。此前经作者确认的 5 篇初始笔记保持公开，第 6 章原有待复习说明保留。
 
@@ -45,7 +45,7 @@ questions:
 - `studySlug` 是稳定 URL 的最后一段；发布后保持不变。原始本地目录不参与公开 URL。
 - `category`、`subcategory` 使用 schema 字面量约束，`series` 使用显式枚举。系列在 `src/lib/study.ts` 注册标题、短路由与说明；新系列需要在此登记，并同步扩展 schema 的系列枚举。
 - `subject` 受 schema 枚举约束，只能为 `信息安全导论` 或 `网络安全基础`，两者是 HIT 837 的并列模块。`syllabusChapter` 为两位考纲章节编号，`chapterTitle` 为真实章节名称。两者仅作分组，章节按编号数值排列。
-- `order` 是同一系列、同一模块内笔记的唯一排序字段，必须为非负整数；模块内重复值会使构建失败。信息安全导论当前为 100、301–304、401、501–505、600；网络安全基础为 101–104、201–203、301–302、501–504、601–606。不同模块可重用排序值。每个独立模块页按考纲章节分组；上下篇只在同一模块内跳转，文章返回链接与章节上级导航也指向所属模块。不要按文件名或日期推导顺序。
+- `order` 是同一系列、同一模块内笔记的唯一排序字段，必须为非负整数；模块内重复值会使构建失败。信息安全导论当前为 100、201–204、301–304、401、501–505、600；网络安全基础为 101–104、201–203、301–302、501–504、601–606。不同模块可重用排序值。每个独立模块页按考纲章节分组；上下篇只在同一模块内跳转，文章返回链接与章节上级导航也指向所属模块。不要按文件名或日期推导顺序。
 - `syllabusSection` 为可选考点编号；合并多个知识点时可以省略，不强迫拆分文章。
 - `pubDate` 表示公开发布日期。首页各近期分组、普通归档列表和时间线按它降序排序；搜索列表按相关度、同分日期排序，搜索时间线仍按日期分组。系列目录和上下篇使用 `order`。不要修改旧文章日期来调整学习顺序。
 - `shortTitle`、`subtitle` 可选，不提供就不渲染占位。
@@ -88,7 +88,7 @@ questions:
 
 ## 验证
 
-执行 `npm run build` 和 `git diff --check`，执行 `npm test`。当前应生成 49 条公开文章搜索记录、31 个学习笔记页、10 个真实章节页、2 个模块页和 2 个学习入口；18 个既有博客 URL 保持完整正文。新增内容后以实际集合数据更新数量，不把本文快照作为代码常量。
+执行 `npm run build` 和 `git diff --check`，执行 `npm test`。当前应生成 53 条公开文章搜索记录、35 个学习笔记页、11 个真实章节页、2 个模块页和 2 个学习入口；18 个既有博客 URL 保持完整正文。新增内容后以实际集合数据更新数量，不把本文快照作为代码常量。
 
 浏览器核对 Notes 分类／系列／标签／搜索和 Timeline 的真实可见行；系列与上下篇排序；嵌套标题和全部展开／收起、阅读恢复、键盘与 ARIA、无 JavaScript 阅读。检查 1440、1024、768、390、320px 的明暗主题、长标题、长目录、图片、公式、表格与代码。编辑元数据前后逐字节比较正文和图片，包含文件结尾与空白。必要的标题、错字或内部链接修复应单独记录；技术实质修改须有明确依据。本轮自动化结果与尚未完成的真实浏览器检查见 [定向优化记录](REFINEMENT.md)。
 
@@ -100,3 +100,9 @@ questions:
 - 网络安全基础 → 01 网络攻击 → `1.d`，`order: 104`。
 - URL：`/study-notes/837/web-attack-techniques/`；上一篇 `format-string-buffer-overflow`，当前无下一篇。
 - 共享渲染层处理标题层级，保持源文件不变；同一机制也用于其他博客。TOC 与按标题背诵使用渲染后的标题。
+
+## 密码学基础接入记录（2026-11-06）
+
+- 第 02 章新增 4 篇：密码分类、作用与基本设计原理（2.a／201，`classical-ciphers-design-principles`）、对称密钥密码与 DES（2.b／202，`symmetric-key-cryptography-des`）、公开密钥密码、DH 密钥交换协议与 RSA（2.c／203，`public-key-cryptography-dh-rsa`）、散列函数原理及作用（2.d／204，`hash-functions-principles`）。首次公开日期采用本次接入日期 2026-11-06，不修改既有文章日期。
+- 章节入口为 `/study-notes/837/chapter/02/`，目录和模块内上下篇按 01→02→03→04→05→06 排列；公开数量、搜索、RSS、sitemap 和首页更新记录从统一集合自动更新。
+- 源 Markdown 只增加 Front Matter。5 张独立 SVG 沿用原图片管线；11 幅内联 SVG 块在构建时由 `src/plugins/article-inline-svg.mjs` 转为原始字节的 SVG data URL 图片，隔离重复 ID 和全局样式。复用现有图片的等比缩放和白色底板，不改写正文或图示文件，不新增依赖。该处理仅限信息安全导论第 02 章；本轮内联图不提供既有独立 SVG 的“查看原图”链接。
