@@ -57,6 +57,7 @@ const image = new URL('/og-default.png', Astro.site);
           <a href="/" aria-current={path === '/' ? 'page' : undefined}>首页</a>
           <a href="/blog/" aria-current={path.startsWith('/blog/') ? 'page' : undefined}>技术笔记</a>
           <a href="/study-notes/" aria-current={path.startsWith('/study-notes/') ? 'page' : undefined}>学习笔记</a>
+          <a href="/tools/" aria-current={path.startsWith('/tools/') ? 'page' : undefined}>工具</a>
           <a href="/about/" aria-current={path === '/about/' ? 'page' : undefined}>关于</a>
         </nav>
         <div class="header-search" data-search-shell>

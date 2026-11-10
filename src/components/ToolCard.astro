@@ -1,0 +1,10 @@
+---
+import type { Tool } from '../data/tools';
+interface Props { tool: Tool }
+const { tool } = Astro.props;
+---
+<a class="tool-card" href={tool.href}>
+  <span class="tool-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 21V4h16v17M2 21h20M8 8h2m4 0h2M8 12h2m4 0h2M10 21v-5h4v5" /></svg></span>
+  <span class="tool-card-copy"><small>{tool.availability}</small><strong>{tool.name}</strong><span>{tool.description}</span></span>
+  <span class="tool-card-arrow" aria-hidden="true">→</span>
+</a>

@@ -79,6 +79,7 @@ text{font-family:'PingFang SC','Microsoft YaHei','Noto Sans CJK SC',sans-serif;f
 $$
 C_i = E_K(P_i),\qquad P_i = D_K(C_i)
 $$
+ECB（电子密码本）模式下，所有分组通常使用同一个密钥进行独立加密。
 
 ![ECB 模式](mode_ecb.svg)
 

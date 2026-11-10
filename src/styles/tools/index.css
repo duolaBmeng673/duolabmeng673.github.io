@@ -1,0 +1,36 @@
+.tool-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 350px), 1fr)); gap: 18px; padding: 0 0 48px; margin: 0; list-style: none; }
+.tool-card { display: flex; align-items: start; gap: 18px; height: 100%; padding: 22px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); transition: background var(--transition), border-color var(--transition); }
+.tool-mark { display: grid; flex: 0 0 40px; height: 40px; place-items: center; border-radius: var(--radius-small); background: var(--warm-soft); color: var(--warm-text); }
+.tool-mark svg { width: 24px; height: 24px; }
+.tool-card-copy { display: grid; min-width: 0; gap: 9px; }
+.tool-card-copy small { color: var(--text-muted); font-size: .72rem; }
+.tool-card-copy strong { color: var(--text); font: 600 1.35rem/1.35 var(--serif); }
+.tool-card-copy > span { color: var(--text-muted); font-size: .86rem; }
+.tool-card-arrow { margin-left: auto; color: var(--link); transition: transform var(--transition); }
+.tool-card:hover, .tool-card:focus-visible { border-color: var(--border-strong); background: var(--row-hover); }
+.tool-card:hover strong, .tool-card:focus-visible strong { color: var(--link); }
+.tool-card:hover .tool-card-arrow { transform: translateX(3px); }
+.home-tool-entry { display: flex; align-items: center; gap: 18px; padding: 18px 0; border-top: 1px solid var(--border); }
+.home-tool-entry > span:nth-child(2) { display: grid; gap: 5px; min-width: 0; }
+.home-tool-entry strong { font: 600 1.2rem var(--serif); }
+.home-tool-entry small { color: var(--text-muted); font-size: .8rem; }
+.home-tool-entry:hover strong { color: var(--link); }
+.classroom-intro { padding-bottom: 24px; }
+.classroom-access { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px 28px; margin: 0 0 24px; padding: 20px; border: 1px solid var(--border); border-left: 3px solid var(--warm); border-radius: var(--radius-small); background: var(--surface); }
+.classroom-access > div:first-child { flex: 1 1 440px; }
+.classroom-access h2 { margin-bottom: 8px; font-size: 1.2rem; }
+.classroom-access p { max-width: 76ch; margin-bottom: 0; color: var(--text-muted); font-size: .85rem; }
+.classroom-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.classroom-loading { color: var(--text-muted); font-size: .9rem; }
+.classroom-app { min-width: 0; }
+.classroom-help { margin: 24px 0 40px; padding-top: 18px; border-top: 1px solid var(--border); color: var(--text-soft); font-size: .86rem; scroll-margin-top: 24px; }
+.classroom-help summary { padding-bottom: 14px; color: var(--text); cursor: pointer; font-weight: 600; }
+.classroom-help a { color: var(--link); text-decoration: underline; text-underline-offset: 3px; }
+.classroom-help pre { max-width: 100%; overflow-x: auto; padding: 14px; border: 1px solid var(--border); border-radius: var(--radius-small); background: var(--code-bg); font: .82rem/1.9 var(--mono); }
+@media (max-width: 520px) {
+  .tool-card { padding: 18px; gap: 12px; }
+  .tool-card-copy strong { font-size: 1.15rem; }
+  .classroom-access { padding: 16px; }
+  .classroom-actions { width: 100%; }
+  .classroom-actions > * { flex: 1 1 100%; }
+}

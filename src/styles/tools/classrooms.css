@@ -1,0 +1,61 @@
+/* App-scoped overrides only. Color roles inherit directly through Shadow DOM. */
+:host { color-scheme: inherit; background: var(--bg); color: var(--text); font: 1rem/1.65 var(--sans); }
+button, input, select { font-family: inherit; }
+button, input, select, .panel, .room, .empty, .alert, .slot, .more, .star, .tools button { border-radius: var(--radius-small); }
+button, select, input { min-height: 44px; }
+button:focus-visible, input:focus-visible, select:focus-visible, a:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
+.shell { min-height: 0; height: auto; overflow: visible; background: var(--bg); }
+.shell > header, .shell > footer { display: none; }
+.layout { max-width: none; padding: 0; gap: 28px; grid-template-columns: minmax(220px, 254px) minmax(0, 1fr); }
+.layout > *, .filter-grid > *, .query-grid > * { min-width: 0; }
+.intro { margin-bottom: 12px; }
+.eyebrow { color: var(--text-muted); font: .75rem/1.5 var(--mono); letter-spacing: 0; }
+h2, h3 { color: var(--text); font-family: var(--serif); }
+h2 { font-size: 1.35rem; letter-spacing: 0; }
+.panel, .room { background: var(--surface); border-color: var(--border); box-shadow: none; border-radius: var(--radius); }
+.panel { padding: 18px; }
+.room { padding: 18px; }
+.control select, .control input { min-width: 0; max-width: 100%; background: var(--surface-raised); color: var(--text); border-color: var(--border-control); }
+.control input::placeholder { color: var(--text-muted); }
+.solid, .day[aria-pressed=true] { background: var(--accent); color: var(--button-text); border-color: var(--accent); }
+.day { background: var(--surface); border-color: var(--border-control); color: var(--text-muted); }
+.day:hover, .quiet:hover, .more:hover, .tools button:hover { background: var(--row-hover); color: var(--text); }
+.day[aria-pressed=true]:hover { background: var(--accent-strong); color: var(--button-text); }
+.tools button { color: var(--text-soft); border: 1px solid var(--border); background: var(--surface-raised); }
+.slot { padding-inline: 2px; background: var(--surface-soft); color: var(--text-soft); }
+.slot.occupied { background: var(--warm-soft); color: var(--warm-text); }
+.slot.occupied span::before { content: ''; display: inline-block; width: 6px; height: 6px; margin-right: 3px; border-radius: 50%; background: var(--warm); }
+.slot.unknown { background: var(--surface-raised); color: var(--text-muted); border: 1px dashed var(--border-strong); }
+.slot.selected { outline: 1.5px solid var(--text); }
+.legend i { background: var(--surface-soft); border: 1px solid var(--border-control); }
+.legend .busy { border: 0; background: var(--warm); border-radius: 50%; }
+.count { color: var(--text); font-family: var(--mono); }
+.room-note { color: var(--text-muted); }
+.room-note.occupied, .status.bad { color: var(--warm-text); }
+.star[aria-pressed=true] { color: var(--link); background: var(--accent-soft); }
+.alert { color: var(--text-soft); background: var(--surface-soft); border-color: var(--border); }
+.alert.error { color: var(--warm-text); background: var(--warm-soft); border-color: var(--warm); }
+.empty { color: var(--text-muted); overflow-wrap: anywhere; }
+.empty strong { color: var(--text); }
+.note { color: var(--text-muted); }
+.result-heading { flex-wrap: wrap; }
+.room-head { gap: 8px; }
+.room h3 { overflow-wrap: anywhere; }
+.toggles { color: var(--text-soft); }
+.toggles input { accent-color: var(--accent); }
+@media (max-width: 800px) {
+  .layout { display: block; padding: 0; }
+  .panel { margin-bottom: 24px; }
+  .filter-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
+  .fixed { display: inline-flex; gap: 8px; border: 0; margin: 0 16px 12px 0; padding: 0; }
+  .tools { flex-direction: row; flex-wrap: wrap; }
+  .tools button { flex: 1; }
+}
+@media (max-width: 600px) {
+  .cards { grid-template-columns: minmax(0, 1fr); }
+  .panel { padding: 16px; }
+  .room { padding: 16px; }
+  .slot { font-size: 11px; }
+  .slot span { font-size: 10px; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
