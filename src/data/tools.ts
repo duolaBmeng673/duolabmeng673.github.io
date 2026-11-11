@@ -1,13 +1,31 @@
-// Add implemented tools here; top-level navigation stays unchanged.
-export const tools = [
-  {
-    id: 'classrooms',
-    name: '哈工大空教室查询',
-    description: '按星期、节次与连续空闲时长筛选教室，支持搜索、收藏及离线快照。',
-    href: '/tools/classrooms/',
-    availability: '离线快照 · 本机实时查询',
-    repository: 'https://github.com/duolaBmeng673/hit-classroom-select',
-  },
-] as const;
+import entries from './tools.json' with { type: 'json' };
 
-export type Tool = (typeof tools)[number];
+// Edit tools.json to add links. Only name and url are required.
+export interface Tool {
+  name: string;
+  url: string;
+  description?: string;
+  category?: string;
+}
+
+export function defineTools(entries: readonly Tool[]): Tool[] {
+  const seen = new Set<string>();
+  return entries.map((entry, index) => {
+    const name = entry.name.trim();
+    const url = entry.url.trim();
+    if (!name) throw new Error(`tools.json 第 ${index + 1} 项缺少名称。`);
+    let parsed: URL;
+    try { parsed = new URL(url); }
+    catch { throw new Error(`tools.json「${name}」需要完整的 http:// 或 https:// URL。`); }
+    if (!['http:', 'https:'].includes(parsed.protocol) || parsed.username || parsed.password) {
+      throw new Error(`tools.json「${name}」只支持不含账号密码的 HTTP / HTTPS 链接。`);
+    }
+    if (seen.has(parsed.href)) throw new Error(`tools.json「${name}」的 URL 重复。`);
+    seen.add(parsed.href);
+    const description = entry.description?.trim();
+    const category = entry.category?.trim();
+    return { name, url, ...(description ? { description } : {}), ...(category ? { category } : {}) };
+  });
+}
+
+export const tools = defineTools(entries);
