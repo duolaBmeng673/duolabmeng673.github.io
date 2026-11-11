@@ -25,6 +25,7 @@
   --heat-2: color-mix(in srgb, var(--accent) 45%, var(--bg));
   --heat-3: color-mix(in srgb, var(--accent) 65%, var(--bg));
   --heat-4: color-mix(in srgb, var(--accent) 85%, var(--bg));
+  --heat-site: color-mix(in srgb, var(--warm) 65%, var(--bg));
   --warm: #b5532f;
   --warm-text: #9a4524;
   --warm-soft: #f5e8df;

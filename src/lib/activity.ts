@@ -1,4 +1,4 @@
-export const activityTypes = ['coding', 'writing', 'research', 'learning'] as const;
+export const activityTypes = ['coding', 'writing', 'research', 'learning', 'site'] as const;
 export type ActivityType = typeof activityTypes[number];
 
 export interface ActivityRecord {
@@ -15,7 +15,7 @@ export interface ActivityDay {
 }
 
 const activityLabels: Record<ActivityType, string> = {
-  coding: '代码开发', writing: '写作', research: '研究', learning: '学习',
+  coding: '代码开发', writing: '写作', research: '研究', learning: '学习', site: '博客功能',
 };
 
 export function getActivityDayDetails(day: ActivityDay) {
@@ -52,7 +52,7 @@ export function createActivityCalendar(records: ActivityRecord[], today = new Da
     if (parsed < start || parsed > end) continue;
     let day = days.get(record.date);
     if (!day) {
-      day = { date: record.date, types: { coding: 0, writing: 0, research: 0, learning: 0 }, descriptions: {} };
+      day = { date: record.date, types: { coding: 0, writing: 0, research: 0, learning: 0, site: 0 }, descriptions: {} };
       days.set(record.date, day);
     }
     day.types[record.type] += record.count;
@@ -65,7 +65,7 @@ export function createActivityCalendar(records: ActivityRecord[], today = new Da
   const cells: Array<ActivityDay | null> = [];
   for (const date = new Date(calendarStart); date <= calendarEnd; date.setDate(date.getDate() + 1)) {
     cells.push(date < start || date > end ? null : days.get(localDateKey(date)) ?? {
-      date: localDateKey(date), types: { coding: 0, writing: 0, research: 0, learning: 0 }, descriptions: {},
+      date: localDateKey(date), types: { coding: 0, writing: 0, research: 0, learning: 0, site: 0 }, descriptions: {},
     });
   }
   const columns = Array.from({ length: cells.length / 7 }, (_, index) => cells.slice(index * 7, index * 7 + 7));
@@ -77,4 +77,9 @@ export function createActivityCalendar(records: ActivityRecord[], today = new Da
 export function activityLevel(day: ActivityDay | null) {
   const total = day ? Object.values(day.types).reduce((sum, value) => sum + value, 0) : 0;
   return total === 0 ? 0 : total === 1 ? 1 : total <= 3 ? 2 : total <= 6 ? 3 : 4;
+}
+
+export function activityKind(day: ActivityDay | null) {
+  if (!day?.types.site) return 'content';
+  return activityTypes.some((type) => type !== 'site' && day.types[type] > 0) ? 'mixed' : 'site';
 }

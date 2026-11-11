@@ -1,4 +1,4 @@
-import { activityLevel, createActivityCalendar, getActivityDayDetails, localDateKey, type ActivityDay, type ActivityRecord } from '../lib/activity';
+import { activityKind, activityLevel, createActivityCalendar, getActivityDayDetails, localDateKey, type ActivityDay, type ActivityRecord } from '../lib/activity';
 
 document.querySelectorAll<HTMLElement>('[data-activity-calendar]').forEach((root) => {
   const grid = root.querySelector<HTMLElement>('.activity-grid');
@@ -69,6 +69,7 @@ document.querySelectorAll<HTMLElement>('[data-activity-calendar]').forEach((root
         const { total, label } = getActivityDayDetails(day);
         cell.dataset.date = day.date;
         cell.dataset.level = String(activityLevel(day));
+        cell.dataset.kind = activityKind(day);
         cell.dataset.total = String(total);
         cell.setAttribute('aria-label', label);
         cell.title = label;
@@ -103,6 +104,7 @@ document.querySelectorAll<HTMLElement>('[data-activity-calendar]').forEach((root
       const item = document.createElement('li');
       const heading = document.createElement('p');
       heading.className = 'activity-detail-type';
+      heading.dataset.activityType = group.type;
       heading.textContent = `${group.label} · ${group.count} 次`;
       item.append(heading);
       if (group.descriptions.length) {

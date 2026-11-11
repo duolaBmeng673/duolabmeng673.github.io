@@ -1,9 +1,11 @@
-.tool-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 350px), 1fr)); gap: 18px; padding: 0 0 48px; margin: 0; list-style: none; }
+.tool-groups { display: grid; gap: 32px; padding-bottom: 48px; }
+.tool-group { min-width: 0; }
+.tool-group h2 { margin: 0 0 16px; padding-bottom: 10px; border-bottom: 1px solid var(--border); font-size: 1.5rem; }
+.tool-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 350px), 1fr)); gap: 18px; padding: 0; margin: 0; list-style: none; }
 .tool-card { display: flex; align-items: start; gap: 18px; height: 100%; padding: 22px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); transition: background var(--transition), border-color var(--transition); }
 .tool-mark { display: grid; flex: 0 0 40px; height: 40px; place-items: center; border-radius: var(--radius-small); background: var(--warm-soft); color: var(--warm-text); }
 .tool-mark svg { width: 24px; height: 24px; }
 .tool-card-copy { display: grid; min-width: 0; gap: 9px; overflow-wrap: anywhere; }
-.tool-card-copy small { color: var(--text-muted); font-size: .72rem; }
 .tool-card-copy strong { color: var(--text); font: 600 1.35rem/1.35 var(--serif); }
 .tool-card-copy > span { color: var(--text-muted); font-size: .86rem; }
 .tool-card-copy .tool-domain { font: .72rem/1.5 var(--mono); }

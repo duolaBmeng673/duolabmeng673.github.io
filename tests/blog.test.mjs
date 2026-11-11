@@ -72,7 +72,7 @@ test('activity calendar uses local dates, sums activity types, and handles leap 
   assert.equal(result.activityDays, 2);
   assert.equal(result.totalActivities, 7);
   const leapDay = result.columns.flat().find((day) => day?.date === '2024-02-29');
-  assert.deepEqual(leapDay.types, { coding: 3, writing: 0, research: 1, learning: 0 });
+  assert.deepEqual(leapDay.types, { coding: 3, writing: 0, research: 1, learning: 0, site: 0 });
   assert.deepEqual(leapDay.descriptions.coding, ['实现功能']);
   assert.equal(activityLevel(leapDay), 3);
   assert.equal(result.columns.flat().filter(Boolean).length, 365);

@@ -29,6 +29,25 @@ test('activity counts sum records while active dates are counted only once', () 
   for (const count of [0, -1, 1.5, NaN]) assert.throws(() => activity.createActivityCalendar([{ ...records[0], count }]), /Invalid activity record/);
 });
 
+test('blog feature updates remain distinct and aggregate with content without overwriting it', () => {
+  const calendar = activity.createActivityCalendar([
+    { date: '2026-11-10', type: 'site', count: 1, description: '完成博客功能' },
+    { date: '2026-11-11', type: 'site', count: 1, description: '完成工具分类' },
+    { date: '2026-11-11', type: 'writing', count: 2, description: '两篇新文章' },
+  ], new Date(2026, 10, 11));
+  assert.equal(calendar.activityDays, 2);
+  assert.equal(calendar.totalActivities, 4);
+  const days = calendar.columns.flat().filter(Boolean);
+  const site = days.find((day) => day.date === '2026-11-10');
+  const mixed = days.find((day) => day.date === '2026-11-11');
+  assert.equal(activity.activityKind(site), 'site');
+  assert.equal(activity.activityKind(mixed), 'mixed');
+  assert.equal(activity.activityKind(days.find((day) => day.date === '2026-11-09')), 'content');
+  assert.equal(activity.activityKind(null), 'content');
+  assert.deepEqual(activity.getActivityDayDetails(mixed).groups.map(({ label, count }) => [label, count]), [['写作', 2], ['博客功能', 1]]);
+  assert.ok(activity.getActivityDayDetails(site).label.includes('博客功能：1 次，完成博客功能'));
+});
+
 test('local calendar boundaries and labels survive year boundaries and daylight-saving changes', () => {
   const code = `
     import assert from 'node:assert/strict';
@@ -71,6 +90,11 @@ test('heat tokens use the site palette with monotonic, distinguishable adjacent 
       assert.ok(theme === 'light' ? value < levels[index] : value > levels[index], `${theme} intensity is monotonic`);
       assert.ok((Math.max(value, levels[index]) + .05) / (Math.min(value, levels[index]) + .05) >= 1.25, `${theme} adjacent levels differ by at least 1.25:1`);
     });
+    const site = palette['--heat-site'].match(/^color-mix\(in srgb, var\(--warm\) (\d+)%, var\(--bg\)\)$/);
+    assert.ok(site, 'blog feature color derives from the shared warm accent');
+    const weight = Number(site[1]) / 100;
+    const feature = luminance(rgb(palette['--warm']).map((channel, index) => channel * weight + rgb(palette['--bg'])[index] * (1 - weight)));
+    assert.ok((Math.max(feature, levels[0]) + .05) / (Math.min(feature, levels[0]) + .05) >= 1.5, `${theme} blog features are distinguishable from empty cells`);
   }
 });
 
@@ -107,7 +131,7 @@ class Element {
 }
 
 test('date click, empty selection, repeated selection and keyboard movement update the existing detail panel', () => {
-  const root = new Element('section', { 'data-activity-calendar': '', 'data-activity-data': JSON.stringify({ activities: records, writing: [] }) });
+  const root = new Element('section', { 'data-activity-calendar': '', 'data-activity-data': JSON.stringify({ activities: [...records, { date: '2026-10-31', type: 'site', count: 1, description: '博客功能更新' }], writing: [] }) });
   for (const className of ['activity-grid', 'activity-calendar', 'activity-months']) root.append(new Element('div', { class: className }));
   root.append(new Element('p', { 'data-activity-summary': '' }));
   for (const part of ['date', 'total', 'groups', 'empty']) root.append(new Element(part === 'date' ? 'time' : 'div', { [`data-activity-detail-${part}`]: '' }));
@@ -122,10 +146,18 @@ test('date click, empty selection, repeated selection and keyboard movement upda
   const buttons = root.querySelectorAll('button[data-date]');
   const filled = buttons.find((button) => button.dataset.date === '2026-11-02');
   const blank = buttons.find((button) => button.dataset.date === '2026-11-01');
+  const site = buttons.find((button) => button.dataset.date === '2026-10-31');
   assert.equal(total.textContent, '6 次活动');
   assert.equal(groups.children.length, 3);
   assert.ok(groups.textContent.includes('研究 · 1 次'));
   assert.ok(groups.textContent.includes('<em>学习记录</em>'), 'descriptions remain literal text');
+  assert.equal(filled.dataset.kind, 'content');
+  assert.equal(site.dataset.kind, 'site');
+  root.handlers.click({ target: site });
+  assert.equal(date.textContent, '2026 年 10 月 31 日');
+  assert.equal(total.textContent, '1 次活动');
+  assert.ok(groups.textContent.includes('博客功能 · 1 次'));
+  assert.equal(groups.children[0].children[0].dataset.activityType, 'site');
   root.handlers.click({ target: blank });
   assert.equal(date.textContent, '2026 年 11 月 1 日');
   assert.equal(total.textContent, '0 次活动');
@@ -147,16 +179,23 @@ test('date click, empty selection, repeated selection and keyboard movement upda
 test('the static homepage includes Chinese labels and daily details with unchanged publication-based history', () => {
   const html = read('dist/index.html');
   assert.match(html, /<h2\b[^>]*id="activity-title"[^>]*>更新记录<\/h2>/);
-  assert.ok(html.includes('过去一年 · 写作、研究与学习'));
+  assert.ok(html.includes('过去一年 · 写作、研究、学习与博客功能'));
   assert.equal((html.match(/id="activity-detail"/g) ?? []).length, 1);
   assert.ok(html.includes('data-activity-detail-groups'));
   assert.ok(html.includes('aria-controls="activity-detail"'));
   const decode = (text) => text.replace(/&quot;/g, '"').replace(/&#39;|&apos;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
   const payload = JSON.parse(decode(html.match(/data-activity-data="([^"]+)"/)[1]));
+  assert.ok(payload.activities.some((record) => record.date === '2026-11-11' && record.type === 'site' && record.count === 1));
   const posts = JSON.parse(read('dist/search-index.json'));
   assert.equal(payload.writing.length, posts.length);
   for (const post of posts) assert.ok(payload.writing.some((entry) => entry.date === post.date && entry.description === post.title && entry.count === 1));
   const end = html.match(/data-end="([^"]+)"/)[1];
   const result = activity.createActivityCalendar([...payload.activities, ...payload.writing], new Date(`${end}T12:00:00`));
   assert.ok(html.includes(`${result.activityDays} 个活跃日 · ${result.totalActivities} 次活动`));
+  const feature = result.columns.flat().find((day) => day?.date === '2026-11-11');
+  if (feature) {
+    const featureCell = [...html.matchAll(/<button\b[^>]*>/g)].find(([tag]) => tag.includes('data-date="2026-11-11"'))?.[0];
+    assert.ok(featureCell?.includes(`data-kind="${activity.activityKind(feature)}"`));
+    assert.ok(featureCell?.includes('博客功能：'));
+  }
 });

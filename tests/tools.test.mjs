@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { existsSync, readFileSync } from 'node:fs';
-import { defineTools, tools } from '../src/data/tools.ts';
+import { defineTools, groupTools, tools } from '../src/data/tools.ts';
 
 const file = (path) => new URL('../' + path, import.meta.url);
 const read = (path) => readFileSync(file(path), 'utf8');
@@ -26,16 +26,37 @@ test('configured tools render as external links in configuration order', () => {
   assert.deepEqual(tools.map((tool) => tool.url), expected);
   const html = read('dist/tools/index.html');
   const cards = [...html.matchAll(/<a\b[^>]*class="tool-card"[^>]*>([^]*?)<\/a>/g)];
+  const ordered = groupTools(tools).flatMap((group) => group.tools);
   assert.equal(cards.length, tools.length);
   for (const [index, card] of cards.entries()) {
-    assert.ok(card[0].includes(`href="${tools[index].url}"`));
+    assert.ok(card[0].includes(`href="${ordered[index].url}"`));
     assert.match(card[0], /target="_blank"/);
     assert.match(card[0], /rel="noopener noreferrer"/);
-    assert.ok(card[1].includes(tools[index].name));
+    assert.ok(card[1].includes(ordered[index].name));
     assert.ok(card[1].includes('新窗口打开'));
     assert.ok(!card[1].includes('undefined'));
     assert.ok(!card[1].includes('<script'));
   }
+});
+
+test('tools group on one page by category with a fallback for name-and-URL-only additions', () => {
+  const entries = defineTools([
+    { name: '壁纸 A', url: 'https://example.com/a', category: '壁纸' },
+    { name: '文档', url: 'https://example.com/b', category: '文档' },
+    { name: '壁纸 B', url: 'https://example.com/c', category: '壁纸' },
+    { name: '无分类', url: 'https://example.com/d' },
+  ]);
+  const groups = groupTools(entries);
+  assert.deepEqual(groups.map((group) => group.category), ['壁纸', '文档', '其他']);
+  assert.deepEqual(groups[0].tools.map((tool) => tool.name), ['壁纸 A', '壁纸 B']);
+  assert.deepEqual(groups[2].tools.map((tool) => tool.name), ['无分类']);
+  assert.equal(entries[1].name, '文档', 'grouping does not reorder the source list');
+  assert.deepEqual(groupTools([]), []);
+  const html = read('dist/tools/index.html');
+  const headings = [...html.matchAll(/<h2\b[^>]*>([^]*?)<\/h2>/g)].map(([, text]) => text);
+  assert.deepEqual(headings, groupTools(tools).map((group) => group.category));
+  for (const { category } of groupTools(tools)) assert.ok(html.includes(`aria-label="${category}列表"`));
+  assert.ok(!html.includes('href="/tools/壁纸'));
 });
 
 test('tool navigation and homepage entry remain available on existing pages', () => {

@@ -29,3 +29,15 @@ export function defineTools(entries: readonly Tool[]): Tool[] {
 }
 
 export const tools = defineTools(entries);
+
+// Both category order and tool order follow their first occurrence in tools.json.
+export function groupTools(entries: readonly Tool[]) {
+  const groups = new Map<string, Tool[]>();
+  for (const tool of entries) {
+    const category = tool.category ?? '其他';
+    const items = groups.get(category) ?? [];
+    items.push(tool);
+    groups.set(category, items);
+  }
+  return [...groups].map(([category, tools]) => ({ category, tools }));
+}

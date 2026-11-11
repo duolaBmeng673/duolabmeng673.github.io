@@ -1,10 +1,11 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ToolCard from '../../components/ToolCard.astro';
-import { tools } from '../../data/tools';
+import { groupTools, tools } from '../../data/tools';
 import '../../styles/tools/index.css';
+const groups = groupTools(tools);
 ---
 <BaseLayout title="工具" description="常用工具与资源：图片、PDF、壁纸、前端组件与 AI 服务评测。">
   <header class="page-intro"><p class="eyebrow">Tools</p><h1>工具</h1><p>常用的在线工具与资源，点击后在新窗口打开。</p></header>
-  <ul class="tool-grid" aria-label="可用工具">{tools.map((tool) => <li><ToolCard tool={tool} /></li>)}</ul>
+  <div class="tool-groups">{groups.map((group, index) => <section class="tool-group" aria-labelledby={`tool-group-${index}`}><h2 id={`tool-group-${index}`}>{group.category}</h2><ul class="tool-grid" aria-label={`${group.category}列表`}>{group.tools.map((tool) => <li><ToolCard tool={tool} /></li>)}</ul></section>)}</div>
 </BaseLayout>
