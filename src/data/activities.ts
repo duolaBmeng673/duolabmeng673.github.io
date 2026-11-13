@@ -12,4 +12,10 @@ export const activities: ActivityRecord[] = [
     count: 1,
     description: '工具栏目改为外链导航，增加分类分区与可维护的链接配置。',
   },
+  {
+    date: '2026-11-13',
+    type: 'site',
+    count: 1,
+    description: '知识点标签覆盖信息安全与网络安全全部 35 篇笔记目录，支持分类色块、多标签交集筛选与 URL 状态恢复。',
+  },
 ];
