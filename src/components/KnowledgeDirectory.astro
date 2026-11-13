@@ -1,0 +1,35 @@
+---
+import { getKnowledgeTags, knowledgeCategories } from '../lib/knowledge-tags';
+import type { StudyPost } from '../lib/study';
+import '../styles/knowledge-tags.css';
+interface Props { posts: StudyPost[]; showLegend?: boolean }
+const enabled = Astro.props.posts.some((post) => getKnowledgeTags(post.id).length > 0);
+const showLegend = enabled && Astro.props.showLegend === true;
+---
+{!showLegend && <slot name="intro" />}
+<div class="knowledge-directory" data-knowledge-directory={enabled || undefined}>
+  {showLegend && <>
+    <button class="knowledge-legend-toggle" type="button" data-knowledge-toggle aria-controls="knowledge-legend-panel" aria-expanded="false" hidden>图例</button>
+    <aside class="knowledge-aside" data-knowledge-controls aria-label="知识点类别图例" hidden>
+      <div class="knowledge-legend-panel" id="knowledge-legend-panel">
+        <div class="knowledge-legend" role="group" aria-label="知识点类别高亮">
+          {Object.entries(knowledgeCategories).map(([id, label]) => <button type="button" data-knowledge-category={id} data-c={id} aria-pressed="false"><span aria-hidden="true" class="knowledge-swatch"></span>{label}</button>)}
+        </div>
+        <div class="knowledge-selection" data-knowledge-selection hidden>
+          <p data-knowledge-status role="status" aria-live="polite"></p><span aria-hidden="true">·</span>
+          <button type="button" data-knowledge-clear>清除筛选</button>
+        </div>
+      </div>
+    </aside>
+  </>}
+  {showLegend && <slot name="intro" />}
+  <slot />
+  {enabled && !showLegend && <div class="knowledge-selection" data-knowledge-selection hidden>
+    <p data-knowledge-status role="status" aria-live="polite"></p><span aria-hidden="true">·</span>
+    <button type="button" data-knowledge-clear>清除筛选</button>
+  </div>}
+  {enabled && <p class="knowledge-empty" data-knowledge-empty hidden>没有同时包含这些标签的条目，请取消部分标签或清除筛选。</p>}
+  {showLegend && <slot name="footer" />}
+</div>
+{!showLegend && <slot name="footer" />}
+<script>import '../scripts/knowledge-directory';</script>

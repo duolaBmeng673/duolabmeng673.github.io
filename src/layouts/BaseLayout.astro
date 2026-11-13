@@ -94,6 +94,18 @@ const image = new URL('/og-default.png', Astro.site);
         </div>
       </div>
     </header>
+    <script is:inline>
+      (() => {
+        const header = document.querySelector('.site-header');
+        if (!header) return;
+        // Measure before the article and its anchors are parsed. Observe font
+        // settings and responsive wrapping without imposing a header height.
+        const syncHeight = () => document.documentElement.style.setProperty('--header-h', `${header.getBoundingClientRect().height}px`);
+        syncHeight();
+        if ('ResizeObserver' in window) new ResizeObserver(syncHeight).observe(header);
+        else window.addEventListener('resize', syncHeight);
+      })();
+    </script>
     <main id="main-content"><slot /></main>
     <footer class="site-footer">
       <span>© {new Date().getFullYear()} {siteConfig.name}</span>

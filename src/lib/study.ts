@@ -1,4 +1,5 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
+import { validateKnowledgePosts } from './knowledge-tags';
 
 export type StudyPost = CollectionEntry<'study_notes'>;
 export const studySeries = {
@@ -53,6 +54,7 @@ export type StudyModuleSummary = ReturnType<typeof getStudyModuleSummaries>[numb
 
 export async function getPublicStudyNotes() {
   const posts = await getCollection('study_notes', ({ data }) => data.published && !data.draft && !data.publicationHoldReason);
+  validateKnowledgePosts(posts);
   const routes = new Set<string>();
   const orders = new Set<string>();
   for (const post of posts) {

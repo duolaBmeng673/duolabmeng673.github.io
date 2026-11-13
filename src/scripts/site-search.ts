@@ -7,6 +7,7 @@ const status = document.querySelector<HTMLElement>('[data-search-status]');
 const allResults = document.querySelector<HTMLAnchorElement>('[data-search-all]');
 let index: SearchRecord[] | undefined;
 let expanded = false;
+let request = 0;
 const setExpanded = (value: boolean) => {
   expanded = value;
   if (popover) popover.hidden = !value;
@@ -34,22 +35,27 @@ const render = () => {
 };
 const update = async () => {
   if (!input || !status) return;
+  const current = ++request;
   if (!input.value.trim()) { setExpanded(false); return; }
   setExpanded(true);
   if (allResults) allResults.href = `/blog/?${new URLSearchParams({ q: input.value })}`;
   if (!index) status.textContent = '正在加载笔记索引…';
   try {
     index = await loadSearchIndex();
-    if (expanded && shell?.contains(document.activeElement)) render();
+    // Do not replace a result link after the user has moved focus onto it.
+    if (current === request && expanded && document.activeElement === input) render();
   } catch {
-    if (expanded) status.textContent = '索引暂时无法加载。请重试，或查看全部结果。';
+    if (current === request && expanded) status.textContent = '索引暂时无法加载。请重试，或查看全部结果。';
   }
 };
 input?.addEventListener('focus', () => { void update(); });
 input?.addEventListener('input', () => { void update(); });
 shell?.addEventListener('focusout', (event) => {
-  if (!shell.contains(event.relatedTarget as Node | null)) setExpanded(false);
+  // Safari/touch can report null while a result is being clicked. Hiding here
+  // would remove its hit target before the browser dispatches the native click.
+  if (event.relatedTarget && !shell.contains(event.relatedTarget as Node)) setExpanded(false);
 });
+document.addEventListener('focusin', (event) => { if (shell && !shell.contains(event.target as Node)) setExpanded(false); });
 document.addEventListener('click', (event) => { if (shell && !shell.contains(event.target as Node)) setExpanded(false); });
 document.addEventListener('keydown', (event) => {
   if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {

@@ -1,0 +1,23 @@
+---
+import { getStudyHref, type StudyPost } from '../lib/study';
+import { getKnowledgeTags } from '../lib/knowledge-tags';
+interface Props { posts: StudyPost[]; chapterCode: string }
+const { posts, chapterCode } = Astro.props;
+---
+<ol class="study-note-list">
+  {posts.map((post) => {
+    const tags = getKnowledgeTags(post.id);
+    return <li class:list={{ 'knowledge-entry': tags.length > 0 }} data-knowledge-entry data-knowledge-tags={JSON.stringify(tags.map((tag) => tag.name))}>
+      {tags.length ? <>
+        <span class="chapter-code knowledge-code">{post.data.syllabusSection ?? chapterCode}</span>
+        <div class="knowledge-entry-content">
+          <a class="knowledge-title" href={getStudyHref(post)}>{post.data.title}</a>
+          <div class="knowledge-tags" role="group" aria-label={`${post.data.title}的知识点标签`}>
+            {tags.map((tag) => <button type="button" class="tag" data-c={tag.category} data-t={tag.name} aria-pressed="false">{tag.name}</button>)}
+          </div>
+        </div>
+        <span class="knowledge-arrow" aria-hidden="true">→</span>
+      </> : <a href={getStudyHref(post)}><span class="chapter-code">{post.data.syllabusSection ?? chapterCode}</span><span><strong>{post.data.title}</strong><small>{post.data.description}</small></span><span aria-hidden="true">→</span></a>}
+    </li>;
+  })}
+</ol>
