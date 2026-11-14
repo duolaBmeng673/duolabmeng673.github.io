@@ -1,6 +1,7 @@
 import { getCollection } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
 import { getPublicStudyNotes, getStudyHref, type StudyPost } from './study';
+import { getKnowledgeTags } from './knowledge-tags';
 
 export type BlogPost = CollectionEntry<'blog_read'> | CollectionEntry<'blog_huawei_examination'> | StudyPost;
 
@@ -64,6 +65,7 @@ export function getTimeline(posts: BlogPost[]) {
 }
 
 export function toSearchRecord(post: BlogPost, includeBody = true) {
+  const knowledgeTags = post.collection === 'study_notes' ? getKnowledgeTags(post.id) : [];
   const body = includeBody ? (post.body ?? '').replace(/<!--[^]*?-->/g, ' ').replace(/<[^>]+>/g, ' ').replace(/!\[([^\]]*)\]\([^)]*\)/g, '$1').replace(/\[([^\]]+)\]\([^)]*\)/g, '$1').replace(/[`#*_~|>]/g, ' ').replace(/\s+/g, ' ').trim() : '';
   const fields = [
     post.data.title,
@@ -75,6 +77,7 @@ export function toSearchRecord(post: BlogPost, includeBody = true) {
     post.data.series,
     ...(post.collection === 'study_notes' ? [post.data.subject, post.data.chapterTitle, post.data.syllabusSection, ...post.data.questions.map((question) => question.heading)] : []),
     ...post.data.tags,
+    ...knowledgeTags.map((tag) => tag.name),
     ...[post.data.category, post.data.subcategory, post.data.series].map(taxonomyLabel),
   ].filter(Boolean);
 
@@ -87,6 +90,7 @@ export function toSearchRecord(post: BlogPost, includeBody = true) {
     subcategory: post.data.subcategory,
     series: post.data.series,
     tags: post.data.tags,
+    knowledgeTags,
     date: post.data.pubDate.toISOString().slice(0, 10),
     href: getPostHref(post),
     body,

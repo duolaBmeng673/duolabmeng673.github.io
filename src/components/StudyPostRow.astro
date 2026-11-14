@@ -1,0 +1,19 @@
+---
+import { formatPostDate, getPostTitle, taxonomyLabel } from '../lib/blog';
+import { getStudyHref, getStudyModuleHref, type StudyPost } from '../lib/study';
+import { getKnowledgeTags } from '../lib/knowledge-tags';
+import KnowledgeChips from './KnowledgeChips.astro';
+interface Props { post: StudyPost; grouped?: boolean; heading?: boolean }
+const { post, grouped = false, heading = false } = Astro.props;
+const Title = heading ? 'h2' : 'span';
+const tags = getKnowledgeTags(post.id);
+---
+<div class="editorial-row knowledge-post-row" data-category={post.data.category}>
+  <time datetime={post.data.pubDate.toISOString()}>{formatPostDate(post.data.pubDate)}</time>
+  <div class="editorial-main">
+    <span class="note-taxonomy">{!grouped && <>{taxonomyLabel(post.data.category)} · </>}{taxonomyLabel(post.data.series)} · {post.data.subject}</span>
+    <Title class="editorial-title"><a class="knowledge-post-title" href={getStudyHref(post)} aria-label={`阅读：${post.data.title}`}><strong>{getPostTitle(post)}</strong>{post.data.subtitle && <em>{post.data.subtitle}</em>}</a></Title>
+    {tags.length ? <KnowledgeChips tags={tags} href={getStudyModuleHref(post)} /> : <span class="note-description">{post.data.description}</span>}
+  </div>
+  <span class="row-arrow" aria-hidden="true">→</span>
+</div>

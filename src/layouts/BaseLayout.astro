@@ -1,6 +1,7 @@
 ---
 import 'katex/dist/katex.min.css';
 import '../styles/global.css';
+import '../styles/knowledge-tags.css';
 import { siteConfig } from '../config';
 interface Props { title?: string; description?: string; bodyClass?: string; type?: 'website' | 'article'; published?: Date; updated?: Date; noindex?: boolean }
 const { title = siteConfig.title, description = siteConfig.description, bodyClass = '', type = 'website', published, updated, noindex = false } = Astro.props;
@@ -112,6 +113,7 @@ const image = new URL('/og-default.png', Astro.site);
       <span><a href="/rss.xml">RSS 订阅</a> <span aria-hidden="true">·</span> <a href={siteConfig.github} target="_blank" rel="noreferrer">GitHub ↗</a></span>
     </footer>
     <script>
+      import '../scripts/site-header';
       import '../scripts/typography';
       import '../scripts/site-search';
     </script>

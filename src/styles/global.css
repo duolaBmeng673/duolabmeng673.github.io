@@ -67,6 +67,7 @@
   --control-height: 40px;
   --max-width: 1120px;
   --header-h: 73px;
+  --header-offset: var(--header-h);
   --serif: "Iowan Old Style", "Noto Serif SC", "Songti SC", Georgia, serif;
   --sans: Inter, "Noto Sans SC", "PingFang SC", system-ui, sans-serif;
   --mono: "SF Mono", ui-monospace, Menlo, Monaco, Consolas, monospace;
@@ -117,6 +118,10 @@ button { color: inherit; }
 .visually-hidden { position: absolute !important; width: 1px !important; height: 1px !important; overflow: hidden !important; clip: rect(0 0 0 0) !important; white-space: nowrap !important; clip-path: inset(50%) !important; }
 .site-header, main, .site-footer { width: min(var(--max-width), calc(100% - 64px)); margin-inline: auto; }
 .site-header { position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--border); background: var(--bg); }
+/* Keep the normal-flow height: hiding the bar never moves the article itself. */
+.site-header { transition: transform var(--transition); }
+:root[data-header-hidden="true"] { --header-offset: 0px; }
+:root[data-header-hidden="true"] .site-header { transform: translateY(calc(-100% - 4px)); pointer-events: none; }
 /* Paint the side gutters too, without changing the header's width or geometry. */
 .site-header::before { position: absolute; inset: 0; z-index: -1; background: var(--bg); box-shadow: 0 0 0 100vmax var(--bg); clip-path: inset(0 -100vmax); content: ""; pointer-events: none; }
 /* Mask a list rule as it meets the sticky header; retain the header's own
@@ -284,7 +289,7 @@ main { min-height: calc(100vh - 145px); }
 .tag-list a, .tag-list span { padding: 4px 8px; border: 1px solid var(--border); border-radius: 999px; background: var(--surface); color: var(--text-soft); font-family: var(--mono); font-size: .64rem; }
 .tag-list a { color: var(--text-soft); border-color: var(--border-control); }
 .tag-list a:hover { border-color: var(--border-strong); background: var(--row-hover); color: var(--link); }
-.article-toc { position: sticky; top: calc(var(--header-h) + 24px); max-height: calc(100vh - var(--header-h) - 48px); overflow-y: auto; padding-top: 5px; }
+.article-toc { position: sticky; top: calc(var(--header-offset) + 24px); max-height: calc(100vh - var(--header-offset) - 48px); overflow-y: auto; padding-top: 5px; }
 .article-toc ol, .article-toc-mobile ol { display: grid; gap: 7px; margin: 0; padding: 0 0 0 13px; border-left: 1px solid var(--border); list-style: none; }
 .article-toc li { line-height: 1.4; }
 .article-toc li.toc-level-3 { padding-left: 13px; }

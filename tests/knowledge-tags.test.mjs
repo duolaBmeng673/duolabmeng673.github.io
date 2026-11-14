@@ -92,6 +92,33 @@ test('both modules and every chapter render exact chip labels as siblings of wor
   assert.deepEqual([...chapterIds].sort(), Object.keys(entries).sort());
 });
 
+test('article headers and global post listings reuse the same knowledge labels without changing source metadata', () => {
+  const decode = (text) => text.replace(/&quot;/g, '"').replace(/&#39;|&apos;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
+  const search = JSON.parse(read('dist/search-index.json'));
+  const archive = read('dist/blog/index.html');
+  for (const [id, entry] of Object.entries(entries)) {
+    const post = search.find((record) => record.href === `/study-notes/837/${id}/`);
+    assert.deepEqual(post.knowledgeTags, entry.knowledgeTags.map((name) => ({ name, category: dictionary[name] })));
+    for (const name of entry.knowledgeTags) assert.ok(post.searchText.includes(name.toLocaleLowerCase()));
+    const html = read(`dist${post.href}index.html`);
+    const header = html.match(/<header\b[^>]*class="article-header"[^]*?<\/header>/)?.[0];
+    assert.ok(header && !header.includes('article-description'));
+    assert.deepEqual([...header.matchAll(/data-knowledge-label="([^"]+)"/g)].map((match) => decode(match[1])), entry.knowledgeTags);
+    assert.ok(!header.includes('class="tag-list"'), 'no duplicate legacy pills in the article header');
+    assert.ok(html.includes(`name="description" content="${post.description.replace(/&/g, '&amp;').replace(/"/g, '&quot;')}"`), 'SEO description retained');
+    const row = [...archive.matchAll(/<article\b[^>]*data-note-row[^]*?<\/article>/g)].find(([row]) => row.includes(`href="${post.href}"`))?.[0];
+    assert.ok(row && !row.includes('note-description'));
+    assert.deepEqual([...row.matchAll(/data-knowledge-label="([^"]+)"/g)].map((match) => decode(match[1])), entry.knowledgeTags);
+    for (const [, content] of row.matchAll(/<a\b[^>]*>([^]*?)<\/a>/g)) assert.ok(!/<a\b/.test(content), 'title and filter links are siblings');
+  }
+  const homepage = read('dist/index.html');
+  assert.ok(homepage.includes('class="editorial-row knowledge-post-row"'));
+  assert.ok(homepage.includes('data-knowledge-label='));
+  const paper = read('dist/blog/bert/index.html');
+  assert.ok(paper.includes('class="article-description"'));
+  assert.ok(paper.includes('class="tag-list"'));
+});
+
 function control(dataset = {}) {
   return { dataset, hidden: false, attrs: {}, handlers: {}, classes: new Set(), textContent: '', focused: false,
     setAttribute(name, value) { this.attrs[name] = value; },

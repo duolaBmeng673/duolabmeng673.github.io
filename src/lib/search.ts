@@ -1,6 +1,8 @@
+import type { KnowledgeCategory } from './knowledge-tags';
 export type SearchRecord = {
   title: string; shortTitle: string | null; subtitle: string | null; description: string;
   category: string; subcategory: string; series: string; tags: string[]; date: string; href: string; searchText: string; body: string;
+  knowledgeTags?: { name: string; category: KnowledgeCategory }[];
 };
 const normalize = (text: string) => text.normalize('NFKC').toLocaleLowerCase();
 const termsOf = (query: string) => [...new Set(normalize(query).trim().split(/\s+/).filter(Boolean))];
@@ -13,7 +15,7 @@ export function searchScore(record: SearchRecord, query: string) {
   if (!terms.length) return 0;
   if (!matchesQuery(record, query)) return -1;
   const title = normalize([record.title, record.shortTitle, record.subtitle].filter(Boolean).join(' '));
-  const tags = normalize(record.tags.join(' '));
+  const tags = normalize([...record.tags, ...(record.knowledgeTags ?? []).map((tag) => tag.name)].join(' '));
   const taxonomy = normalize([record.category, record.subcategory, record.series].join(' '));
   const description = normalize(record.description);
   let score = normalize(record.title) === normalize(query).trim() ? 500 : 0;

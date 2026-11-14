@@ -1,0 +1,10 @@
+---
+import type { KnowledgeCategory } from '../lib/knowledge-tags';
+interface Props { tags: { name: string; category: KnowledgeCategory }[]; href?: string }
+const { tags, href } = Astro.props;
+---
+{tags.length > 0 && <span class="knowledge-tags" aria-label="知识点标签">
+  {tags.map((tag) => href
+    ? <a class="knowledge-chip" data-c={tag.category} data-knowledge-label={tag.name} href={`${href}?${new URLSearchParams({ tag: tag.name })}`} aria-label={`筛选知识点：${tag.name}`}>{tag.name}</a>
+    : <span class="knowledge-chip" data-c={tag.category} data-knowledge-label={tag.name}>{tag.name}</span>)}
+</span>}

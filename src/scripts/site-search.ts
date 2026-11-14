@@ -29,7 +29,16 @@ const render = () => {
     const meta = document.createElement('small'); meta.textContent = `${record.category === 'Study Notes' ? '学习笔记' : record.category === 'Research' ? '论文笔记' : '技术笔记'} · ${record.series} / ${record.date}`;
     const subtitle = record.subtitle ? document.createElement('em') : null;
     if (subtitle) { subtitle.textContent = record.subtitle; subtitle.className = 'search-result-subtitle'; }
-    const description = document.createElement('p'); description.textContent = searchSnippet(record, input.value);
+    const description = document.createElement(record.knowledgeTags?.length ? 'span' : 'p');
+    if (record.knowledgeTags?.length) {
+      description.className = 'knowledge-tags';
+      description.setAttribute('aria-label', '知识点标签');
+      for (const tag of record.knowledgeTags) {
+        const chip = document.createElement('span');
+        chip.className = 'knowledge-chip'; chip.dataset.c = tag.category; chip.textContent = tag.name;
+        description.append(chip);
+      }
+    } else description.textContent = searchSnippet(record, input.value);
     link.append(title, ...(subtitle ? [subtitle] : []), meta, description); li.append(link); results.append(li);
   }
 };
@@ -59,7 +68,7 @@ document.addEventListener('focusin', (event) => { if (shell && !shell.contains(e
 document.addEventListener('click', (event) => { if (shell && !shell.contains(event.target as Node)) setExpanded(false); });
 document.addEventListener('keydown', (event) => {
   if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
-    event.preventDefault(); input?.focus(); void update();
+    event.preventDefault(); input?.focus({ preventScroll: true }); void update();
   }
   if (event.key === 'Escape' && expanded) {
     event.preventDefault(); input?.focus(); setExpanded(false);
