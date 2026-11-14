@@ -28,7 +28,7 @@ interface ActivityRecord {
 
 【已核实】当前支持五类，不是最初方案中的四类：`coding`（代码开发）、`writing`（写作）、`research`（研究）、`learning`（学习）、`site`（博客功能）。类型、中文名称与详情分组顺序在 [activity.ts](../src/lib/activity.ts)，手工记录入口只有 [activities.ts](../src/data/activities.ts)。
 
-【已核实】核实日为 2026-11-14；手工文件现有 2026-11-11 工具栏目、2026-11-13 知识点标签两条 `site/count: 1` 记录。这是当日快照，不是固定数量要求；本轮保留原数据不动。依据：[activities.ts](../src/data/activities.ts)。
+【已核实】核实日为 2026-11-14；手工文件现有 2026-11-11 工具栏目、2026-11-13 知识点目录、2026-11-14 顶栏显隐与全局知识点标签三条 `site/count: 1` 记录。这是当日快照，不是固定数量要求。11 月 14 日一条根据 `1786c17` 的实际功能差异与日期补记，未按 commit 数计数，也未为规则文档或纯分类元数据变更记活动。依据：[activities.ts](../src/data/activities.ts)；本次检查记录见 [rules-review.md](rules-review.md#归类修正确认)。
 
 ## 已核实的统计与日期口径
 

@@ -193,7 +193,7 @@
   "PREFIX 表": "struct",
   "PAT_PTR 表": "struct",
   "C4.5": "algorithm",
-  "决策树": "struct",
+  "决策树": "algorithm",
   "熵": "concept",
   "条件熵": "concept",
   "信息增益": "concept",

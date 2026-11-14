@@ -18,4 +18,11 @@ export const activities: ActivityRecord[] = [
     count: 1,
     description: '知识点标签覆盖信息安全与网络安全全部 35 篇笔记目录，支持分类色块、多标签交集筛选与 URL 状态恢复。',
   },
+  {
+    // Verified feature work in 1786c17 (2026-11-14), not inferred from the commit count.
+    date: '2026-11-14',
+    type: 'site',
+    count: 1,
+    description: '顶栏支持下滑隐藏、上滑显示；知识点标签同步到学习笔记文章、全局列表与搜索。',
+  },
 ];
