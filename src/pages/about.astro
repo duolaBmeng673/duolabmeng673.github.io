@@ -1,11 +1,88 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { siteConfig } from '../config';
+import { getAllPosts } from '../lib/blog';
+
+const posts = await getAllPosts();
+const researchCount = posts.filter((post) => post.collection === 'blog_read').length;
+const csCount = posts.filter((post) => post.collection === 'blog_huawei_examination').length;
+const infoSecCount = posts.filter((post) => post.collection === 'study_notes' && post.data.subject === '信息安全导论').length;
+const netSecCount = posts.filter((post) => post.collection === 'study_notes' && post.data.subject === '网络安全基础').length;
+const studyCount = infoSecCount + netSecCount;
+const totalCount = posts.length || 1;
+const researchPct = ((researchCount / totalCount) * 100).toFixed(1);
+const csPct = ((csCount / totalCount) * 100).toFixed(1);
+const studyPct = ((studyCount / totalCount) * 100).toFixed(1);
 ---
 <BaseLayout title="关于" description={`杨雨飞 / YYF · ${siteConfig.education} · ${siteConfig.name}`} bodyClass="about-page">
-  <section class="about-hero"><div><h1>杨雨飞<span> / YYF</span></h1><p class="about-education">{siteConfig.education}</p><p class="about-handle">{siteConfig.name}</p></div><img class="about-avatar" src="/github-avatar.png" alt="杨雨飞的 GitHub 头像" width="96" height="96" /></section>
+  <section class="about-hero">
+    <div class="about-avatar-wrap">
+      <img class="about-avatar" src="/github-avatar.png" alt="杨雨飞的 GitHub 头像" width="96" height="96" />
+      <div>
+        <p class="eyebrow">Author Dossier</p>
+        <h1>杨雨飞<span> / YYF</span></h1>
+        <p class="about-education">{siteConfig.education}</p>
+        <p class="about-handle">{siteConfig.name}</p>
+      </div>
+    </div>
+    <div class="masthead-stats" aria-label="站点收录统计">
+      <div class="masthead-stat-card">
+        <span class="masthead-stat-label">公开笔记</span>
+        <strong class="masthead-stat-num">{posts.length}</strong>
+        <span class="masthead-stat-sub">持续同步构建</span>
+      </div>
+      <a class="masthead-stat-card" href="/blog/">
+        <span class="masthead-stat-label">技术与论文</span>
+        <strong class="masthead-stat-num">{researchCount + csCount}</strong>
+        <span class="masthead-stat-sub">论文 {researchCount} · 算法 {csCount}</span>
+      </a>
+      <a class="masthead-stat-card" href="/study-notes/837/">
+        <span class="masthead-stat-label">837 专题</span>
+        <strong class="masthead-stat-num">{studyCount}</strong>
+        <span class="masthead-stat-sub">信安 {infoSecCount} · 网安 {netSecCount}</span>
+      </a>
+    </div>
+  </section>
   <section class="about-grid" aria-label="个人信息">
-    <section class="about-panel"><h2>关注方向</h2><ul class="about-interest-list">{siteConfig.interests.map((interest) => <li>{interest}</li>)}</ul></section>
-    <section class="about-panel"><h2>链接</h2><ul class="about-link-list"><li><a class="text-link" href={siteConfig.github} target="_blank" rel="noreferrer">GitHub / {siteConfig.name} ↗</a></li><li><a class="text-link" href="/blog/">技术笔记 →</a></li></ul></section>
+    <section class="about-panel is-wide">
+      <h2>关注方向与主线</h2>
+      <p style="color: var(--ts); line-height: 1.8; margin-bottom: 1rem;">
+        聚焦多模态与表格理解论文精读、ACM / OJ 算法题解模板整理，以及哈尔滨工业大学 837 信息安全与网络安全专业课考纲系统复习。
+      </p>
+      <ul class="about-interest-list">{siteConfig.interests.map((interest) => <li>{interest}</li>)}</ul>
+      <div class="about-actions">
+        <a class="button primary" href="/blog/">技术笔记归档 →</a>
+        <a class="button" href="/study-notes/837/">HIT 837 学习笔记</a>
+      </div>
+    </section>
+    <section class="about-panel is-side">
+      <h2>全站收录分布</h2>
+      <div class="about-bar" aria-hidden="true">
+        <span style={`width: ${researchPct}%; background: var(--cat-research);`} />
+        <span style={`width: ${csPct}%; background: var(--cat-tech);`} />
+        <span style={`width: ${studyPct}%; background: var(--cat-study);`} />
+      </div>
+      <ul class="about-breakdown">
+        <li><span><i style="background: var(--cat-research);" />论文精读（Research）</span><strong>{researchCount} 篇</strong></li>
+        <li><span><i style="background: var(--cat-tech);" />算法与工程（CS）</span><strong>{csCount} 篇</strong></li>
+        <li><span><i style="background: var(--cat-study);" />《信息安全导论》</span><strong>{infoSecCount} 篇</strong></li>
+        <li><span><i style="background: var(--ac);" />《网络安全基础》</span><strong>{netSecCount} 篇</strong></li>
+      </ul>
+    </section>
+    <section class="about-panel is-wide">
+      <h2>链接与入口</h2>
+      <ul class="about-link-list">
+        <li><a class="text-link" href={siteConfig.github} target="_blank" rel="noreferrer">GitHub / {siteConfig.name} ↗</a></li>
+        <li><a class="text-link" href="/blog/">技术笔记 →</a></li>
+        <li><a class="text-link" href="/tools/">常用工具 →</a></li>
+        <li><a class="text-link" href="/rss.xml">RSS 订阅 →</a></li>
+      </ul>
+    </section>
+    <section class="about-panel is-side">
+      <h2>站点特性</h2>
+      <p style="color: var(--ts); font-size: 0.9rem; line-height: 1.75; margin: 0;">
+        全站静态构建（Astro 7 + KaTeX + 本地全文检索），支持 837 七类知识点染色关联、背诵折叠模式与浅色／深色无闪烁切换。
+      </p>
+    </section>
   </section>
 </BaseLayout>

@@ -6,6 +6,24 @@ import '../../styles/tools/index.css';
 const groups = groupTools(tools);
 ---
 <BaseLayout title="工具" description="常用工具与资源：图片、PDF、壁纸、前端组件与 AI 服务评测。">
-  <header class="page-intro"><p class="eyebrow">Tools</p><h1>工具</h1><p>常用的在线工具与资源，点击后在新窗口打开。</p></header>
-  <div class="tool-groups">{groups.map((group, index) => <section class="tool-group" aria-labelledby={`tool-group-${index}`}><h2 id={`tool-group-${index}`}>{group.category}</h2><ul class="tool-grid" aria-label={`${group.category}列表`}>{group.tools.map((tool) => <li><ToolCard tool={tool} /></li>)}</ul></section>)}</div>
+  <header class="page-intro page-masthead">
+    <div>
+      <p class="eyebrow">Tools</p>
+      <h1>工具</h1>
+      <p>常用的在线工具与资源，点击后在新窗口打开。</p>
+    </div>
+    <div class="masthead-stats is-two" aria-label="工具统计">
+      <div class="masthead-stat-card">
+        <span class="masthead-stat-label">收录工具</span>
+        <strong class="masthead-stat-num">{tools.length}</strong>
+        <span class="masthead-stat-sub">精选外链工作台</span>
+      </div>
+      <div class="masthead-stat-card">
+        <span class="masthead-stat-label">工具分组</span>
+        <strong class="masthead-stat-num">{groups.length}</strong>
+        <span class="masthead-stat-sub">按使用场景归类</span>
+      </div>
+    </div>
+  </header>
+  <div class="tool-groups">{groups.map((group, index) => <section class="tool-group" aria-labelledby={`tool-group-${index}`}><div class="tool-group-head"><h2 id={`tool-group-${index}`}>{group.category}</h2><span class="tool-group-count">{group.tools.length} 项</span></div><ul class="tool-grid" aria-label={`${group.category}列表`}>{group.tools.map((tool) => <li><ToolCard tool={tool} /></li>)}</ul></section>)}</div>
 </BaseLayout>

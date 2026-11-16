@@ -45,8 +45,8 @@
   grid-template-columns: 65px minmax(0, 1fr) 18px;
   gap: 14px;
   align-items: baseline;
-  padding: 18px 0;
-  transition: padding var(--transition), background var(--transition);
+  padding: 16px 18px;
+  transition: padding var(--transition), background var(--transition), border-color var(--transition), transform var(--transition);
 }
 .knowledge-entry-content { min-width: 0; }
 .study-note-list .knowledge-entry .knowledge-title {
@@ -54,18 +54,18 @@
   padding: 0;
   margin-bottom: 10px;
   background: transparent;
-  color: var(--text);
-  font-family: var(--serif);
-  font-size: 22px;
-  font-weight: 500;
-  line-height: 1.35;
+  color: var(--tx);
+  font-family: var(--sans);
+  font-size: 1.15rem;
+  font-weight: var(--fw-h);
+  line-height: 1.38;
 }
 .knowledge-title::after { position: absolute; inset: 0; content: ""; }
 .knowledge-title:focus-visible { outline: none; }
-.knowledge-title:focus-visible::after { outline: 2px solid var(--focus); outline-offset: 3px; }
-.knowledge-code { font-family: var(--mono); font-size: 12px; color: var(--text-muted); }
+.knowledge-title:focus-visible::after { outline: 2px solid var(--focus); outline-offset: 3px; border-radius: var(--r-bento); }
+.knowledge-code { font-family: var(--mono); font-size: 12px; }
 .knowledge-arrow { color: var(--text-muted); }
-.knowledge-entry:has(.knowledge-title:is(:hover,:focus-visible)) { padding-inline: 8px; border-radius: var(--r-row); background: var(--row-hover); }
+.knowledge-entry:has(.knowledge-title:is(:hover,:focus-visible)) { border-radius: var(--r-bento); background: var(--bg-elev); }
 .study-note-list .knowledge-entry .knowledge-title:is(:hover,:focus-visible),
 .knowledge-entry:has(.knowledge-title:is(:hover,:focus-visible)) .knowledge-arrow { color: var(--link); }
 .knowledge-tags { position: relative; z-index: 1; display: flex; flex-wrap: wrap; gap: 6px; width: fit-content; }
@@ -122,7 +122,7 @@
   .knowledge-directory .knowledge-legend-toggle { display: none; }
 }
 @media (max-width: 600px) {
-  .study-note-list .knowledge-entry { grid-template-columns: 48px minmax(0, 1fr) 14px; gap: 9px; }
+  .study-note-list .knowledge-entry { grid-template-columns: 48px minmax(0, 1fr) 14px; gap: 9px; padding: 14px; }
 }
 @media (pointer: coarse) {
   .knowledge-directory .tag, .knowledge-chip { min-height: 32px; padding: 8px 10px; font-size: 13px; }

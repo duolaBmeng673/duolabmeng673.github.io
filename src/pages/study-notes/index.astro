@@ -7,7 +7,25 @@ const series = Object.entries(studySeries).filter(([name]) => posts.some((post) 
 const modules = getStudyModuleSummaries(posts);
 ---
 <BaseLayout title="学习笔记" description="HIT 837 专业课考研笔记，按信息安全与网络安全模块组织。">
-  <header class="page-intro"><p class="eyebrow">学习笔记</p><h1>学习笔记</h1><p>HIT 837 专业课考研笔记，按信息安全与网络安全模块组织。</p></header>
+  <header class="page-intro page-masthead">
+    <div>
+      <p class="eyebrow">学习笔记</p>
+      <h1>学习笔记</h1>
+      <p>HIT 837 专业课考研笔记，按信息安全与网络安全模块组织。</p>
+    </div>
+    <div class="masthead-stats is-two" aria-label="学习笔记统计">
+      <div class="masthead-stat-card">
+        <span class="masthead-stat-label">公开笔记</span>
+        <strong class="masthead-stat-num">{posts.length}</strong>
+        <span class="masthead-stat-sub">含公式、图表与交互演示</span>
+      </div>
+      <div class="masthead-stat-card">
+        <span class="masthead-stat-label">专题模块</span>
+        <strong class="masthead-stat-num">{modules.length}</strong>
+        <span class="masthead-stat-sub">信息安全 + 网络安全</span>
+      </div>
+    </div>
+  </header>
   {series.map(([name, info]) => <section class="study-series-group" aria-label={info.title}><h2 class="study-series-heading"><a href={`/study-notes/${info.slug}/`}>{info.title} →</a></h2><StudyModuleLinks modules={modules.filter((module) => module.series === name)} headingLevel="h3" /></section>)}
   <p class="study-status">公开笔记数量不代表复习完成进度。</p>
 </BaseLayout>
