@@ -1,6 +1,11 @@
 import { activities } from '../data/activities';
 import { siteConfig } from '../config';
-import { createActivityCalendar, localDateKey, type ActivityRecord } from './activity';
+import {
+  createActivityCalendar,
+  getActivitySummaryStats,
+  localDateKey,
+  type ActivityRecord,
+} from './activity';
 import { getAllPosts, getPostHref, getPostTitle, taxonomyLabel, type BlogPost } from './blog';
 import { getKnowledgeTags } from './knowledge-tags';
 import { getStudyModuleHref, studyModules } from './study';
@@ -181,6 +186,7 @@ export async function getHomePageData() {
   const today = new Date();
   const buildDate = localDateKey(today);
   const calendar = createActivityCalendar([...activities, ...writingRecords], today);
+  const calendarSummary = getActivitySummaryStats(calendar, buildDate);
 
   // Recent real records for static no-JS / pre-hydration fallback & initial active day
   const combinedItems = [...heatmapActivityItems, ...heatmapWritingItems].sort((a, b) =>
@@ -334,6 +340,8 @@ export async function getHomePageData() {
       buildDate,
       activeDays: calendar.activityDays,
       totalActivities: calendar.totalActivities,
+      longestStreak: calendarSummary.longestStreak,
+      monthActivities: calendarSummary.monthActivities,
       latestActiveDate,
       latestActiveEntries,
       recentActivityPreview,

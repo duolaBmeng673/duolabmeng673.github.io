@@ -494,10 +494,11 @@
 
 /* Activity Heatmap Window & Static Fallback */
 .stage-heat-body {
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 0.65rem;
-  padding: clamp(0.72rem, 1cqw, 1rem) clamp(0.8rem, 1.15cqw, 1.15rem) clamp(0.78rem, 1.05cqw, 1.05rem);
+  gap: 0.52rem;
+  padding: clamp(0.68rem, 0.95cqw, 0.95rem) clamp(0.8rem, 1.15cqw, 1.15rem) clamp(0.72rem, 1cqw, 1rem);
 }
 
 .stage-heat-body .heat-detail {
@@ -520,37 +521,65 @@
   white-space: nowrap;
 }
 
-.wt-right .heat-legend {
+.heat-stats-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.35rem 0.75rem;
+  padding: 0.36rem 0.62rem;
+  border-radius: var(--r-chip);
+  border: 1px solid color-mix(in srgb, var(--bd) 85%, transparent);
+  background: color-mix(in srgb, var(--bg-elev) 64%, transparent);
+  font-size: clamp(0.7rem, 0.78cqw, 0.78rem);
+  line-height: 1.35;
+  color: var(--ts);
+}
+
+.heat-stats-metrics {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.22rem 0.42rem;
+  min-width: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.heat-stat-item {
+  white-space: nowrap;
+}
+
+.heat-stat-item strong {
+  color: var(--tx);
+  font-weight: var(--fw-h);
+}
+
+.heat-stat-sep {
+  color: var(--tm);
+  opacity: 0.6;
+}
+
+.heat-stats-bar .heat-legend {
   display: inline-flex;
   align-items: center;
   gap: 0.22rem;
-  font-size: clamp(0.66rem, 0.75cqw, 0.78rem);
+  font-size: clamp(0.68rem, 0.74cqw, 0.75rem);
   color: var(--ts);
   white-space: nowrap;
+  margin-left: auto;
 }
 
 .heat-canvas-wrap {
   position: relative;
   width: 100%;
-  min-height: 9.25rem;
-  overflow-x: auto;
-  overflow-y: hidden;
-  padding-bottom: 0.35rem;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: thin;
-  scrollbar-color: color-mix(in srgb, var(--tx) 22%, transparent) transparent;
-}
-
-.heat-canvas-wrap::-webkit-scrollbar { height: 5px; }
-.heat-canvas-wrap::-webkit-scrollbar-track { background: transparent; }
-.heat-canvas-wrap::-webkit-scrollbar-thumb {
-  background: color-mix(in srgb, var(--tx) 22%, transparent);
-  border-radius: 999px;
+  min-height: 0;
+  overflow: hidden;
+  padding-bottom: 0;
 }
 
 #heat {
   display: block;
-  max-width: none;
+  width: 100%;
   cursor: pointer;
 }
 
@@ -616,11 +645,11 @@
   align-items: flex-start;
   justify-content: flex-start;
   flex-wrap: nowrap;
-  min-height: 3.45rem;
-  padding: 0.56rem 0.82rem;
+  min-height: 0;
+  padding: 0.45rem 0.72rem;
   gap: 0.6rem;
   font-size: var(--win-fs);
-  line-height: 1.48;
+  line-height: 1.45;
 }
 
 .heat-detail-date {
@@ -665,16 +694,16 @@
 
 /* Floating Heatmap Hover Popover */
 .heat-popover {
-  position: fixed;
-  z-index: 220;
+  position: absolute;
+  z-index: 20;
   pointer-events: none;
-  width: min(21.5rem, calc(100vw - 24px));
-  padding: 0.65rem 0.8rem;
+  width: min(20rem, calc(100% - 16px));
+  max-height: calc(100% - 12px);
+  overflow: hidden;
+  padding: 0.6rem 0.76rem;
   border-radius: var(--r-card);
   border: 1px solid var(--bd-strong);
-  background: color-mix(in srgb, var(--bg-elev) 92%, transparent);
-  -webkit-backdrop-filter: blur(1rem) saturate(160%);
-  backdrop-filter: blur(1rem) saturate(160%);
+  background: var(--bg-elev);
   box-shadow: 0 0.75rem 2rem var(--sh);
   font-family: var(--sans);
   transition: opacity 0.14s ease, transform 0.14s ease;

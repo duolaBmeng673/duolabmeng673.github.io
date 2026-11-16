@@ -1,5 +1,12 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import { createPortal } from 'react-dom';
+import {
+  activityKind,
+  activityLevel,
+  activityTypes,
+  createActivityCalendar,
+  getActivitySummaryStats,
+  type ActivityRecord,
+} from '../../lib/activity';
 
 export interface HeatmapItemPayload {
   date: string;
@@ -16,6 +23,8 @@ export interface ActivityHeatmapIslandProps {
   recentFallbackItems: HeatmapItemPayload[];
   initialActiveDays: number;
   initialTotalActivities: number;
+  initialLongestStreak: number;
+  initialMonthActivities: number;
 }
 
 interface CalendarCell {
@@ -36,14 +45,9 @@ interface HoverInfo {
   anchorBottom: number;
 }
 
-const COLS = 53;
 const PHONE_COLS = 26;
-const PAD = 4;
+const PAD = 2;
 const WEEKDAYS = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
-
-function ymd(d: Date) {
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-}
 
 function buildHeatmapMap(writingItems: HeatmapItemPayload[], activityItems: HeatmapItemPayload[]) {
   const map: Record<string, HeatmapItemPayload[]> = {};
@@ -53,33 +57,55 @@ function buildHeatmapMap(writingItems: HeatmapItemPayload[], activityItems: Heat
   return map;
 }
 
-function buildCalendar(actMap: Record<string, HeatmapItemPayload[]>, anchorDateStr: string) {
+function buildCalendar(
+  writingItems: HeatmapItemPayload[],
+  activityItems: HeatmapItemPayload[],
+  actMap: Record<string, HeatmapItemPayload[]>,
+  anchorDateStr: string,
+) {
   const today = new Date(`${anchorDateStr}T00:00:00`);
   today.setHours(0, 0, 0, 0);
-  const endSun = new Date(today);
-  endSun.setDate(today.getDate() - today.getDay());
-  const first = new Date(endSun);
-  first.setDate(endSun.getDate() - (COLS - 1) * 7);
+  const records: ActivityRecord[] = [...writingItems, ...activityItems].map((item) => ({
+    date: item.date,
+    type: item.type,
+    count: item.count,
+    description: item.description,
+  }));
 
+  const calendar = createActivityCalendar(records, today, 365);
+  const summary = getActivitySummaryStats(calendar, anchorDateStr);
+  const totalCols = calendar.columns.length;
   const cells: CalendarCell[] = [];
-  let totalActs = 0;
-  let activeDays = 0;
 
-  for (let c = 0; c < COLS; c++) {
+  for (let c = 0; c < totalCols; c++) {
+    const col = calendar.columns[c];
     for (let r = 0; r < 7; r++) {
-      const d = new Date(first);
-      d.setDate(first.getDate() + c * 7 + r);
-      const key = ymd(d);
-      const future = d > today;
-      const entries = !future && Array.isArray(actMap[key]) ? actMap[key] : [];
-      const count = entries.reduce((s, e) => s + (e.count || 1), 0);
-      const onlySite = entries.length > 0 && entries.every((e) => e.type === 'site');
-      if (count > 0) {
-        totalActs += count;
-        activeDays += 1;
+      const day = col[r];
+      if (!day) {
+        cells.push({
+          c,
+          r,
+          key: '',
+          count: 0,
+          lv: 0,
+          future: true,
+          entries: [],
+          onlySite: false,
+        });
+        continue;
       }
-      const lv = count === 0 ? 0 : count === 1 ? 1 : count <= 2 ? 2 : count <= 4 ? 3 : 4;
-      cells.push({ c, r, key, count, lv, future, entries, onlySite });
+      const count = activityTypes.reduce((sum, type) => sum + day.types[type], 0);
+      const entries = actMap[day.date] ?? [];
+      cells.push({
+        c,
+        r,
+        key: day.date,
+        count,
+        lv: activityLevel(day),
+        future: false,
+        entries,
+        onlySite: activityKind(day) === 'site',
+      });
     }
   }
 
@@ -88,7 +114,15 @@ function buildCalendar(actMap: Record<string, HeatmapItemPayload[]>, anchorDateS
     cells.find((q) => q.key === anchorDateStr) ||
     null;
 
-  return { cells, totalActs, activeDays, defaultSelected };
+  return {
+    totalCols,
+    cells,
+    totalActs: calendar.totalActivities,
+    activeDays: calendar.activityDays,
+    longestStreak: summary.longestStreak,
+    monthActivities: summary.monthActivities,
+    defaultSelected,
+  };
 }
 
 export default function ActivityHeatmapIsland({
@@ -98,6 +132,8 @@ export default function ActivityHeatmapIsland({
   recentFallbackItems,
   initialActiveDays,
   initialTotalActivities,
+  initialLongestStreak,
+  initialMonthActivities,
 }: ActivityHeatmapIslandProps) {
   const [hydrated, setHydrated] = useState(false);
   const [themeAttr, setThemeAttr] = useState<string>(() =>
@@ -105,9 +141,9 @@ export default function ActivityHeatmapIsland({
   );
 
   const actMap = useMemo(() => buildHeatmapMap(writingItems, activityItems), [writingItems, activityItems]);
-  const { cells, totalActs, activeDays, defaultSelected } = useMemo(
-    () => buildCalendar(actMap, buildDate),
-    [actMap, buildDate],
+  const { totalCols, cells, totalActs, activeDays, longestStreak, monthActivities, defaultSelected } = useMemo(
+    () => buildCalendar(writingItems, activityItems, actMap, buildDate),
+    [writingItems, activityItems, actMap, buildDate],
   );
 
   const [selectedKey, setSelectedKey] = useState<string>(defaultSelected?.key || '');
@@ -115,24 +151,23 @@ export default function ActivityHeatmapIsland({
   const [popPos, setPopPos] = useState<{ left: number; top: number; placeBelow: boolean } | null>(null);
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const bodyRef = useRef<HTMLDivElement | null>(null);
   const wrapRef = useRef<HTMLDivElement | null>(null);
   const popRef = useRef<HTMLDivElement | null>(null);
   const metricsRef = useRef({
-    size: 13.5,
-    gap: 4,
+    size: 10,
+    gap: 2.5,
     offsetX: PAD,
-    offsetY: PAD + 21,
-    colCount: COLS,
+    offsetY: PAD + 20,
+    colCount: totalCols,
     width: 600,
-    height: 150,
+    height: 120,
   });
   const selectedKeyRef = useRef(selectedKey);
   const hoveredKeyRef = useRef<string | null>(null);
-  const userScrolledRef = useRef(false);
-  const progScrollRef = useRef(false);
   selectedKeyRef.current = selectedKey;
 
-  const activeCell = hoverInfo?.cell || cells.find((c) => c.key === selectedKey) || defaultSelected;
+  const activeCell = hoverInfo?.cell || cells.find((c) => !c.future && c.key === selectedKey) || defaultSelected;
 
   useEffect(() => {
     setHydrated(true);
@@ -165,17 +200,17 @@ export default function ActivityHeatmapIsland({
       const vc = q.c - startCol;
       const x = m.offsetX + vc * (m.size + m.gap);
       const y = m.offsetY + q.r * (m.size + m.gap);
-      const pop = isHovered ? 2 : 0;
+      const pop = isHovered ? 1.5 : 0;
       const rx = x - pop;
       const ry = y - pop;
       const side = m.size + pop * 2;
-      const radius = isHovered ? Math.max(3, Math.round(m.size * 0.28)) : Math.max(2, Math.round(m.size * 0.22));
+      const radius = isHovered ? Math.max(2.5, Math.round(m.size * 0.28)) : Math.max(2, Math.round(m.size * 0.22));
 
       ctx.save();
       if (isHovered) {
         ctx.shadowColor = 'rgba(0, 0, 0, 0.22)';
-        ctx.shadowBlur = 6;
-        ctx.shadowOffsetY = 2;
+        ctx.shadowBlur = 5;
+        ctx.shadowOffsetY = 1.5;
       }
       ctx.beginPath();
       if (ctx.roundRect) ctx.roundRect(rx, ry, side, side, radius);
@@ -187,7 +222,7 @@ export default function ActivityHeatmapIsland({
       const isSelected = Boolean(selectedKeyRef.current && q.key === selectedKeyRef.current);
       if (isHovered) {
         ctx.strokeStyle = elevCol;
-        ctx.lineWidth = 2.2;
+        ctx.lineWidth = 2;
         ctx.stroke();
         ctx.strokeStyle = txCol;
         ctx.lineWidth = 1.5;
@@ -201,32 +236,43 @@ export default function ActivityHeatmapIsland({
 
     const draw = () => {
       const m = metricsRef.current;
-      const startCol = COLS - m.colCount;
+      const startCol = totalCols - m.colCount;
       ctx.clearRect(0, 0, m.width, m.height);
 
-      // Draw top month tick labels aligned to first Sunday column of each month
+      // Draw top month tick labels aligned to first column of each month
       ctx.save();
       ctx.fillStyle = tsCol;
-      const labelFontSize = m.size >= 14 ? 13 : m.size >= 12 ? 12 : 10.5;
+      const labelFontSize = m.size >= 11.5 ? 12 : m.size >= 9 ? 11 : 10;
       ctx.font = `500 ${labelFontSize}px Inter, "Noto Sans SC", system-ui, sans-serif`;
       ctx.textBaseline = 'top';
+      ctx.textAlign = 'left';
       let prevMonth = '';
-      let lastLabelX = -100;
+      let lastLabelRight = -100;
       for (let vc = 0; vc < m.colCount; vc++) {
         const c = startCol + vc;
-        const firstDay = cells[c * 7];
-        if (!firstDay) continue;
-        const ym = firstDay.key.slice(0, 7);
+        let colFirstDay: CalendarCell | null = null;
+        for (let r = 0; r < 7; r++) {
+          const cand = cells[c * 7 + r];
+          if (cand && !cand.future && cand.key) {
+            colFirstDay = cand;
+            break;
+          }
+        }
+        if (!colFirstDay) continue;
+        const ym = colFirstDay.key.slice(0, 7);
         if (ym !== prevMonth) {
           prevMonth = ym;
+          const nextProbe = cells[(c + 2) * 7] ?? cells[(c + 2) * 7 + 6];
+          if (vc === 0 && nextProbe && !nextProbe.future && nextProbe.key.slice(0, 7) !== ym) {
+            continue;
+          }
+          const monthNum = Number(colFirstDay.key.slice(5, 7));
+          const labelText = `${monthNum}月`;
+          const textW = ctx.measureText(labelText).width;
           const x = m.offsetX + vc * (m.size + m.gap);
-          const probe = cells[(c + 3) * 7];
-          const nextColMonth = vc === 0 && probe ? probe.key.slice(0, 7) : ym;
-          if (vc === 0 && nextColMonth !== ym) continue;
-          if (x - lastLabelX >= 28 && x + 26 <= m.width) {
-            const monthNum = Number(firstDay.key.slice(5, 7));
-            ctx.fillText(`${monthNum}月`, x, PAD);
-            lastLabelX = x;
+          if (x >= lastLabelRight + 8 && x + textW <= m.width - m.offsetX) {
+            ctx.fillText(labelText, x, PAD);
+            lastLabelRight = x + textW;
           }
         }
       }
@@ -248,17 +294,15 @@ export default function ActivityHeatmapIsland({
       }
     };
 
-    let scrollRaf = 0;
     const layout = () => {
-      const containerW = Math.max(240, box.clientWidth || box.getBoundingClientRect().width || 560);
+      const containerW = Math.max(220, box.clientWidth || box.getBoundingClientRect().width || 560);
       const isPhone = typeof window !== 'undefined' && window.innerWidth < 640;
-      const colCount = isPhone ? PHONE_COLS : COLS;
-      const gap = containerW >= 780 ? 4.5 : isPhone ? 4 : 2.5;
-      const minSize = isPhone ? 10.5 : containerW >= 780 ? 15 : 9;
-      const fittedSize = (containerW - PAD * 2 - (colCount - 1) * gap) / colCount;
-      const size = Math.max(minSize, fittedSize);
-      const labelH = size >= 14 ? 23 : 21;
-      const W = Math.max(containerW, Math.ceil(PAD * 2 + colCount * size + (colCount - 1) * gap));
+      const colCount = Math.min(totalCols, isPhone ? PHONE_COLS : totalCols);
+      const gap = isPhone ? 3 : containerW >= 720 ? 3.5 : 2.5;
+      const availW = Math.max(120, containerW - PAD * 2);
+      const size = (availW - (colCount - 1) * gap) / colCount;
+      const labelH = size >= 11.5 ? 21 : 19;
+      const W = containerW;
       const gridH = 7 * size + 6 * gap;
       const offsetY = PAD + labelH;
       const H = Math.ceil(offsetY + gridH + PAD);
@@ -278,22 +322,16 @@ export default function ActivityHeatmapIsland({
       tsCol = cssVar('--ts', cssVar('--tm', '#6b7280'));
       elevCol = cssVar('--bg-elev', '#ffffff');
       draw();
-
-      if (!userScrolledRef.current && box.scrollWidth > box.clientWidth + 1) {
-        progScrollRef.current = true;
-        box.scrollLeft = box.scrollWidth - box.clientWidth;
-        scrollRaf = requestAnimationFrame(() => {
-          progScrollRef.current = false;
-        });
-      }
     };
 
     const hitCell = (clientX: number, clientY: number): HoverInfo | null => {
       const r = cv.getBoundingClientRect();
+      const bodyEl = bodyRef.current;
+      const br = bodyEl?.getBoundingClientRect();
       const px = clientX - r.left;
       const py = clientY - r.top;
       const { size, gap, offsetX, offsetY, colCount } = metricsRef.current;
-      const startCol = COLS - colCount;
+      const startCol = totalCols - colCount;
       const step = size + gap;
       if (px < offsetX || py < offsetY) return null;
       const vc = Math.floor((px - offsetX) / step);
@@ -301,14 +339,16 @@ export default function ActivityHeatmapIsland({
       const c = vc + startCol;
       if (vc >= 0 && vc < colCount && rr >= 0 && rr < 7) {
         const cell = cells[c * 7 + rr];
-        if (cell && !cell.future) {
+        if (cell && !cell.future && cell.key) {
           const cx = offsetX + vc * step;
           const cy = offsetY + rr * step;
+          const baseLeft = br ? br.left : r.left;
+          const baseTop = br ? br.top : r.top;
           return {
             cell,
-            anchorX: r.left + cx + size / 2,
-            anchorTop: r.top + cy,
-            anchorBottom: r.top + cy + size,
+            anchorX: r.left - baseLeft + cx + size / 2,
+            anchorTop: r.top - baseTop + cy,
+            anchorBottom: r.top - baseTop + cy + size,
           };
         }
       }
@@ -342,13 +382,8 @@ export default function ActivityHeatmapIsland({
       }
     };
 
-    const onBoxScroll = () => {
-      if (!progScrollRef.current) userScrolledRef.current = true;
-      onLeave();
-    };
-
     const onKeyDown = (e: KeyboardEvent) => {
-      const validCells = cells.filter((c) => !c.future);
+      const validCells = cells.filter((c) => !c.future && c.key);
       if (!validCells.length) return;
       const curIdx = Math.max(
         0,
@@ -369,60 +404,54 @@ export default function ActivityHeatmapIsland({
       selectedKeyRef.current = target.key;
       setSelectedKey(target.key);
       draw();
-
-      const m = metricsRef.current;
-      const startCol = COLS - m.colCount;
-      const vc = Math.max(0, target.c - startCol);
-      const cellX = m.offsetX + vc * (m.size + m.gap);
-      if (box.scrollWidth > box.clientWidth) {
-        if (cellX < box.scrollLeft + 24) {
-          box.scrollLeft = Math.max(0, cellX - 24);
-        } else if (cellX + m.size > box.scrollLeft + box.clientWidth - 24) {
-          box.scrollLeft = Math.min(box.scrollWidth - box.clientWidth, cellX + m.size - box.clientWidth + 24);
-        }
-      }
     };
 
     const ro = 'ResizeObserver' in window ? new ResizeObserver(layout) : null;
     ro?.observe(box);
 
-    box.addEventListener('scroll', onBoxScroll, { passive: true });
     cv.addEventListener('pointermove', onMove);
     cv.addEventListener('click', onClick);
-    cv.addEventListener('keydown', onKeyDown);
     cv.addEventListener('pointerleave', onLeave);
+    cv.addEventListener('keydown', onKeyDown);
     window.addEventListener('scroll', onLeave, { passive: true });
     layout();
 
     return () => {
-      cancelAnimationFrame(scrollRaf);
       ro?.disconnect();
-      box.removeEventListener('scroll', onBoxScroll);
       cv.removeEventListener('pointermove', onMove);
       cv.removeEventListener('click', onClick);
-      cv.removeEventListener('keydown', onKeyDown);
       cv.removeEventListener('pointerleave', onLeave);
+      cv.removeEventListener('keydown', onKeyDown);
       window.removeEventListener('scroll', onLeave);
     };
-  }, [hydrated, cells, themeAttr]);
+  }, [hydrated, totalCols, cells, themeAttr]);
 
   useLayoutEffect(() => {
-    if (!hoverInfo || !popRef.current) {
+    if (!hoverInfo || !popRef.current || !bodyRef.current) {
       setPopPos(null);
       return;
     }
     const pr = popRef.current.getBoundingClientRect();
-    const vw = window.innerWidth;
-    const pad = 12;
-    const left = Math.min(Math.max(pad, hoverInfo.anchorX - pr.width / 2), vw - pr.width - pad);
-    const gap = 10;
-    const placeBelow = hoverInfo.anchorTop - pr.height - gap < pad;
-    const top = placeBelow ? hoverInfo.anchorBottom + gap : hoverInfo.anchorTop - pr.height - gap;
+    const br = bodyRef.current.getBoundingClientRect();
+    const pad = 8;
+    const gap = 8;
+    const maxLeft = Math.max(pad, br.width - pr.width - pad);
+    const left = Math.min(Math.max(pad, hoverInfo.anchorX - pr.width / 2), maxLeft);
+    const belowTop = hoverInfo.anchorBottom + gap;
+    const aboveTop = hoverInfo.anchorTop - pr.height - gap;
+    const fitsBelow = belowTop + pr.height <= br.height - pad;
+    const fitsAbove = aboveTop >= pad;
+    let placeBelow = fitsBelow || !fitsAbove;
+    let top = placeBelow ? belowTop : aboveTop;
+    const maxTop = Math.max(pad, br.height - pr.height - pad);
+    top = Math.min(Math.max(pad, top), maxTop);
     setPopPos({ left, top, placeBelow });
   }, [hoverInfo]);
 
   const statDays = hydrated ? activeDays : initialActiveDays;
   const statTotal = hydrated ? totalActs : initialTotalActivities;
+  const statLongestStreak = hydrated ? longestStreak : initialLongestStreak;
+  const statMonthActs = hydrated ? monthActivities : initialMonthActivities;
 
   const legendNode = (
     <span className="heat-legend">
@@ -440,44 +469,41 @@ export default function ActivityHeatmapIsland({
   );
 
   const popoverNode =
-    hydrated && hoverInfo && typeof document !== 'undefined'
-      ? createPortal(
-          <div
-            ref={popRef}
-            className={`heat-popover ${popPos?.placeBelow ? 'is-below' : 'is-above'}`}
-            style={{
-              left: `${popPos ? popPos.left : -9999}px`,
-              top: `${popPos ? popPos.top : -9999}px`,
-              opacity: popPos ? 1 : 0,
-            }}
-            role="tooltip"
-          >
-            <div className="heat-popover-head">
-              <span className="heat-popover-date">
-                {hoverInfo.cell.key} · {WEEKDAYS[hoverInfo.cell.r]}
-              </span>
-              <span className="heat-popover-count">
-                {hoverInfo.cell.entries.length > 0 ? `${hoverInfo.cell.count} 次活动` : '无记录'}
-              </span>
-            </div>
-            {hoverInfo.cell.entries.length > 0 ? (
-              <ul className="heat-popover-list">
-                {hoverInfo.cell.entries.map((e, i) => (
-                  <li key={`${hoverInfo.cell.key}-${i}`}>
-                    <span className="heat-popover-tag" data-type={e.type}>
-                      {e.label}
-                    </span>
-                    <span className="heat-popover-desc">{e.description}</span>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="heat-popover-empty">当天暂无公开写作或站点功能记录</p>
-            )}
-          </div>,
-          document.body,
-        )
-      : null;
+    hydrated && hoverInfo ? (
+      <div
+        ref={popRef}
+        className={`heat-popover ${popPos?.placeBelow ? 'is-below' : 'is-above'}`}
+        style={{
+          left: `${popPos ? popPos.left : -9999}px`,
+          top: `${popPos ? popPos.top : -9999}px`,
+          opacity: popPos ? 1 : 0,
+        }}
+        role="tooltip"
+      >
+        <div className="heat-popover-head">
+          <span className="heat-popover-date">
+            {hoverInfo.cell.key} · {WEEKDAYS[hoverInfo.cell.r]}
+          </span>
+          <span className="heat-popover-count">
+            {hoverInfo.cell.entries.length > 0 ? `${hoverInfo.cell.count} 次活动` : '无记录'}
+          </span>
+        </div>
+        {hoverInfo.cell.entries.length > 0 ? (
+          <ul className="heat-popover-list">
+            {hoverInfo.cell.entries.map((e, i) => (
+              <li key={`${hoverInfo.cell.key}-${i}`}>
+                <span className="heat-popover-tag" data-type={e.type}>
+                  {e.label}
+                </span>
+                <span className="heat-popover-desc">{e.description}</span>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="heat-popover-empty">当天暂无公开写作或站点功能记录</p>
+        )}
+      </div>
+    ) : null;
 
   return (
     <>
@@ -492,10 +518,9 @@ export default function ActivityHeatmapIsland({
           <span id="heatinfo" className="wt-stat">
             {`近一年 ${statDays} 活跃日 · ${statTotal} 次活动`}
           </span>
-          {legendNode}
         </div>
       </div>
-      <div className="wb stage-heat-body">
+      <div className="wb stage-heat-body" ref={bodyRef}>
         <div className="heat-canvas-wrap" ref={wrapRef}>
           {hydrated ? (
             <canvas
@@ -525,6 +550,26 @@ export default function ActivityHeatmapIsland({
             </div>
           )}
         </div>
+        <div className="heat-stats-bar" data-activity-stats>
+          <div className="heat-stats-metrics">
+            <span className="heat-stat-item">
+              近一年活跃日 <strong>{statDays}</strong>
+            </span>
+            <span className="heat-stat-sep" aria-hidden="true">·</span>
+            <span className="heat-stat-item">
+              总活动 <strong>{statTotal}</strong>
+            </span>
+            <span className="heat-stat-sep" aria-hidden="true">·</span>
+            <span className="heat-stat-item">
+              最长连续 <strong>{statLongestStreak} 天</strong>
+            </span>
+            <span className="heat-stat-sep" aria-hidden="true">·</span>
+            <span className="heat-stat-item">
+              本月活动 <strong>{statMonthActs} 次</strong>
+            </span>
+          </div>
+          {legendNode}
+        </div>
         <div className="heat-detail is-compact" id="activity-detail" aria-live="polite">
           <span className="heat-detail-date">{activeCell?.key || '—'}</span>
           <span className="heat-detail-items" data-activity-detail-items>
@@ -533,8 +578,8 @@ export default function ActivityHeatmapIsland({
               : '当天暂无公开记录（悬停小格弹出当日详情）'}
           </span>
         </div>
+        {popoverNode}
       </div>
-      {popoverNode}
     </>
   );
 }

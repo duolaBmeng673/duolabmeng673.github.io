@@ -83,3 +83,29 @@ export function activityKind(day: ActivityDay | null) {
   if (!day?.types.site) return 'content';
   return activityTypes.some((type) => type !== 'site' && day.types[type] > 0) ? 'mixed' : 'site';
 }
+
+export function getActivitySummaryStats(
+  calendar: ReturnType<typeof createActivityCalendar>,
+  buildDate: string,
+) {
+  const currentMonth = buildDate.slice(0, 7);
+  let longestStreak = 0;
+  let runningStreak = 0;
+  let monthActivities = 0;
+
+  for (const col of calendar.columns) {
+    for (const day of col) {
+      if (!day) continue;
+      const dayTotal = activityTypes.reduce((sum, type) => sum + day.types[type], 0);
+      if (dayTotal > 0) {
+        runningStreak += 1;
+        if (runningStreak > longestStreak) longestStreak = runningStreak;
+        if (day.date.startsWith(currentMonth)) monthActivities += dayTotal;
+      } else {
+        runningStreak = 0;
+      }
+    }
+  }
+
+  return { longestStreak, monthActivities };
+}
