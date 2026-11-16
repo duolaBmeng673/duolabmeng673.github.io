@@ -176,26 +176,24 @@ test('date click, empty selection, repeated selection and keyboard movement upda
   assert.equal(buttons.filter((button) => button.tabIndex === 0).length, 1);
 });
 
-test('the static homepage includes Chinese labels and daily details with unchanged publication-based history', () => {
+test('the static homepage includes Chinese labels and daily details with unchanged publication-based history', async () => {
   const html = read('dist/index.html');
-  assert.match(html, /<h2\b[^>]*id="activity-title"[^>]*>更新记录<\/h2>/);
-  assert.ok(html.includes('过去一年 · 写作、研究、学习与博客功能'));
+  assert.ok(html.includes('<span>activity.heatmap</span>'));
   assert.equal((html.match(/id="activity-detail"/g) ?? []).length, 1);
-  assert.ok(html.includes('data-activity-detail-groups'));
-  assert.ok(html.includes('aria-controls="activity-detail"'));
+  assert.ok(html.includes('data-activity-detail-items'));
+  assert.ok(html.includes('data-activity-fallback'));
   const decode = (text) => text.replace(/&quot;/g, '"').replace(/&#39;|&apos;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
-  const payload = JSON.parse(decode(html.match(/data-activity-data="([^"]+)"/)[1]));
+  const payload = JSON.parse(decode(html.match(/data-activity-payload="([^"]+)"/)[1]));
+  const { activities: sourceActivities } = await import('../src/data/activities.ts');
   assert.ok(payload.activities.some((record) => record.date === '2026-11-11' && record.type === 'site' && record.count === 1));
   const posts = JSON.parse(read('dist/search-index.json'));
   assert.equal(payload.writing.length, posts.length);
   for (const post of posts) assert.ok(payload.writing.some((entry) => entry.date === post.date && entry.description === post.title && entry.count === 1));
-  const end = html.match(/data-end="([^"]+)"/)[1];
-  const result = activity.createActivityCalendar([...payload.activities, ...payload.writing], new Date(`${end}T12:00:00`));
-  assert.ok(html.includes(`${result.activityDays} 个活跃日 · ${result.totalActivities} 次活动`));
-  const feature = result.columns.flat().find((day) => day?.date === '2026-11-11');
-  if (feature) {
-    const featureCell = [...html.matchAll(/<button\b[^>]*>/g)].find(([tag]) => tag.includes('data-date="2026-11-11"'))?.[0];
-    assert.ok(featureCell?.includes(`data-kind="${activity.activityKind(feature)}"`));
-    assert.ok(featureCell?.includes('博客功能：'));
-  }
+  const independentWriting = posts.map((post) => ({ date: post.date, type: 'writing', count: 1, description: post.title }));
+  const result = activity.createActivityCalendar([...sourceActivities, ...independentWriting], new Date(`${payload.buildDate}T12:00:00`));
+  assert.ok(html.includes(`近一年 ${result.activityDays} 活跃日 · ${result.totalActivities} 次活动`));
+  assert.ok(html.includes(`过去一年 · ${result.activityDays} 活跃日 · ${result.totalActivities} 次活动`));
+  assert.ok(html.includes('博客功能'));
+  const latestSite = sourceActivities.at(-1);
+  if (latestSite?.description) assert.ok(html.includes(latestSite.description));
 });

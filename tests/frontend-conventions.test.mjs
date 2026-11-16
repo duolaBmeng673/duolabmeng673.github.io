@@ -42,7 +42,7 @@ test('islands do not mutate global documentElement/body state or touch localStor
     /\blocalStorage\b/,
     /documentElement\s*\.\s*setAttribute\b/,
     /documentElement\s*\.\s*style\s*\.\s*setProperty\b/,
-    /(?:documentElement|body)\s*\.\s*(?:classList\s*\.\s*(?:add|remove|toggle|replace)|classList\s*=|dataset\b\s*(?:\[[^\]]+\]|\.[A-Za-z0-9_$]+)?\s*=|delete\s+(?:document\.)?(?:documentElement|body)\s*\.\s*dataset)/,
+    /(?:documentElement|body)\s*\.\s*(?:classList\s*\.\s*(?:add|remove|toggle|replace)|classList\s*=(?!=)|dataset\b\s*(?:\[[^\]]+\]|\.[A-Za-z0-9_$]+)?\s*=(?!=)|delete\s+(?:document\.)?(?:documentElement|body)\s*\.\s*dataset)/,
   ];
   for (const file of files) {
     const content = readFileSync(file, 'utf8');
@@ -87,10 +87,23 @@ test('non-homepage built HTML files do not reference any React runtime or island
   }
 });
 
+test('homepage positively mounts expected React islands without client:load', () => {
+  const homeHtml = readFileSync(join(ROOT, 'dist', 'index.html'), 'utf8');
+  const islands = [...homeHtml.matchAll(/<astro-island\b[^>]*>/gi)].map(([tag]) => tag);
+  assert.ok(islands.length >= 2, 'Expected at least 2 <astro-island> elements on homepage');
+  const waves = islands.find((tag) => tag.includes('GradientWaves'));
+  const heatmap = islands.find((tag) => tag.includes('ActivityHeatmap'));
+  assert.ok(waves && waves.includes('client="idle"'), 'GradientWaves island must use client:idle');
+  assert.ok(heatmap && heatmap.includes('client="visible"'), 'ActivityHeatmap island must use client:visible');
+  for (const tag of islands) {
+    assert.ok(!tag.includes('client="load"'), `Homepage island must not use client:load: ${tag}`);
+  }
+});
+
 test('duolabmeng673 localStorage key strings appear only in src/lib/storage-keys.ts', () => {
   const canonical = join(ROOT, 'src', 'lib', 'storage-keys.ts');
   const srcFiles = walk(join(ROOT, 'src')).filter((file) => /\.(ts|tsx|js|jsx|mjs|astro)$/.test(file));
-  const keyLiteralRe = /['"`]duolabmeng673:[^'"`]+['"`]/g;
+  const keyLiteralRe = /['"`]duolabmeng673:(?:theme|typography|preset)(?::[^'"`]*)?['"`]/g;
   const directStorageLiteralRe = /localStorage\.(?:get|set|remove)Item\s*\(\s*['"`]/g;
 
   const canonicalContent = readFileSync(canonical, 'utf8');

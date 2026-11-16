@@ -140,11 +140,8 @@ test('home keeps identity and four linked directions without the five removed de
   const html = read('dist/index.html');
   for (const text of ['从 Transformers、BERT 到 GPT-1，整理语言模型的结构与训练方法。', '阅读 CLIP、MathVista、MMMU 与视觉任务相关论文。', '记录表格表示、理解和自动化处理方向的论文。', '整理 Python 输入输出，以及 HIT 837 两个安全模块的学习笔记。', '整理语言模型、多模态与表格理解论文，也记录算法练习和 HIT 837 学习笔记。']) assert.ok(!html.includes(text));
   for (const text of ['自然语言处理', '多模态与视觉', '大模型与表格', '算法与信息安全', '杨雨飞', '哈尔滨工业大学']) assert.ok(html.includes(text));
-  assert.ok(html.includes('class="home-section selected-reading"'));
-  assert.ok(html.includes('id="activity-title"'));
-  assert.equal((html.match(/role="gridcell"/g) ?? []).length, 371);
-  assert.equal((html.match(/role="gridcell"[^>]+data-date=/g) ?? []).length, 365);
-  assert.ok(html.includes('过去 365 天综合技术活动日历'));
+  for (const href of ['/blog/?series=NLP', '/blog/?series=Multimodal', '/blog/?series=LLM%20%26%20Tables', '/study-notes/837/']) assert.ok(html.includes(`href="${href}"`), href);
+  for (const marker of ['about.ts', 'Terminal', 'Presets', 'activity.heatmap', '最近在写', '三条主线', '837 知识点快查', 'data-activity-fallback']) assert.ok(html.includes(marker), marker);
 });
 
 test('new matching notes are public in syllabus order with local interactive demos', () => {

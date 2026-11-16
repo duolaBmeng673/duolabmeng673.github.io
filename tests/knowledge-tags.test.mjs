@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync, readdirSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { runInNewContext } from 'node:vm';
 import ts from 'typescript';
@@ -112,8 +112,18 @@ test('article headers and global post listings reuse the same knowledge labels w
     for (const [, content] of row.matchAll(/<a\b[^>]*>([^]*?)<\/a>/g)) assert.ok(!/<a\b/.test(content), 'title and filter links are siblings');
   }
   const homepage = read('dist/index.html');
-  assert.ok(homepage.includes('class="editorial-row knowledge-post-row"'));
-  assert.ok(homepage.includes('data-knowledge-label='));
+  const tagDict = JSON.parse(read('src/data/tags.json'));
+  const homeTagLinks = [...homepage.matchAll(/<a\b[^>]*href="([^"]+)"[^>]*data-knowledge-label="([^"]+)"[^>]*>/g)];
+  assert.ok(homeTagLinks.length >= Object.keys(tagDict).length);
+  for (const [, rawHref, rawLabel] of homeTagLinks) {
+    const label = decode(rawLabel);
+    assert.ok(Object.hasOwn(tagDict, label), `homepage tag matches tags.json: ${label}`);
+    const url = new URL(decode(rawHref), 'https://duolabmeng673.github.io');
+    assert.ok(existsSync(new URL('../dist' + decodeURIComponent(url.pathname) + 'index.html', import.meta.url)), url.pathname);
+    if (url.searchParams.has('tag')) {
+      assert.equal(url.searchParams.get('tag'), label);
+    }
+  }
   const paper = read('dist/blog/bert/index.html');
   assert.ok(paper.includes('class="article-description"'));
   assert.ok(paper.includes('class="tag-list"'));

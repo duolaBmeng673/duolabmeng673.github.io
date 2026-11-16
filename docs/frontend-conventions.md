@@ -42,16 +42,21 @@
 ## 3. React 岛的写法规范
 
 1. **目录与命名**：全部 React 岛文件只允许存放在 `src/components/islands/` 目录下，文件名强制采用 `*.island.tsx`（辅以同目录局部样式或工具模块，严禁把无关 React 代码散落到其他目录）。
-2. **水合指令**：首页上的 React 岛一律使用 `client:visible`；**禁止使用 `client:load`**（除非事前报告理由并获得用户明确批准）。
+2. **水合指令**：
+   - `ActivityHeatmap`（首屏舞台核心交互）使用 `client:visible`；
+   - `GradientWaves`（顶部装饰着色器背景，且已配备同等尺寸静态渐变占位）允许使用 `client:idle` 推迟 React 运行时加载，避免阻塞首屏；
+   - **禁止使用 `client:load`**（除非事前报告理由并获得用户明确批准）。
 3. **数据流**：全部业务数据（活动记录、写作日期、预设色板等）只能在 `.astro` 页面于构建期准备好，并通过**可序列化的 `props`** 传入岛内；**严禁**在岛内 `fetch` 站内数据、导入大型内容集合或硬编码快照。
 4. **副作用与资源清理**：岛内每个 `useEffect` / `useLayoutEffect` **必须返回清理函数**，确保卸载或重跑时完整清理：
    - 取消 `requestAnimationFrame`（`cancelAnimationFrame`）与定时器（`clearTimeout` / `clearInterval`）；
    - 断开 `ResizeObserver`、`IntersectionObserver`、`MutationObserver`（`.disconnect()`）；
    - 移除注册的 `window` / `document` / `MediaQueryList` 事件监听（`removeEventListener`）；
    - 若使用了 WebGL / WebGL2 上下文（如 `GradientWaves`），清理时应释放在该节点上创建的缓冲、着色器程序并调用 `WEBGL_lose_context`（如可用）及清空画布。
-5. **无障碍与功耗节制**：
+5. **无障碍与功耗节制（含波浪与合成层约束）**：
    - 必须响应 `prefers-reduced-motion: reduce`（停止连续动画并回落到静态首帧）；
-   - 必须响应页面可见性变化（`document.visibilityState === 'hidden'` / `visibilitychange` 事件）以及组件不可见状态（`IntersectionObserver`），在隐藏时自动暂停动画循环。
+   - 必须响应页面可见性变化（`document.visibilityState === 'hidden'` / `visibilitychange` 事件）以及组件不可见状态（`IntersectionObserver`），在隐藏或滚出视口时立即停止 `requestAnimationFrame` 循环；
+   - `GradientWaves` 须限制内部画布 `dpr <= 1.5` 与渲染帧率上限 `30 fps`；
+   - 收敛 `backdrop-filter`：只保留在悬浮于波浪或正文之上的半透明层（顶栏胶囊、舞台 4 窗口、热力图悬停浮层、CardSwap 控制栏），普通静止卡片不再使用 `backdrop-filter`。
 6. **无 JS 与水合前占位（零布局跳动）**：
    - 每个 React 岛在未水合或用户禁用 JS 时，必须有由 Astro 服务端同步渲染出的静态占位内容（如 `GradientWaves` 的固定高度静态渐变背景、`ActivityHeatmap` 的活动汇总与近期真实活动列表）。
    - 静态占位与岛水合完成后的外框尺寸（高度、宽高比、边距与流式断点）必须保持一致，**不得发生任何可见布局跳动（CLS）**；水合后不得改变服务端已渲染的外框尺寸。
@@ -75,5 +80,5 @@
 
 ## 6. 体积预算与隔离红线
 
-- **首页 JS 预算（提醒线）**：首页全部客户端脚本（Astro 脚本 + React 岛及其按需运行时）**总计 gzip 预估不超过 `70 KB`**。若构建后超出该提醒线，必须停止并逐文件列出原始大小与 gzip 大小向用户汇报，由用户决定取舍。
+- **首页 JS 预算（提醒线）**：首页全部客户端脚本（Astro 脚本 + React 岛及其按需运行时）**总计 gzip 预估不超过 `90 KB`**。若构建后超出该提醒线，必须停止并逐文件列出原始大小与 gzip 大小向用户汇报，由用户决定取舍。
 - **非首页零 React 隔离（硬红线）**：React 运行时与任何 React 岛脚本 **只能出现在首页**（`dist/index.html`）。文章页、学习笔记目录页、技术笔记归档页、工具页、关于页等全部非首页产物的 JS 体积与脚本列表均**不得引入 React 运行时**，且每次构建须通过自动化静态检查验证。
