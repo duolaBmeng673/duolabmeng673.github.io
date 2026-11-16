@@ -19,9 +19,9 @@ const wavePresets = data.presets.map((p) => ({
   speed: p.speed,
 }));
 
-const danmakuLanes = Array.from({ length: 4 }, () => [] as typeof data.allKnowledgeTags);
+const danmakuLanes = Array.from({ length: 3 }, () => [] as typeof data.allKnowledgeTags);
 data.allKnowledgeTags.forEach((tag, idx) => {
-  danmakuLanes[idx % 4].push(tag);
+  danmakuLanes[idx % 3].push(tag);
 });
 
 const categoryVar = (cat: string) => `var(--knowledge-${cat}, var(--tm))`;

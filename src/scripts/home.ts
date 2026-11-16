@@ -97,6 +97,17 @@ function initDanmaku() {
   root.dataset.initialized = '1';
   if (reducedMotion()) return;
 
+  const targetSpeeds = [24, 18, 30];
+  root.querySelectorAll<HTMLElement>('.ktag-lane').forEach((lane, idx) => {
+    const seg = lane.querySelector<HTMLElement>('.ktag-segment');
+    const segW = seg?.offsetWidth || 0;
+    const speed = targetSpeeds[idx % targetSpeeds.length];
+    if (segW > 0) {
+      const dur = Math.max(90, Math.round(segW / speed));
+      lane.style.setProperty('--lane-dur', `${dur}s`);
+    }
+  });
+
   if ('IntersectionObserver' in window) {
     let inView = false;
     const sync = () => root.classList.toggle('is-inview', inView && !document.hidden);
