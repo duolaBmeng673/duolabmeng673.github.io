@@ -48,6 +48,7 @@ export function getStudyModuleSummaries(posts: StudyPost[]) {
       if (!notes.length) return [];
       const chapters = getStudyChapters(notes);
       const knowledgeTagCount = new Set(notes.flatMap((n) => getKnowledgeTags(n.id).map((t) => t.name))).size;
+      const moduleHref = getStudyModuleHref(notes[0]);
       return [{
         ...module,
         series,
@@ -57,12 +58,13 @@ export function getStudyModuleSummaries(posts: StudyPost[]) {
         count: notes.length,
         chapterCount: chapters.length,
         knowledgeTagCount,
-        previewChapters: chapters.slice(0, 4).map((ch) => ({
+        previewChapters: chapters.map((ch) => ({
           code: ch.code,
           title: ch.title,
           count: ch.posts.length,
+          href: `${moduleHref}#chapter-${ch.code}`,
         })),
-        href: getStudyModuleHref(notes[0]),
+        href: moduleHref,
       }];
     }),
   );
