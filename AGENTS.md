@@ -61,4 +61,6 @@ npm run preview         # 预览已构建的 dist
 - [笔记规则](docs/notes-rules.md)：三个内容集合、schema、公开与路由／排序。
 - [热力图规则](docs/heatmap.md)：实际数据来源、计数口径和更新／发布路径。
 - [前端规范](docs/frontend-conventions.md)：Astro／原生 TS 与 React 岛边界、通信协议、存储键与体积预算。
+- [性能自测指南](docs/performance-benchmark.md)：真机 Chrome / macOS 活动监视器测试窗口与 CDP 采样脚本。
+- [上线与合并方案](docs/launch-plan.md)：`redesign` 引入原站 `git fetch`、PR／CI、回滚及上线检查清单。
 - [核实与确认记录](docs/rules-review.md)：证据清单、用户确认、后续建议与验证记录；不作为额外规则。

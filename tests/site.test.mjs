@@ -204,3 +204,57 @@ test('real Chinese, English, mixed, body-only and empty queries find expected pu
   assert.equal(rankSearch(index, '不存在的术语-xyz-98765').length, 0);
   assert.equal(rankSearch(index, 'BERT')[0].href, '/blog/bert/');
 });
+
+test('homepage, blog archive and about stats match public collection counts', () => {
+  const countMarkdown = (dir, { recursive = false, excludeHeld = false } = {}) => {
+    const out = [];
+    for (const entry of readdirSync(dir, { withFileTypes: true })) {
+      const full = new URL(entry.name + (entry.isDirectory() ? '/' : ''), dir);
+      if (entry.isDirectory()) {
+        if (recursive) out.push(...countMarkdown(full, { recursive, excludeHeld }));
+      } else if (entry.name.endsWith('.md') && entry.name !== '笔记设计规范.md') {
+        const frontmatter = readFileSync(full, 'utf8').split('\n---\n')[0];
+        if (excludeHeld && /^publicationHoldReason:/m.test(frontmatter)) continue;
+        if (/^draft:\s*true/m.test(frontmatter)) continue;
+        out.push(frontmatter);
+      }
+    }
+    return out;
+  };
+  const researchCount = countMarkdown(new URL('../src/content/blog_read/', import.meta.url)).length;
+  const csCount = countMarkdown(new URL('../src/content/blog_huawei_examination/', import.meta.url), { excludeHeld: true }).length;
+  const infoSecCount = countMarkdown(new URL('../src/content/837考研/信息安全导论/', import.meta.url), { recursive: true }).length;
+  const netSecCount = countMarkdown(new URL('../src/content/837考研/网络安全基础考点笔记总结/', import.meta.url), { recursive: true }).length;
+  const studyCount = infoSecCount + netSecCount;
+  const regularCount = researchCount + csCount;
+  const totalCount = regularCount + studyCount;
+
+  assert.equal(index.length, totalCount, 'search index matches public collection total');
+
+  const homeHtml = read('dist/index.html');
+  assert.match(homeHtml, new RegExp(`notes:\\s*<a[^>]*>${totalCount}</a>`));
+  for (const [slug, count] of [['all', totalCount], ['research', researchCount], ['cs', csCount], ['837', studyCount]]) {
+    assert.match(homeHtml, new RegExp(`<button[^>]*data-preset-slug="${slug}"[\\s\\S]*?·\\s*${count}\\s*篇[\\s\\S]*?<\\/button>`), slug);
+  }
+
+  const blogHtml = read('dist/blog/index.html');
+  const blogStats = [...blogHtml.matchAll(/class="masthead-stat-num">(\d+)<\/strong>/g)].map((m) => Number(m[1]));
+  assert.deepEqual(blogStats, [regularCount, researchCount, csCount]);
+
+  const aboutHtml = read('dist/about/index.html');
+  const aboutStats = [...aboutHtml.matchAll(/class="masthead-stat-num">(\d+)<\/strong>/g)].map((m) => Number(m[1]));
+  assert.deepEqual(aboutStats, [totalCount, regularCount, studyCount]);
+  const breakdownCounts = [...aboutHtml.matchAll(/class="about-breakdown"[\s\S]*?<\/ul>/g)][0][0]
+    .matchAll(/<strong>(\d+)\s*篇<\/strong>/g);
+  assert.deepEqual([...breakdownCounts].map((m) => Number(m[1])), [researchCount, csCount, infoSecCount, netSecCount]);
+});
+
+test('404 page is generated with noindex and excluded from sitemap and search index', () => {
+  assert.ok(existsSync(new URL('../dist/404.html', import.meta.url)));
+  const html = read('dist/404.html');
+  assert.equal((html.match(/<h1(?:\s|>)/g) ?? []).length, 1);
+  assert.ok(html.includes('name="robots" content="noindex, nofollow"'));
+  assert.ok(!html.includes('rel="canonical"'));
+  assert.ok(!read('dist/sitemap.xml').includes('/404'));
+  assert.ok(!index.some((post) => post.href.includes('404')));
+});

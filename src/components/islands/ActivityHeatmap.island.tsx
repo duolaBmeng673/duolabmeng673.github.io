@@ -253,8 +253,8 @@ export default function ActivityHeatmapIsland({
       const containerW = Math.max(240, box.clientWidth || box.getBoundingClientRect().width || 560);
       const isPhone = typeof window !== 'undefined' && window.innerWidth < 640;
       const colCount = isPhone ? PHONE_COLS : COLS;
-      const gap = containerW >= 780 ? 4.5 : 4;
-      const minSize = isPhone ? 10.5 : containerW >= 780 ? 15 : 13.5;
+      const gap = containerW >= 780 ? 4.5 : isPhone ? 4 : 2.5;
+      const minSize = isPhone ? 10.5 : containerW >= 780 ? 15 : 9;
       const fittedSize = (containerW - PAD * 2 - (colCount - 1) * gap) / colCount;
       const size = Math.max(minSize, fittedSize);
       const labelH = size >= 14 ? 23 : 21;

@@ -29,6 +29,7 @@ const {
 const pageTitle = title === siteConfig.title ? title : `${title} | ${siteConfig.name}`;
 const buildSha = import.meta.env.PUBLIC_BUILD_SHA ?? 'local';
 const path = Astro.url.pathname;
+const isNotFound = path === '/404' || path === '/404/' || path === '/404.html';
 const image = new URL('/og-default.png', Astro.site);
 
 const navItems = [
@@ -47,7 +48,7 @@ const navItems = [
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content={type} />
-    <meta property="og:url" content={new URL(path, Astro.site)} />
+    {!isNotFound && <meta property="og:url" content={new URL(path, Astro.site)} />}
     <meta property="og:site_name" content={siteConfig.name} />
     <meta property="og:image" content={image} />
     <meta property="og:image:width" content="1200" />
@@ -63,7 +64,7 @@ const navItems = [
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="theme-color" content="#f7f6f2" />
     <link rel="icon" href="/favicon.svg" />
-    <link rel="canonical" href={new URL(path, Astro.site)} />
+    {!isNotFound && <link rel="canonical" href={new URL(path, Astro.site)} />}
     <link rel="alternate" type="application/rss+xml" title="duolaBmeng673 的笔记" href="/rss.xml" />
     <title>{pageTitle}</title>
     <script

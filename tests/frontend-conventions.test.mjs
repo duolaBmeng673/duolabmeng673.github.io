@@ -127,3 +127,39 @@ test('duolabmeng673 localStorage key strings appear only in src/lib/storage-keys
     );
   }
 });
+
+test('homepage total shipped JS stays within 90 KB gzip budget', async () => {
+  const { gzipSync } = await import('node:zlib');
+  const distDir = join(ROOT, 'dist');
+  const homeHtml = readFileSync(join(distDir, 'index.html'), 'utf8');
+  const entries = new Set();
+  for (const [, src] of homeHtml.matchAll(/<script\b[^>]*\bsrc="([^"]+)"/gi)) {
+    if (src.startsWith('/_astro/')) entries.add(src);
+  }
+  for (const [, url] of homeHtml.matchAll(/\b(?:component|renderer)-url="([^"]+)"/gi)) {
+    if (url.startsWith('/_astro/')) entries.add(url);
+  }
+
+  const visited = new Set();
+  const collectImports = (assetUrl) => {
+    if (visited.has(assetUrl)) return;
+    visited.add(assetUrl);
+    const code = readFileSync(join(distDir, assetUrl), 'utf8');
+    for (const [, relImport] of code.matchAll(/(?:from|import)\s*['"](\.[^'"]+\.js)['"]/g)) {
+      const next = join('/', '_astro', relImport.replace(/^\.\//, ''));
+      collectImports(next);
+    }
+  };
+  for (const entry of entries) collectImports(entry);
+
+  assert.ok(visited.size >= 4, `Expected React + island + page scripts on homepage, got ${visited.size}`);
+  let totalGzipBytes = 0;
+  for (const asset of visited) {
+    totalGzipBytes += gzipSync(readFileSync(join(distDir, asset))).length;
+  }
+  const budgetBytes = 90 * 1024;
+  assert.ok(
+    totalGzipBytes <= budgetBytes,
+    `Homepage JS gzip total ${(totalGzipBytes / 1024).toFixed(2)} KB exceeds 90 KB budget`,
+  );
+});
