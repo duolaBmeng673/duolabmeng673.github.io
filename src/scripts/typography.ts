@@ -25,9 +25,12 @@ const applyTypography = () => {
   if (bold) bold.checked = settings.bold;
   save(STORAGE_KEYS.typography, JSON.stringify(settings));
 };
+const themeMeta = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
 const applyTheme = () => {
-  root.dataset.theme = mode === 'system' ? (media.matches ? 'dark' : 'light') : mode;
+  const resolved = mode === 'system' ? (media.matches ? 'dark' : 'light') : mode;
+  root.dataset.theme = resolved;
   root.dataset.themeMode = mode;
+  if (themeMeta) themeMeta.content = resolved === 'dark' ? '#08070c' : '#f7f6f2';
 };
 sizes.forEach((button) => button.addEventListener('click', () => {
   settings.size = button.dataset.fontSize as FontSize;

@@ -1075,7 +1075,10 @@
 .ktag-lane {
   width: 100%;
   min-width: 0;
-  overflow: hidden;
+  padding-block: 6px;
+  margin-block: -6px;
+  overflow-x: clip;
+  overflow-y: visible;
 }
 
 .ktag-track {

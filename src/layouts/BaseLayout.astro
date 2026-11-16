@@ -61,6 +61,7 @@ const navItems = [
     {updated && <meta property="article:modified_time" content={updated.toISOString()} />}
     {noindex && <meta name="robots" content="noindex, nofollow" />}
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#f7f6f2" />
     <link rel="icon" href="/favicon.svg" />
     <link rel="canonical" href={new URL(path, Astro.site)} />
     <link rel="alternate" type="application/rss+xml" title="duolaBmeng673 的笔记" href="/rss.xml" />
@@ -89,6 +90,8 @@ const navItems = [
         } catch {}
         root.dataset.themeMode = mode;
         root.dataset.theme = mode === 'system' ? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : mode;
+        const themeMeta = document.querySelector('meta[name="theme-color"]');
+        if (themeMeta) themeMeta.setAttribute('content', root.dataset.theme === 'dark' ? '#08070c' : '#f7f6f2');
       })();
     </script>
   </head>

@@ -93,9 +93,11 @@
 
 html {
   font-size: calc(clamp(14.4px, 12.98px + 0.25vw, 17.92px) * var(--font-scale));
-  height: 100%;
+  min-height: 100%;
   scroll-padding-top: var(--header-h);
   background: var(--bg);
+  background-color: var(--bg);
+  overflow-x: clip;
 }
 
 body {
@@ -104,6 +106,7 @@ body {
   min-height: 100vh;
   margin: 0;
   background: var(--bg);
+  background-color: var(--bg);
   color: var(--tx);
   font-family: var(--sans);
   font-weight: var(--fw-body);
@@ -119,17 +122,35 @@ button, input, select { font: inherit; color: inherit; }
 :focus-visible { outline: 2px solid var(--ac); outline-offset: 2px; border-radius: var(--r-ctl); }
 
 .skip-link {
-  position: absolute;
+  position: fixed;
   top: 0.5rem;
   left: 0.75rem;
   z-index: 101;
-  padding: 0.45rem 0.7rem;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
   border-radius: var(--r-ctl);
-  transform: translateY(-160%);
   background: var(--ac);
   color: var(--btnt);
 }
-.skip-link:focus { transform: translateY(0); }
+.skip-link:focus,
+.skip-link:focus-visible {
+  width: auto;
+  height: auto;
+  padding: 0.45rem 0.7rem;
+  overflow: visible;
+  clip: auto;
+  clip-path: none;
+  white-space: normal;
+  opacity: 1;
+  pointer-events: auto;
+}
 
 .visually-hidden {
   position: absolute !important;
