@@ -90,11 +90,13 @@ test('non-homepage built HTML files do not reference any React runtime or island
 test('homepage positively mounts expected React islands without client:load', () => {
   const homeHtml = readFileSync(join(ROOT, 'dist', 'index.html'), 'utf8');
   const islands = [...homeHtml.matchAll(/<astro-island\b[^>]*>/gi)].map(([tag]) => tag);
-  assert.ok(islands.length >= 2, 'Expected at least 2 <astro-island> elements on homepage');
+  assert.ok(islands.length >= 3, 'Expected at least 3 <astro-island> elements on homepage');
   const waves = islands.find((tag) => tag.includes('GradientWaves'));
   const heatmap = islands.find((tag) => tag.includes('ActivityHeatmap'));
+  const cardSwap = islands.find((tag) => tag.includes('CardSwap'));
   assert.ok(waves && waves.includes('client="idle"'), 'GradientWaves island must use client:idle');
   assert.ok(heatmap && heatmap.includes('client="visible"'), 'ActivityHeatmap island must use client:visible');
+  assert.ok(cardSwap && cardSwap.includes('client="visible"'), 'CardSwap island must use client:visible');
   for (const tag of islands) {
     assert.ok(!tag.includes('client="load"'), `Homepage island must not use client:load: ${tag}`);
   }
