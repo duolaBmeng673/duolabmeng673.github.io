@@ -122,10 +122,10 @@ function initDanmaku() {
 
   root.classList.add('is-danmaku-live');
 
-  const MAX_ONSCREEN = 8;
+  const MAX_ONSCREEN = 14;
   const MIN_SPEED = 42;
   const MAX_SPEED = 64; // 64 / 42 = 1.524x <= 1.6x
-  const MIN_GAP_PX = 36;
+  const MIN_GAP_PX = 24;
   const laneCount = lanes.length;
 
   interface LaneReservation {
@@ -189,7 +189,7 @@ function initDanmaku() {
     return Math.max(enterReady, clearCatchup);
   };
 
-  const spawnOne = (initialProgress = 0): boolean => {
+  const spawnOne = (initialProgress = 0, forcedLane = -1): boolean => {
     if (activeCount >= MAX_ONSCREEN) return false;
     const stageW = Math.max(260, stage.clientWidth || root.clientWidth || 640);
     const speed = MIN_SPEED + Math.random() * (MAX_SPEED - MIN_SPEED);
@@ -203,7 +203,9 @@ function initDanmaku() {
     candidateLanes.sort((a, b) => (a === lastLane ? 1 : b === lastLane ? -1 : 0));
 
     let chosenLane = -1;
-    if (initialProgress > 0) {
+    if (forcedLane >= 0 && forcedLane < laneCount) {
+      chosenLane = forcedLane;
+    } else if (initialProgress > 0) {
       for (const laneIdx of candidateLanes) {
         if (!lastByLane[laneIdx]) {
           chosenLane = laneIdx;
@@ -223,7 +225,7 @@ function initDanmaku() {
     const spec = nextSpec();
     const travelPx = stageW + spec.width + 16;
     const durSec = travelPx / speed;
-    const jitterY = Math.round((Math.random() * 12 - 6) * 10) / 10;
+    const jitterY = Math.round((Math.random() * 10 - 5) * 10) / 10;
 
     const el = document.createElement('a');
     el.className = 'tag ktag-pill-lg ktag-fly';
@@ -264,7 +266,7 @@ function initDanmaku() {
         el.remove();
         activeCount = Math.max(0, activeCount - 1);
         if (running && activeCount < MAX_ONSCREEN) {
-          scheduleTick(120 + Math.random() * 480);
+          scheduleTick(60 + Math.random() * 200);
         }
       },
       { once: true },
@@ -281,32 +283,26 @@ function initDanmaku() {
       if (!running) return;
       spawnOne(0);
       if (activeCount < MAX_ONSCREEN) {
-        scheduleTick(420 + Math.random() * 780);
+        scheduleTick(140 + Math.random() * 280);
       }
     }, Math.max(40, delayMs));
   }
 
-  // Seed initial tags staggered across the 5 lanes (<= MAX_ONSCREEN)
-  const initialOffsets = [0.14, 0.42, 0.68, 0.28, 0.56];
-  for (let i = 0; i < Math.min(laneCount, MAX_ONSCREEN); i += 1) {
-    spawnOne(initialOffsets[i]);
+  // Seed initial tags staggered across the 6 lanes (2 per lane = 12 <= 14 MAX_ONSCREEN)
+  const leadOffsets = [0.58, 0.72, 0.50, 0.66, 0.54, 0.76];
+  const trailOffsets = [0.10, 0.22, 0.06, 0.18, 0.12, 0.26];
+  for (let i = 0; i < laneCount; i += 1) {
+    spawnOne(leadOffsets[i % leadOffsets.length], i);
+    spawnOne(trailOffsets[i % trailOffsets.length], i);
   }
 
-  root.addEventListener('pointerenter', () => {
-    hoveredOrFocused = true;
-    syncPlayState();
-  });
-  root.addEventListener('pointerleave', () => {
-    hoveredOrFocused = root.matches(':focus-within');
-    syncPlayState();
-  });
   root.addEventListener('focusin', () => {
     hoveredOrFocused = true;
     syncPlayState();
   });
   root.addEventListener('focusout', () => {
     window.requestAnimationFrame(() => {
-      hoveredOrFocused = root.matches(':hover') || root.matches(':focus-within');
+      hoveredOrFocused = root.matches(':focus-within');
       syncPlayState();
     });
   });
