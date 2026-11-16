@@ -12,17 +12,17 @@
 
 ## 已核实的令牌入口
 
-- 【已核实】[src/styles/global.css](../src/styles/global.css) 定义全站浅／深色纸张、正文、交互、暖陶色、字体和布局变量；[BaseLayout](../src/layouts/BaseLayout.astro) 负责首屏主题与共享样式，[typography.ts](../src/scripts/typography.ts) 负责主题／字体设置。没有第二套独立知识点主题状态。
+- 【已核实】[src/styles/tokens.css](../src/styles/tokens.css) 与 [src/styles/global.css](../src/styles/global.css) 定义全站 React Bits 浅／深色基底、正文、交互、辅色、字体、圆角（`--r-nav` 到 `--r-vis`）与版心变量（`--gutter: clamp(20px, 3vw, 56px)`、`--maxw: 1760px`）；[BaseLayout](../src/layouts/BaseLayout.astro) 负责首屏主题／字号恢复与共享样式，[typography.ts](../src/scripts/typography.ts) 负责主题／字体设置。没有第二套独立知识点主题状态。
 - 【已核实】[src/styles/knowledge-tags.css](../src/styles/knowledge-tags.css) 定义七类 `--knowledge-*`、中性标签与图例样式；条目、文章、搜索候选共用同一组色块变量。
 
 【已核实】以下色值逐项来自上述两个 CSS 文件，十六进制大小写不影响颜色：
 
 | 角色／变量 | 浅色 | 深色 |
 |---|---|---|
-| `--bg` | `#F7F5EF` | `#181614` |
-| `--text` | `#2A2622` | `#ECE7DD` |
-| `--accent` | `#0E6B5C` | `#4DB6A0` |
-| `--warm` | `#B5532F` | `#E08A66` |
+| `--bg` | `#F7F6F2` | `#08070C` |
+| `--text` | `#121217` | `#F3F2F7` |
+| `--accent` | `#6D28D9` | `#A78BFA` |
+| `--warm` | `#52525B` | `#A1A1AA` |
 | `--knowledge-concept` | `#E3E1D9` | `#77756E` |
 | `--knowledge-algorithm` | `#D1E3F4` | `#4B83BF` |
 | `--knowledge-protocol` | `#C4EBDB` | `#3E9E7E` |
@@ -56,7 +56,7 @@
 
 - 【已核实】[StudyModule](../src/components/StudyModule.astro) 只为信息安全设置 `showLegend`；[KnowledgeDirectory](../src/components/KnowledgeDirectory.astro) 只有一份 aside，定位参照包含介绍、全部章节和底部导航。
 - 【已核实】宽屏 aside 在正文外侧：`left: 100%`、`margin-left: 24px`、`top: 0`、`height: 100%`、宽 150px、z-index 50；内部面板 sticky，距当前可见顶栏下方 16px，无卡片阴影。依据：[knowledge-tags.css](../src/styles/knowledge-tags.css)。
-- 【已核实】正文最大宽度 `--max-width: 1120px`；断点计算 `1120 + 2 × (150 + 24 + 16) = 1500px`。CSS `@media (min-width: 1500px)` 与 [knowledge-directory.ts](../src/scripts/knowledge-directory.ts) 的 `matchMedia` 使用同一数值。
+- 【已核实】目录容器 `--max-width: 1120px` 在全站 `1760px` 主容器内居中；断点计算 `1120 + 2 × (150 + 24 + 16) = 1500px`。CSS `@media (min-width: 1500px)` 与 [knowledge-directory.ts](../src/scripts/knowledge-directory.ts) 的 `matchMedia` 使用同一数值。
 - 【已核实】≥1500px 只显示侧栏，CSS `display: none` 和脚本 `hidden` 禁用浮钮；低于断点默认只显示右下浮钮（z-index 60），点击展开同一份图例（aside 的 z-index 50），面板高度不超过视口 60%，支持外部点击／Escape／焦点转移。
 - 【已核实】1100／1208／1280／1440px 均小于当前断点，默认只应有浮钮。图例按钮用 `aria-pressed`，只高亮类别，其他类别标签 opacity 0.3；筛选摘要仅有选中标签时出现。依据：[knowledge-directory.ts](../src/scripts/knowledge-directory.ts)、[KnowledgeDirectory](../src/components/KnowledgeDirectory.astro)。
 

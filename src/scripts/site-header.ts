@@ -1,15 +1,47 @@
 const header = document.querySelector<HTMLElement>('.site-header');
 if (header) {
   const root = document.documentElement;
+  const menuBtn = header.querySelector?.('[data-mobile-nav-toggle]') as HTMLButtonElement | null | undefined;
+  const menuPanel = header.querySelector?.('[data-mobile-nav-menu]') as HTMLElement | null | undefined;
+  let menuOpen = false;
+
+  const setMenuOpen = (next: boolean) => {
+    menuOpen = next;
+    if (menuPanel) menuPanel.hidden = !next;
+    menuBtn?.setAttribute('aria-expanded', String(next));
+    if (next) delete root.dataset.headerHidden;
+  };
+
+  menuBtn?.addEventListener('click', (event) => {
+    event.stopPropagation();
+    setMenuOpen(!menuOpen);
+  });
+
+  if (menuPanel) {
+    document.addEventListener?.('click', (event) => {
+      if (!menuOpen) return;
+      const target = event.target as Node | null;
+      if (target && !header.contains(target)) setMenuOpen(false);
+    });
+    document.addEventListener?.('keydown', (event) => {
+      if (event.key === 'Escape' && menuOpen) {
+        setMenuOpen(false);
+        menuBtn?.focus();
+      }
+    });
+  }
+
   // Clamp elastic overscroll so a bounce at either end is not a direction change.
   const position = () => Math.max(0, Math.min(window.scrollY, Math.max(0, root.scrollHeight - window.innerHeight)));
   let last = position(), direction = 0, travel = 0, pending = false;
   const reveal = () => { delete root.dataset.headerHidden; };
-  const pinned = () => header.contains(document.activeElement) || Boolean(header.querySelector('details[open]'));
+  const pinned = () =>
+    menuOpen || header.contains(document.activeElement) || Boolean(header.querySelector('details[open]'));
   const update = () => {
     pending = false;
     const y = position(), delta = y - last;
     last = y;
+    header.classList?.toggle('is-scrolled', y > 40);
     if (y <= header.getBoundingClientRect().height || pinned()) {
       reveal(); direction = 0; travel = 0; return;
     }
@@ -30,6 +62,13 @@ if (header) {
   }, { passive: true });
   header.addEventListener('focusin', reveal);
   header.addEventListener('toggle', () => { if (pinned()) reveal(); }, true);
-  window.addEventListener('pageshow', () => { reveal(); last = position(); direction = 0; travel = 0; });
+  window.addEventListener('pageshow', () => {
+    setMenuOpen(false);
+    reveal();
+    last = position();
+    direction = 0;
+    travel = 0;
+    header.classList?.toggle('is-scrolled', last > 40);
+  });
 }
 export {};

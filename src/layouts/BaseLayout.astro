@@ -1,14 +1,42 @@
 ---
 import 'katex/dist/katex.min.css';
+import '../styles/tokens.css';
 import '../styles/global.css';
 import '../styles/knowledge-tags.css';
 import { siteConfig } from '../config';
-interface Props { title?: string; description?: string; bodyClass?: string; type?: 'website' | 'article'; published?: Date; updated?: Date; noindex?: boolean }
-const { title = siteConfig.title, description = siteConfig.description, bodyClass = '', type = 'website', published, updated, noindex = false } = Astro.props;
+
+interface Props {
+  title?: string;
+  description?: string;
+  bodyClass?: string;
+  type?: 'website' | 'article';
+  published?: Date;
+  updated?: Date;
+  noindex?: boolean;
+}
+
+const {
+  title = siteConfig.title,
+  description = siteConfig.description,
+  bodyClass = '',
+  type = 'website',
+  published,
+  updated,
+  noindex = false,
+} = Astro.props;
+
 const pageTitle = title === siteConfig.title ? title : `${title} | ${siteConfig.name}`;
 const buildSha = import.meta.env.PUBLIC_BUILD_SHA ?? 'local';
 const path = Astro.url.pathname;
 const image = new URL('/og-default.png', Astro.site);
+
+const navItems = [
+  { label: '首页', href: '/', active: path === '/' },
+  { label: '技术笔记', href: '/blog/', active: path.startsWith('/blog/') },
+  { label: '学习笔记', href: '/study-notes/', active: path.startsWith('/study-notes/') },
+  { label: '工具', href: '/tools/', active: path.startsWith('/tools/') },
+  { label: '关于', href: '/about/', active: path === '/about/' },
+];
 ---
 <!doctype html>
 <html lang="zh-CN" data-build={buildSha}>
@@ -31,7 +59,7 @@ const image = new URL('/og-default.png', Astro.site);
     {published && <meta property="article:published_time" content={published.toISOString()} />}
     {updated && <meta property="article:modified_time" content={updated.toISOString()} />}
     {noindex && <meta name="robots" content="noindex, nofollow" />}
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <link rel="icon" href="/favicon.svg" />
     <link rel="canonical" href={new URL(path, Astro.site)} />
     <link rel="alternate" type="application/rss+xml" title="duolaBmeng673 的笔记" href="/rss.xml" />
@@ -43,6 +71,10 @@ const image = new URL('/og-default.png', Astro.site);
         try {
           const saved = localStorage.getItem('duolabmeng673:theme:v2') ?? localStorage.getItem('duolabmeng673:theme:v1');
           if (['light', 'dark', 'system'].includes(saved)) mode = saved;
+          const typo = JSON.parse(localStorage.getItem('duolabmeng673:typography:v1') || '{}');
+          const scales = { small: '0.94', medium: '1', large: '1.12' };
+          if (typo.size && scales[typo.size]) root.style.setProperty('--font-scale', scales[typo.size]);
+          if (typo.bold === true) root.setAttribute('data-font-bold', '');
         } catch {}
         root.dataset.themeMode = mode;
         root.dataset.theme = mode === 'system' ? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : mode;
@@ -50,36 +82,49 @@ const image = new URL('/og-default.png', Astro.site);
     </script>
   </head>
   <body class={bodyClass}>
+    <div class="dotgrid-hero-backdrop" aria-hidden="true">
+      <canvas data-ambient-grid></canvas>
+    </div>
+
     <a class="skip-link" href="#main-content">跳到正文</a>
+
     <header class="site-header">
       <div class="header-inner">
-        <a class="brand" href="/">duolaBmeng673<span aria-hidden="true">·</span></a>
+        <a class="brand" href="/">duolaBmeng673<span class="gd" aria-hidden="true"></span></a>
+
         <nav class="nav" aria-label="主导航">
-          <a href="/" aria-current={path === '/' ? 'page' : undefined}>首页</a>
-          <a href="/blog/" aria-current={path.startsWith('/blog/') ? 'page' : undefined}>技术笔记</a>
-          <a href="/study-notes/" aria-current={path.startsWith('/study-notes/') ? 'page' : undefined}>学习笔记</a>
-          <a href="/tools/" aria-current={path.startsWith('/tools/') ? 'page' : undefined}>工具</a>
-          <a href="/about/" aria-current={path === '/about/' ? 'page' : undefined}>关于</a>
+          {navItems.map((item) => (
+            <a href={item.href} aria-current={item.active ? 'page' : undefined}>{item.label}</a>
+          ))}
         </nav>
-        <div class="header-search" data-search-shell>
-          <form class="header-search-form" data-search-form action="/blog/" method="get">
-            <label for="header-search-input" class="visually-hidden">搜索文章</label>
-            <input id="header-search-input" data-search-input type="search" name="q" placeholder="搜索全部笔记…" autocomplete="off" aria-controls="header-search-results" aria-expanded="false" />
-            <kbd aria-hidden="true" data-search-shortcut>Ctrl K</kbd>
-          </form>
-          <div id="header-search-results" class="search-popover" data-search-popover hidden>
-            <p class="search-status" data-search-status role="status">输入关键词，搜索标题、标签与正文。</p>
-            <ul class="search-results" data-search-results></ul>
-            <a class="search-all" data-search-all href="/blog/">查看全部结果 →</a>
-          </div>
-        </div>
+
         <div class="header-tools">
-          <button class="theme-control" type="button" data-theme-cycle aria-label="切换主题" aria-describedby="theme-state" title="跟随系统 → 浅色 → 深色">
-            <svg data-theme-icon="system" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8m-4-4v4"/></svg>
-            <svg data-theme-icon="light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 1v3m0 16v3M1 12h3m16 0h3M4 4l2 2m12 12 2 2M4 20l2-2M18 6l2-2"/></svg>
-            <svg data-theme-icon="dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M20 15A9 9 0 0 1 9 4a9 9 0 1 0 11 11Z"/></svg>
-            <span id="theme-state" class="visually-hidden" role="status"><span data-theme-icon="system">当前主题：跟随系统</span><span data-theme-icon="light">当前主题：浅色</span><span data-theme-icon="dark">当前主题：深色</span></span>
-          </button>
+          <div class="header-search" data-search-shell>
+            <form class="header-search-form" data-search-form action="/blog/" method="get">
+              <svg class="header-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <circle cx="11" cy="11" r="8" />
+                <path d="m21 21-4.3-4.3" />
+              </svg>
+              <label for="header-search-input" class="visually-hidden">搜索文章</label>
+              <input
+                id="header-search-input"
+                data-search-input
+                type="search"
+                name="q"
+                placeholder="搜索全部笔记…"
+                autocomplete="off"
+                aria-controls="header-search-results"
+                aria-expanded="false"
+              />
+              <kbd aria-hidden="true" data-search-shortcut>Ctrl K</kbd>
+            </form>
+            <div id="header-search-results" class="search-popover" data-search-popover hidden>
+              <p class="search-status" data-search-status role="status">输入关键词，搜索标题、标签与正文。</p>
+              <ul class="search-results" data-search-results></ul>
+              <a class="search-all" data-search-all href="/blog/">查看全部结果 →</a>
+            </div>
+          </div>
+
           <details class="type-settings">
             <summary aria-label="文字设置">Aa</summary>
             <div class="type-settings-panel">
@@ -92,30 +137,111 @@ const image = new URL('/og-default.png', Astro.site);
               <label class="type-bold-toggle"><span>加粗文字</span><input type="checkbox" data-font-bold /></label>
             </div>
           </details>
+
+          <button
+            class="theme-control"
+            type="button"
+            data-theme-cycle
+            aria-label="切换主题"
+            aria-describedby="theme-state"
+            title="跟随系统 → 浅色 → 深色"
+          >
+            <svg data-theme-icon="system" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+              <rect x="3" y="4" width="18" height="13" rx="2" />
+              <path d="M8 21h8m-4-4v4" />
+            </svg>
+            <svg data-theme-icon="light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+              <circle cx="12" cy="12" r="4" />
+              <path d="M12 1v3m0 16v3M1 12h3m16 0h3M4 4l2 2m12 12 2 2M4 20l2-2M18 6l2-2" />
+            </svg>
+            <svg data-theme-icon="dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+              <path d="M20 15A9 9 0 0 1 9 4a9 9 0 1 0 11 11Z" />
+            </svg>
+            <span id="theme-state" class="visually-hidden" role="status">
+              <span data-theme-icon="system">当前主题：跟随系统</span>
+              <span data-theme-icon="light">当前主题：浅色</span>
+              <span data-theme-icon="dark">当前主题：深色</span>
+            </span>
+          </button>
+
+          <a class="nav-gh" href={siteConfig.github} target="_blank" rel="noreferrer">GitHub ↗</a>
+
+          <button
+            type="button"
+            class="mobile-menu-btn"
+            id="mb"
+            data-mobile-nav-toggle
+            aria-expanded="false"
+            aria-controls="mobile-nav-menu"
+            aria-label="打开导航菜单"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
         </div>
       </div>
+
+      <nav class="mobile-nav-menu" id="mobile-nav-menu" data-mobile-nav-menu aria-label="移动端导航" hidden>
+        {navItems.map((item) => (
+          <a href={item.href} aria-current={item.active ? 'page' : undefined}>{item.label}</a>
+        ))}
+        <a class="mobile-nav-ext" href={siteConfig.github} target="_blank" rel="noreferrer">GitHub ↗</a>
+      </nav>
     </header>
+
     <script is:inline>
       (() => {
         const header = document.querySelector('.site-header');
         if (!header) return;
-        // Measure before the article and its anchors are parsed. Observe font
-        // settings and responsive wrapping without imposing a header height.
         const syncHeight = () => document.documentElement.style.setProperty('--header-h', `${header.getBoundingClientRect().height}px`);
         syncHeight();
         if ('ResizeObserver' in window) new ResizeObserver(syncHeight).observe(header);
         else window.addEventListener('resize', syncHeight);
       })();
     </script>
+
     <main id="main-content"><slot /></main>
+
     <footer class="site-footer">
-      <span>© {new Date().getFullYear()} {siteConfig.name}</span>
-      <span><a href="/rss.xml">RSS 订阅</a> <span aria-hidden="true">·</span> <a href={siteConfig.github} target="_blank" rel="noreferrer">GitHub ↗</a></span>
+      <div class="footer-brand">
+        <strong>{siteConfig.name}</strong>
+        <p>杨雨飞 · 哈尔滨工业大学 · 信息安全 · 论文精读、算法题解与 HIT 837 学习笔记。</p>
+      </div>
+
+      <div class="footer-cols" aria-label="页脚导航">
+        <div class="footer-col">
+          <span class="footer-col-title">归档与专题</span>
+          <a href="/blog/">技术笔记</a>
+          <a href="/blog/?category=Research">论文笔记</a>
+          <a href="/blog/?category=Computer+Science">算法题解</a>
+        </div>
+        <div class="footer-col">
+          <span class="footer-col-title">HIT 837 学习笔记</span>
+          <a href="/study-notes/">学习笔记总览</a>
+          <a href="/study-notes/837/information-security/">信息安全导论</a>
+          <a href="/study-notes/837/network-security/">网络安全基础</a>
+        </div>
+        <div class="footer-col">
+          <span class="footer-col-title">站点与订阅</span>
+          <a href="/tools/">常用工具</a>
+          <a href="/about/">关于作者</a>
+          <a href="/rss.xml">RSS 订阅</a>
+          <a href="/sitemap.xml">Sitemap</a>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <span>© {new Date().getFullYear()} 杨雨飞 ({siteConfig.name})</span>
+        <span><a href="/rss.xml">RSS 订阅</a> <span aria-hidden="true">·</span> <a href={siteConfig.github} target="_blank" rel="noreferrer">GitHub ↗</a></span>
+      </div>
     </footer>
+
     <script>
       import '../scripts/site-header';
       import '../scripts/typography';
       import '../scripts/site-search';
+      import '../scripts/ambient-grid';
     </script>
   </body>
 </html>
