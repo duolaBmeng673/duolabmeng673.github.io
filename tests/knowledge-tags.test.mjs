@@ -202,7 +202,7 @@ test('one responsive legend opens, closes outside or with Escape, and transfers 
     querySelector(selector) { return { '[data-knowledge-selection]': selection, '[data-knowledge-status]': status, '[data-knowledge-empty]': empty, '[data-knowledge-clear]': clear, '[data-knowledge-controls]': controls, '[data-knowledge-toggle]': toggle }[selector]; },
   };
   const location = new URL('https://example.com/study-notes/837/information-security/');
-  const window = { matchMedia(query) { assert.equal(query, '(min-width: 1500px)'); return media; }, addEventListener() {} };
+  const window = { matchMedia(query) { assert.equal(query, '(min-width: 1180px)'); return media; }, addEventListener() {} };
   const script = ts.transpileModule(read('src/scripts/knowledge-directory.ts'), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 } }).outputText;
   runInNewContext(script, { document, location, window, history: { pushState() {} }, exports: {}, require: () => filtering });
   assert.equal(controls.hidden, true);

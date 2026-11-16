@@ -56,9 +56,9 @@
 
 - 【已核实】[StudyModule](../src/components/StudyModule.astro) 只为信息安全设置 `showLegend`；[KnowledgeDirectory](../src/components/KnowledgeDirectory.astro) 只有一份 aside，定位参照包含介绍、全部章节和底部导航。
 - 【已核实】宽屏 aside 在正文外侧：`left: 100%`、`margin-left: 24px`、`top: 0`、`height: 100%`、宽 150px、z-index 50；内部面板 sticky，距当前可见顶栏下方 16px，无卡片阴影。依据：[knowledge-tags.css](../src/styles/knowledge-tags.css)。
-- 【已核实】目录容器 `--max-width: 1120px` 在全站 `1760px` 主容器内居中；断点计算 `1120 + 2 × (150 + 24 + 16) = 1500px`。CSS `@media (min-width: 1500px)` 与 [knowledge-directory.ts](../src/scripts/knowledge-directory.ts) 的 `matchMedia` 使用同一数值。
-- 【已核实】≥1500px 只显示侧栏，CSS `display: none` 和脚本 `hidden` 禁用浮钮；低于断点默认只显示右下浮钮（z-index 60），点击展开同一份图例（aside 的 z-index 50），面板高度不超过视口 60%，支持外部点击／Escape／焦点转移。
-- 【已核实】1100／1208／1280／1440px 均小于当前断点，默认只应有浮钮。图例按钮用 `aria-pressed`，只高亮类别，其他类别标签 opacity 0.3；筛选摘要仅有选中标签时出现。依据：[knowledge-directory.ts](../src/scripts/knowledge-directory.ts)、[KnowledgeDirectory](../src/components/KnowledgeDirectory.astro)。
+- 【已核实】目录容器 `--max-width` 与全站主容器对齐（`var(--maxw, 1760px)`）；桌面三栏（左章节导航 `208px` + 中章节主栏 + 右图例 `196px`）在 `>= 1180px` 启用。CSS `@media (min-width: 1180px)` 与 [knowledge-directory.ts](../src/scripts/knowledge-directory.ts) 的 `matchMedia` 使用同一数值。
+- 【已核实】≥1180px 只显示侧栏，CSS `display: none` 和脚本 `hidden` 禁用浮钮；低于 `1180px` 默认只显示右下浮钮（z-index 60），点击展开同一份图例（aside 的 z-index 50），面板高度不超过视口 60%，支持外部点击／Escape／焦点转移。
+- 【已核实】`1100px` 低于断点默认仅显示浮钮，`1208 / 1280 / 1440px` 均大于等于断点显示内联三栏侧边图例。图例按钮用 `aria-pressed`，只高亮类别，其他类别标签 opacity 0.3；筛选摘要仅有选中标签时出现。依据：[knowledge-directory.ts](../src/scripts/knowledge-directory.ts)、[KnowledgeDirectory](../src/components/KnowledgeDirectory.astro)。
 
 ## 改动与验收要求
 

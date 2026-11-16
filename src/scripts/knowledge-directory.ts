@@ -51,8 +51,8 @@ document.querySelectorAll<HTMLElement>('[data-knowledge-directory]').forEach((ro
   const controls = root.querySelector<HTMLElement>('[data-knowledge-controls]');
   const toggle = root.querySelector<HTMLButtonElement>('[data-knowledge-toggle]');
   if (controls && toggle) {
-    // 1120px content + 2 × (150px legend + 24px gap + 16px safety).
-    const wide = window.matchMedia('(min-width: 1500px)');
+    // Desktop 3-column layout activates at >= 1180px so 1208/1280/1440px render inline sidebars.
+    const wide = window.matchMedia('(min-width: 1180px)');
     let open = false;
     const showLegend = () => {
       controls.hidden = !wide.matches && !open;
@@ -82,6 +82,27 @@ document.querySelectorAll<HTMLElement>('[data-knowledge-directory]').forEach((ro
       else if (wide.matches && wasToggle) legends[0]?.focus();
     });
     showLegend();
+  }
+  const chapterNavLinks = [...root.querySelectorAll<HTMLAnchorElement>('[data-chapter-nav-link]')];
+  const chapterSections = chapterNavLinks
+    .map((link) => root.querySelector<HTMLElement>(`#${link.dataset.chapterNavLink}`))
+    .filter((el): el is HTMLElement => Boolean(el));
+  if (chapterNavLinks.length && chapterSections.length && 'IntersectionObserver' in window) {
+    const setNavActive = (id: string) => {
+      chapterNavLinks.forEach((link) => {
+        link.classList.toggle('is-active', link.dataset.chapterNavLink === id);
+      });
+    };
+    const io = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+        if (visible[0]?.target.id) setNavActive(visible[0].target.id);
+      },
+      { rootMargin: '-20% 0px -65% 0px', threshold: 0.01 },
+    );
+    chapterSections.forEach((sec) => io.observe(sec));
   }
   apply(false);
 });
