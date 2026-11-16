@@ -1010,7 +1010,7 @@ a.masthead-stat-card:hover { transform: var(--lift); border-color: var(--box-hov
 
 /* Study Notes Lists, Folds & Interactive Demos */
 .study-series-list { display: grid; gap: 0.85rem; margin: 1rem 0 2.25rem; }
-.study-chapters { margin: 0.75rem 0 2.25rem; border-top: 1px solid var(--bd); }
+.study-chapters { margin: 0.4rem 0 2.25rem; border-top: 0; }
 .study-series-row {
   display: flex;
   align-items: center;
@@ -1040,24 +1040,33 @@ a.masthead-stat-card:hover { transform: var(--lift); border-color: var(--box-hov
 .study-breadcrumb a:hover { text-decoration: underline; text-underline-offset: 3px; }
 .study-series-row .module-title { margin: 0.3rem 0 0.5rem; font-size: 1.4rem; }
 .study-series-row p, .study-status { color: var(--ts); font-size: 0.88rem; line-height: 1.7; }
+.study-status { margin: 0.9rem 0 0; }
 .study-series-row p:last-child { margin-bottom: 0; }
 .study-series-row > span { flex-shrink: 0; color: var(--tm); font-size: 0.82rem; }
 .module-entry > span:last-child { color: var(--link); font-weight: var(--fw-m); }
 .study-chapter { padding: 1.55rem 0 0.5rem; }
-.study-chapter > header { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: baseline; margin-bottom: 0.9rem; padding-bottom: 0.55rem; border-bottom: 1px solid var(--bd); }
+.study-chapter:first-child { padding-top: 0.85rem; }
+.study-chapter > header { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; margin-bottom: 0.9rem; padding-bottom: 0.55rem; border-bottom: 1px solid var(--bd); }
 .study-chapter h2 { margin: 0; font-size: 1.35rem; }
 .study-chapter h2 a:hover { color: var(--ac); }
 .chapter-code {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.16rem 0.52rem;
-  border-radius: var(--r-badge);
-  background: var(--tx);
-  color: var(--bg);
+  padding: 0.22rem 0.56rem;
+  border: 1px solid var(--bd);
+  border-radius: 6px;
+  background: var(--vbg);
+  color: var(--ts);
   font-family: var(--mono);
-  font-size: 0.74rem;
-  font-weight: 600;
+  font-size: 0.75rem;
+  font-weight: var(--fw-m);
+  line-height: 1.2;
+}
+.study-chapter > header .chapter-code {
+  border-color: color-mix(in srgb, var(--ac) 24%, var(--bd));
+  background: var(--ac-soft);
+  color: var(--ac);
 }
 .study-note-list { display: grid; gap: 0.625rem; margin: 0 0 1.25rem; padding: 0; list-style: none; }
 .study-note-list li {
