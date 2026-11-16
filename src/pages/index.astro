@@ -19,12 +19,9 @@ const wavePresets = data.presets.map((p) => ({
   speed: p.speed,
 }));
 
-const danmakuLanes = Array.from({ length: 3 }, () => [] as typeof data.allKnowledgeTags);
-data.allKnowledgeTags.forEach((tag, idx) => {
-  danmakuLanes[idx % 3].push(tag);
-});
-
 const categoryVar = (cat: string) => `var(--knowledge-${cat}, var(--tm))`;
+
+const DANMAKU_LANE_COUNT = 5;
 
 const activityPayloadJson = JSON.stringify({
   buildDate: data.heatmap.buildDate,
@@ -276,34 +273,25 @@ const activityPayloadJson = JSON.stringify({
     <div class="bento">
       <div class="card rb-panel s7">
         <div class="vis ktag-vis ktag-danmaku" data-danmaku aria-label="837 知识点标签快查弹幕">
-          {danmakuLanes.map((lane, laneIdx) => (
-            <div class="ktag-lane" data-lane={laneIdx}>
-              <div class="ktag-track">
-                <div class="ktag-segment">
-                  {lane.map((item) => (
-                    <a
-                      class="tag ktag-pill-lg"
-                      href={item.href}
-                      title={item.tooltip}
-                      data-knowledge-label={item.name}
-                      data-category={item.category}
-                    >
-                      <span class="ktag-swatch" style={`background: ${categoryVar(item.category)};`} aria-hidden="true" />
-                      <span>{item.name}</span>
-                    </a>
-                  ))}
-                </div>
-                <div class="ktag-segment" aria-hidden="true">
-                  {lane.slice(0, 16).map((item) => (
-                    <a class="tag ktag-pill-lg" href={item.href} tabindex="-1" title={item.tooltip}>
-                      <span class="ktag-swatch" style={`background: ${categoryVar(item.category)};`} />
-                      <span>{item.name}</span>
-                    </a>
-                  ))}
-                </div>
-              </div>
-            </div>
-          ))}
+          <div class="ktag-stage" data-danmaku-stage>
+            {Array.from({ length: DANMAKU_LANE_COUNT }, (_, laneIdx) => (
+              <div class="ktag-lane" data-lane={laneIdx} />
+            ))}
+          </div>
+          <div class="ktag-pool" data-danmaku-pool>
+            {data.allKnowledgeTags.map((item) => (
+              <a
+                class="tag ktag-pill-lg"
+                href={item.href}
+                title={item.tooltip}
+                data-knowledge-label={item.name}
+                data-category={item.category}
+              >
+                <span class="ktag-swatch" style={`background: ${categoryVar(item.category)};`} aria-hidden="true" />
+                <span>{item.name}</span>
+              </a>
+            ))}
+          </div>
         </div>
         <div class="card-foot">
           <div>

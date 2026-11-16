@@ -97,39 +97,233 @@ function initHeroStage() {
   });
 }
 
-// 2. Danmaku Knowledge Tags Marquee (CSS transform animation + IntersectionObserver play/pause)
+// 2. Random Pooled Danmaku (5 lanes, +-6px Y jitter, bounded speed ratio <=1.6x, max 8 onscreen, pure CSS transform)
 function initDanmaku() {
   const root = document.querySelector<HTMLElement>('[data-danmaku]');
   if (!root || root.dataset.initialized === '1') return;
   root.dataset.initialized = '1';
   if (reducedMotion()) return;
 
-  const targetSpeeds = [24, 18, 30];
-  root.querySelectorAll<HTMLElement>('.ktag-lane').forEach((lane, idx) => {
-    const seg = lane.querySelector<HTMLElement>('.ktag-segment');
-    const segW = seg?.offsetWidth || 0;
-    const speed = targetSpeeds[idx % targetSpeeds.length];
-    if (segW > 0) {
-      const dur = Math.max(90, Math.round(segW / speed));
-      lane.style.setProperty('--loop-shift', `-${segW}px`);
-      lane.style.setProperty('--lane-dur', `${dur}s`);
+  const stage = root.querySelector<HTMLElement>('[data-danmaku-stage]');
+  const pool = root.querySelector<HTMLElement>('[data-danmaku-pool]');
+  const lanes = [...root.querySelectorAll<HTMLElement>('.ktag-lane')];
+  const sourceTags = pool ? [...pool.querySelectorAll<HTMLAnchorElement>('a[data-knowledge-label]')] : [];
+  if (!stage || !lanes.length || !sourceTags.length) return;
+
+  // Measure natural pill widths once before switching into stage-only live mode.
+  const tagSpecs = sourceTags.map((el) => ({
+    href: el.getAttribute('href') || '#',
+    title: el.getAttribute('title') || '',
+    label: el.dataset.knowledgeLabel || el.textContent?.trim() || '',
+    category: el.dataset.category || '',
+    swatchBg: (el.querySelector<HTMLElement>('.ktag-swatch')?.style.background) || 'var(--tm)',
+    width: Math.max(48, Math.ceil(el.getBoundingClientRect().width) || (el.textContent?.trim().length ?? 4) * 14 + 34),
+  }));
+
+  root.classList.add('is-danmaku-live');
+
+  const MAX_ONSCREEN = 8;
+  const MIN_SPEED = 42;
+  const MAX_SPEED = 64; // 64 / 42 = 1.524x <= 1.6x
+  const MIN_GAP_PX = 36;
+  const laneCount = lanes.length;
+
+  interface LaneReservation {
+    launchSimMs: number;
+    width: number;
+    speed: number;
+    exitSimMs: number;
+  }
+
+  const lastByLane: Array<LaneReservation | null> = Array.from({ length: laneCount }, () => null);
+  const deck = tagSpecs.map((_, idx) => idx);
+  let deckPos = deck.length;
+  const nextSpec = () => {
+    if (deckPos >= deck.length) {
+      for (let i = deck.length - 1; i > 0; i -= 1) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [deck[i], deck[j]] = [deck[j], deck[i]];
+      }
+      deckPos = 0;
     }
+    return tagSpecs[deck[deckPos++]];
+  };
+
+  let inView = false;
+  let hoveredOrFocused = false;
+  let running = false;
+  let simAccumMs = 0;
+  let runStartedAt = 0;
+  let timerId = 0;
+  let activeCount = 0;
+  let lastLane = -1;
+
+  const getSimNow = () => (running ? simAccumMs + (performance.now() - runStartedAt) : simAccumMs);
+
+  const canPlay = () => inView && !document.hidden && !hoveredOrFocused;
+
+  const syncPlayState = () => {
+    const shouldRun = canPlay();
+    root.classList.toggle('is-inview', inView && !document.hidden);
+    root.classList.toggle('is-paused', hoveredOrFocused);
+    if (shouldRun === running) return;
+    if (shouldRun) {
+      runStartedAt = performance.now();
+      running = true;
+      scheduleTick(120);
+    } else {
+      simAccumMs += performance.now() - runStartedAt;
+      running = false;
+      if (timerId) {
+        window.clearTimeout(timerId);
+        timerId = 0;
+      }
+    }
+  };
+
+  const earliestForLane = (laneIdx: number, speed: number, stageW: number) => {
+    const prev = lastByLane[laneIdx];
+    if (!prev) return getSimNow();
+    const enterReady = prev.launchSimMs + ((prev.width + MIN_GAP_PX) / prev.speed) * 1000;
+    const clearCatchup = prev.exitSimMs - (Math.max(0, stageW + 16 - MIN_GAP_PX) / speed) * 1000;
+    return Math.max(enterReady, clearCatchup);
+  };
+
+  const spawnOne = (initialProgress = 0): boolean => {
+    if (activeCount >= MAX_ONSCREEN) return false;
+    const stageW = Math.max(260, stage.clientWidth || root.clientWidth || 640);
+    const speed = MIN_SPEED + Math.random() * (MAX_SPEED - MIN_SPEED);
+    const simNow = getSimNow();
+
+    const candidateLanes = lanes.map((_, idx) => idx);
+    for (let i = candidateLanes.length - 1; i > 0; i -= 1) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [candidateLanes[i], candidateLanes[j]] = [candidateLanes[j], candidateLanes[i]];
+    }
+    candidateLanes.sort((a, b) => (a === lastLane ? 1 : b === lastLane ? -1 : 0));
+
+    let chosenLane = -1;
+    if (initialProgress > 0) {
+      for (const laneIdx of candidateLanes) {
+        if (!lastByLane[laneIdx]) {
+          chosenLane = laneIdx;
+          break;
+        }
+      }
+    } else {
+      for (const laneIdx of candidateLanes) {
+        if (earliestForLane(laneIdx, speed, stageW) <= simNow) {
+          chosenLane = laneIdx;
+          break;
+        }
+      }
+    }
+    if (chosenLane < 0) return false;
+
+    const spec = nextSpec();
+    const travelPx = stageW + spec.width + 16;
+    const durSec = travelPx / speed;
+    const jitterY = Math.round((Math.random() * 12 - 6) * 10) / 10;
+
+    const el = document.createElement('a');
+    el.className = 'tag ktag-pill-lg ktag-fly';
+    el.href = spec.href;
+    if (spec.title) el.title = spec.title;
+    el.dataset.category = spec.category;
+
+    const sw = document.createElement('span');
+    sw.className = 'ktag-swatch';
+    sw.style.background = spec.swatchBg;
+    sw.setAttribute('aria-hidden', 'true');
+    const txt = document.createElement('span');
+    txt.textContent = spec.label;
+    el.append(sw, txt);
+
+    const delaySec = initialProgress > 0 ? -(durSec * initialProgress) : 0;
+    const launchSimMs = simNow + delaySec * 1000;
+    el.style.setProperty('--fly-from', `${stageW + 8}px`);
+    el.style.setProperty('--fly-to', `${-(spec.width + 8)}px`);
+    el.style.setProperty('--fly-dur', `${durSec.toFixed(3)}s`);
+    el.style.setProperty('--jitter-y', `${jitterY}px`);
+    if (delaySec < 0) {
+      el.style.animationDelay = `${delaySec.toFixed(3)}s`;
+    }
+
+    lastLane = chosenLane;
+    lastByLane[chosenLane] = {
+      launchSimMs,
+      width: spec.width,
+      speed,
+      exitSimMs: launchSimMs + durSec * 1000,
+    };
+    activeCount += 1;
+
+    el.addEventListener(
+      'animationend',
+      () => {
+        el.remove();
+        activeCount = Math.max(0, activeCount - 1);
+        if (running && activeCount < MAX_ONSCREEN) {
+          scheduleTick(120 + Math.random() * 480);
+        }
+      },
+      { once: true },
+    );
+
+    lanes[chosenLane].appendChild(el);
+    return true;
+  };
+
+  function scheduleTick(delayMs: number) {
+    if (!running || timerId) return;
+    timerId = window.setTimeout(() => {
+      timerId = 0;
+      if (!running) return;
+      spawnOne(0);
+      if (activeCount < MAX_ONSCREEN) {
+        scheduleTick(420 + Math.random() * 780);
+      }
+    }, Math.max(40, delayMs));
+  }
+
+  // Seed initial tags staggered across the 5 lanes (<= MAX_ONSCREEN)
+  const initialOffsets = [0.14, 0.42, 0.68, 0.28, 0.56];
+  for (let i = 0; i < Math.min(laneCount, MAX_ONSCREEN); i += 1) {
+    spawnOne(initialOffsets[i]);
+  }
+
+  root.addEventListener('pointerenter', () => {
+    hoveredOrFocused = true;
+    syncPlayState();
+  });
+  root.addEventListener('pointerleave', () => {
+    hoveredOrFocused = root.matches(':focus-within');
+    syncPlayState();
+  });
+  root.addEventListener('focusin', () => {
+    hoveredOrFocused = true;
+    syncPlayState();
+  });
+  root.addEventListener('focusout', () => {
+    window.requestAnimationFrame(() => {
+      hoveredOrFocused = root.matches(':hover') || root.matches(':focus-within');
+      syncPlayState();
+    });
   });
 
   if ('IntersectionObserver' in window) {
-    let inView = false;
-    const sync = () => root.classList.toggle('is-inview', inView && !document.hidden);
     const io = new IntersectionObserver(
       ([entry]) => {
         inView = Boolean(entry?.isIntersecting);
-        sync();
+        syncPlayState();
       },
       { threshold: 0.01 },
     );
     io.observe(root);
-    document.addEventListener('visibilitychange', sync);
+    document.addEventListener('visibilitychange', syncPlayState);
   } else {
-    root.classList.add('is-inview');
+    inView = true;
+    syncPlayState();
   }
 }
 
