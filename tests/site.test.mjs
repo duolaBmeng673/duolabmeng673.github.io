@@ -258,3 +258,80 @@ test('404 page is generated with noindex and excluded from sitemap and search in
   assert.ok(!read('dist/sitemap.xml').includes('/404'));
   assert.ok(!index.some((post) => post.href.includes('404')));
 });
+
+test('pilot converted SVG assets are valid isolated diagrams within 10 KB', () => {
+  const pilots = [
+    {
+      srcRel: 'src/content/837考研/信息安全导论/信息安全导论考点问题总结/5 防火墙、入侵检测与安全传输协议/5.b 入侵检测理论与 snorts 结构原理/CIDF模型.svg',
+      route: '/study-notes/837/intrusion-detection-snort/',
+      encodedPrefix: 'CIDF%E6%A8%A1%E5%9E%8B.',
+      expectedAlt: 'CIDF 模型示意图',
+      ratio: [896, 578],
+    },
+    {
+      srcRel: 'src/content/837考研/信息安全导论/信息安全导论考点问题总结/5 防火墙、入侵检测与安全传输协议/5.c.1  IPSec/IKESA野蛮模式.svg',
+      route: '/study-notes/837/ipsec/',
+      encodedPrefix: 'IKESA%E9%87%8E%E8%9B%AE%E6%A8%A1%E5%BC%8F.',
+      expectedAlt: 'IKE SA 野蛮模式',
+      ratio: [845, 432],
+    },
+    {
+      srcRel: 'src/content/837考研/信息安全导论/信息安全导论考点问题总结/5 防火墙、入侵检测与安全传输协议/5.c.2  SSL/SSL记录协议数据处理.svg',
+      route: '/study-notes/837/ssl/',
+      encodedPrefix: 'SSL%E8%AE%B0%E5%BD%95%E5%8D%8F%E8%AE%AE%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86.',
+      expectedAlt: 'SSL 记录协议数据处理流程',
+      ratio: [998, 654],
+    },
+  ];
+
+  for (const item of pilots) {
+    const svgPath = new URL(`../${item.srcRel}`, import.meta.url);
+    assert.ok(existsSync(svgPath), `Missing SVG source: ${item.srcRel}`);
+    const svg = readFileSync(svgPath, 'utf8');
+    assert.ok(Buffer.byteLength(svg, 'utf8') <= 10 * 1024, `${item.srcRel} exceeds 10 KB`);
+    assert.match(svg, /^<svg\b[^>]*xmlns="http:\/\/www\.w3\.org\/2000\/svg"[^>]*\bviewBox="([^"]+)"/i);
+    assert.ok(svg.trimEnd().endsWith('</svg>'), `${item.srcRel} closes cleanly with </svg>`);
+    assert.match(svg, /<title\b[^>]*>[^<]+<\/title>/, `${item.srcRel} contains <title>`);
+    assert.match(svg, /<desc\b[^>]*>[^<]+<\/desc>/, `${item.srcRel} contains <desc>`);
+    assert.doesNotMatch(svg, /<script\b|<foreignObject\b|\son[a-z]+\s*=|(?:xlink:)?href\s*=\s*["']https?:/i);
+
+    const html = read(`dist${item.route}index.html`);
+    const escapedPrefix = item.encodedPrefix.replace(/\./g, '\\.');
+    const imgMatch = html.match(new RegExp(`<img\\b[^>]*src="(\\/_astro\\/${escapedPrefix}[^"]+\\.svg)"[^>]*>`));
+    assert.ok(imgMatch, `${item.route} must reference isolated <img> SVG (${item.encodedPrefix})`);
+    assert.ok(imgMatch[0].includes(item.expectedAlt), `${item.route} updated semantic alt text`);
+    assert.ok(imgMatch[0].includes(`width="${item.ratio[0]}" height="${item.ratio[1]}"`), `${item.route} preserves aspect ratio`);
+
+    const emittedPath = new URL(`../dist${decodeURIComponent(imgMatch[1])}`, import.meta.url);
+    assert.ok(existsSync(emittedPath), `Built SVG missing: ${imgMatch[1]}`);
+    const emitted = readFileSync(emittedPath, 'utf8');
+    assert.ok(Buffer.byteLength(emitted, 'utf8') <= 10 * 1024, `Built ${imgMatch[1]} exceeds 10 KB`);
+  }
+});
+
+test('all markdown-referenced SVG assets in 837 study notes exist and pass XML safety checks', () => {
+  const studyRoot = new URL('../src/content/837考研/', import.meta.url);
+  const walkMd = (dir) => {
+    const out = [];
+    for (const entry of readdirSync(dir, { withFileTypes: true })) {
+      const full = new URL(entry.name + (entry.isDirectory() ? '/' : ''), dir);
+      if (entry.isDirectory()) out.push(...walkMd(full));
+      else if (entry.name.endsWith('.md')) out.push(full);
+    }
+    return out;
+  };
+  let checked = 0;
+  for (const mdFile of walkMd(studyRoot)) {
+    const body = readFileSync(mdFile, 'utf8').replace(/<!--[\s\S]*?-->/g, '');
+    for (const [, rawRef] of body.matchAll(/!\[[^\]]*\]\((<?[^)\s>]+\.svg>?)\)/gi)) {
+      const cleanRef = rawRef.replace(/^<|>$/g, '');
+      const target = new URL(cleanRef, mdFile);
+      assert.ok(existsSync(target), `Missing SVG referenced by ${mdFile.pathname}: ${cleanRef}`);
+      const content = readFileSync(target, 'utf8');
+      assert.match(content, /<svg\b[^>]*\bviewBox=/i, `${cleanRef} must contain viewBox`);
+      assert.doesNotMatch(content, /<script\b|<foreignObject\b|\son[a-z]+\s*=|(?:xlink:)?href\s*=\s*["']https?:/i, cleanRef);
+      checked++;
+    }
+  }
+  assert.ok(checked >= 30, `Expected at least 30 active SVG references in 837 notes, found ${checked}`);
+});

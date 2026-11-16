@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 845 432" width="845" height="432" role="img" aria-labelledby="ike-agg-title ike-agg-desc">
+  <title id="ike-agg-title">IKE SA 野蛮模式协商过程</title>
+  <desc id="ike-agg-desc">IKE SA 野蛮模式三报文交互过程：1. 发起方向响应方发送安全参数提议、DH公开值、认证数据等；2. 响应方返回安全参数选择、DH公开值、认证数据、验证载荷等；3. 发起方向响应方发送验证载荷。</desc>
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M1 1.5 L9 5 L1 8.5 z" fill="#334155" />
+    </marker>
+    <style>
+      .t { font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif; fill: #0f172a; text-anchor: middle; dominant-baseline: central; }
+      .node { font-size: 22px; font-weight: 600; }
+      .msg { font-size: 19px; font-weight: 400; fill: #1e293b; }
+      .cap { font-size: 21px; font-weight: 600; fill: #1e293b; }
+      .ln { fill: none; stroke: #334155; stroke-width: 2; stroke-linecap: round; }
+    </style>
+  </defs>
+
+  <rect width="845" height="432" fill="#ffffff" />
+
+  <!-- Endpoint Nodes -->
+  <rect x="34" y="74" width="110" height="236" rx="46" fill="#eff6ff" stroke="#334155" stroke-width="2" />
+  <text class="t node" x="89" y="192">发起方</text>
+
+  <rect x="701" y="74" width="110" height="236" rx="46" fill="#ecfdf5" stroke="#334155" stroke-width="2" />
+  <text class="t node" x="756" y="192">响应方</text>
+
+  <!-- Exchange 1 (Top curve: Initiator -> Responder) -->
+  <path class="ln" d="M160 102 Q422 24 683 102" marker-end="url(#arr)" />
+  <rect x="234" y="42" width="376" height="32" rx="4" fill="#ffffff" />
+  <text class="t msg" x="422" y="58">安全参数提议、DH公开值、认证数据等</text>
+
+  <!-- Exchange 2 (Middle horizontal: Responder -> Initiator) -->
+  <line class="ln" x1="686" y1="192" x2="162" y2="192" marker-end="url(#arr)" />
+  <rect x="192" y="174" width="462" height="36" rx="4" fill="#ffffff" />
+  <text class="t msg" x="423" y="192">安全参数选择、DH公开值、认证数据、验证载荷等</text>
+
+  <!-- Exchange 3 (Bottom curve: Initiator -> Responder) -->
+  <path class="ln" d="M160 282 Q422 360 683 282" marker-end="url(#arr)" />
+  <rect x="366" y="302" width="112" height="32" rx="4" fill="#ffffff" />
+  <text class="t msg" x="422" y="318">验证载荷</text>
+
+  <!-- Bottom Caption -->
+  <text class="t cap" x="422" y="394">野蛮模式协商过程</text>
+</svg>
