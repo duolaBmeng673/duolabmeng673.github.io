@@ -1,6 +1,7 @@
 ---
 import StudyPostRow from '../../components/StudyPostRow.astro';
 import KnowledgeChips from '../../components/KnowledgeChips.astro';
+import CountUpIsland from '../../components/islands/CountUp.island';
 import { getKnowledgeTags } from '../../lib/knowledge-tags';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getAllPosts, getCategorySummaries, getPostHref, getPostKey, getPostTitle, formatPostDate, taxonomyLabel, getTimeline, toSearchRecord } from '../../lib/blog';
@@ -21,17 +22,17 @@ const timeline = getTimeline(posts);
     <div class="masthead-stats" aria-label="技术归档统计">
       <div class="masthead-stat-card">
         <span class="masthead-stat-label">公开技术与论文</span>
-        <strong class="masthead-stat-num">{regularPosts.length}</strong>
+        <CountUpIsland client:visible to={regularPosts.length} />
         <span class="masthead-stat-sub">归档可见篇目</span>
       </div>
       <a class="masthead-stat-card" href="/blog/?category=Research">
         <span class="masthead-stat-label">论文精读</span>
-        <strong class="masthead-stat-num">{researchCount}</strong>
+        <CountUpIsland client:visible to={researchCount} />
         <span class="masthead-stat-sub">NLP · 多模态 · 表格</span>
       </a>
       <a class="masthead-stat-card" href="/blog/?category=Computer%20Science">
         <span class="masthead-stat-label">算法题解</span>
-        <strong class="masthead-stat-num">{csCount}</strong>
+        <CountUpIsland client:visible to={csCount} />
         <span class="masthead-stat-sub">ACM / OJ 与工程</span>
       </a>
     </div>

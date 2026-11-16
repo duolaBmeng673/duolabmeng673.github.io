@@ -6,7 +6,7 @@
 
 ## 1. 分工边界
 
-- **React 岛适用范围**：只用于「有内部状态、需要持续重绘」的局部交互岛，目前仅限于首页的 **`GradientWaves`**（WebGL2 着色器画布）、**`ActivityHeatmap`**（交互式活动热力图画布与当日明细）与 **`CardSwap`**（专题传送门立体叠卡交互，纯 React + CSS 动效，不引入 `gsap`）。
+- **React 岛适用范围**：只用于「有内部状态、需要持续重绘」的局部交互岛，包括首页的 **`GradientWaves`**（WebGL2 着色器画布）、**`ActivityHeatmap`**（交互式活动热力图画布与当日明细）与 **`CardSwap`**（专题传送门立体叠卡交互，纯 React + CSS 动效，不引入 `gsap`），以及第 3 轮用户批准用于 `/about/`、`/blog/`、`/study-notes/` 统计卡的 **`CountUp`**（计数器跃动数字，SSR 保留原值）。
 - **零 JS / 原生 TS 默认原则**：页面骨架、静态展示、文章、目录、导航与工具入口一律使用 `.astro` 组件（零 JS）或原生 TypeScript 模块（`src/scripts/*.ts`）。
 - **图标与动效**：图标一律使用内联 SVG；**不得安装** `gsap`、`motion`、`lucide-react` 等第三方动效或图标库。
 - **新增 React 组件审批门槛**：新增交互默认采用原生 TS。若确需使用 React 实现新组件，必须在 PR / 提交说明中明确写出不得不引入 React 的理由，经用户确认后方可实施。
@@ -48,7 +48,7 @@
 
 1. **目录与命名**：全部 React 岛文件只允许存放在 `src/components/islands/` 目录下，文件名强制采用 `*.island.tsx`（辅以同目录局部样式或工具模块，严禁把无关 React 代码散落到其他目录）。
 2. **水合指令**：
-   - `ActivityHeatmap`（首屏舞台核心交互）与 `CardSwap`（底部专题叠卡交互）使用 `client:visible`；
+   - `ActivityHeatmap`（首屏舞台核心交互）、`CardSwap`（底部专题叠卡交互）与 `CountUp`（统计卡计数器跃动）使用 `client:visible`；
    - `GradientWaves`（顶部装饰着色器背景，且已配备同等尺寸静态渐变占位）允许使用 `client:idle` 推迟 React 运行时加载，避免阻塞首屏；
    - **禁止使用 `client:load`**（除非事前报告理由并获得用户明确批准）。
 3. **数据流**：全部业务数据（活动记录、写作日期、预设色板等）只能在 `.astro` 页面于构建期准备好，并通过**可序列化的 `props`** 传入岛内；**严禁**在岛内 `fetch` 站内数据、导入大型内容集合或硬编码快照。
@@ -86,6 +86,6 @@
 ## 6. 体积预算与隔离红线
 
 - **首页 JS 预算（提醒线）**：首页全部客户端脚本（Astro 脚本 + React 岛及其按需运行时）**总计 gzip 预估不超过 `90 KB`**。若构建后超出该提醒线，必须停止并逐文件列出原始大小与 gzip 大小向用户汇报，由用户决定取舍。
-- **非首页零 React 隔离（硬红线）**：React 运行时与任何 React 岛脚本 **只能出现在首页**（`dist/index.html`）。文章页、学习笔记目录页、技术笔记归档页、工具页、关于页等全部非首页产物的 JS 体积与脚本列表均**不得引入 React 运行时**，且每次构建须通过自动化静态检查验证。
+- **非首页白名单隔离（硬红线）**：`GradientWaves`、`ActivityHeatmap`、`CardSwap` 只能出现在首页（`dist/index.html`）；非首页中仅 `/about/`、`/blog/`、`/study-notes/` 获批搭载轻量 `CountUp` 岛（`client:visible`）。文章页、837 模块与章节目录页、工具页与 404 页等其余全部页面**不得引入任何 React 运行时或岛脚本**，每次构建须通过自动化静态检查验证。
 
 > 真机 CPU／GPU 实测方法与 Chrome CDP 采集脚本见 [performance-benchmark.md](performance-benchmark.md)。

@@ -56,12 +56,17 @@ test('islands do not mutate global documentElement/body state or touch localStor
   }
 });
 
-test('non-homepage built HTML files do not reference any React runtime or island scripts', () => {
+test('non-homepage built HTML files restrict React islands strictly to approved CountUp pages', () => {
   const distDir = join(ROOT, 'dist');
   const htmlFiles = walk(distDir).filter((file) => file.endsWith('.html'));
   assert.ok(htmlFiles.length > 1, 'Expected built HTML pages in dist/');
 
   const nonHomeHtml = htmlFiles.filter((file) => file !== join(distDir, 'index.html'));
+  const approvedCountUpPages = new Set([
+    join('dist', 'about', 'index.html'),
+    join('dist', 'blog', 'index.html'),
+    join('dist', 'study-notes', 'index.html'),
+  ]);
   const scriptSrcRe = /<script\b[^>]*\bsrc="([^"]+)"/gi;
   const reactChunkNameRe = /(?:^|\/)(?:client\.|react(?:-dom)?\.|jsx-runtime\.)[^/]*\.js$/i;
   const reactRuntimeMarkers = ['createRoot', 'hydrateRoot', 'react.production', 'REACT_ELEMENT_TYPE', 'jsxDEV', '@astrojs/react'];
@@ -69,10 +74,22 @@ test('non-homepage built HTML files do not reference any React runtime or island
   for (const file of nonHomeHtml) {
     const rel = relative(ROOT, file);
     const html = readFileSync(file, 'utf8');
-    assert.ok(!/<astro-island\b/i.test(html), `Non-homepage must not contain <astro-island>: ${rel}`);
+    const islands = [...html.matchAll(/<astro-island\b[^>]*>/gi)].map(([tag]) => tag);
+
+    if (approvedCountUpPages.has(rel)) {
+      assert.ok(islands.length >= 2, `Approved CountUp page should mount CountUp islands: ${rel}`);
+      for (const tag of islands) {
+        assert.ok(tag.includes('CountUp'), `Approved non-home page may only mount CountUp island: ${rel} -> ${tag}`);
+        assert.ok(tag.includes('client="visible"'), `CountUp island must use client:visible: ${rel} -> ${tag}`);
+        assert.ok(!tag.includes('client="load"'), `CountUp island must not use client:load: ${rel} -> ${tag}`);
+      }
+      continue;
+    }
+
+    assert.equal(islands.length, 0, `Non-approved page must not contain <astro-island>: ${rel}`);
 
     for (const [, src] of html.matchAll(scriptSrcRe)) {
-      assert.ok(!reactChunkNameRe.test(src), `Non-homepage must not load React runtime script (${src}): ${rel}`);
+      assert.ok(!reactChunkNameRe.test(src), `Non-approved page must not load React runtime script (${src}): ${rel}`);
       if (src.startsWith('/_astro/')) {
         const assetPath = join(distDir, src);
         const js = readFileSync(assetPath, 'utf8');
