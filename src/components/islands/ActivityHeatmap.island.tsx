@@ -38,7 +38,8 @@ interface CalendarCell {
   onlySite: boolean;
 }
 
-const PHONE_COLS = 26;
+const DESKTOP_COLS = 34;
+const PHONE_COLS = 22;
 const PAD = 2;
 
 function buildHeatmapMap(writingItems: HeatmapItemPayload[], activityItems: HeatmapItemPayload[]) {
@@ -286,7 +287,7 @@ export default function ActivityHeatmapIsland({
     const layout = () => {
       const containerW = Math.max(220, box.clientWidth || box.getBoundingClientRect().width || 560);
       const isPhone = typeof window !== 'undefined' && window.innerWidth < 640;
-      const colCount = Math.min(totalCols, isPhone ? PHONE_COLS : totalCols);
+      const colCount = Math.min(totalCols, isPhone ? PHONE_COLS : DESKTOP_COLS);
       const gap = isPhone ? 3 : containerW >= 720 ? 3.5 : 2.5;
       const availW = Math.max(120, containerW - PAD * 2);
       const size = (availW - (colCount - 1) * gap) / colCount;
@@ -359,7 +360,8 @@ export default function ActivityHeatmapIsland({
     };
 
     const onKeyDown = (e: KeyboardEvent) => {
-      const validCells = cells.filter((c) => !c.future && c.key);
+      const startCol = totalCols - metricsRef.current.colCount;
+      const validCells = cells.filter((c) => !c.future && c.key && c.c >= startCol);
       if (!validCells.length) return;
       const curIdx = Math.max(
         0,

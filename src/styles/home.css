@@ -715,14 +715,14 @@
 
 .heat-sidebar-date {
   font-family: var(--mono);
-  font-size: calc(var(--win-fs) - 1.5px);
+  font-size: calc(var(--win-fs) - 2.5px);
   font-weight: 600;
   color: var(--tx);
   white-space: nowrap;
 }
 
 .heat-sidebar-count {
-  font-size: 0.68rem;
+  font-size: 0.62rem;
   font-weight: 500;
   color: var(--ac);
   white-space: nowrap;
@@ -740,7 +740,7 @@
   margin: 0;
   padding: 0;
   display: grid;
-  gap: 0.28rem;
+  gap: 0.22rem;
 }
 
 .heat-sidebar-list li {
@@ -748,8 +748,8 @@
   align-items: center;
   gap: 0.35rem;
   min-width: 0;
-  font-size: calc(var(--win-fs) - 2px);
-  line-height: 1.3;
+  font-size: calc(var(--win-fs) - 3px);
+  line-height: 1.25;
   color: var(--ts);
 }
 
@@ -763,15 +763,15 @@
 
 .heat-sidebar-empty {
   margin: 0;
-  font-size: calc(var(--win-fs) - 1.5px);
+  font-size: calc(var(--win-fs) - 3px);
   color: var(--tm);
 }
 
 .heat-popover-tag {
   flex: none;
-  padding: 0.04rem 0.32rem;
+  padding: 0.02rem 0.28rem;
   border-radius: var(--r-badge);
-  font-size: 0.64rem;
+  font-size: 0.58rem;
   font-weight: 600;
   background: color-mix(in srgb, var(--ac) 16%, transparent);
   color: var(--ac);
@@ -1034,7 +1034,7 @@
   width: 100%;
   max-width: 100%;
   contain: layout paint;
-  height: 15.25rem;
+  height: 16.5rem;
   padding: 0.7rem 0;
   overflow: hidden;
 }
@@ -1166,16 +1166,17 @@
   display: grid;
   place-items: center;
   overflow: hidden;
-  height: 15.25rem;
-  min-height: 15.25rem;
+  height: 16.5rem;
+  min-height: 16.5rem;
   padding: 0;
 }
 
 .card-swap-stage {
   position: relative;
-  width: 256px;
-  height: 175px;
-  perspective: 900px;
+  width: 320px;
+  height: 196px;
+  perspective: 960px;
+  transform: translate(8px, 14px);
 }
 
 .card-swap-slot {
@@ -1187,11 +1188,11 @@
   position: absolute;
   left: 50%;
   top: 50%;
-  width: 256px;
-  height: 158px;
-  margin-left: -128px;
-  margin-top: -79px;
-  border-radius: 9px;
+  width: 320px;
+  height: 184px;
+  margin-left: -160px;
+  margin-top: -92px;
+  border-radius: 12px;
   overflow: hidden;
   border: 1px solid var(--bd);
   background: var(--bg-elev);
@@ -1204,23 +1205,23 @@
   backface-visibility: hidden;
 }
 
-.card-swap-slot[data-swap-slot="0"] { z-index: 5; transform: translate3d(0, 0, 0) scale(1) skewY(3deg); opacity: 1; }
-.card-swap-slot[data-swap-slot="1"] { z-index: 4; transform: translate3d(24px, -18px, -52px) scale(0.955) skewY(3deg); opacity: 0.84; }
-.card-swap-slot[data-swap-slot="2"] { z-index: 3; transform: translate3d(48px, -36px, -104px) scale(0.91) skewY(3deg); opacity: 0.68; }
-.card-swap-slot[data-swap-slot="3"] { z-index: 2; transform: translate3d(72px, -54px, -156px) scale(0.865) skewY(3deg); opacity: 0.52; }
-.card-swap-slot[data-swap-slot="4"] { z-index: 1; transform: translate3d(96px, -72px, -208px) scale(0.82) skewY(3deg); opacity: 0; }
+.card-swap-slot[data-swap-slot="0"] { z-index: 5; transform: translate3d(0, 0, 0) scale(1) skewY(5deg); opacity: 1; }
+.card-swap-slot[data-swap-slot="1"] { z-index: 4; transform: translate3d(28px, -22px, -60px) scale(0.96) skewY(5deg); opacity: 0.85; }
+.card-swap-slot[data-swap-slot="2"] { z-index: 3; transform: translate3d(56px, -44px, -120px) scale(0.92) skewY(5deg); opacity: 0.7; }
+.card-swap-slot[data-swap-slot="3"] { z-index: 2; transform: translate3d(84px, -66px, -180px) scale(0.88) skewY(5deg); opacity: 0.55; }
+.card-swap-slot[data-swap-slot="4"] { z-index: 1; transform: translate3d(112px, -88px, -240px) scale(0.84) skewY(5deg); opacity: 0; }
 
 @keyframes card-swap-arc-drop {
   0% {
-    transform: translate3d(var(--drop-x, 0px), var(--drop-y, 0px), var(--drop-z, 0px)) scale(var(--drop-scale, 1)) skewY(3deg);
+    transform: translate3d(var(--drop-x, 0px), var(--drop-y, 0px), var(--drop-z, 0px)) scale(var(--drop-scale, 1)) skewY(5deg);
     opacity: var(--drop-opacity, 1);
   }
   45% {
-    transform: translate3d(calc(var(--drop-x, 0px) - 42px), calc(var(--drop-y, 0px) + 124px), calc(var(--drop-z, 0px) + 26px)) scale(0.95) rotateZ(-4deg) skewY(3deg);
+    transform: translate3d(calc(var(--drop-x, 0px) - 42px), calc(var(--drop-y, 0px) + 136px), calc(var(--drop-z, 0px) + 26px)) scale(0.95) rotateZ(-4deg) skewY(5deg);
     opacity: 0.78;
   }
   100% {
-    transform: translate3d(var(--drop-x, 0px), calc(var(--drop-y, 0px) + 168px), calc(var(--drop-z, 0px) + 6px)) scale(0.9) rotateZ(0deg) skewY(3deg);
+    transform: translate3d(var(--drop-x, 0px), calc(var(--drop-y, 0px) + 190px), calc(var(--drop-z, 0px) + 6px)) scale(0.9) rotateZ(0deg) skewY(5deg);
     opacity: 0;
   }
 }
@@ -1252,7 +1253,7 @@
 .swap-blog-card {
   width: 100%;
   height: 100%;
-  padding: 1rem 1.1rem;
+  padding: 0 1.15rem 1.05rem;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -1260,11 +1261,32 @@
   color: var(--tx);
 }
 
-.swap-blog-top {
+.swap-card-bar {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  font-size: 0.78rem;
+  gap: 0.55rem;
+  margin: 0 -1.15rem;
+  padding: 0.52rem 1.05rem;
+  border-bottom: 1px solid var(--bd);
+  background: color-mix(in srgb, var(--bg-elev) 78%, transparent);
+  font-size: 0.76rem;
+}
+
+.swap-card-dots {
+  display: inline-flex;
+  gap: 0.24rem;
+  flex: none;
+}
+
+.swap-card-dots i {
+  width: 0.44rem;
+  height: 0.44rem;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--tm) 45%, transparent);
+}
+
+.swap-blog-arrow {
+  margin-left: auto;
 }
 
 .swap-blog-badge {
@@ -1282,14 +1304,19 @@
 
 .swap-blog-body strong {
   display: block;
-  font-size: 1rem;
-  margin-bottom: 0.25rem;
+  font-size: 1.08rem;
+  margin-bottom: 0.3rem;
 }
 
 .swap-blog-body p {
   margin: 0;
-  font-size: 0.8rem;
+  font-size: 0.82rem;
+  line-height: 1.45;
   color: var(--ts);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .swap-controls {
@@ -1438,7 +1465,9 @@
   .ktag-vis.ktag-danmaku { height: 12.25rem; min-height: 12.25rem; padding: 0.45rem 0; }
   .home-page .ktag-danmaku .tag { padding: 0.18rem 0.6rem; font-size: 0.73rem; line-height: 1.25; }
   .home-page .ktag-danmaku .tag.ktag-fly { margin-top: -0.68rem; }
-  .swap-lab-vis { height: 12.25rem; min-height: 12.25rem; }
+  .swap-lab-vis { height: 14rem; min-height: 14rem; }
+  .card-swap-stage { width: 260px; height: 168px; transform: translate(4px, 8px); }
+  .card-swap-slot { width: 260px; height: 158px; margin-left: -130px; margin-top: -79px; }
   .sec { padding-top: 3.5rem; }
 }
 

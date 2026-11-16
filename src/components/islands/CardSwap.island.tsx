@@ -47,11 +47,11 @@ function CardBadgeIcon({ icon }: { icon: SwapCardItem['icon'] }) {
 
 function slotGeometry(order: number, total: number) {
   const zIndex = total - order;
-  const x = order * 24;
-  const y = -order * 18;
-  const z = -order * 52;
-  const scale = Math.max(0.82, 1 - order * 0.045);
-  const opacity = order > 3 ? 0 : Math.max(0.45, 1 - order * 0.16);
+  const x = order * 28;
+  const y = -order * 22;
+  const z = -order * 60;
+  const scale = Math.max(0.84, 1 - order * 0.04);
+  const opacity = order > 3 ? 0 : Math.max(0.5, 1 - order * 0.15);
   return {
     zIndex,
     x,
@@ -59,7 +59,7 @@ function slotGeometry(order: number, total: number) {
     z,
     scale,
     opacity,
-    transform: `translate3d(${x}px, ${y}px, ${z}px) scale(${scale}) skewY(3deg)`,
+    transform: `translate3d(${x}px, ${y}px, ${z}px) scale(${scale}) skewY(5deg)`,
   };
 }
 
@@ -188,7 +188,7 @@ export default function CardSwapIsland({ cards }: CardSwapIslandProps) {
           card.style.removeProperty('--drop-opacity');
           card.style.removeProperty('--drop-delay');
           card.style.zIndex = String(backGeom.zIndex);
-          card.style.transform = `translate3d(${backGeom.x + 10}px, ${backGeom.y - 24}px, ${backGeom.z}px) scale(${Math.max(0.78, backGeom.scale - 0.02)}) skewY(3deg)`;
+          card.style.transform = `translate3d(${backGeom.x + 12}px, ${backGeom.y - 26}px, ${backGeom.z}px) scale(${Math.max(0.78, backGeom.scale - 0.02)}) skewY(5deg)`;
           void card.offsetWidth;
 
           card.classList.remove('is-instant');
@@ -238,7 +238,7 @@ export default function CardSwapIsland({ cards }: CardSwapIslandProps) {
 
     incoming.classList.add('is-dropping');
     incoming.style.zIndex = String(total + 1);
-    incoming.style.transform = 'translate3d(-14px, -112px, 24px) scale(0.94) skewY(3deg)';
+    incoming.style.transform = 'translate3d(-16px, -118px, 28px) scale(0.95) skewY(5deg)';
     incoming.style.opacity = '0.35';
 
     activeRef.current = nextActive;
@@ -350,7 +350,12 @@ export default function CardSwapIsland({ cards }: CardSwapIslandProps) {
             }}
           >
             <div className="swap-blog-card">
-              <div className="swap-blog-top">
+              <div className="swap-card-bar">
+                <span className="swap-card-dots" aria-hidden="true">
+                  <i />
+                  <i />
+                  <i />
+                </span>
                 <span className="swap-blog-badge" style={{ color: card.accent }}>
                   <CardBadgeIcon icon={card.icon} />
                   <span>{card.cat}</span>
