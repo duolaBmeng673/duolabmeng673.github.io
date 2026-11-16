@@ -69,7 +69,7 @@ test('both modules and every chapter render exact chip labels as siblings of wor
   const moduleIds = new Set(), chapterIds = new Set();
   for (const page of [...modules, ...chapters]) {
     const html = read(page);
-    assert.equal((html.match(/data-knowledge-category=/g) ?? []).length, page === modules[0] ? 7 : 0);
+    assert.equal((html.match(/data-knowledge-category=/g) ?? []).length, modules.includes(page) ? 7 : 0);
     const rows = [...html.matchAll(/<li\b[^>]*data-knowledge-entry[^]*?<\/li>/g)].map(([row]) => row);
     assert.ok(rows.length > 0, page);
     if (modules.includes(page)) assert.equal(rows.length, page === modules[0] ? 16 : 19);
@@ -170,18 +170,21 @@ test('directory clicks toggle AND filters, legend only dims, clear and browser h
   assert.equal(legends[0].focused, true);
 });
 
-test('only the information-security module renders one legend, with no copied mobile legend or empty placeholders', () => {
-  const html = read('dist/study-notes/837/information-security/index.html');
-  assert.equal((html.match(/<aside\b[^>]*aria-label="知识点类别图例"/g) ?? []).length, 1);
-  assert.equal((html.match(/data-knowledge-category=/g) ?? []).length, 7);
-  assert.equal((html.match(/<button\b[^>]*\sdata-knowledge-toggle(?:\s|>)/g) ?? []).length, 1);
-  assert.ok(html.includes('aria-controls="knowledge-legend-panel"'));
-  assert.ok(!html.includes('class="knowledge-controls"'));
-  const container = html.indexOf('class="knowledge-directory"');
-  assert.ok(container < html.indexOf('class="page-intro"'), 'legend container starts before the page intro');
-  assert.ok(container < html.indexOf('class="study-chapters"'), 'all chapters share the page-level reference');
-  assert.match(html, /class="home-about-links"[^]*?<\/p>\s*<\/div>/, 'container also includes the bottom navigation');
-  for (const page of ['dist/index.html', 'dist/blog/index.html', 'dist/study-notes/837/network-security/index.html', 'dist/study-notes/837/chapter/02/index.html', 'dist/study-notes/837/security-basics/index.html']) {
+test('both study modules render one sticky category toolbar with no copied mobile legend or empty placeholders', () => {
+  for (const page of ['dist/study-notes/837/information-security/index.html', 'dist/study-notes/837/network-security/index.html']) {
+    const html = read(page);
+    assert.equal((html.match(/<aside\b[^>]*aria-label="知识点类别图例"/g) ?? []).length, 1, page);
+    assert.equal((html.match(/data-knowledge-category=/g) ?? []).length, 7, page);
+    assert.equal((html.match(/data-knowledge-category-all(?:\s|>)/g) ?? []).length, 1, page);
+    assert.equal((html.match(/<button\b[^>]*\sdata-knowledge-toggle(?:\s|>)/g) ?? []).length, 1, page);
+    assert.ok(html.includes('aria-controls="knowledge-legend-panel"'), page);
+    assert.ok(!html.includes('class="knowledge-controls"'), page);
+    const container = html.indexOf('class="knowledge-directory"');
+    assert.ok(container < html.indexOf('class="page-intro"'), 'legend container starts before the page intro');
+    assert.ok(container < html.indexOf('class="study-chapters"'), 'all chapters share the page-level reference');
+    assert.match(html, /class="home-about-links"[^]*?<\/p>\s*<\/div>/, 'container also includes the bottom navigation');
+  }
+  for (const page of ['dist/index.html', 'dist/blog/index.html', 'dist/study-notes/837/chapter/02/index.html', 'dist/study-notes/837/security-basics/index.html']) {
     const other = read(page);
     assert.ok(!other.includes('aria-label="知识点类别图例"'), page);
     assert.ok(!/<button\b[^>]*\sdata-knowledge-toggle(?:\s|>)/.test(other), page);
@@ -202,7 +205,7 @@ test('one responsive legend opens, closes outside or with Escape, and transfers 
     querySelector(selector) { return { '[data-knowledge-selection]': selection, '[data-knowledge-status]': status, '[data-knowledge-empty]': empty, '[data-knowledge-clear]': clear, '[data-knowledge-controls]': controls, '[data-knowledge-toggle]': toggle }[selector]; },
   };
   const location = new URL('https://example.com/study-notes/837/information-security/');
-  const window = { matchMedia(query) { assert.equal(query, '(min-width: 1180px)'); return media; }, addEventListener() {} };
+  const window = { matchMedia(query) { assert.equal(query, '(min-width: 1024px)'); return media; }, addEventListener() {} };
   const script = ts.transpileModule(read('src/scripts/knowledge-directory.ts'), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 } }).outputText;
   runInNewContext(script, { document, location, window, history: { pushState() {} }, exports: {}, require: () => filtering });
   assert.equal(controls.hidden, true);

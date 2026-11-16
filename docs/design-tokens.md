@@ -52,13 +52,12 @@
 - 【已核实】`html` 的 `scroll-padding-top` 使用完整 `--header-h`；TOC 和图例使用 `--header-offset`，可见时等于实测高度、隐藏时为 0。无 JS 时保持 sticky，不自动隐藏。依据：[global.css](../src/styles/global.css)、[knowledge-tags.css](../src/styles/knowledge-tags.css)。
 - 【用户决定】保留上述已实现的滚动显隐、焦点保护与无 JS 回退；本次仅确认规则，不修改顶栏 CSS／脚本。
 
-## 已核实的侧边图例与断点
+## 已核实的模块分类栏与断点
 
-- 【已核实】[StudyModule](../src/components/StudyModule.astro) 只为信息安全设置 `showLegend`；[KnowledgeDirectory](../src/components/KnowledgeDirectory.astro) 只有一份 aside，定位参照包含介绍、全部章节和底部导航。
-- 【已核实】宽屏 aside 在正文外侧：`left: 100%`、`margin-left: 24px`、`top: 0`、`height: 100%`、宽 150px、z-index 50；内部面板 sticky，距当前可见顶栏下方 16px，无卡片阴影。依据：[knowledge-tags.css](../src/styles/knowledge-tags.css)。
-- 【已核实】目录容器 `--max-width` 与全站主容器对齐（`var(--maxw, 1760px)`）；桌面三栏（左章节导航 `208px` + 中章节主栏 + 右图例 `196px`）在 `>= 1180px` 启用。CSS `@media (min-width: 1180px)` 与 [knowledge-directory.ts](../src/scripts/knowledge-directory.ts) 的 `matchMedia` 使用同一数值。
-- 【已核实】≥1180px 只显示侧栏，CSS `display: none` 和脚本 `hidden` 禁用浮钮；低于 `1180px` 默认只显示右下浮钮（z-index 60），点击展开同一份图例（aside 的 z-index 50），面板高度不超过视口 60%，支持外部点击／Escape／焦点转移。
-- 【已核实】`1100px` 低于断点默认仅显示浮钮，`1208 / 1280 / 1440px` 均大于等于断点显示内联三栏侧边图例。图例按钮用 `aria-pressed`，只高亮类别，其他类别标签 opacity 0.3；筛选摘要仅有选中标签时出现。依据：[knowledge-directory.ts](../src/scripts/knowledge-directory.ts)、[KnowledgeDirectory](../src/components/KnowledgeDirectory.astro)。
+- 【已核实】[StudyModule](../src/components/StudyModule.astro) 为「信息安全」与「网络安全」两个模块均启用 `showLegend`；[KnowledgeDirectory](../src/components/KnowledgeDirectory.astro) 复用 `.archive-tools` 毛玻璃样式渲染「全部 + 七类知识点标签」工具条，定位参照包含介绍、全部章节和底部导航。
+- 【已核实】桌面端（`>= 1024px`）`.knowledge-aside.archive-tools` 吸附于可见顶栏下方（`top: calc(12px + var(--header-h, 56px) + 8px)`），与顶栏形成双层吸附控制带；下方主体采用左侧粘性章节目录（`220px`）+ 右侧笔记条目卡片流（`minmax(0, 1fr)`）两栏布局。CSS `@media (min-width: 1024px)` 与 [knowledge-directory.ts](../src/scripts/knowledge-directory.ts) 的 `matchMedia` 使用同一数值。
+- 【已核实】≥1024px 只显示内联吸附分类栏，CSS `display: none` 和脚本 `hidden` 禁用浮钮；低于 `1024px` 默认只显示右下浮钮（z-index 60），点击展开同一份图例（aside 的 z-index 50），面板高度不超过视口 60%，支持外部点击／Escape／焦点转移。
+- 【已核实】`1100 / 1208 / 1280 / 1440px` 均大于等于断点显示内联双栏与顶部吸附七类标签条；`390px` 低于断点默认仅显示浮钮。图例按钮用 `aria-pressed`，只高亮类别，其他类别标签 opacity 0.3；点击「全部」清除类别高亮，筛选摘要仅有选中标签时出现。依据：[knowledge-directory.ts](../src/scripts/knowledge-directory.ts)、[KnowledgeDirectory](../src/components/KnowledgeDirectory.astro)。
 
 ## 改动与验收要求
 

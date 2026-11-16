@@ -6,6 +6,7 @@ document.querySelectorAll<HTMLElement>('[data-knowledge-directory]').forEach((ro
   }));
   const buttons = [...root.querySelectorAll<HTMLButtonElement>('[data-t]')];
   const legends = [...root.querySelectorAll<HTMLButtonElement>('[data-knowledge-category]')];
+  const allCategoryBtn = root.querySelector<HTMLButtonElement>('[data-knowledge-category-all]');
   const selection = root.querySelector<HTMLElement>('[data-knowledge-selection]');
   const status = root.querySelector<HTMLElement>('[data-knowledge-status]');
   const empty = root.querySelector<HTMLElement>('[data-knowledge-empty]');
@@ -21,7 +22,13 @@ document.querySelectorAll<HTMLElement>('[data-knowledge-directory]').forEach((ro
       button.setAttribute('aria-pressed', String(selected.has(button.dataset.t!)));
       button.classList.toggle('is-muted', Boolean(category && button.dataset.c !== category));
     });
-    legends.forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.knowledgeCategory === category)));
+    allCategoryBtn?.setAttribute('aria-pressed', String(!category));
+    allCategoryBtn?.classList.toggle('is-active', !category);
+    legends.forEach((button) => {
+      const active = button.dataset.knowledgeCategory === category;
+      button.setAttribute('aria-pressed', String(active));
+      button.classList.toggle('is-active', active);
+    });
     root.querySelectorAll<HTMLElement>('[data-knowledge-chapter]').forEach((chapter) => {
       chapter.hidden = !chapter.querySelector('[data-knowledge-entry]:not([hidden])');
     });
@@ -38,6 +45,10 @@ document.querySelectorAll<HTMLElement>('[data-knowledge-directory]').forEach((ro
     if (selected.has(name)) selected.delete(name); else selected.add(name);
     apply();
   }));
+  allCategoryBtn?.addEventListener('click', () => {
+    category = '';
+    apply(false);
+  });
   legends.forEach((button) => button.addEventListener('click', () => {
     category = category === button.dataset.knowledgeCategory ? '' : button.dataset.knowledgeCategory!;
     apply(false);
@@ -51,8 +62,8 @@ document.querySelectorAll<HTMLElement>('[data-knowledge-directory]').forEach((ro
   const controls = root.querySelector<HTMLElement>('[data-knowledge-controls]');
   const toggle = root.querySelector<HTMLButtonElement>('[data-knowledge-toggle]');
   if (controls && toggle) {
-    // Desktop 3-column layout activates at >= 1180px so 1208/1280/1440px render inline sidebars.
-    const wide = window.matchMedia('(min-width: 1180px)');
+    // Desktop sticky horizontal legend bar activates at >= 1024px (matches /blog/ archive-tools).
+    const wide = window.matchMedia('(min-width: 1024px)');
     let open = false;
     const showLegend = () => {
       controls.hidden = !wide.matches && !open;
@@ -87,12 +98,33 @@ document.querySelectorAll<HTMLElement>('[data-knowledge-directory]').forEach((ro
   const chapterSections = chapterNavLinks
     .map((link) => root.querySelector<HTMLElement>(`#${link.dataset.chapterNavLink}`))
     .filter((el): el is HTMLElement => Boolean(el));
+  const setNavActive = (id: string) => {
+    chapterNavLinks.forEach((link) => {
+      link.classList.toggle('is-active', link.dataset.chapterNavLink === id);
+    });
+  };
+  const scrollToChapter = (id: string, push = true) => {
+    const target = root.querySelector<HTMLElement>(`#${id}`);
+    if (!target) return;
+    const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
+    target.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+    setNavActive(id);
+    if (push && typeof history !== 'undefined') {
+      history.pushState(null, '', `${location.pathname}${location.search}#${id}`);
+    }
+  };
+  chapterNavLinks.forEach((link) => {
+    link.addEventListener('click', (event) => {
+      const id = link.dataset.chapterNavLink;
+      if (!id) return;
+      event.preventDefault();
+      scrollToChapter(id, true);
+    });
+  });
+  if (location.hash && chapterNavLinks.some((link) => `#${link.dataset.chapterNavLink}` === location.hash)) {
+    requestAnimationFrame(() => scrollToChapter(location.hash.slice(1), false));
+  }
   if (chapterNavLinks.length && chapterSections.length && 'IntersectionObserver' in window) {
-    const setNavActive = (id: string) => {
-      chapterNavLinks.forEach((link) => {
-        link.classList.toggle('is-active', link.dataset.chapterNavLink === id);
-      });
-    };
     const io = new IntersectionObserver(
       (entries) => {
         const visible = entries

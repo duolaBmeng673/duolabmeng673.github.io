@@ -9,7 +9,7 @@ const info = getStudySeries(module.series);
 const chapters = getStudyChapters(module.posts);
 ---
 <BaseLayout title={`${module.title} · ${module.series}`} description={module.description}>
-  <KnowledgeDirectory posts={module.posts} showLegend={module.slug === 'information-security'}>
+  <KnowledgeDirectory posts={module.posts} showLegend={true}>
   <Fragment slot="intro">
   <header class="page-intro">
     <nav class="study-breadcrumb" aria-label="学习路径"><a href="/study-notes/">学习笔记</a><span>/</span><a href={`/study-notes/${info.slug}/`}>{module.series}</a><span>/</span><span aria-current="page">{module.title}</span></nav>
