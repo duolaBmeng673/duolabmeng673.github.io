@@ -3,6 +3,8 @@ if (header) {
   const root = document.documentElement;
   const menuBtn = header.querySelector?.('[data-mobile-nav-toggle]') as HTMLButtonElement | null | undefined;
   const menuPanel = header.querySelector?.('[data-mobile-nav-menu]') as HTMLElement | null | undefined;
+  const desktopHomeQuery = window.matchMedia?.('(min-width: 1024px) and (hover: hover) and (pointer: fine)');
+  const isDesktopHome = () => header.dataset?.page === 'home' && Boolean(desktopHomeQuery?.matches);
   let menuOpen = false;
 
   const setMenuOpen = (next: boolean) => {
@@ -42,7 +44,7 @@ if (header) {
     const y = position(), delta = y - last;
     last = y;
     header.classList?.toggle('is-scrolled', y > 40);
-    if (y <= header.getBoundingClientRect().height || pinned()) {
+    if (isDesktopHome() || y <= header.getBoundingClientRect().height || pinned()) {
       reveal(); direction = 0; travel = 0; return;
     }
     if (!delta) return;
@@ -62,6 +64,11 @@ if (header) {
   }, { passive: true });
   header.addEventListener('focusin', reveal);
   header.addEventListener('toggle', () => { if (pinned()) reveal(); }, true);
+  desktopHomeQuery?.addEventListener?.('change', () => {
+    if (isDesktopHome()) {
+      reveal(); direction = 0; travel = 0;
+    }
+  });
   window.addEventListener('pageshow', () => {
     setMenuOpen(false);
     reveal();

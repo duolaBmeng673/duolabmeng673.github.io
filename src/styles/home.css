@@ -36,23 +36,14 @@
 
 .hero-gradient-text {
   background-image: linear-gradient(
-    90deg,
-    var(--tx) 0%,
-    var(--ac) 34%,
-    var(--c3) 66%,
-    var(--tx) 100%
+    120deg,
+    var(--tx) 10%,
+    var(--ac) 52%,
+    var(--c3) 100%
   );
-  background-size: 260% 100%;
-  background-position: 0% 50%;
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: hero-text-flow 9s linear infinite;
-}
-
-@keyframes hero-text-flow {
-  0% { background-position: 0% 50%; }
-  100% { background-position: 260% 50%; }
 }
 
 .cta {
@@ -908,7 +899,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 0.5rem;
-  margin-bottom: 0.55rem;
+  margin-bottom: 0.65rem;
 }
 
 .track-badge {
@@ -929,14 +920,14 @@
   color: var(--tx);
 }
 
-.track-card h3 {
-  margin: 0 0 0.35rem;
+.card.track-card h3 {
+  margin: 0 0 0.45rem;
   font-size: 1.22rem;
   font-weight: var(--fw-h);
 }
 
-.track-desc {
-  margin: 0 0 0.9rem;
+.track-card .track-desc {
+  margin: 0 0 1.25rem;
   font-size: 0.84rem;
   line-height: 1.55;
   color: var(--ts);
@@ -997,7 +988,7 @@
 
 .track-foot {
   margin-top: auto;
-  padding-top: 0.95rem;
+  padding-top: 1.15rem;
   display: flex;
   justify-content: flex-end;
 }
@@ -1379,7 +1370,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hero-gradient-text { animation: none; background-position: 0% 50%; }
   .cur, .fi, .ktag-track { animation: none; }
   .ktag-lane { overflow-x: auto; }
 }

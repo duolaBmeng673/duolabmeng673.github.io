@@ -75,34 +75,28 @@ if (canvas) {
       const dt = Math.min((now - lastTime) / 1000, 0.05);
       lastTime = now;
 
-      if (!reduceMotion) {
+      if (!reduceMotion && !hasFinePointer) {
+        // Touch / coarse pointer: regular drifting + diagonal sweeping band independent of pointer events
         offsetX += dt * 11;
         offsetY += dt * 7;
         elapsed += dt;
 
-        if (!hasFinePointer) {
-          // Touch devices: regular diagonal sweeping band independent of pointer events
-          const minCol = Math.floor(offsetX / squareSize) - 1;
-          const maxCol = Math.ceil((width + offsetX) / squareSize) + 1;
-          const minRow = Math.floor(offsetY / squareSize) - 1;
-          const maxRow = Math.ceil((height + offsetY) / squareSize) + 1;
-          const span = (maxCol - minCol) * 0.72 + (maxRow - minRow) * 0.56 + 10;
-          const sweepCenter = ((elapsed * 3.4) % span) - 5;
-          for (let gy = minRow; gy <= maxRow; gy += 1) {
-            for (let gx = minCol; gx <= maxCol; gx += 1) {
-              const diag = (gx - minCol) * 0.72 + (gy - minRow) * 0.56;
-              const dist = Math.abs(diag - sweepCenter);
-              if (dist < 2.2) {
-                const energy = Math.exp(-dist * dist * 0.55) * 0.75;
-                boostCell(gx, gy, energy);
-              }
+        const minCol = Math.floor(offsetX / squareSize) - 1;
+        const maxCol = Math.ceil((width + offsetX) / squareSize) + 1;
+        const minRow = Math.floor(offsetY / squareSize) - 1;
+        const maxRow = Math.ceil((height + offsetY) / squareSize) + 1;
+        const span = (maxCol - minCol) * 0.72 + (maxRow - minRow) * 0.56 + 10;
+        const sweepCenter = ((elapsed * 3.4) % span) - 5;
+        for (let gy = minRow; gy <= maxRow; gy += 1) {
+          for (let gx = minCol; gx <= maxCol; gx += 1) {
+            const diag = (gx - minCol) * 0.72 + (gy - minRow) * 0.56;
+            const dist = Math.abs(diag - sweepCenter);
+            if (dist < 2.2) {
+              const energy = Math.exp(-dist * dist * 0.55) * 0.75;
+              boostCell(gx, gy, energy);
             }
           }
         }
-      }
-
-      if (!reduceMotion && hasFinePointer && pointer.inside) {
-        igniteAt(pointer.x, pointer.y);
       }
 
       for (let i = ripples.length - 1; i >= 0; i -= 1) {
@@ -177,7 +171,9 @@ if (canvas) {
       }
       ctx.stroke();
 
-      if (!reduceMotion && inView && !document.hidden) {
+      if (!reduceMotion && !hasFinePointer && inView && !document.hidden) {
+        rafId = requestAnimationFrame(renderFrame);
+      } else if (!reduceMotion && hasFinePointer && inView && !document.hidden && (activeCells.size > 0 || ripples.length > 0)) {
         rafId = requestAnimationFrame(renderFrame);
       } else {
         rafId = 0;
@@ -185,7 +181,8 @@ if (canvas) {
     };
 
     const startLoop = () => {
-      if (reduceMotion || rafId) return;
+      if (reduceMotion || rafId || !inView || document.hidden) return;
+      if (hasFinePointer && activeCells.size === 0 && ripples.length === 0) return;
       lastTime = performance.now();
       rafId = requestAnimationFrame(renderFrame);
     };
@@ -201,7 +198,7 @@ if (canvas) {
       'resize',
       () => {
         resize();
-        if (reduceMotion) renderFrame(performance.now());
+        if (!rafId) renderFrame(performance.now());
       },
       { passive: true }
     );
@@ -217,6 +214,8 @@ if (canvas) {
           pointer.x = lx;
           pointer.y = ly;
           pointer.inside = true;
+          igniteAt(lx, ly);
+          startLoop();
         } else {
           pointer.inside = false;
         }
@@ -239,6 +238,7 @@ if (canvas) {
             duration: 0.65,
             speed: 380,
           });
+          startLoop();
         }
       },
       { passive: true }
@@ -255,7 +255,7 @@ if (canvas) {
 
     new MutationObserver(() => {
       theme = document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
-      if (reduceMotion) renderFrame(performance.now());
+      if (!rafId) renderFrame(performance.now());
     }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 
     motionMedia?.addEventListener('change', (e) => {
@@ -273,6 +273,8 @@ if (canvas) {
     pointerMedia?.addEventListener('change', (e) => {
       hasFinePointer = e.matches;
       pointer.inside = false;
+      if (!hasFinePointer && !reduceMotion && inView && !document.hidden) startLoop();
+      else if (hasFinePointer && activeCells.size === 0 && ripples.length === 0) stopLoop();
     });
 
     if ('IntersectionObserver' in window) {
@@ -287,11 +289,7 @@ if (canvas) {
     }
 
     resize();
-    if (reduceMotion) {
-      renderFrame(performance.now());
-    } else {
-      startLoop();
-    }
+    renderFrame(performance.now());
   }
 }
 

@@ -82,3 +82,5 @@
 
 - **首页 JS 预算（提醒线）**：首页全部客户端脚本（Astro 脚本 + React 岛及其按需运行时）**总计 gzip 预估不超过 `90 KB`**。若构建后超出该提醒线，必须停止并逐文件列出原始大小与 gzip 大小向用户汇报，由用户决定取舍。
 - **非首页零 React 隔离（硬红线）**：React 运行时与任何 React 岛脚本 **只能出现在首页**（`dist/index.html`）。文章页、学习笔记目录页、技术笔记归档页、工具页、关于页等全部非首页产物的 JS 体积与脚本列表均**不得引入 React 运行时**，且每次构建须通过自动化静态检查验证。
+
+> 真机 CPU／GPU 实测方法与 Chrome CDP 采集脚本见 [performance-benchmark.md](performance-benchmark.md)。
