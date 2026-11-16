@@ -1177,6 +1177,11 @@
 }
 
 .card-swap-slot {
+  --swap-spring: linear(
+    0, 0.0572, 0.1957, 0.3728, 0.5565, 0.725, 0.8657, 0.9731,
+    1.0474, 1.092, 1.1123, 1.1146, 1.1047, 1.088, 1.0685, 1.0493,
+    1.0322, 1.0184, 1.0083, 1.0015, 0.9978, 0.9964, 0.9967, 0.9981, 1
+  );
   position: absolute;
   left: 50%;
   top: 50%;
@@ -1192,8 +1197,8 @@
   text-decoration: none;
   color: var(--tx);
   transition:
-    transform 0.36s cubic-bezier(0.22, 1, 0.36, 1),
-    opacity 0.28s ease;
+    transform 0.6s var(--swap-spring),
+    opacity 0.32s ease;
   backface-visibility: hidden;
 }
 
@@ -1203,16 +1208,39 @@
 .card-swap-slot[data-swap-slot="3"] { z-index: 2; transform: translate3d(72px, -54px, -156px) scale(0.865) skewY(3deg); opacity: 0.52; }
 .card-swap-slot[data-swap-slot="4"] { z-index: 1; transform: translate3d(96px, -72px, -208px) scale(0.82) skewY(3deg); opacity: 0; }
 
-.card-swap-slot.is-dropping {
-  transition:
-    transform 0.28s cubic-bezier(0.4, 0, 0.7, 0.2),
-    opacity 0.24s ease;
+@keyframes card-swap-arc-drop {
+  0% {
+    transform: translate3d(var(--drop-x, 0px), var(--drop-y, 0px), var(--drop-z, 0px)) scale(var(--drop-scale, 1)) skewY(3deg);
+    opacity: var(--drop-opacity, 1);
+  }
+  45% {
+    transform: translate3d(calc(var(--drop-x, 0px) - 42px), calc(var(--drop-y, 0px) + 124px), calc(var(--drop-z, 0px) + 26px)) scale(0.95) rotateZ(-4deg) skewY(3deg);
+    opacity: 0.78;
+  }
+  100% {
+    transform: translate3d(var(--drop-x, 0px), calc(var(--drop-y, 0px) + 168px), calc(var(--drop-z, 0px) + 6px)) scale(0.9) rotateZ(0deg) skewY(3deg);
+    opacity: 0;
+  }
 }
 
-.card-swap-slot.is-settling {
+.card-swap-slot.is-arc-dropping {
+  transition: none !important;
+  will-change: transform, opacity;
+  animation: card-swap-arc-drop 0.38s cubic-bezier(0.32, 0.04, 0.72, 0.3) var(--drop-delay, 0ms) 1 both;
+}
+
+.card-swap-slot.is-dropping {
   transition:
-    transform 0.34s cubic-bezier(0.22, 1, 0.36, 1),
-    opacity 0.3s ease;
+    transform 0.32s cubic-bezier(0.32, 0.04, 0.72, 0.3),
+    opacity 0.26s ease;
+}
+
+.card-swap-slot.is-settling,
+.card-swap-slot.is-spring {
+  will-change: transform, opacity;
+  transition:
+    transform 0.6s var(--swap-spring),
+    opacity 0.32s ease;
 }
 
 .card-swap-slot.is-instant {

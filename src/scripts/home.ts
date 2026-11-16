@@ -327,7 +327,7 @@ function initDanmaku() {
   }
 }
 
-// 3. CardSwap 3D Stack (3-phase pure CSS transform/opacity transitions, pauses offscreen & when hidden)
+// 3. CardSwap 3D Stack (native CSS linear() spring + 3-keyframe X-arc drop cascade, transform/opacity only)
 function initCardSwap() {
   const root = document.querySelector<HTMLElement>('[data-card-swap]');
   if (!root || root.dataset.initialized === '1') return;
@@ -346,7 +346,7 @@ function initCardSwap() {
   let phaseTimers: number[] = [];
   const total = slots.length;
 
-  const slotProps = (order: number) => {
+  const slotGeometry = (order: number) => {
     const zIndex = total - order;
     const x = order * 24;
     const y = -order * 18;
@@ -355,12 +355,20 @@ function initCardSwap() {
     const opacity = order > 3 ? 0 : Math.max(0.45, 1 - order * 0.16);
     return {
       zIndex,
-      transform: `translate3d(${x}px, ${y}px, ${z}px) scale(${scale}) skewY(3deg)`,
+      x,
+      y,
+      z,
+      scale,
       opacity,
+      transform: `translate3d(${x}px, ${y}px, ${z}px) scale(${scale}) skewY(3deg)`,
     };
   };
 
-  const applySlot = (slot: HTMLAnchorElement, props: { zIndex: number; transform: string; opacity: number }, isFront: boolean) => {
+  const applySlot = (
+    slot: HTMLAnchorElement,
+    props: { zIndex: number; transform: string; opacity: number },
+    isFront: boolean,
+  ) => {
     slot.style.zIndex = String(props.zIndex);
     slot.style.transform = props.transform;
     slot.style.opacity = String(props.opacity);
@@ -371,23 +379,31 @@ function initCardSwap() {
   const clearPhaseClasses = () => {
     phaseTimers.forEach((id) => window.clearTimeout(id));
     phaseTimers = [];
-    slots.forEach((s) => s.classList.remove('is-dropping', 'is-settling', 'is-instant'));
+    slots.forEach((s) => {
+      s.classList.remove('is-arc-dropping', 'is-dropping', 'is-settling', 'is-spring', 'is-instant');
+      s.style.removeProperty('--drop-x');
+      s.style.removeProperty('--drop-y');
+      s.style.removeProperty('--drop-z');
+      s.style.removeProperty('--drop-scale');
+      s.style.removeProperty('--drop-opacity');
+      s.style.removeProperty('--drop-delay');
+    });
     animating = false;
   };
 
   const layout = () => {
     slots.forEach((slot, idx) => {
       const order = (idx - active + total) % total;
-      applySlot(slot, slotProps(order), order === 0);
+      applySlot(slot, slotGeometry(order), order === 0);
     });
     if (countNode) countNode.textContent = `${active + 1} / ${total}`;
   };
 
-  const go = (delta: number) => {
-    if (total <= 1) return;
-    if (reducedMotion() || Math.abs(delta) !== 1) {
+  const cascadeForward = (steps: number) => {
+    if (total <= 1 || steps <= 0) return;
+    if (reducedMotion()) {
       clearPhaseClasses();
-      active = (active + delta + total) % total;
+      active = (active + steps) % total;
       layout();
       return;
     }
@@ -398,104 +414,139 @@ function initCardSwap() {
     }
     animating = true;
 
-    const outgoingIdx = active;
-    const nextActive = (active + delta + total) % total;
-    const outgoing = slots[outgoingIdx];
+    const STAGGER_MS = 95;
+    const DROP_MS = 380;
+    const oldActive = active;
+    const nextActive = (active + steps) % total;
+    const droppingIndices = Array.from({ length: steps }, (_, k) => (oldActive + k) % total);
+    const droppingSet = new Set(droppingIndices);
 
-    if (delta === 1) {
-      // Phase 1 (0..280ms): front card drops down & fades completely to 0 before wrap
-      outgoing.classList.add('is-dropping');
-      outgoing.style.zIndex = String(total + 1);
-      outgoing.style.transform = 'translate3d(0, 128px, 24px) scale(0.95) skewY(3deg)';
-      outgoing.style.opacity = '0';
+    // Remaining cards (K..total-1) step forward cleanly using CSS linear() spring easing.
+    active = nextActive;
+    if (countNode) countNode.textContent = `${active + 1} / ${total}`;
+    slots.forEach((slot, idx) => {
+      if (droppingSet.has(idx)) return;
+      const newOrder = (idx - nextActive + total) % total;
+      slot.classList.add('is-spring');
+      applySlot(slot, slotGeometry(newOrder), newOrder === 0);
+    });
 
-      phaseTimers.push(
-        window.setTimeout(() => {
-          // Phase 2 (280..480ms): snap outgoing above back stack while remaining step forward
-          outgoing.classList.remove('is-dropping');
-          outgoing.classList.add('is-instant');
-          const backProps = slotProps(total - 1);
-          outgoing.style.zIndex = '1';
-          outgoing.style.transform = `translate3d(${(total - 1) * 24 + 12}px, ${-(total - 1) * 18 - 34}px, ${-(total - 1) * 52}px) scale(${Math.max(0.78, 1 - (total - 1) * 0.045)}) skewY(3deg)`;
-          outgoing.style.opacity = '0';
-          void outgoing.offsetWidth;
+    let completedDrops = 0;
+    droppingIndices.forEach((slotIdx, stepIdx) => {
+      const card = slots[slotIdx];
+      const startGeom = slotGeometry(stepIdx);
+      const delayMs = stepIdx * STAGGER_MS;
 
-          active = nextActive;
-          if (countNode) countNode.textContent = `${active + 1} / ${total}`;
-          slots.forEach((slot, idx) => {
-            if (idx === outgoingIdx) {
-              slot.toggleAttribute('data-front', false);
-              slot.tabIndex = -1;
-              return;
-            }
-            const order = (idx - active + total) % total;
-            applySlot(slot, slotProps(order), order === 0);
-          });
+      card.toggleAttribute('data-front', false);
+      card.tabIndex = -1;
+      card.style.zIndex = String(total + steps - stepIdx);
+      card.style.setProperty('--drop-x', `${startGeom.x}px`);
+      card.style.setProperty('--drop-y', `${startGeom.y}px`);
+      card.style.setProperty('--drop-z', `${startGeom.z}px`);
+      card.style.setProperty('--drop-scale', `${startGeom.scale}`);
+      card.style.setProperty('--drop-opacity', `${startGeom.opacity}`);
+      card.style.setProperty('--drop-delay', `${delayMs}ms`);
+      card.classList.add('is-arc-dropping');
 
+      let settled = false;
+      const finalizeDrop = () => {
+        if (settled) return;
+        settled = true;
+
+        // Reorder z-index & back-queue position strictly while opacity === 0 to guarantee zero flash.
+        const targetOrder = (slotIdx - nextActive + total) % total;
+        const backGeom = slotGeometry(targetOrder);
+        card.classList.add('is-instant');
+        card.style.opacity = '0';
+        card.classList.remove('is-arc-dropping');
+        card.style.removeProperty('--drop-x');
+        card.style.removeProperty('--drop-y');
+        card.style.removeProperty('--drop-z');
+        card.style.removeProperty('--drop-scale');
+        card.style.removeProperty('--drop-opacity');
+        card.style.removeProperty('--drop-delay');
+        card.style.zIndex = String(backGeom.zIndex);
+        card.style.transform = `translate3d(${backGeom.x + 10}px, ${backGeom.y - 24}px, ${backGeom.z}px) scale(${Math.max(0.78, backGeom.scale - 0.02)}) skewY(3deg)`;
+        void card.offsetWidth;
+
+        card.classList.remove('is-instant');
+        card.classList.add('is-spring');
+        applySlot(card, backGeom, false);
+
+        completedDrops += 1;
+        if (completedDrops === droppingIndices.length) {
           phaseTimers.push(
             window.setTimeout(() => {
-              // Phase 3 (460..780ms): settle outgoing card into final back stack slot
-              outgoing.classList.remove('is-instant');
-              outgoing.classList.add('is-settling');
-              applySlot(outgoing, backProps, false);
-
-              phaseTimers.push(
-                window.setTimeout(() => {
-                  outgoing.classList.remove('is-settling');
-                  animating = false;
-                }, 340),
-              );
-            }, 180),
-          );
-        }, 280),
-      );
-    } else {
-      // Prev (-1): bring last card up from back, glide others back, drop into front (~0.78s)
-      const incomingIdx = nextActive;
-      const incoming = slots[incomingIdx];
-
-      // Phase 1: lift incoming above & forward while existing cards step back
-      incoming.classList.add('is-dropping');
-      incoming.style.zIndex = String(total + 1);
-      incoming.style.transform = 'translate3d(-14px, -112px, 24px) scale(0.94) skewY(3deg)';
-      incoming.style.opacity = '0.35';
-
-      active = nextActive;
-      if (countNode) countNode.textContent = `${active + 1} / ${total}`;
-      slots.forEach((slot, idx) => {
-        if (idx === incomingIdx) return;
-        const order = (idx - active + total) % total;
-        applySlot(slot, slotProps(order), false);
-      });
-
-      phaseTimers.push(
-        window.setTimeout(() => {
-          // Phase 2-3: settle incoming softly into front slot
-          incoming.classList.remove('is-dropping');
-          incoming.classList.add('is-settling');
-          applySlot(incoming, slotProps(0), true);
-
-          phaseTimers.push(
-            window.setTimeout(() => {
-              incoming.classList.remove('is-settling');
+              slots.forEach((s) => s.classList.remove('is-spring'));
               animating = false;
-            }, 380),
+            }, 620),
           );
-        }, 260),
-      );
-    }
+        }
+      };
+
+      card.addEventListener('animationend', finalizeDrop, { once: true });
+      phaseTimers.push(window.setTimeout(finalizeDrop, delayMs + DROP_MS + 40));
+    });
   };
 
-  prevBtn?.addEventListener('click', () => go(-1));
-  nextBtn?.addEventListener('click', () => go(1));
+  const goPrev = () => {
+    if (total <= 1) return;
+    if (reducedMotion()) {
+      clearPhaseClasses();
+      active = (active - 1 + total) % total;
+      layout();
+      return;
+    }
+
+    if (animating) {
+      clearPhaseClasses();
+      layout();
+    }
+    animating = true;
+
+    const nextActive = (active - 1 + total) % total;
+    const incoming = slots[nextActive];
+    const frontGeom = slotGeometry(0);
+
+    incoming.classList.add('is-dropping');
+    incoming.style.zIndex = String(total + 1);
+    incoming.style.transform = 'translate3d(-14px, -112px, 24px) scale(0.94) skewY(3deg)';
+    incoming.style.opacity = '0.35';
+
+    active = nextActive;
+    if (countNode) countNode.textContent = `${active + 1} / ${total}`;
+    slots.forEach((slot, idx) => {
+      if (idx === nextActive) return;
+      const order = (idx - active + total) % total;
+      slot.classList.add('is-spring');
+      applySlot(slot, slotGeometry(order), false);
+    });
+
+    phaseTimers.push(
+      window.setTimeout(() => {
+        incoming.classList.remove('is-dropping');
+        incoming.classList.add('is-spring');
+        applySlot(incoming, frontGeom, true);
+
+        phaseTimers.push(
+          window.setTimeout(() => {
+            slots.forEach((s) => s.classList.remove('is-spring'));
+            animating = false;
+          }, 620),
+        );
+      }, 240),
+    );
+  };
+
+  prevBtn?.addEventListener('click', () => goPrev());
+  nextBtn?.addEventListener('click', () => cascadeForward(1));
 
   slots.forEach((slot, idx) => {
     slot.addEventListener('click', (e) => {
-      if (idx !== active) {
+      const steps = (idx - active + total) % total;
+      if (steps > 0) {
         e.preventDefault();
-        clearPhaseClasses();
-        active = idx;
-        layout();
+        cascadeForward(steps);
       }
     });
   });
@@ -514,7 +565,7 @@ function initCardSwap() {
   layout();
   if (!reducedMotion()) {
     window.setInterval(() => {
-      if (inView && !hovered && !document.hidden && !animating) go(1);
+      if (inView && !hovered && !document.hidden && !animating) cascadeForward(1);
     }, 3600);
   }
 }
