@@ -53,58 +53,59 @@ test('reading down hides the header, reading up reveals it, and focus or open se
   scroll(1000); callbacks.pageshow(); assert.equal(root.dataset.headerHidden, undefined, 'back/forward restores an accessible header');
 });
 
-test('desktop homepage header stays always visible and shrinks into a 14px rounded rectangle on scroll', () => {
-  const callbacks = {}, mediaListeners = [];
-  const root = { dataset: {}, scrollHeight: 4000 };
-  const classes = new Set();
-  let frame;
-  const media = {
-    matches: true,
-    addEventListener: (_type, cb) => mediaListeners.push(cb),
-  };
-  const header = {
-    dataset: { page: 'home' },
-    classList: { toggle: (name, force) => (force ? classes.add(name) : classes.delete(name)) },
-    contains: () => false,
-    querySelector: () => null,
-    getBoundingClientRect: () => ({ height: 62 }),
-    addEventListener: () => {},
-  };
-  const window = {
-    scrollY: 0,
-    innerHeight: 900,
-    matchMedia: (q) => (q.includes('1024px') ? media : { matches: false }),
-    addEventListener: (event, callback) => { callbacks[event] = callback; },
-  };
-  const document = { documentElement: root, activeElement: null, querySelector: () => header };
-  const script = ts.transpileModule(read('src/scripts/site-header.ts'), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 } }).outputText;
-  runInNewContext(script, { document, window, exports: {}, requestAnimationFrame: (callback) => { frame = callback; } });
-  const scroll = (y) => { window.scrollY = y; callbacks.scroll(); frame(); };
+test('desktop header across all pages stays always visible at top: 12px and switches to 14px rounded rectangle at scrollY >= 8', () => {
+  for (const page of ['home', 'subpage']) {
+    const callbacks = {}, mediaListeners = [];
+    const root = { dataset: {}, scrollHeight: 4000 };
+    const classes = new Set();
+    let frame;
+    const media = {
+      matches: true,
+      addEventListener: (_type, cb) => mediaListeners.push(cb),
+    };
+    const header = {
+      dataset: { page },
+      classList: { toggle: (name, force) => (force ? classes.add(name) : classes.delete(name)) },
+      contains: () => false,
+      querySelector: () => null,
+      getBoundingClientRect: () => ({ height: 50 }),
+      addEventListener: () => {},
+    };
+    const window = {
+      scrollY: 0,
+      innerHeight: 900,
+      matchMedia: (q) => (q.includes('1024px') ? media : { matches: false }),
+      addEventListener: (event, callback) => { callbacks[event] = callback; },
+    };
+    const document = { documentElement: root, activeElement: null, querySelector: () => header };
+    const script = ts.transpileModule(read('src/scripts/site-header.ts'), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 } }).outputText;
+    runInNewContext(script, { document, window, exports: {}, requestAnimationFrame: (callback) => { frame = callback; } });
+    const scroll = (y) => { window.scrollY = y; callbacks.scroll(); frame(); };
 
-  scroll(25);
-  assert.equal(classes.has('is-scrolled'), false);
-  assert.equal(root.dataset.headerHidden, undefined);
+    scroll(6);
+    assert.equal(classes.has('is-scrolled'), false, `${page}: scrollY < 8 stays flat`);
+    assert.equal(root.dataset.headerHidden, undefined);
 
-  scroll(500);
-  assert.equal(classes.has('is-scrolled'), true, 'scroll > 40 toggles compact scrolled frame');
-  assert.equal(root.dataset.headerHidden, undefined, 'desktop homepage never hides header on scroll down');
+    scroll(500);
+    assert.equal(classes.has('is-scrolled'), true, `${page}: scrollY >= 8 activates 14px rounded rectangle`);
+    assert.equal(root.dataset.headerHidden, undefined, `${page}: desktop header never hides on scroll down`);
 
-  scroll(0);
-  assert.equal(classes.has('is-scrolled'), false, 'scrolling back to top restores resting frame');
+    scroll(0);
+    assert.equal(classes.has('is-scrolled'), false, `${page}: scrolling back to top restores flat resting frame`);
 
-  // Dropping below 1024px breakpoint resumes down-scroll hide behavior
-  media.matches = false;
-  mediaListeners.forEach((cb) => cb());
-  scroll(500);
-  assert.equal(root.dataset.headerHidden, 'true', 'tablet/mobile homepage (<1024px) hides header on downscroll');
+    media.matches = false;
+    mediaListeners.forEach((cb) => cb());
+    scroll(500);
+    assert.equal(root.dataset.headerHidden, 'true', `${page}: mobile (<1024px) hides header on downscroll`);
 
-  // Crossing back >= 1024px reveals header immediately
-  media.matches = true;
-  mediaListeners.forEach((cb) => cb());
-  assert.equal(root.dataset.headerHidden, undefined);
+    media.matches = true;
+    mediaListeners.forEach((cb) => cb());
+    assert.equal(root.dataset.headerHidden, undefined, `${page}: crossing back to desktop reveals header`);
+  }
 
   const css = read('src/styles/global.css');
-  assert.match(css, /@media \(min-width: 1024px\) and \(hover: hover\) and \(pointer: fine\) \{[^]*?\.site-header\[data-page="home"\]\.is-scrolled \.header-inner \{[^}]*border-radius: 14px;/);
+  assert.match(css, /@media \(min-width: 1024px\) and \(hover: hover\) and \(pointer: fine\) \{[^]*?body \.site-header \{[^}]*top: 12px;[^}]*\}[^]*?body \.site-header\.is-scrolled \.header-inner \{[^}]*border-radius: 14px;/);
+  assert.match(read('docs/frontend-conventions.md'), /top: 12px/);
   assert.match(read('dist/index.html'), /<header\b[^>]*class="site-header"[^>]*data-page="home"/);
   assert.match(read('dist/blog/index.html'), /<header\b[^>]*class="site-header"[^>]*data-page="subpage"/);
 });

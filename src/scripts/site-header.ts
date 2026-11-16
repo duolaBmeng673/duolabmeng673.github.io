@@ -3,8 +3,9 @@ if (header) {
   const root = document.documentElement;
   const menuBtn = header.querySelector?.('[data-mobile-nav-toggle]') as HTMLButtonElement | null | undefined;
   const menuPanel = header.querySelector?.('[data-mobile-nav-menu]') as HTMLElement | null | undefined;
-  const desktopHomeQuery = window.matchMedia?.('(min-width: 1024px) and (hover: hover) and (pointer: fine)');
-  const isDesktopHome = () => header.dataset?.page === 'home' && Boolean(desktopHomeQuery?.matches);
+  const desktopQuery = window.matchMedia?.('(min-width: 1024px) and (hover: hover) and (pointer: fine)');
+  const isDesktop = () => Boolean(desktopQuery?.matches);
+  const scrolledAt = (y: number) => (isDesktop() ? y >= 8 : y > 40);
   let menuOpen = false;
 
   const setMenuOpen = (next: boolean) => {
@@ -43,8 +44,8 @@ if (header) {
     pending = false;
     const y = position(), delta = y - last;
     last = y;
-    header.classList?.toggle('is-scrolled', y > 40);
-    if (isDesktopHome() || y <= header.getBoundingClientRect().height || pinned()) {
+    header.classList?.toggle('is-scrolled', scrolledAt(y));
+    if (isDesktop() || y <= header.getBoundingClientRect().height || pinned()) {
       reveal(); direction = 0; travel = 0; return;
     }
     if (!delta) return;
@@ -64,8 +65,9 @@ if (header) {
   }, { passive: true });
   header.addEventListener('focusin', reveal);
   header.addEventListener('toggle', () => { if (pinned()) reveal(); }, true);
-  desktopHomeQuery?.addEventListener?.('change', () => {
-    if (isDesktopHome()) {
+  desktopQuery?.addEventListener?.('change', () => {
+    header.classList?.toggle('is-scrolled', scrolledAt(position()));
+    if (isDesktop()) {
       reveal(); direction = 0; travel = 0;
     }
   });
@@ -75,7 +77,7 @@ if (header) {
     last = position();
     direction = 0;
     travel = 0;
-    header.classList?.toggle('is-scrolled', last > 40);
+    header.classList?.toggle('is-scrolled', scrolledAt(last));
   });
 }
 export {};

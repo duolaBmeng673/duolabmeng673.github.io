@@ -37,6 +37,11 @@
 - 全局 `localStorage` 键名只能在 [src/lib/storage-keys.ts](../src/lib/storage-keys.ts) 唯一定义并导出 `STORAGE_KEYS`。
 - 所有原生脚本须从 `src/lib/storage-keys.ts` 导入；[BaseLayout.astro](../src/layouts/BaseLayout.astro) 中的 `<script is:inline>` 须通过 Astro `define:vars` 注入键值，不得在多处重复硬编码键名字符串。
 
+### 2.4 桌面顶栏全站统一行为（[site-header.ts](../src/scripts/site-header.ts)）
+
+- **桌面端**（`(min-width: 1024px) and (hover: hover) and (pointer: fine)`）：全站所有页面（首页、归档、837 目录与文章页等）顶栏均常驻显示、**永不因下滑而隐藏**；`.site-header` 固定在 `top: 12px`（并在上方 `0..12px` 加同页背景色 `var(--bg)` 遮罩带防止正文透出）；`scrollY < 8` 时平铺无边框无背景，`scrollY >= 8` 后过渡为 `14px` 圆角矩形、带边框与毛玻璃背景。
+- **手机端 / 触屏端**（`< 1024px` 或粗指针）：保持下滑隐藏、上滑显示与胶囊外观逻辑不变。
+
 ---
 
 ## 3. React 岛的写法规范
