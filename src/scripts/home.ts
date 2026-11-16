@@ -125,7 +125,7 @@ function initDanmaku() {
   }
 }
 
-// 3. CardSwap 3D Stack (native CSS transforms, pauses offscreen & when hidden)
+// 3. CardSwap 3D Stack (3-phase pure CSS transform/opacity transitions, pauses offscreen & when hidden)
 function initCardSwap() {
   const root = document.querySelector<HTMLElement>('[data-card-swap]');
   if (!root || root.dataset.initialized === '1') return;
@@ -140,29 +140,148 @@ function initCardSwap() {
   let active = 0;
   let hovered = false;
   let inView = false;
+  let animating = false;
+  let phaseTimers: number[] = [];
   const total = slots.length;
+
+  const slotProps = (order: number) => {
+    const zIndex = total - order;
+    const x = order * 24;
+    const y = -order * 18;
+    const z = -order * 52;
+    const scale = Math.max(0.82, 1 - order * 0.045);
+    const opacity = order > 3 ? 0 : Math.max(0.45, 1 - order * 0.16);
+    return {
+      zIndex,
+      transform: `translate3d(${x}px, ${y}px, ${z}px) scale(${scale}) skewY(3deg)`,
+      opacity,
+    };
+  };
+
+  const applySlot = (slot: HTMLAnchorElement, props: { zIndex: number; transform: string; opacity: number }, isFront: boolean) => {
+    slot.style.zIndex = String(props.zIndex);
+    slot.style.transform = props.transform;
+    slot.style.opacity = String(props.opacity);
+    slot.toggleAttribute('data-front', isFront);
+    slot.tabIndex = isFront ? 0 : -1;
+  };
+
+  const clearPhaseClasses = () => {
+    phaseTimers.forEach((id) => window.clearTimeout(id));
+    phaseTimers = [];
+    slots.forEach((s) => s.classList.remove('is-dropping', 'is-settling', 'is-instant'));
+    animating = false;
+  };
 
   const layout = () => {
     slots.forEach((slot, idx) => {
       const order = (idx - active + total) % total;
-      const zIndex = total - order;
-      const x = order * 24;
-      const y = -order * 18;
-      const z = -order * 52;
-      const scale = Math.max(0.82, 1 - order * 0.045);
-      const opacity = order > 3 ? 0 : Math.max(0.45, 1 - order * 0.16);
-      slot.style.zIndex = String(zIndex);
-      slot.style.transform = `translate3d(${x}px, ${y}px, ${z}px) scale(${scale}) skewY(3deg)`;
-      slot.style.opacity = String(opacity);
-      slot.toggleAttribute('data-front', order === 0);
-      slot.tabIndex = order === 0 ? 0 : -1;
+      applySlot(slot, slotProps(order), order === 0);
     });
     if (countNode) countNode.textContent = `${active + 1} / ${total}`;
   };
 
   const go = (delta: number) => {
-    active = (active + delta + total) % total;
-    layout();
+    if (total <= 1) return;
+    if (reducedMotion() || Math.abs(delta) !== 1) {
+      clearPhaseClasses();
+      active = (active + delta + total) % total;
+      layout();
+      return;
+    }
+
+    if (animating) {
+      clearPhaseClasses();
+      layout();
+    }
+    animating = true;
+
+    const outgoingIdx = active;
+    const nextActive = (active + delta + total) % total;
+    const outgoing = slots[outgoingIdx];
+
+    if (delta === 1) {
+      // Phase 1 (0..280ms): front card drops down & fades
+      outgoing.classList.add('is-dropping');
+      outgoing.style.zIndex = String(total + 1);
+      outgoing.style.transform = 'translate3d(0, 128px, 24px) scale(0.95) skewY(3deg)';
+      outgoing.style.opacity = '0.08';
+
+      phaseTimers.push(
+        window.setTimeout(() => {
+          // Phase 2 (280..480ms): snap outgoing above back stack while remaining step forward
+          outgoing.classList.remove('is-dropping');
+          outgoing.classList.add('is-instant');
+          const backProps = slotProps(total - 1);
+          outgoing.style.zIndex = '1';
+          outgoing.style.transform = `translate3d(${(total - 1) * 24 + 12}px, ${-(total - 1) * 18 - 34}px, ${-(total - 1) * 52}px) scale(${Math.max(0.78, 1 - (total - 1) * 0.045)}) skewY(3deg)`;
+          outgoing.style.opacity = '0';
+          void outgoing.offsetWidth;
+
+          active = nextActive;
+          if (countNode) countNode.textContent = `${active + 1} / ${total}`;
+          slots.forEach((slot, idx) => {
+            if (idx === outgoingIdx) {
+              slot.toggleAttribute('data-front', false);
+              slot.tabIndex = -1;
+              return;
+            }
+            const order = (idx - active + total) % total;
+            applySlot(slot, slotProps(order), order === 0);
+          });
+
+          phaseTimers.push(
+            window.setTimeout(() => {
+              // Phase 3 (460..780ms): settle outgoing card into final back stack slot
+              outgoing.classList.remove('is-instant');
+              outgoing.classList.add('is-settling');
+              applySlot(outgoing, backProps, false);
+
+              phaseTimers.push(
+                window.setTimeout(() => {
+                  outgoing.classList.remove('is-settling');
+                  animating = false;
+                }, 340),
+              );
+            }, 180),
+          );
+        }, 280),
+      );
+    } else {
+      // Prev (-1): bring last card up from back, glide others back, drop into front (~0.78s)
+      const incomingIdx = nextActive;
+      const incoming = slots[incomingIdx];
+
+      // Phase 1: lift incoming above & forward while existing cards step back
+      incoming.classList.add('is-dropping');
+      incoming.style.zIndex = String(total + 1);
+      incoming.style.transform = 'translate3d(-14px, -112px, 24px) scale(0.94) skewY(3deg)';
+      incoming.style.opacity = '0.35';
+
+      active = nextActive;
+      if (countNode) countNode.textContent = `${active + 1} / ${total}`;
+      slots.forEach((slot, idx) => {
+        if (idx === incomingIdx) return;
+        const order = (idx - active + total) % total;
+        applySlot(slot, slotProps(order), false);
+      });
+
+      phaseTimers.push(
+        window.setTimeout(() => {
+          // Phase 2-3: settle incoming softly into front slot
+          incoming.classList.remove('is-dropping');
+          incoming.classList.add('is-settling');
+          applySlot(incoming, slotProps(0), true);
+
+          phaseTimers.push(
+            window.setTimeout(() => {
+              incoming.classList.remove('is-settling');
+              animating = false;
+            }, 380),
+          );
+        }, 260),
+      );
+    }
   };
 
   prevBtn?.addEventListener('click', () => go(-1));
@@ -172,6 +291,7 @@ function initCardSwap() {
     slot.addEventListener('click', (e) => {
       if (idx !== active) {
         e.preventDefault();
+        clearPhaseClasses();
         active = idx;
         layout();
       }
@@ -192,7 +312,7 @@ function initCardSwap() {
   layout();
   if (!reducedMotion()) {
     window.setInterval(() => {
-      if (inView && !hovered && !document.hidden) go(1);
+      if (inView && !hovered && !document.hidden && !animating) go(1);
     }, 3600);
   }
 }
