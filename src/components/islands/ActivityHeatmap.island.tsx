@@ -326,8 +326,8 @@ export default function ActivityHeatmapIsland({
 
     const hitCell = (clientX: number, clientY: number): HoverInfo | null => {
       const r = cv.getBoundingClientRect();
-      const bodyEl = bodyRef.current;
-      const br = bodyEl?.getBoundingClientRect();
+      const wrapEl = wrapRef.current;
+      const wr = wrapEl?.getBoundingClientRect();
       const px = clientX - r.left;
       const py = clientY - r.top;
       const { size, gap, offsetX, offsetY, colCount } = metricsRef.current;
@@ -342,8 +342,8 @@ export default function ActivityHeatmapIsland({
         if (cell && !cell.future && cell.key) {
           const cx = offsetX + vc * step;
           const cy = offsetY + rr * step;
-          const baseLeft = br ? br.left : r.left;
-          const baseTop = br ? br.top : r.top;
+          const baseLeft = wr ? wr.left : r.left;
+          const baseTop = wr ? wr.top : r.top;
           return {
             cell,
             anchorX: r.left - baseLeft + cx + size / 2,
@@ -427,23 +427,24 @@ export default function ActivityHeatmapIsland({
   }, [hydrated, totalCols, cells, themeAttr]);
 
   useLayoutEffect(() => {
-    if (!hoverInfo || !popRef.current || !bodyRef.current) {
+    if (!hoverInfo || !popRef.current || !wrapRef.current) {
       setPopPos(null);
       return;
     }
     const pr = popRef.current.getBoundingClientRect();
-    const br = bodyRef.current.getBoundingClientRect();
-    const pad = 8;
-    const gap = 8;
-    const maxLeft = Math.max(pad, br.width - pr.width - pad);
+    const wr = wrapRef.current.getBoundingClientRect();
+    const pad = 4;
+    const gap = 6;
+    const maxLeft = Math.max(pad, wr.width - pr.width - pad);
     const left = Math.min(Math.max(pad, hoverInfo.anchorX - pr.width / 2), maxLeft);
     const belowTop = hoverInfo.anchorBottom + gap;
     const aboveTop = hoverInfo.anchorTop - pr.height - gap;
-    const fitsBelow = belowTop + pr.height <= br.height - pad;
+    const preferAbove = hoverInfo.cell.r >= 4;
+    const fitsBelow = belowTop + pr.height <= wr.height - pad;
     const fitsAbove = aboveTop >= pad;
-    let placeBelow = fitsBelow || !fitsAbove;
+    let placeBelow = preferAbove ? !fitsAbove && fitsBelow : fitsBelow || !fitsAbove;
     let top = placeBelow ? belowTop : aboveTop;
-    const maxTop = Math.max(pad, br.height - pr.height - pad);
+    const maxTop = Math.max(pad, wr.height - pr.height - pad);
     top = Math.min(Math.max(pad, top), maxTop);
     setPopPos({ left, top, placeBelow });
   }, [hoverInfo]);
@@ -468,6 +469,12 @@ export default function ActivityHeatmapIsland({
     </span>
   );
 
+  const wrapHeight = wrapRef.current?.clientHeight ?? metricsRef.current.height;
+  const maxPopEntries = wrapHeight >= 116 ? 3 : 2;
+  const hoverEntries = hoverInfo?.cell.entries ?? [];
+  const visibleHoverEntries = hoverEntries.slice(0, maxPopEntries);
+  const hiddenHoverCount = Math.max(0, hoverEntries.length - visibleHoverEntries.length);
+
   const popoverNode =
     hydrated && hoverInfo ? (
       <div
@@ -485,22 +492,29 @@ export default function ActivityHeatmapIsland({
             {hoverInfo.cell.key} · {WEEKDAYS[hoverInfo.cell.r]}
           </span>
           <span className="heat-popover-count">
-            {hoverInfo.cell.entries.length > 0 ? `${hoverInfo.cell.count} 次活动` : '无记录'}
+            {hoverEntries.length > 0 ? `${hoverInfo.cell.count} 次活动` : '无记录'}
           </span>
         </div>
-        {hoverInfo.cell.entries.length > 0 ? (
-          <ul className="heat-popover-list">
-            {hoverInfo.cell.entries.map((e, i) => (
-              <li key={`${hoverInfo.cell.key}-${i}`}>
-                <span className="heat-popover-tag" data-type={e.type}>
-                  {e.label}
-                </span>
-                <span className="heat-popover-desc">{e.description}</span>
-              </li>
-            ))}
-          </ul>
+        {visibleHoverEntries.length > 0 ? (
+          <>
+            <ul className="heat-popover-list">
+              {visibleHoverEntries.map((e, i) => (
+                <li key={`${hoverInfo.cell.key}-${i}`}>
+                  <span className="heat-popover-tag" data-type={e.type}>
+                    {e.label}
+                  </span>
+                  <span className="heat-popover-desc">{e.description}</span>
+                </li>
+              ))}
+            </ul>
+            {hiddenHoverCount > 0 ? (
+              <div className="heat-popover-more" data-popover-overflow>
+                +{hiddenHoverCount}
+              </div>
+            ) : null}
+          </>
         ) : (
-          <p className="heat-popover-empty">当天暂无公开写作或站点功能记录</p>
+          <p className="heat-popover-empty">无记录</p>
         )}
       </div>
     ) : null;
@@ -549,6 +563,7 @@ export default function ActivityHeatmapIsland({
               </ul>
             </div>
           )}
+          {popoverNode}
         </div>
         <div className="heat-stats-bar" data-activity-stats>
           <div className="heat-stats-metrics">
@@ -574,11 +589,10 @@ export default function ActivityHeatmapIsland({
           <span className="heat-detail-date">{activeCell?.key || '—'}</span>
           <span className="heat-detail-items" data-activity-detail-items>
             {activeCell?.entries?.length
-              ? activeCell.entries.map((e) => `[${e.label}] ${e.description}`).join(' · ')
-              : '当天暂无公开记录（悬停小格弹出当日详情）'}
+              ? `· ${activeCell.entries.length} 项 · ${activeCell.entries[0].description || activeCell.entries[0].label}`
+              : '· 无记录'}
           </span>
         </div>
-        {popoverNode}
       </div>
     </>
   );

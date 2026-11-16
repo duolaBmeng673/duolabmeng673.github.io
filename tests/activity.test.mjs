@@ -242,3 +242,49 @@ test('build-time anchorDate (buildDate) determines month/year stats identically 
     });
   }
 });
+
+test('heatmap stats use build-time buildDate and remain invariant under runtime Date.now override', () => {
+  const islandSource = read('src/components/islands/ActivityHeatmap.island.tsx');
+  assert.ok(!islandSource.includes('Date.now'), 'ActivityHeatmap island must not read runtime Date.now()');
+  assert.ok(islandSource.includes('buildCalendar(writingItems, activityItems, actMap, buildDate)'));
+
+  const buildDate = '2026-11-16';
+  const items = [
+    { date: '2026-11-05', type: 'writing', count: 2 },
+    { date: '2026-11-14', type: 'site', count: 1 },
+    { date: '2026-10-31', type: 'learning', count: 3 },
+  ];
+  const compute = () => {
+    const anchor = new Date(`${buildDate}T00:00:00`);
+    anchor.setHours(0, 0, 0, 0);
+    const cal = activity.createActivityCalendar(items, anchor, 365);
+    const stats = activity.getActivitySummaryStats(cal, buildDate);
+    return {
+      activityDays: cal.activityDays,
+      totalActivities: cal.totalActivities,
+      monthActivities: stats.monthActivities,
+      longestStreak: stats.longestStreak,
+    };
+  };
+
+  const baseline = compute();
+  assert.deepEqual(baseline, { activityDays: 3, totalActivities: 6, monthActivities: 3, longestStreak: 1 });
+
+  const RealDate = globalThis.Date;
+  const fakeNow = RealDate.UTC(2035, 6, 15, 12, 0, 0);
+  class MockDate extends RealDate {
+    constructor(...args) {
+      if (args.length === 0) super(fakeNow);
+      else super(...args);
+    }
+    static now() {
+      return fakeNow;
+    }
+  }
+  globalThis.Date = MockDate;
+  try {
+    assert.deepEqual(compute(), baseline, '"本月" and "近一年" stats must stay anchored to buildDate when Date.now() jumps years ahead');
+  } finally {
+    globalThis.Date = RealDate;
+  }
+});
