@@ -1,4 +1,5 @@
 import { defineConfig } from 'astro/config';
+import react from '@astrojs/react';
 import { satteri } from '@astrojs/markdown-satteri';
 import katex from 'katex';
 import { articleHeadings } from './src/plugins/article-headings.mjs';
@@ -21,6 +22,7 @@ function renderMath(node, context, displayMode) {
 
 export default defineConfig({
   site: 'https://duolabmeng673.github.io',
+  integrations: [react()],
   markdown: {
     processor: satteri({
       features: { math: true },

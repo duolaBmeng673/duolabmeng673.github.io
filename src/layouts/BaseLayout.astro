@@ -4,6 +4,7 @@ import '../styles/tokens.css';
 import '../styles/global.css';
 import '../styles/knowledge-tags.css';
 import { siteConfig } from '../config';
+import { STORAGE_KEYS } from '../lib/storage-keys';
 
 interface Props {
   title?: string;
@@ -64,17 +65,27 @@ const navItems = [
     <link rel="canonical" href={new URL(path, Astro.site)} />
     <link rel="alternate" type="application/rss+xml" title="duolaBmeng673 的笔记" href="/rss.xml" />
     <title>{pageTitle}</title>
-    <script is:inline>
+    <script
+      is:inline
+      define:vars={{
+        themeKey: STORAGE_KEYS.theme,
+        themeLegacyKey: STORAGE_KEYS.themeLegacy,
+        typographyKey: STORAGE_KEYS.typography,
+        presetKey: STORAGE_KEYS.preset,
+      }}
+    >
       (() => {
         const root = document.documentElement;
         let mode = 'system';
         try {
-          const saved = localStorage.getItem('duolabmeng673:theme:v2') ?? localStorage.getItem('duolabmeng673:theme:v1');
+          const saved = localStorage.getItem(themeKey) ?? localStorage.getItem(themeLegacyKey);
           if (['light', 'dark', 'system'].includes(saved)) mode = saved;
-          const typo = JSON.parse(localStorage.getItem('duolabmeng673:typography:v1') || '{}');
+          const typo = JSON.parse(localStorage.getItem(typographyKey) || '{}');
           const scales = { small: '0.94', medium: '1', large: '1.12' };
           if (typo.size && scales[typo.size]) root.style.setProperty('--font-scale', scales[typo.size]);
           if (typo.bold === true) root.setAttribute('data-font-bold', '');
+          const savedPreset = localStorage.getItem(presetKey);
+          if (savedPreset && /^[a-z0-9-]+$/i.test(savedPreset)) root.dataset.preset = savedPreset;
         } catch {}
         root.dataset.themeMode = mode;
         root.dataset.theme = mode === 'system' ? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : mode;

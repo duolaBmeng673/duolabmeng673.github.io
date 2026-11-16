@@ -35,6 +35,7 @@ npm run preview         # 预览已构建的 dist
 | 【用户决定】新增／修改学习笔记 | 按 [笔记规则](docs/notes-rules.md) 校验 schema、稳定 studySlug、subject、章节和 order；核对目录条目与独立标签。按 [热力图规则](docs/heatmap.md) 区分首次发布、实质更新与不计数修改。 | 【已核实】[study.ts](src/lib/study.ts) 自动分组计数；build + test，查看所属模块／章节、上下篇、全局标签展示、搜索与对应活动日期。 |
 | 【用户决定】新增／修改技术笔记 | 按 [技术笔记规则](docs/notes-rules.md#技术笔记) 放入正确集合，保留原 ID／URL、完整 title、日期与原始 tags；核对归档、搜索、RSS、sitemap；按热力图规则判断是否手工补记录。 | 【已核实】[blog.ts](src/lib/blog.ts) 统一公开过滤与日期排序；build + test，技术归档与文章可访问，首次发布没有重复手记。 |
 | 【用户决定】任何会影响热力图的改动／提交 | 【已核实】先核对自动首次发布记录；额外的真实活动只维护 [activities.ts](src/data/activities.ts)，不按 commit 数计活动、不改 pubDate 造更新。步骤见 [热力图规则](docs/heatmap.md)。 | 【已核实】[activity.test.mjs](tests/activity.test.mjs) 检查聚合／边界；build 后 test；核对首页格子、当日明细、活跃天数与总次数。 |
+| 【用户决定】首页或前端脚本／React 岛改动 | 遵守 [前端规范](docs/frontend-conventions.md)：React 只用于 `src/components/islands/*.island.tsx` 的 `GradientWaves` 与 `ActivityHeatmap`（`client:visible`）；存储键统一维护在 [storage-keys.ts](src/lib/storage-keys.ts)；非首页严禁引入 React；首页 JS gzip 提醒线 `70 KB`。 | 【已核实】[frontend-conventions.test.mjs](tests/frontend-conventions.test.mjs) 检查静态导入边界、非首页零 React 与存储键唯一性；build + test。 |
 | 【用户决定】设计令牌（字号／圆角／颜色） | 同步 [设计令牌](docs/design-tokens.md)，复用 [global.css](src/styles/global.css) 与 [knowledge-tags.css](src/styles/knowledge-tags.css)；不要把目录标题 22px 误用于全站标题。 | 【用户决定】浅／深色及窄屏视觉检查；目录标题 22px、标签 12px／400 的层级保持，触屏标签不小于 32px 高。 |
 | 【用户决定】知识点展示、文章模板或搜索变化 | 复核同一份标签在目录、文章、首页、全局列表／时间线、搜索候选中的联动；保留 SEO 描述与原始 tags，避免嵌套交互元素。见 [笔记规则](docs/notes-rules.md)。 | 【已核实】[knowledge-tags.test.mjs](tests/knowledge-tags.test.mjs)、[site-search.test.mjs](tests/site-search.test.mjs)；再看原生跳转、URL 筛选、键盘及无 JS 阅读。 |
 | 【用户决定】仅格式／空白／Front Matter 元数据／规则文档维护 | 【已核实】这类变更不自动产生额外活动；[活动文件注释](src/data/activities.ts) 明确排除元数据与格式修改。纯文档不冒充博客功能完成事件。 | 【用户决定】确认无额外活动与意外正文修改；检查新增文档路径和补丁，按影响范围说明未运行的验证。 |
@@ -59,4 +60,5 @@ npm run preview         # 预览已构建的 dist
 - [设计令牌](docs/design-tokens.md)：配色、尺寸、顶栏、图例与断点联动。
 - [笔记规则](docs/notes-rules.md)：三个内容集合、schema、公开与路由／排序。
 - [热力图规则](docs/heatmap.md)：实际数据来源、计数口径和更新／发布路径。
+- [前端规范](docs/frontend-conventions.md)：Astro／原生 TS 与 React 岛边界、通信协议、存储键与体积预算。
 - [核实与确认记录](docs/rules-review.md)：证据清单、用户确认、后续建议与验证记录；不作为额外规则。
