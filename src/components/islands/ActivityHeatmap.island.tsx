@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   activityKind,
   activityLevel,
@@ -38,16 +38,8 @@ interface CalendarCell {
   onlySite: boolean;
 }
 
-interface HoverInfo {
-  cell: CalendarCell;
-  anchorX: number;
-  anchorTop: number;
-  anchorBottom: number;
-}
-
 const PHONE_COLS = 26;
 const PAD = 2;
-const WEEKDAYS = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
 
 function buildHeatmapMap(writingItems: HeatmapItemPayload[], activityItems: HeatmapItemPayload[]) {
   const map: Record<string, HeatmapItemPayload[]> = {};
@@ -147,13 +139,10 @@ export default function ActivityHeatmapIsland({
   );
 
   const [selectedKey, setSelectedKey] = useState<string>(defaultSelected?.key || '');
-  const [hoverInfo, setHoverInfo] = useState<HoverInfo | null>(null);
-  const [popPos, setPopPos] = useState<{ left: number; top: number; placeBelow: boolean } | null>(null);
+  const [hoveredCell, setHoveredCell] = useState<CalendarCell | null>(null);
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const bodyRef = useRef<HTMLDivElement | null>(null);
   const wrapRef = useRef<HTMLDivElement | null>(null);
-  const popRef = useRef<HTMLDivElement | null>(null);
   const metricsRef = useRef({
     size: 10,
     gap: 2.5,
@@ -167,7 +156,7 @@ export default function ActivityHeatmapIsland({
   const hoveredKeyRef = useRef<string | null>(null);
   selectedKeyRef.current = selectedKey;
 
-  const activeCell = hoverInfo?.cell || cells.find((c) => !c.future && c.key === selectedKey) || defaultSelected;
+  const activeCell = hoveredCell || cells.find((c) => !c.future && c.key === selectedKey) || defaultSelected;
 
   useEffect(() => {
     setHydrated(true);
@@ -324,10 +313,8 @@ export default function ActivityHeatmapIsland({
       draw();
     };
 
-    const hitCell = (clientX: number, clientY: number): HoverInfo | null => {
+    const hitCell = (clientX: number, clientY: number): CalendarCell | null => {
       const r = cv.getBoundingClientRect();
-      const wrapEl = wrapRef.current;
-      const wr = wrapEl?.getBoundingClientRect();
       const px = clientX - r.left;
       const py = clientY - r.top;
       const { size, gap, offsetX, offsetY, colCount } = metricsRef.current;
@@ -339,37 +326,26 @@ export default function ActivityHeatmapIsland({
       const c = vc + startCol;
       if (vc >= 0 && vc < colCount && rr >= 0 && rr < 7) {
         const cell = cells[c * 7 + rr];
-        if (cell && !cell.future && cell.key) {
-          const cx = offsetX + vc * step;
-          const cy = offsetY + rr * step;
-          const baseLeft = wr ? wr.left : r.left;
-          const baseTop = wr ? wr.top : r.top;
-          return {
-            cell,
-            anchorX: r.left - baseLeft + cx + size / 2,
-            anchorTop: r.top - baseTop + cy,
-            anchorBottom: r.top - baseTop + cy + size,
-          };
-        }
+        if (cell && !cell.future && cell.key) return cell;
       }
       return null;
     };
 
     const onMove = (e: PointerEvent) => {
       const hit = hitCell(e.clientX, e.clientY);
-      const nextKey = hit?.cell?.key || null;
+      const nextKey = hit?.key || null;
       if (hoveredKeyRef.current !== nextKey) {
         hoveredKeyRef.current = nextKey;
-        setHoverInfo(hit);
+        setHoveredCell(hit);
         draw();
       }
     };
 
     const onClick = (e: MouseEvent) => {
       const hit = hitCell(e.clientX, e.clientY);
-      if (hit?.cell) {
-        selectedKeyRef.current = hit.cell.key;
-        setSelectedKey(hit.cell.key);
+      if (hit) {
+        selectedKeyRef.current = hit.key;
+        setSelectedKey(hit.key);
         draw();
       }
     };
@@ -377,7 +353,7 @@ export default function ActivityHeatmapIsland({
     const onLeave = () => {
       if (hoveredKeyRef.current !== null) {
         hoveredKeyRef.current = null;
-        setHoverInfo(null);
+        setHoveredCell(null);
         draw();
       }
     };
@@ -426,29 +402,6 @@ export default function ActivityHeatmapIsland({
     };
   }, [hydrated, totalCols, cells, themeAttr]);
 
-  useLayoutEffect(() => {
-    if (!hoverInfo || !popRef.current || !wrapRef.current) {
-      setPopPos(null);
-      return;
-    }
-    const pr = popRef.current.getBoundingClientRect();
-    const wr = wrapRef.current.getBoundingClientRect();
-    const pad = 4;
-    const gap = 6;
-    const maxLeft = Math.max(pad, wr.width - pr.width - pad);
-    const left = Math.min(Math.max(pad, hoverInfo.anchorX - pr.width / 2), maxLeft);
-    const belowTop = hoverInfo.anchorBottom + gap;
-    const aboveTop = hoverInfo.anchorTop - pr.height - gap;
-    const preferAbove = hoverInfo.cell.r >= 4;
-    const fitsBelow = belowTop + pr.height <= wr.height - pad;
-    const fitsAbove = aboveTop >= pad;
-    let placeBelow = preferAbove ? !fitsAbove && fitsBelow : fitsBelow || !fitsAbove;
-    let top = placeBelow ? belowTop : aboveTop;
-    const maxTop = Math.max(pad, wr.height - pr.height - pad);
-    top = Math.min(Math.max(pad, top), maxTop);
-    setPopPos({ left, top, placeBelow });
-  }, [hoverInfo]);
-
   const statDays = hydrated ? activeDays : initialActiveDays;
   const statTotal = hydrated ? totalActs : initialTotalActivities;
   const statLongestStreak = hydrated ? longestStreak : initialLongestStreak;
@@ -469,55 +422,7 @@ export default function ActivityHeatmapIsland({
     </span>
   );
 
-  const wrapHeight = wrapRef.current?.clientHeight ?? metricsRef.current.height;
-  const maxPopEntries = wrapHeight >= 116 ? 3 : 2;
-  const hoverEntries = hoverInfo?.cell.entries ?? [];
-  const visibleHoverEntries = hoverEntries.slice(0, maxPopEntries);
-  const hiddenHoverCount = Math.max(0, hoverEntries.length - visibleHoverEntries.length);
-
-  const popoverNode =
-    hydrated && hoverInfo ? (
-      <div
-        ref={popRef}
-        className={`heat-popover ${popPos?.placeBelow ? 'is-below' : 'is-above'}`}
-        style={{
-          left: `${popPos ? popPos.left : -9999}px`,
-          top: `${popPos ? popPos.top : -9999}px`,
-          opacity: popPos ? 1 : 0,
-        }}
-        role="tooltip"
-      >
-        <div className="heat-popover-head">
-          <span className="heat-popover-date">
-            {hoverInfo.cell.key} · {WEEKDAYS[hoverInfo.cell.r]}
-          </span>
-          <span className="heat-popover-count">
-            {hoverEntries.length > 0 ? `${hoverInfo.cell.count} 次活动` : '无记录'}
-          </span>
-        </div>
-        {visibleHoverEntries.length > 0 ? (
-          <>
-            <ul className="heat-popover-list">
-              {visibleHoverEntries.map((e, i) => (
-                <li key={`${hoverInfo.cell.key}-${i}`}>
-                  <span className="heat-popover-tag" data-type={e.type}>
-                    {e.label}
-                  </span>
-                  <span className="heat-popover-desc">{e.description}</span>
-                </li>
-              ))}
-            </ul>
-            {hiddenHoverCount > 0 ? (
-              <div className="heat-popover-more" data-popover-overflow>
-                +{hiddenHoverCount}
-              </div>
-            ) : null}
-          </>
-        ) : (
-          <p className="heat-popover-empty">无记录</p>
-        )}
-      </div>
-    ) : null;
+  const activeEntries = activeCell?.entries ?? [];
 
   return (
     <>
@@ -534,65 +439,82 @@ export default function ActivityHeatmapIsland({
           </span>
         </div>
       </div>
-      <div className="wb stage-heat-body" ref={bodyRef}>
-        <div className="heat-canvas-wrap" ref={wrapRef}>
-          {hydrated ? (
-            <canvas
-              ref={canvasRef}
-              id="heat"
-              tabIndex={0}
-              role="group"
-              aria-controls="activity-detail"
-              aria-label={`近一年真实写作与功能活动热力图（${statDays} 活跃日，${statTotal} 次活动，可用方向键切换日期）`}
-            />
-          ) : (
-            <div className="heat-static-fallback" data-activity-fallback>
-              <p className="heat-fallback-summary">
-                {`过去一年 · ${initialActiveDays} 活跃日 · ${initialTotalActivities} 次活动（点击或悬停日期查看当日记录）`}
-              </p>
-              <ul className="heat-fallback-list">
-                {recentFallbackItems.map((item, idx) => (
-                  <li key={`${item.date}-${idx}`}>
-                    <span className="heat-fallback-date">{item.date}</span>
-                    <span className="heat-popover-tag" data-type={item.type}>
-                      {item.label}
+      <div className="wb stage-heat-body">
+        <div className="heat-main">
+          <div className="heat-canvas-wrap" ref={wrapRef}>
+            {hydrated ? (
+              <canvas
+                ref={canvasRef}
+                id="heat"
+                tabIndex={0}
+                role="group"
+                aria-controls="activity-detail"
+                aria-label={`近一年真实写作与功能活动热力图（${statDays} 活跃日，${statTotal} 次活动，可用方向键切换日期）`}
+              />
+            ) : (
+              <div className="heat-static-fallback" data-activity-fallback>
+                <p className="heat-fallback-summary">
+                  {`过去一年 · ${initialActiveDays} 活跃日 · ${initialTotalActivities} 次活动（点击或悬停日期查看当日记录）`}
+                </p>
+                <ul className="heat-fallback-list">
+                  {recentFallbackItems.map((item, idx) => (
+                    <li key={`${item.date}-${idx}`}>
+                      <span className="heat-fallback-date">{item.date}</span>
+                      <span className="heat-popover-tag" data-type={item.type}>
+                        {item.label}
+                      </span>
+                      <span className="heat-fallback-desc">{item.description}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+          <div className="heat-stats-bar" data-activity-stats>
+            <div className="heat-stats-metrics">
+              <span className="heat-stat-item">
+                近一年活跃日 <strong>{statDays}</strong>
+              </span>
+              <span className="heat-stat-sep" aria-hidden="true">·</span>
+              <span className="heat-stat-item">
+                总活动 <strong>{statTotal}</strong>
+              </span>
+              <span className="heat-stat-sep" aria-hidden="true">·</span>
+              <span className="heat-stat-item">
+                最长连续 <strong>{statLongestStreak} 天</strong>
+              </span>
+              <span className="heat-stat-sep" aria-hidden="true">·</span>
+              <span className="heat-stat-item">
+                本月活动 <strong>{statMonthActs} 次</strong>
+              </span>
+            </div>
+            {legendNode}
+          </div>
+        </div>
+        <aside className="heat-sidebar" id="activity-detail" aria-live="polite" aria-label="当日活动详情">
+          <div className="heat-sidebar-head">
+            <span className="heat-sidebar-date">{activeCell?.key || '—'}</span>
+            <span className="heat-sidebar-count">
+              {activeEntries.length > 0 ? `${activeCell?.count ?? activeEntries.length} 次` : '无记录'}
+            </span>
+          </div>
+          <div className="heat-sidebar-body" data-activity-detail-items>
+            {activeEntries.length > 0 ? (
+              <ul className="heat-sidebar-list">
+                {activeEntries.map((e, i) => (
+                  <li key={`${activeCell?.key ?? 'day'}-${i}`} title={e.description || e.label}>
+                    <span className="heat-popover-tag" data-type={e.type}>
+                      {e.label}
                     </span>
-                    <span className="heat-fallback-desc">{item.description}</span>
+                    <span className="heat-sidebar-desc">{e.description || e.label}</span>
                   </li>
                 ))}
               </ul>
-            </div>
-          )}
-          {popoverNode}
-        </div>
-        <div className="heat-stats-bar" data-activity-stats>
-          <div className="heat-stats-metrics">
-            <span className="heat-stat-item">
-              近一年活跃日 <strong>{statDays}</strong>
-            </span>
-            <span className="heat-stat-sep" aria-hidden="true">·</span>
-            <span className="heat-stat-item">
-              总活动 <strong>{statTotal}</strong>
-            </span>
-            <span className="heat-stat-sep" aria-hidden="true">·</span>
-            <span className="heat-stat-item">
-              最长连续 <strong>{statLongestStreak} 天</strong>
-            </span>
-            <span className="heat-stat-sep" aria-hidden="true">·</span>
-            <span className="heat-stat-item">
-              本月活动 <strong>{statMonthActs} 次</strong>
-            </span>
+            ) : (
+              <p className="heat-sidebar-empty">当天无记录</p>
+            )}
           </div>
-          {legendNode}
-        </div>
-        <div className="heat-detail is-compact" id="activity-detail" aria-live="polite">
-          <span className="heat-detail-date">{activeCell?.key || '—'}</span>
-          <span className="heat-detail-items" data-activity-detail-items>
-            {activeCell?.entries?.length
-              ? `· ${activeCell.entries.length} 项 · ${activeCell.entries[0].description || activeCell.entries[0].label}`
-              : '· 无记录'}
-          </span>
-        </div>
+        </aside>
       </div>
     </>
   );
