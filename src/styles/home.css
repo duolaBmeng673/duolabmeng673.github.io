@@ -974,9 +974,17 @@
 }
 
 /* Quick Index: Knowledge Danmaku + CardSwap Portal */
+#explore-sec .bento {
+  align-items: stretch;
+}
+
+#explore-sec .card {
+  height: 100%;
+}
+
 .vis {
   position: relative;
-  height: 15rem;
+  height: 15.25rem;
   border-radius: var(--r-vis);
   background: var(--vbg);
   padding: 1rem;
@@ -987,11 +995,8 @@
   align-content: center;
 }
 
-.v230 {
-  height: 14.375rem;
-}
-
 .card-foot {
+  flex: 1 0 auto;
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
@@ -1001,6 +1006,7 @@
 
 .card h3 {
   font-size: 1.0625rem;
+  line-height: 1.35;
   font-weight: var(--fw-h);
   margin: 0 0 0.25rem;
 }
@@ -1009,29 +1015,7 @@
   margin: 0;
   color: var(--tm);
   font-size: 0.84rem;
-}
-
-.cap2 {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-  padding: 0.875rem 0.75rem 0;
-  font-size: 0.875rem;
-}
-
-.cap2 b {
-  font-weight: var(--fw-h);
-}
-
-.cap2 a,
-.cap2 span {
-  color: var(--tm);
-  font-size: 0.8125rem;
-}
-
-.cap2 a:hover {
-  color: var(--ac);
+  line-height: 1.45;
 }
 
 .ktag-vis.ktag-danmaku {
@@ -1149,7 +1133,8 @@
   display: grid;
   place-items: center;
   overflow: hidden;
-  min-height: 14.375rem;
+  height: 15.25rem;
+  min-height: 15.25rem;
   padding: 0;
 }
 
@@ -1367,7 +1352,8 @@
   .r .n { font-size: calc(var(--win-fs) * 0.88); }
   .more-row { font-size: 0.75rem; }
   .heat-detail.is-compact { flex-wrap: wrap; min-height: 0; padding: 0.5rem 0.65rem; }
-  .ktag-vis.ktag-danmaku { height: auto; min-height: 10.5rem; gap: 1.15rem; padding: 1.25rem 0; }
+  .ktag-vis.ktag-danmaku { height: 12.25rem; min-height: 12.25rem; gap: 1.15rem; padding: 1.25rem 0; }
+  .swap-lab-vis { height: 12.25rem; min-height: 12.25rem; }
   .ktag-lane[data-lane="2"] { display: none; }
   .sec { padding-top: 3.5rem; }
 }

@@ -315,7 +315,7 @@ const activityPayloadJson = JSON.stringify({
       </div>
 
       <div class="card rb-panel s5">
-        <div class="vis v230 swap-lab-vis" data-card-swap>
+        <div class="vis swap-lab-vis" data-card-swap>
           <div class="card-swap-stage">
             {data.swapCards.map((card, idx) => (
               <a
@@ -386,9 +386,12 @@ const activityPayloadJson = JSON.stringify({
             </button>
           </div>
         </div>
-        <div class="cap2">
-          <b>专题传送门</b>
-          <a href="/blog/">笔记归档 ↗</a>
+        <div class="card-foot">
+          <div>
+            <h3>专题传送门</h3>
+            <p>精选专题卡片；点击直达或左右切换。</p>
+          </div>
+          <a class="card-link" href="/blog/">笔记归档 ↗</a>
         </div>
       </div>
     </div>
