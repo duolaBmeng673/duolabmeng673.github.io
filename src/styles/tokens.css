@@ -5,6 +5,7 @@
   --bg-elev: #ffffff;
   --tx: #121217;
   --fg: var(--tx);
+  --trail-rgb: 37 99 235;
   --ts: #3d3d48;
   --tm: #656573;
   --bd: rgba(18, 18, 24, 0.105);
@@ -123,3 +124,8 @@
   --vbg: rgba(255, 255, 255, 0.045);
   --code-bg: #0c0716;
 }
+
+:root[data-preset="all"] { --trail-rgb: 37 99 235; }
+:root[data-preset="research"] { --trail-rgb: 139 92 246; }
+:root[data-preset="cs"] { --trail-rgb: 225 65 107; }
+:root[data-preset="837"] { --trail-rgb: 13 148 136; }

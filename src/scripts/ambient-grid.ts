@@ -29,21 +29,49 @@ if (canvas) {
     const ripples: Array<{ wx: number; wy: number; age: number; duration: number; speed: number }> = [];
     const pointer = { x: -9999, y: -9999, inside: false };
 
+    const parseTrailRgb = (): [number, number, number] => {
+      const raw = getComputedStyle(document.documentElement).getPropertyValue('--trail-rgb').trim();
+      const parts = raw.split(/[\s,]+/).slice(0, 3).map((v) => Number(v));
+      if (parts.length === 3 && parts.every((n) => Number.isFinite(n))) {
+        return [parts[0], parts[1], parts[2]];
+      }
+      return [37, 99, 235];
+    };
+
+    let currentRgb: [number, number, number] = parseTrailRgb();
+    let fromRgb: [number, number, number] = [...currentRgb];
+    let targetRgb: [number, number, number] = [...currentRgb];
+    let colorTransitionStart = 0;
+    const COLOR_TRANSITION_MS = 160;
+
+    const syncTrailColor = () => {
+      const next = parseTrailRgb();
+      if (next[0] === targetRgb[0] && next[1] === targetRgb[1] && next[2] === targetRgb[2]) return;
+      if (reduceMotion) {
+        currentRgb = next;
+        fromRgb = next;
+        targetRgb = next;
+        colorTransitionStart = 0;
+      } else {
+        fromRgb = [...currentRgb];
+        targetRgb = next;
+        colorTransitionStart = performance.now();
+      }
+      if (activeCells.size > 0 || ripples.length > 0) startLoop();
+      else if (!rafId) renderFrame(performance.now());
+    };
+
     const getPalette = () =>
       theme === 'dark'
         ? {
             line: 'rgba(244, 241, 250, 0.055)',
-            fillRgb: '167, 139, 250',
-            borderRgb: '196, 181, 253',
-            maxFill: 0.145,
-            maxBorder: 0.34,
+            maxFill: 0.16,
+            maxBorder: 0.38,
           }
         : {
             line: 'rgba(17, 17, 27, 0.045)',
-            fillRgb: '109, 40, 217',
-            borderRgb: '109, 40, 217',
-            maxFill: 0.10,
-            maxBorder: 0.25,
+            maxFill: 0.12,
+            maxBorder: 0.28,
           };
 
     const resize = () => {
@@ -124,6 +152,21 @@ if (canvas) {
         }
       }
 
+      if (colorTransitionStart > 0) {
+        const elapsedColor = Math.min(1, Math.max(0, (now - colorTransitionStart) / COLOR_TRANSITION_MS));
+        const ease = 1 - Math.pow(1 - elapsedColor, 2);
+        currentRgb = [
+          fromRgb[0] + (targetRgb[0] - fromRgb[0]) * ease,
+          fromRgb[1] + (targetRgb[1] - fromRgb[1]) * ease,
+          fromRgb[2] + (targetRgb[2] - fromRgb[2]) * ease,
+        ];
+        if (elapsedColor >= 1) {
+          currentRgb = [...targetRgb];
+          colorTransitionStart = 0;
+        }
+      }
+
+      const rgbToken = `${Math.round(currentRgb[0])} ${Math.round(currentRgb[1])} ${Math.round(currentRgb[2])}`;
       const palette = getPalette();
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.clearRect(0, 0, width, height);
@@ -147,10 +190,10 @@ if (canvas) {
           const sy = gy * squareSize - offsetY;
           if (sx + squareSize < 0 || sx > width || sy + squareSize < 0 || sy > height) continue;
 
-          ctx.fillStyle = `rgba(${palette.fillRgb}, ${(nextEnergy * palette.maxFill).toFixed(4)})`;
+          ctx.fillStyle = `rgb(${rgbToken} / ${(nextEnergy * palette.maxFill).toFixed(4)})`;
           ctx.fillRect(sx + 0.5, sy + 0.5, squareSize - 1, squareSize - 1);
 
-          ctx.strokeStyle = `rgba(${palette.borderRgb}, ${(nextEnergy * palette.maxBorder).toFixed(4)})`;
+          ctx.strokeStyle = `rgb(${rgbToken} / ${(nextEnergy * palette.maxBorder).toFixed(4)})`;
           ctx.lineWidth = 1;
           ctx.strokeRect(sx + 0.5, sy + 0.5, squareSize - 1, squareSize - 1);
         }
@@ -173,7 +216,7 @@ if (canvas) {
 
       if (!reduceMotion && !hasFinePointer && inView && !document.hidden) {
         rafId = requestAnimationFrame(renderFrame);
-      } else if (!reduceMotion && hasFinePointer && inView && !document.hidden && (activeCells.size > 0 || ripples.length > 0)) {
+      } else if (!reduceMotion && hasFinePointer && inView && !document.hidden && (activeCells.size > 0 || ripples.length > 0 || colorTransitionStart > 0)) {
         rafId = requestAnimationFrame(renderFrame);
       } else {
         rafId = 0;
@@ -253,10 +296,15 @@ if (canvas) {
       else if (document.hidden) stopLoop();
     });
 
+    window.addEventListener('duolabmeng673:preset-change', () => {
+      syncTrailColor();
+    });
+
     new MutationObserver(() => {
       theme = document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
+      syncTrailColor();
       if (!rafId) renderFrame(performance.now());
-    }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+    }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme', 'data-preset', 'style'] });
 
     motionMedia?.addEventListener('change', (e) => {
       reduceMotion = e.matches;

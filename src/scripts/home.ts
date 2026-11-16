@@ -62,7 +62,14 @@ function initHeroStage() {
         /* Storage is optional. */
       }
     }
+    const PRESET_TRAIL_RGB: Record<string, string> = {
+      all: '37 99 235',
+      research: '139 92 246',
+      cs: '225 65 107',
+      '837': '13 148 136',
+    };
     document.documentElement.dataset.preset = activeSlug;
+    document.documentElement.style.setProperty('--trail-rgb', PRESET_TRAIL_RGB[activeSlug] ?? PRESET_TRAIL_RGB.all);
     window.dispatchEvent(new CustomEvent('duolabmeng673:preset-change', { detail: { slug: activeSlug } }));
   };
 
