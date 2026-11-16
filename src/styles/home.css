@@ -313,8 +313,8 @@
 
 .codeb {
   font-family: var(--mono);
-  font-size: clamp(0.72rem, 0.9cqw, 0.88rem);
-  line-height: 2.02;
+  font-size: var(--win-fs);
+  line-height: 1.92;
   padding: clamp(0.25rem, 0.45cqw, 0.45rem) clamp(0.15rem, 0.3cqw, 0.3rem);
   counter-reset: l;
   overflow-x: visible;
@@ -354,8 +354,8 @@
 .term {
   flex: 1;
   font-family: var(--mono);
-  font-size: clamp(0.68rem, 0.78cqw, 0.8rem);
-  line-height: 1.68;
+  font-size: var(--win-fs);
+  line-height: 1.65;
   min-height: 0;
 }
 
@@ -441,7 +441,7 @@
   border-radius: var(--r-row);
   background: transparent;
   text-align: left;
-  font-size: clamp(0.74rem, 0.88cqw, 0.86rem);
+  font-size: var(--win-fs);
   line-height: 1.45;
   cursor: pointer;
   transition: background 0.2s;
@@ -619,7 +619,7 @@
   min-height: 3.45rem;
   padding: 0.56rem 0.82rem;
   gap: 0.6rem;
-  font-size: clamp(0.76rem, 0.86cqw, 0.92rem);
+  font-size: var(--win-fs);
   line-height: 1.48;
 }
 
@@ -1342,11 +1342,11 @@
   .w2 { grid-column: 6 / -1; grid-row: 2; margin: 0; align-self: stretch; }
   .w4 { grid-column: 1 / -1; grid-row: 3; width: 100%; margin: 0; }
   .wt { flex-wrap: wrap; gap: 0.35rem; font-size: clamp(0.7rem, 1.4cqw, 0.78rem); }
-  .codeb { font-size: clamp(0.76rem, 1.6cqw, 0.88rem); line-height: 1.9; }
-  .term { font-size: clamp(0.72rem, 1.45cqw, 0.8rem); line-height: 1.68; }
+  .codeb { font-size: var(--win-fs); line-height: 1.9; overflow-x: auto; }
+  .term { font-size: var(--win-fs); line-height: 1.68; }
   .pst { padding: 0.4rem; gap: 0.2rem; }
-  .r { padding: 0.42rem 0.6rem; font-size: clamp(0.74rem, 1.4cqw, 0.84rem); line-height: 1.4; }
-  .r .n { font-size: clamp(0.68rem, 1.25cqw, 0.75rem); }
+  .r { padding: 0.42rem 0.6rem; font-size: var(--win-fs); line-height: 1.4; }
+  .r .n { font-size: calc(var(--win-fs) * 0.88); }
   .more-row { padding: 0.45rem 0.75rem 0.65rem; font-size: clamp(0.72rem, 1.3cqw, 0.8rem); }
   .hgrid { grid-template-columns: 1fr; }
   .sub { text-align: left; }
@@ -1359,13 +1359,14 @@
   .hero { padding-top: 1.35rem; }
   .stage { grid-template-columns: 1fr; padding: 1rem; gap: 0.9rem; }
   .w1, .w2, .w3, .w4 { grid-column: 1 / -1; grid-row: auto; width: 100%; margin: 0; }
-  .w1 .wb { padding-right: 0.85rem; }
+  .w1 .wb { padding-inline: 0.42rem; }
   .w4 .wt { flex-direction: column; align-items: flex-start; }
   .wt-right { justify-content: flex-start; }
-  .codeb { font-size: 0.72rem; line-height: 1.8; overflow-x: auto; }
-  .term { font-size: 0.75rem; }
-  .r { font-size: 0.8rem; }
-  .r .n { font-size: 0.72rem; }
+  .codeb { font-size: var(--win-fs); line-height: 1.8; overflow-x: auto; }
+  .l::before { width: 1em; margin-right: 0.3em; }
+  .term { font-size: var(--win-fs); }
+  .r { font-size: var(--win-fs); }
+  .r .n { font-size: calc(var(--win-fs) * 0.88); }
   .more-row { font-size: 0.75rem; }
   .heat-detail.is-compact { flex-wrap: wrap; min-height: 0; padding: 0.5rem 0.65rem; }
   .recent-grid { grid-template-columns: 1fr; }

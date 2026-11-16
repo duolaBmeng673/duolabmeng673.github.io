@@ -70,6 +70,7 @@
   --fw-m: 500;
   --fw-body: 400;
   --font-scale: 1;
+  --win-fs: clamp(12px, calc(10.85px + 0.302vw), 16px);
   --header-h: 72px;
   --header-offset: var(--header-h);
 }
