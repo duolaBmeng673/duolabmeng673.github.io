@@ -121,6 +121,56 @@ document.querySelectorAll<HTMLAnchorElement>('.article-toc-mobile a').forEach((l
   const details = link.closest('details'); if (details) details.open = false;
 }));
 
+const tocPanel = document.querySelector<HTMLElement>('[data-toc-panel]');
+if (tocPanel) {
+  const tocHeading = tocPanel.querySelector<HTMLElement>('[data-toc-heading]');
+  const jumpToggle = tocPanel.querySelector<HTMLButtonElement>('[data-toc-jump-toggle]');
+  const panes = [...tocPanel.querySelectorAll<HTMLElement>('[data-toc-pane]')];
+  const modulePanels = [...tocPanel.querySelectorAll<HTMLElement>('[data-toc-module-panel]')];
+  let view: 'toc' | 'modules' | 'chapters' = 'toc';
+  let activeModuleLabel = '笔记直达';
+
+  const setView = (nextView: 'toc' | 'modules' | 'chapters', label?: string) => {
+    view = nextView;
+    if (label) activeModuleLabel = label;
+    tocPanel.dataset.tocView = nextView;
+    panes.forEach((pane) => {
+      const visible = pane.dataset.tocPane === nextView;
+      pane.setAttribute('aria-hidden', String(!visible));
+      if (visible && nextView === 'chapters') pane.scrollTop = 0;
+    });
+    if (jumpToggle) {
+      const inJump = nextView !== 'toc';
+      jumpToggle.textContent = inJump ? '返回目录' : '笔记直达';
+      jumpToggle.setAttribute('aria-expanded', String(inJump));
+      jumpToggle.classList.toggle('is-active', inJump);
+    }
+    if (tocHeading) {
+      tocHeading.textContent = nextView === 'toc' ? '目录' : nextView === 'modules' ? '笔记直达' : activeModuleLabel;
+    }
+  };
+
+  jumpToggle?.addEventListener('click', () => {
+    setView(view === 'toc' ? 'modules' : 'toc');
+  });
+
+  tocPanel.querySelectorAll<HTMLButtonElement>('[data-toc-select-module]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const slug = btn.dataset.tocSelectModule;
+      if (!slug) return;
+      modulePanels.forEach((panel) => {
+        panel.hidden = panel.dataset.tocModulePanel !== slug;
+      });
+      const label = btn.querySelector('strong')?.textContent?.trim() || '笔记直达';
+      setView('chapters', label);
+    });
+  });
+
+  tocPanel.querySelector('[data-toc-back-modules]')?.addEventListener('click', () => {
+    setView('modules');
+  });
+}
+
 // Sandboxed local demos have opaque origins; trust only their Window and build key.
 const demos = [...document.querySelectorAll<HTMLIFrameElement>('iframe[data-demo-key]')];
 const sendDemoTheme = (frame: HTMLIFrameElement) => frame.contentWindow?.postMessage({

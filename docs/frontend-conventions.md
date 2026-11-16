@@ -6,9 +6,9 @@
 
 ## 1. 分工边界
 
-- **React 岛适用范围**：只用于「有内部状态、需要持续重绘」的局部交互岛，包括首页的 **`GradientWaves`**（WebGL2 着色器画布）、**`ActivityHeatmap`**（交互式活动热力图画布与当日明细）与 **`CardSwap`**（专题传送门立体叠卡交互，纯 React + CSS 动效，不引入 `gsap`），以及第 3 轮用户批准用于 `/about/`、`/blog/`、`/study-notes/` 统计卡的 **`CountUp`**（计数器跃动数字，SSR 保留原值）。
+- **React 岛适用范围**：只用于「有内部状态、需要持续重绘」的局部交互岛，包括首页的 **`GradientWaves`**（WebGL2 着色器画布）、**`ActivityHeatmap`**（交互式活动热力图画布与当日明细）与原版 ReactBits **`CardSwap`**（专题传送门立体叠卡交互，按用户 2026-11-17 批准引入 `@hugeicons/react` 与 `@hugeicons/core-free-icons` 依赖，不引入 `gsap`），以及第 3 轮用户批准用于 `/about/`、`/blog/`、`/study-notes/` 统计卡的 **`CountUp`**（计数器跃动数字，SSR 保留原值）。
 - **零 JS / 原生 TS 默认原则**：页面骨架、静态展示、文章、目录、导航与工具入口一律使用 `.astro` 组件（零 JS）或原生 TypeScript 模块（`src/scripts/*.ts`）。
-- **图标与动效**：图标一律使用内联 SVG；**不得安装** `gsap`、`motion`、`lucide-react` 等第三方动效或图标库。
+- **图标与动效**：业务界面图标优先内联 SVG；除用户明确批准的原版 ReactBits `CardSwap` 依赖（`@hugeicons/react` / `@hugeicons/core-free-icons`）外，**不得擅自安装** `gsap`、`motion` 等第三方动效库。
 - **新增 React 组件审批门槛**：新增交互默认采用原生 TS。若确需使用 React 实现新组件，必须在 PR / 提交说明中明确写出不得不引入 React 的理由，经用户确认后方可实施。
 
 ---
@@ -85,7 +85,7 @@
 
 ## 6. 体积预算与隔离红线
 
-- **首页 JS 预算（提醒线）**：首页全部客户端脚本（Astro 脚本 + React 岛及其按需运行时）**总计 gzip 预估不超过 `90 KB`**。若构建后超出该提醒线，必须停止并逐文件列出原始大小与 gzip 大小向用户汇报，由用户决定取舍。
+- **首页 JS 预算（提醒线）**：首页全部客户端脚本（Astro 脚本 + React 岛及其按需运行时）**总计 gzip 预估不超过 `100 KB`**（按用户 2026-11-17 批准原版 ReactBits `CardSwap` 及其图标依赖从 `90 KB` 放宽至 `100 KB`，若实测加载压力不合格则回退）。若构建后超出该提醒线，必须停止并逐文件列出原始大小与 gzip 大小向用户汇报，由用户决定取舍。
 - **非首页白名单隔离（硬红线）**：`GradientWaves`、`ActivityHeatmap`、`CardSwap` 只能出现在首页（`dist/index.html`）；非首页中仅 `/about/`、`/blog/`、`/study-notes/` 获批搭载轻量 `CountUp` 岛（`client:visible`）。文章页、837 模块与章节目录页、工具页与 404 页等其余全部页面**不得引入任何 React 运行时或岛脚本**，每次构建须通过自动化静态检查验证。
 
 > 真机 CPU／GPU 实测方法与 Chrome CDP 采集脚本见 [performance-benchmark.md](performance-benchmark.md)。

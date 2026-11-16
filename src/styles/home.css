@@ -1190,113 +1190,28 @@
   border: 1px solid color-mix(in srgb, var(--tx) 12%, transparent);
 }
 
-/* CardSwap Portal Deck */
+/* CardSwap Portal Deck (ReactBits CardSwap host) */
 .swap-lab-vis {
   position: relative;
   display: grid;
   place-items: center;
   overflow: hidden;
-  height: 16.5rem;
-  min-height: 16.5rem;
-  padding: 0;
-}
-
-.card-swap-stage {
-  position: relative;
-  width: 320px;
-  height: 196px;
-  perspective: 960px;
-  transform: translate(8px, 14px);
-}
-
-.card-swap-slot {
-  --swap-spring: linear(
-    0, 0.0572, 0.1957, 0.3728, 0.5565, 0.725, 0.8657, 0.9731,
-    1.0474, 1.092, 1.1123, 1.1146, 1.1047, 1.088, 1.0685, 1.0493,
-    1.0322, 1.0184, 1.0083, 1.0015, 0.9978, 0.9964, 0.9967, 0.9981, 1
-  );
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 320px;
-  height: 184px;
-  margin-left: -160px;
-  margin-top: -92px;
-  border-radius: 18px;
-  overflow: hidden;
-  border: 1px solid color-mix(in srgb, var(--bd-strong) 80%, transparent);
-  background: var(--bg-elev);
-  box-shadow: 0 24px 48px -20px var(--sh), 0 8px 20px -10px var(--sh);
-  text-decoration: none;
-  color: var(--tx);
-  cursor: grab;
-  user-select: none;
-  touch-action: pan-y;
-  transition:
-    transform 0.6s var(--swap-spring),
-    opacity 0.32s ease;
-  backface-visibility: hidden;
-}
-
-.card-swap-slot:active {
-  cursor: grabbing;
-}
-
-.card-swap-slot[data-swap-slot="0"] { z-index: 10; transform: translate3d(0, 0, 0) scale(1) skewY(6deg); opacity: 1; }
-.card-swap-slot[data-swap-slot="1"] { z-index: 9; transform: translate3d(28px, -22px, -60px) scale(0.96) skewY(6deg); opacity: 0.86; }
-.card-swap-slot[data-swap-slot="2"] { z-index: 8; transform: translate3d(56px, -44px, -120px) scale(0.92) skewY(6deg); opacity: 0.72; }
-.card-swap-slot[data-swap-slot="3"] { z-index: 7; transform: translate3d(84px, -66px, -180px) scale(0.88) skewY(6deg); opacity: 0.58; }
-.card-swap-slot[data-swap-slot="4"] { z-index: 6; transform: translate3d(112px, -88px, -240px) scale(0.84) skewY(6deg); opacity: 0; }
-
-@keyframes card-swap-arc-drop {
-  0% {
-    transform: translate3d(var(--drop-x, 0px), var(--drop-y, 0px), var(--drop-z, 0px)) scale(var(--drop-scale, 1)) skewY(6deg);
-    opacity: var(--drop-opacity, 1);
-  }
-  45% {
-    transform: translate3d(calc(var(--drop-x, 0px) - 42px), calc(var(--drop-y, 0px) + 136px), calc(var(--drop-z, 0px) + 26px)) scale(0.95) rotateZ(-4deg) skewY(6deg);
-    opacity: 0.78;
-  }
-  100% {
-    transform: translate3d(var(--drop-x, 0px), calc(var(--drop-y, 0px) + 190px), calc(var(--drop-z, 0px) + 6px)) scale(0.9) rotateZ(0deg) skewY(6deg);
-    opacity: 0;
-  }
-}
-
-.card-swap-slot.is-arc-dropping {
-  transition: none !important;
-  will-change: transform, opacity;
-  animation: card-swap-arc-drop 0.38s cubic-bezier(0.32, 0.04, 0.72, 0.3) var(--drop-delay, 0ms) 1 both;
-}
-
-.card-swap-slot.is-dropping {
-  transition:
-    transform 0.32s cubic-bezier(0.32, 0.04, 0.72, 0.3),
-    opacity 0.26s ease;
-}
-
-.card-swap-slot.is-settling,
-.card-swap-slot.is-spring {
-  will-change: transform, opacity;
-  transition:
-    transform 0.6s var(--swap-spring),
-    opacity 0.32s ease;
-}
-
-.card-swap-slot.is-instant {
-  transition: none !important;
+  height: 17rem;
+  min-height: 17rem;
+  padding: 0.35rem 0.5rem;
 }
 
 .swap-blog-card {
   width: 100%;
   height: 100%;
-  padding: 0 1.2rem 1.15rem;
+  padding: 0 1.25rem 1.25rem;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  text-decoration: none;
   background:
-    radial-gradient(88% 72% at 88% 82%, color-mix(in srgb, var(--card-accent, var(--ac)) 18%, transparent), transparent 72%),
-    linear-gradient(155deg, color-mix(in srgb, var(--bg-elev) 96%, var(--card-accent, var(--ac)) 4%), var(--cardg));
+    radial-gradient(88% 72% at 88% 82%, color-mix(in srgb, var(--card-accent, var(--ac)) 20%, transparent), transparent 72%),
+    linear-gradient(155deg, color-mix(in srgb, var(--bg-elev) 94%, var(--card-accent, var(--ac)) 6%), var(--cardg));
   color: var(--tx);
 }
 
@@ -1304,11 +1219,11 @@
   display: flex;
   align-items: center;
   gap: 0.55rem;
-  margin: 0 -1.2rem;
-  padding: 0.58rem 1.15rem;
+  margin: 0 -1.25rem;
+  padding: 0.62rem 1.15rem;
   border-bottom: 1px solid var(--bd);
   background: color-mix(in srgb, var(--bg-elev) 88%, transparent);
-  font-size: 0.76rem;
+  font-size: 0.78rem;
 }
 
 .swap-card-dots {
@@ -1505,8 +1420,6 @@
   .home-page .ktag-danmaku .tag { padding: 0.18rem 0.6rem; font-size: 0.73rem; line-height: 1.25; }
   .home-page .ktag-danmaku .tag.ktag-fly { margin-top: -0.68rem; }
   .swap-lab-vis { height: 14rem; min-height: 14rem; }
-  .card-swap-stage { width: 260px; height: 168px; transform: translate(4px, 8px); }
-  .card-swap-slot { width: 260px; height: 158px; margin-left: -130px; margin-top: -79px; }
   .sec { padding-top: 3.5rem; }
 }
 

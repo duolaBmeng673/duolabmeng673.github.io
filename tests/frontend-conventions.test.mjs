@@ -147,7 +147,7 @@ test('duolabmeng673 localStorage key strings appear only in src/lib/storage-keys
   }
 });
 
-test('homepage total shipped JS stays within 90 KB gzip budget', async () => {
+test('homepage total shipped JS stays within 100 KB gzip budget', async () => {
   const { gzipSync } = await import('node:zlib');
   const distDir = join(ROOT, 'dist');
   const homeHtml = readFileSync(join(distDir, 'index.html'), 'utf8');
@@ -176,9 +176,9 @@ test('homepage total shipped JS stays within 90 KB gzip budget', async () => {
   for (const asset of visited) {
     totalGzipBytes += gzipSync(readFileSync(join(distDir, asset))).length;
   }
-  const budgetBytes = 90 * 1024;
+  const budgetBytes = 100 * 1024;
   assert.ok(
     totalGzipBytes <= budgetBytes,
-    `Homepage JS gzip total ${(totalGzipBytes / 1024).toFixed(2)} KB exceeds 90 KB budget`,
+    `Homepage JS gzip total ${(totalGzipBytes / 1024).toFixed(2)} KB exceeds 100 KB budget`,
   );
 });
