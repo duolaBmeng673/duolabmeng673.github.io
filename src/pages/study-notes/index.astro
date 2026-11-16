@@ -27,5 +27,22 @@ const modules = getStudyModuleSummaries(posts);
     </div>
   </header>
   {series.map(([name, info]) => <section class="study-series-group" aria-label={info.title}><h2 class="study-series-heading"><a href={`/study-notes/${info.slug}/`}>{info.title} →</a></h2><StudyModuleLinks modules={modules.filter((module) => module.series === name)} headingLevel="h3" /></section>)}
+  <section class="study-quick-sec" aria-label="快速入口">
+    <h2 class="study-quick-heading">快速入口</h2>
+    <div class="study-quick-grid">
+      <a class="study-quick-card" href="/study-notes/837/kmp-algorithm/">
+        <div><strong>KMP 算法交互式分步演算</strong><span>无回溯指针与 next 数组可视化</span></div>
+        <span aria-hidden="true">→</span>
+      </a>
+      <a class="study-quick-card" href="/study-notes/837/security-basics/">
+        <div><strong>背诵模式自测体验</strong><span>在任意 837 笔记标题栏切换折叠背诵</span></div>
+        <span aria-hidden="true">→</span>
+      </a>
+      <a class="study-quick-card" href="/study-notes/837/information-security/">
+        <div><strong>信息安全完整考纲</strong><span>227 个知识点标签 × 7 类结构化检索</span></div>
+        <span aria-hidden="true">→</span>
+      </a>
+    </div>
+  </section>
   <p class="study-status">公开笔记数量不代表复习完成进度。</p>
 </BaseLayout>

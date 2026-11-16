@@ -1,5 +1,5 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
-import { validateKnowledgePosts } from './knowledge-tags';
+import { getKnowledgeTags, validateKnowledgePosts } from './knowledge-tags';
 
 export type StudyPost = CollectionEntry<'study_notes'>;
 export const studySeries = {
@@ -45,7 +45,25 @@ export function getStudyModuleSummaries(posts: StudyPost[]) {
     Object.entries(studyModules).flatMap(([subject, module]) => {
       const notes = posts.filter((post) => post.data.series === series && post.data.subject === subject)
         .sort((a, b) => a.data.order - b.data.order);
-      return notes.length ? [{ ...module, series, seriesTitle: info.title, subject, posts: notes, count: notes.length, href: getStudyModuleHref(notes[0]) }] : [];
+      if (!notes.length) return [];
+      const chapters = getStudyChapters(notes);
+      const knowledgeTagCount = new Set(notes.flatMap((n) => getKnowledgeTags(n.id).map((t) => t.name))).size;
+      return [{
+        ...module,
+        series,
+        seriesTitle: info.title,
+        subject,
+        posts: notes,
+        count: notes.length,
+        chapterCount: chapters.length,
+        knowledgeTagCount,
+        previewChapters: chapters.slice(0, 4).map((ch) => ({
+          code: ch.code,
+          title: ch.title,
+          count: ch.posts.length,
+        })),
+        href: getStudyModuleHref(notes[0]),
+      }];
     }),
   );
 }
