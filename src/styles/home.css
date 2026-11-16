@@ -775,7 +775,7 @@
   color: var(--tm);
 }
 
-/* Sections, Recent Grid & Bento Cards */
+/* Sections & Bento Cards */
 .sec {
   padding-top: 4.5rem;
 }
@@ -838,29 +838,6 @@
   width: 100%;
 }
 
-.recent-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.9rem;
-}
-
-.recent-item-card {
-  width: 100%;
-  padding: 1.05rem 1.15rem;
-  border-radius: var(--r-bento);
-  display: flex;
-  flex-direction: column;
-  gap: 0.45rem;
-}
-
-.recent-item-meta {
-  display: flex;
-  align-items: center;
-  gap: 0.45rem;
-  font-size: 0.78rem;
-  color: var(--tm);
-}
-
 .cat-dot {
   display: inline-block;
   width: 7px;
@@ -872,32 +849,6 @@
 .cat-dot[data-cat="Research"] { background: var(--c1); }
 .cat-dot[data-cat="Computer Science"] { background: var(--c2); }
 .cat-dot[data-cat="Study Notes"] { background: var(--c3); }
-
-.recent-item-date {
-  margin-left: auto;
-  font-family: var(--mono);
-  font-variant-numeric: tabular-nums;
-  font-size: 0.74rem;
-}
-
-.recent-item-card h3 {
-  margin: 0;
-  font-size: 1.05rem;
-  font-weight: var(--fw-h);
-  line-height: 1.35;
-  color: var(--tx);
-}
-
-.recent-item-card p {
-  margin: 0;
-  font-size: 0.84rem;
-  line-height: 1.55;
-  color: var(--ts);
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
 
 /* Bento & Three Tracks */
 .bento {
@@ -1381,7 +1332,6 @@
   .sub { text-align: left; }
   .bento { grid-template-columns: minmax(0, 1fr); }
   .s4, .s5, .s7 { grid-column: auto; }
-  .recent-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 @media (max-width: 639px) {
@@ -1398,7 +1348,6 @@
   .r .n { font-size: calc(var(--win-fs) * 0.88); }
   .more-row { font-size: 0.75rem; }
   .heat-detail.is-compact { flex-wrap: wrap; min-height: 0; padding: 0.5rem 0.65rem; }
-  .recent-grid { grid-template-columns: 1fr; }
   .sec { padding-top: 3.5rem; }
 }
 

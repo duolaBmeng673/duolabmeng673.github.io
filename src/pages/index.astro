@@ -163,32 +163,6 @@ const activityPayloadJson = JSON.stringify({
     </div>
   </section>
 
-  <section class="sec" id="recent" aria-labelledby="recent-heading">
-    <div class="sec-head">
-      <div>
-        <span class="sec-kicker">RECENT WRITING</span>
-        <h2 id="recent-heading">最近在写</h2>
-      </div>
-      <a class="card-link" href="/blog/">全部归档 →</a>
-    </div>
-
-    <div class="recent-grid">
-      {data.recentPosts.map((post) => (
-        <a class="note-link-wrap" href={post.href}>
-          <article class="recent-item-card rb-panel">
-            <div class="recent-item-meta">
-              <span class="cat-dot" data-cat={post.category} aria-hidden="true" />
-              <span>{post.categoryLabel}</span>
-              <time class="recent-item-date" datetime={post.date}>{post.date}</time>
-            </div>
-            <h3>{post.title}</h3>
-            <p>{post.description}</p>
-          </article>
-        </a>
-      ))}
-    </div>
-  </section>
-
   <section class="sec" id="tracks" aria-labelledby="tracks-heading">
     <div class="sec-head">
       <div>

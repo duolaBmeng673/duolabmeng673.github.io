@@ -303,14 +303,6 @@ export async function getHomePageData() {
     site: siteConfig,
     totalCount: posts.length,
     presets,
-    recentPosts: posts.slice(0, 6).map((post) => ({
-      href: getPostHref(post),
-      category: post.data.category,
-      categoryLabel: taxonomyLabel(post.data.category),
-      date: post.data.pubDate.toISOString().slice(0, 10),
-      title: getPostTitle(post),
-      description: post.data.description,
-    })),
     tracks: {
       research: {
         count: researchPosts.length,
