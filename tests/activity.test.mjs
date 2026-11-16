@@ -197,3 +197,48 @@ test('the static homepage includes Chinese labels and daily details with unchang
   const latestSite = sourceActivities.at(-1);
   if (latestSite?.description) assert.ok(html.includes(latestSite.description));
 });
+
+test('getActivitySummaryStats computes longest streak, month totals, cross-year edges, same-day merges and empty state', () => {
+  const emptyCal = activity.createActivityCalendar([], new Date(2026, 10, 16));
+  assert.deepEqual(activity.getActivitySummaryStats(emptyCal, '2026-11-16'), { longestStreak: 0, monthActivities: 0 });
+
+  // Cross-month + cross-year boundary + multi-record same day + disjoint streaks
+  const crossRecords = [
+    { date: '2025-12-30', type: 'writing', count: 1 },
+    { date: '2025-12-31', type: 'coding', count: 2 },
+    { date: '2025-12-31', type: 'site', count: 1 },
+    { date: '2026-01-01', type: 'learning', count: 1 },
+    { date: '2026-01-02', type: 'research', count: 3 },
+    { date: '2026-01-04', type: 'writing', count: 2 },
+    { date: '2025-01-01', type: 'writing', count: 5 }, // out of 365-day window ending 2026-01-05
+  ];
+  const cal = activity.createActivityCalendar(crossRecords, new Date(2026, 0, 5), 365);
+  const stats = activity.getActivitySummaryStats(cal, '2026-01-05');
+  assert.equal(stats.longestStreak, 4, 'Dec 30..Jan 2 is a 4-day streak even with multiple records on Dec 31');
+  assert.equal(stats.monthActivities, 6, '2026-01 counts Jan 1 (1) + Jan 2 (3) + Jan 4 (2), ignoring 2025-01 and 2025-12');
+});
+
+test('build-time anchorDate (buildDate) determines month/year stats identically across client timezones', () => {
+  const code = `
+    import assert from 'node:assert/strict';
+    import { createActivityCalendar, getActivitySummaryStats } from ${JSON.stringify(new URL('../src/lib/activity.ts', import.meta.url).href)};
+    const items = [
+      { date: '2026-11-01', type: 'writing', count: 2 },
+      { date: '2026-11-02', type: 'learning', count: 1 },
+      { date: '2026-10-31', type: 'writing', count: 4 },
+    ];
+    const buildDate = '2026-11-16';
+    const anchor = new Date(buildDate + 'T00:00:00');
+    anchor.setHours(0, 0, 0, 0);
+    const cal = createActivityCalendar(items, anchor, 365);
+    assert.equal(cal.activityDays, 3);
+    assert.equal(cal.totalActivities, 7);
+    assert.deepEqual(getActivitySummaryStats(cal, buildDate), { longestStreak: 3, monthActivities: 3 });
+  `;
+  for (const TZ of ['Asia/Shanghai', 'America/Los_Angeles', 'Pacific/Auckland', 'UTC']) {
+    execFileSync(process.execPath, ['--experimental-strip-types', '--input-type=module', '-e', code], {
+      env: { ...process.env, TZ },
+      stdio: 'pipe',
+    });
+  }
+});

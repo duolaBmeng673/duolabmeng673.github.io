@@ -30,15 +30,60 @@ git diff --stat main..redesign
 
 ### 推荐路线：先推 `redesign` 开 PR 验收，再合入 `main`
 
-1. 将 `redesign` 分支推送到 GitHub 远端（此时不会触发生产环境 Pages 部署，因为 [.github/workflows/deploy.yml](../.github/workflows/deploy.yml) 仅监听 `push: branches: [main]`）：
+1. **合并前核对分叉基线（`merge-base`）与打基线回滚标签（`pre-redesign`）**：
+   先确认远端 `main` 是否推进过，并为当前线上 `main` 打上可溯源标签 `pre-redesign`：
+
+   ```sh
+   cd /Users/a/duolabmeng673.github.io
+   git fetch origin
+   git checkout main && git pull --ff-only origin main
+
+   # 核对 redesign 与当前 main 的共同祖先；若 merge-base 落后于 origin/main，先检查冲突或按需变基
+   git merge-base main redesign
+   git rev-parse HEAD
+   git log --oneline main..redesign
+
+   # 保留合并前的旧版线上节点，方便随时核对与回退
+   git tag -a pre-redesign -m "pre-redesign baseline before redesign merge" HEAD
+   git push origin pre-redesign
+   ```
+
+2. 将 `redesign` 分支推送到 GitHub 远端（此时不会触发生产环境 Pages 部署，因为 [.github/workflows/deploy.yml](../.github/workflows/deploy.yml) 仅监听 `push: branches: [main]`）：
 
    ```sh
    cd /Users/a/duolabmeng673.github.io
    git push -u origin redesign
    ```
 
-2. 在 GitHub 上创建 `redesign` → `main` 的 Pull Request，确认变更文件范围与提交说明（无 `dist/`、无截图、无临时脚本进入仓库）。
-3. **CI 验证说明**：当前 `.github/workflows/deploy.yml` 仅在 `push` 到 `main` 与 `workflow_dispatch` 时运行 `npm ci` → `npm run build` → `npm test`。如需在 PR 合并前先让 GitHub Actions 跑通一次，可在本地切换至 `redesign` 做一次干净验证，或（如仓库设置允许）临时为 `deploy.yml` 的 `build` job 触发前做最终本地门禁：
+3. **PR 阶段 CI 验证（新增 `.github/workflows/ci.yml` 只在 `pull_request` 运行）**：
+   因为 `deploy.yml` 仅在 `push: branches: [main]` 运行，建议在 `redesign`（或目标分支）新增一个仅监听 `pull_request` 的 [.github/workflows/ci.yml](../.github/workflows/ci.yml)（不部署 Pages，只做门禁校验）：
+
+   ```yaml
+   name: CI (PR Check)
+
+   on:
+     pull_request:
+       branches: [main]
+
+   permissions:
+     contents: read
+
+   jobs:
+     verify:
+       runs-on: ubuntu-latest
+       steps:
+         - uses: actions/checkout@v4
+         - uses: actions/setup-node@v4
+           with:
+             node-version: 22
+             cache: npm
+         - run: npm ci
+         - run: ASTRO_TELEMETRY_DISABLED=1 npm run build
+         - run: npm test
+         - run: git diff --check
+   ```
+
+   在本地切换至 `redesign` 亦可手动执行一次干净构建验收：
 
    ```sh
    git checkout redesign
@@ -49,7 +94,7 @@ git diff --stat main..redesign
    git diff --check
    ```
 
-4. 确认 PR 审查通过后，在 GitHub 网页端执行 **Create a merge commit**（推荐保留阶段提交或生成单个合并提交，方便日后一步 `git revert -m 1` 回滚）合入 `main`；或本地执行：
+4. 在 GitHub 上创建 `redesign` → `main` 的 Pull Request，确认 CI 全绿及变更文件范围（无 `dist/`、无截图、无临时脚本进入仓库）后，执行 **Create a merge commit**（推荐生成单个合并提交，便于一步 `git revert -m 1` 回滚）合入 `main`；或本地执行：
 
    ```sh
    git checkout main
@@ -83,14 +128,29 @@ git revert -m 1 <merge_commit_sha>
 git push origin main
 ```
 
-### 方案 B（紧急回退到旧基线提交，仅在确认无协作者拉取时使用）
+### 方案 B（紧急回退到 `pre-redesign` 基线标签，仅在确认无协作者拉取时使用）
 
 ```sh
 cd /Users/a/duolabmeng673.github.io
 git checkout main
-git reset --hard <pre_redesign_main_sha>
+git reset --hard pre-redesign
 git push --force-with-lease origin main
 ```
+
+### 回滚后修复并再次上线
+
+若曾通过 **方案 A（`git revert -m 1`）** 撤销过 `redesign` 合并，**切勿直接对旧的 `redesign` 分支再次执行 `git merge`**（Git 会因为祖先历史已含 `redesign` 提交而跳过这些改动的重放）。再次上线须采用以下任一方式：
+
+1. **推荐（对 revert 提交执行二次 revert + 追加修复）**：
+   ```sh
+   cd /Users/a/duolabmeng673.github.io
+   git checkout -b fix/reapply-redesign main
+   # 将之前的回滚提交撤回，完整恢复 redesign 改动
+   git revert <revert_commit_sha>
+   # 提交本次针对线上问题的修复，推分支开 PR 验证 CI 后合入 main
+   git push -u origin fix/reapply-redesign
+   ```
+2. **备选（若回滚使用的是方案 B `reset --hard pre-redesign`）**：直接修复问题后向更新过的 `redesign` 分支重新提 PR 合入 `main` 即可。
 
 ---
 

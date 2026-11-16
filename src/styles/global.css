@@ -240,6 +240,26 @@ body:not(.home-page) .site-header .header-inner {
     display: flex;
     align-items: center;
   }
+  body .site-header[data-page="home"]::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 16px;
+    background: linear-gradient(to bottom, var(--bg) 0%, var(--bg) 75%, transparent 100%);
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0;
+    transition: opacity 0.24s ease;
+  }
+  .site-header[data-page="home"].is-scrolled::before {
+    opacity: 1;
+  }
+  .site-header[data-page="home"] .header-inner {
+    position: relative;
+    z-index: 1;
+  }
   .site-header[data-page="home"].is-scrolled .header-inner {
     min-height: 2.55rem;
     padding: 0.24rem 0.65rem 0.24rem 0.85rem;

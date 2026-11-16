@@ -104,6 +104,7 @@ function initDanmaku() {
     const speed = targetSpeeds[idx % targetSpeeds.length];
     if (segW > 0) {
       const dur = Math.max(90, Math.round(segW / speed));
+      lane.style.setProperty('--loop-shift', `-${segW}px`);
       lane.style.setProperty('--lane-dur', `${dur}s`);
     }
   });
@@ -201,11 +202,11 @@ function initCardSwap() {
     const outgoing = slots[outgoingIdx];
 
     if (delta === 1) {
-      // Phase 1 (0..280ms): front card drops down & fades
+      // Phase 1 (0..280ms): front card drops down & fades completely to 0 before wrap
       outgoing.classList.add('is-dropping');
       outgoing.style.zIndex = String(total + 1);
       outgoing.style.transform = 'translate3d(0, 128px, 24px) scale(0.95) skewY(3deg)';
-      outgoing.style.opacity = '0.08';
+      outgoing.style.opacity = '0';
 
       phaseTimers.push(
         window.setTimeout(() => {

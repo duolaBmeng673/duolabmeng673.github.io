@@ -294,7 +294,7 @@ const activityPayloadJson = JSON.stringify({
                   ))}
                 </div>
                 <div class="ktag-segment" aria-hidden="true">
-                  {lane.map((item) => (
+                  {lane.slice(0, 16).map((item) => (
                     <a class="tag ktag-pill-lg" href={item.href} tabindex="-1" title={item.tooltip}>
                       <span class="ktag-swatch" style={`background: ${categoryVar(item.category)};`} />
                       <span>{item.name}</span>
