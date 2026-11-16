@@ -4,6 +4,7 @@
   --bg: #f7f6f2;
   --bg-elev: #ffffff;
   --tx: #121217;
+  --fg: var(--tx);
   --ts: #3d3d48;
   --tm: #656573;
   --bd: rgba(18, 18, 24, 0.105);

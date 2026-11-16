@@ -21,6 +21,7 @@
   flex-direction: column;
   align-items: flex-start;
   gap: 0.08em;
+  color: var(--fg);
   font-size: clamp(1.85rem, 3.25vw, 2.85rem);
   line-height: 1.12;
   font-weight: var(--fw-h);
@@ -32,18 +33,6 @@
   display: block;
   margin: 0;
   line-height: 1.12;
-}
-
-.hero-gradient-text {
-  background-image: linear-gradient(
-    120deg,
-    var(--tx) 10%,
-    var(--ac) 52%,
-    var(--c3) 100%
-  );
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
 }
 
 .cta {
