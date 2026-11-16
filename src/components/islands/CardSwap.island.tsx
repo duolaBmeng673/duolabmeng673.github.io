@@ -45,13 +45,22 @@ function CardBadgeIcon({ icon }: { icon: SwapCardItem['icon'] }) {
   );
 }
 
-function slotGeometry(order: number, total: number) {
-  const zIndex = total - order;
-  const x = order * 28;
-  const y = -order * 22;
-  const z = -order * 60;
+const CARD_DISTANCE = 28;
+const VERTICAL_DISTANCE = 22;
+const DEPTH = 60;
+const SKEW_AMOUNT = 6;
+const VISIBLE_CARDS = 4;
+const HOVER_SPREAD = 0.12;
+const AUTOPLAY_DELAY = 4000;
+
+function slotGeometry(order: number, spread = false) {
+  const zIndex = 10 - order;
+  const factor = spread && order > 0 ? 1 + HOVER_SPREAD : 1;
+  const x = order * CARD_DISTANCE * factor;
+  const y = -order * VERTICAL_DISTANCE * factor;
+  const z = -order * DEPTH;
   const scale = Math.max(0.84, 1 - order * 0.04);
-  const opacity = order > 3 ? 0 : Math.max(0.5, 1 - order * 0.15);
+  const opacity = order >= VISIBLE_CARDS ? 0 : Math.max(0.55, 1 - order * 0.14);
   return {
     zIndex,
     x,
@@ -59,7 +68,7 @@ function slotGeometry(order: number, total: number) {
     z,
     scale,
     opacity,
-    transform: `translate3d(${x}px, ${y}px, ${z}px) scale(${scale}) skewY(5deg)`,
+    transform: `translate3d(${x}px, ${y}px, ${z}px) scale(${scale}) skewY(${SKEW_AMOUNT}deg)`,
   };
 }
 
@@ -86,8 +95,15 @@ export default function CardSwapIsland({ cards }: CardSwapIslandProps) {
   const inViewRef = useRef(false);
   const animatingRef = useRef(false);
   const reduceMotionRef = useRef(false);
-  const timersRef = useRef<number[]>([]);
+  const dragRef = useRef<{ active: boolean; startX: number; startY: number; moved: boolean }>({
+    active: false,
+    startX: 0,
+    startY: 0,
+    moved: false,
+  });
+  const suppressClickRef = useRef(false);
   const animListenersRef = useRef<Array<{ el: HTMLAnchorElement; fn: () => void }>>([]);
+  const timersRef = useRef<number[]>([]);
 
   const clearPhaseClasses = useCallback(() => {
     timersRef.current.forEach((id) => window.clearTimeout(id));
@@ -108,11 +124,11 @@ export default function CardSwapIsland({ cards }: CardSwapIslandProps) {
   }, []);
 
   const layoutSlots = useCallback(
-    (targetActive: number) => {
+    (targetActive: number, spread = false) => {
       slotRefs.current.forEach((slot, idx) => {
         if (!slot) return;
         const order = (idx - targetActive + total) % total;
-        applySlotDom(slot, slotGeometry(order, total), order === 0);
+        applySlotDom(slot, slotGeometry(order, spread), order === 0);
       });
     },
     [total],
@@ -126,13 +142,13 @@ export default function CardSwapIsland({ cards }: CardSwapIslandProps) {
         const nextActive = (activeRef.current + steps) % total;
         activeRef.current = nextActive;
         setActive(nextActive);
-        layoutSlots(nextActive);
+        layoutSlots(nextActive, hoveredRef.current);
         return;
       }
 
       if (animatingRef.current) {
         clearPhaseClasses();
-        layoutSlots(activeRef.current);
+        layoutSlots(activeRef.current, hoveredRef.current);
       }
       animatingRef.current = true;
 
@@ -150,19 +166,19 @@ export default function CardSwapIsland({ cards }: CardSwapIslandProps) {
         if (!slot || droppingSet.has(idx)) return;
         const newOrder = (idx - nextActive + total) % total;
         slot.classList.add('is-spring');
-        applySlotDom(slot, slotGeometry(newOrder, total), newOrder === 0);
+        applySlotDom(slot, slotGeometry(newOrder, hoveredRef.current), newOrder === 0);
       });
 
       let completedDrops = 0;
       droppingIndices.forEach((slotIdx, stepIdx) => {
         const card = slotRefs.current[slotIdx];
         if (!card) return;
-        const startGeom = slotGeometry(stepIdx, total);
+        const startGeom = slotGeometry(stepIdx, hoveredRef.current);
         const delayMs = stepIdx * STAGGER_MS;
 
         card.toggleAttribute('data-front', false);
         card.tabIndex = -1;
-        card.style.zIndex = String(total + steps - stepIdx);
+        card.style.zIndex = String(10 + steps - stepIdx);
         card.style.setProperty('--drop-x', `${startGeom.x}px`);
         card.style.setProperty('--drop-y', `${startGeom.y}px`);
         card.style.setProperty('--drop-z', `${startGeom.z}px`);
@@ -177,7 +193,7 @@ export default function CardSwapIsland({ cards }: CardSwapIslandProps) {
           settled = true;
 
           const targetOrder = (slotIdx - nextActive + total) % total;
-          const backGeom = slotGeometry(targetOrder, total);
+          const backGeom = slotGeometry(targetOrder, hoveredRef.current);
           card.classList.add('is-instant');
           card.style.opacity = '0';
           card.classList.remove('is-arc-dropping');
@@ -188,7 +204,7 @@ export default function CardSwapIsland({ cards }: CardSwapIslandProps) {
           card.style.removeProperty('--drop-opacity');
           card.style.removeProperty('--drop-delay');
           card.style.zIndex = String(backGeom.zIndex);
-          card.style.transform = `translate3d(${backGeom.x + 12}px, ${backGeom.y - 26}px, ${backGeom.z}px) scale(${Math.max(0.78, backGeom.scale - 0.02)}) skewY(5deg)`;
+          card.style.transform = `translate3d(${backGeom.x + 12}px, ${backGeom.y - 26}px, ${backGeom.z}px) scale(${Math.max(0.78, backGeom.scale - 0.02)}) skewY(${SKEW_AMOUNT}deg)`;
           void card.offsetWidth;
 
           card.classList.remove('is-instant');
@@ -221,24 +237,24 @@ export default function CardSwapIsland({ cards }: CardSwapIslandProps) {
       const nextActive = (activeRef.current - 1 + total) % total;
       activeRef.current = nextActive;
       setActive(nextActive);
-      layoutSlots(nextActive);
+      layoutSlots(nextActive, hoveredRef.current);
       return;
     }
 
     if (animatingRef.current) {
       clearPhaseClasses();
-      layoutSlots(activeRef.current);
+      layoutSlots(activeRef.current, hoveredRef.current);
     }
     animatingRef.current = true;
 
     const nextActive = (activeRef.current - 1 + total) % total;
     const incoming = slotRefs.current[nextActive];
-    const frontGeom = slotGeometry(0, total);
+    const frontGeom = slotGeometry(0, hoveredRef.current);
     if (!incoming) return;
 
     incoming.classList.add('is-dropping');
-    incoming.style.zIndex = String(total + 1);
-    incoming.style.transform = 'translate3d(-16px, -118px, 28px) scale(0.95) skewY(5deg)';
+    incoming.style.zIndex = String(10 + total);
+    incoming.style.transform = `translate3d(-16px, -118px, 28px) scale(0.95) skewY(${SKEW_AMOUNT}deg)`;
     incoming.style.opacity = '0.35';
 
     activeRef.current = nextActive;
@@ -247,7 +263,7 @@ export default function CardSwapIsland({ cards }: CardSwapIslandProps) {
       if (!slot || idx === nextActive) return;
       const order = (idx - nextActive + total) % total;
       slot.classList.add('is-spring');
-      applySlotDom(slot, slotGeometry(order, total), false);
+      applySlotDom(slot, slotGeometry(order, hoveredRef.current), false);
     });
 
     timersRef.current.push(
@@ -306,7 +322,7 @@ export default function CardSwapIsland({ cards }: CardSwapIslandProps) {
       if (!reduceMotionRef.current && inViewRef.current && !hoveredRef.current && !document.hidden && !animatingRef.current) {
         cascadeForward(1);
       }
-    }, 3600);
+    }, AUTOPLAY_DELAY);
 
     return () => {
       motionMq?.removeEventListener('change', onMotionChange);
@@ -324,12 +340,46 @@ export default function CardSwapIsland({ cards }: CardSwapIslandProps) {
       data-card-swap
       onMouseEnter={() => {
         hoveredRef.current = true;
+        if (!animatingRef.current && !reduceMotionRef.current) {
+          layoutSlots(activeRef.current, true);
+        }
       }}
       onMouseLeave={() => {
         hoveredRef.current = false;
+        if (!animatingRef.current && !reduceMotionRef.current) {
+          layoutSlots(activeRef.current, false);
+        }
       }}
     >
-      <div className="card-swap-stage">
+      <div
+        className="card-swap-stage"
+        onPointerDown={(e) => {
+          if (e.button !== 0) return;
+          dragRef.current = { active: true, startX: e.clientX, startY: e.clientY, moved: false };
+        }}
+        onPointerMove={(e) => {
+          if (!dragRef.current.active) return;
+          const dx = e.clientX - dragRef.current.startX;
+          const dy = e.clientY - dragRef.current.startY;
+          if (Math.hypot(dx, dy) > 10) dragRef.current.moved = true;
+          if (Math.abs(dx) > 46 || dy > 44) {
+            dragRef.current.active = false;
+            suppressClickRef.current = true;
+            if (dx > 46) goPrev();
+            else cascadeForward(1);
+          }
+        }}
+        onPointerUp={() => {
+          if (dragRef.current.moved) suppressClickRef.current = true;
+          dragRef.current.active = false;
+          window.setTimeout(() => {
+            suppressClickRef.current = false;
+          }, 0);
+        }}
+        onPointerCancel={() => {
+          dragRef.current.active = false;
+        }}
+      >
         {cards.map((card, idx) => (
           <a
             key={`${card.href}-${idx}`}
@@ -341,7 +391,12 @@ export default function CardSwapIsland({ cards }: CardSwapIslandProps) {
             data-swap-slot={idx}
             data-front={idx === active ? '' : undefined}
             tabIndex={idx === active ? 0 : -1}
+            draggable={false}
             onClick={(e) => {
+              if (suppressClickRef.current) {
+                e.preventDefault();
+                return;
+              }
               const steps = (idx - activeRef.current + total) % total;
               if (steps > 0) {
                 e.preventDefault();
@@ -349,13 +404,8 @@ export default function CardSwapIsland({ cards }: CardSwapIslandProps) {
               }
             }}
           >
-            <div className="swap-blog-card">
+            <div className="swap-blog-card" style={{ ['--card-accent' as string]: card.accent }}>
               <div className="swap-card-bar">
-                <span className="swap-card-dots" aria-hidden="true">
-                  <i />
-                  <i />
-                  <i />
-                </span>
                 <span className="swap-blog-badge" style={{ color: card.accent }}>
                   <CardBadgeIcon icon={card.icon} />
                   <span>{card.cat}</span>

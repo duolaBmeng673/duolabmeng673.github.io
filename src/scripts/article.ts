@@ -73,6 +73,14 @@ document.querySelectorAll<HTMLImageElement>('.article-body img').forEach((image)
   hint.className = 'svg-hint'; hint.textContent = '查看 SVG 原图 →';
   link.append(hint);
 });
+const reducedMotion = () => window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
+const revealInsideFold = (element: HTMLElement) => {
+  let fold = element.closest<HTMLDetailsElement>('details.study-fold');
+  while (fold) {
+    fold.open = true;
+    fold = fold.parentElement?.closest<HTMLDetailsElement>('details.study-fold') ?? null;
+  }
+};
 const links = [...document.querySelectorAll<HTMLAnchorElement>('[data-toc-link]')];
 const headings = links.map((link) => document.getElementById(decodeURIComponent(link.hash.slice(1)))).filter((heading): heading is HTMLElement => Boolean(heading));
 const updateCurrent = () => {
@@ -84,6 +92,20 @@ const updateCurrent = () => {
     if (active) link.setAttribute('aria-current', 'location'); else link.removeAttribute('aria-current');
   });
 };
+const scrollToHeadingLink = (link: HTMLAnchorElement, event: MouseEvent) => {
+  if (!link.hash) return;
+  const id = decodeURIComponent(link.hash.slice(1));
+  const target = document.getElementById(id);
+  if (!target) return;
+  event.preventDefault();
+  revealInsideFold(target);
+  target.scrollIntoView({ behavior: reducedMotion() ? 'auto' : 'smooth', block: 'start' });
+  if (typeof history !== 'undefined') {
+    history.replaceState(null, '', `${location.pathname}${location.search}${link.hash}`);
+  }
+  updateCurrent();
+};
+links.forEach((link) => link.addEventListener('click', (event) => scrollToHeadingLink(link, event)));
 let framePending = false;
 document.addEventListener('study-mode-change', updateCurrent);
 if (headings.length) {
@@ -94,7 +116,8 @@ if (headings.length) {
   }, { passive: true });
   updateCurrent();
 }
-document.querySelectorAll<HTMLAnchorElement>('.article-toc-mobile a').forEach((link) => link.addEventListener('click', () => {
+document.querySelectorAll<HTMLAnchorElement>('.article-toc-mobile a').forEach((link) => link.addEventListener('click', (event) => {
+  scrollToHeadingLink(link, event);
   const details = link.closest('details'); if (details) details.open = false;
 }));
 
