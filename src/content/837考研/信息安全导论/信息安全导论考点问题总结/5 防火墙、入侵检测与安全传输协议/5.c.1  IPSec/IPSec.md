@@ -103,11 +103,11 @@ IPSec 是一个标准的第三层安全协议组，工作在**传输层之下（
 1. 工作模式分为**传输模式**和**隧道模式**
 2. AH 两种模式：
 
-   ![alt text](./AH工作模式.png)
+   ![alt text](./AH工作模式.svg)
 
 3. ESP 两种模式：
 
-   ![alt text](./ESP工作模式.jpg)
+   ![alt text](./ESP工作模式.svg)
 
 
 ## （原题）简述网络层安全协议抗重放攻击原理？
@@ -146,7 +146,7 @@ IPSec 的 AH 和 ESP 协议均可通过序列号和抗重放窗口机制防止�
 
 ### 1. 主模式：
 
-![alt text](./IKESA主模式.png)
+![alt text](./IKESA主模式.svg)
 
 - a. 策略协商（加密算法、散列算法、认证方法、DH 组）
 - b. 密钥交换（DH 公开值、防重放随机数 Nonce）
@@ -162,7 +162,7 @@ IPSec 的 AH 和 ESP 协议均可通过序列号和抗重放窗口机制防止�
 
 ## 建立 IPSec 的过程
 1. 快速模式
-![alt text](IPSecSA快速模式.png)
+![alt text](./IPSecSA快速模式.svg)
 2. 新组模式：     
 用于实现通信双方交换协商新的 Diffie-Hellman 组，如果响应方能够接受提议，就用完全一样的消息应答
 3. ISAKMP 信息交换：    
