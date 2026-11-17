@@ -7,26 +7,28 @@ const posts = await getPublicStudyNotes();
 const series = Object.entries(studySeries).filter(([name]) => posts.some((post) => post.data.series === name));
 const modules = getStudyModuleSummaries(posts);
 ---
-<BaseLayout title="学习笔记" description="HIT 837 专业课考研笔记，按信息安全与网络安全模块组织。">
+<BaseLayout title="学习笔记" description="HIT 837 专业课考研笔记，按信息安全与网络安全模块组织。" bodyClass="study-overview-page">
   <header class="page-intro page-masthead">
     <div>
       <p class="eyebrow">学习笔记</p>
       <h1>学习笔记</h1>
       <p>HIT 837 专业课考研笔记，按信息安全与网络安全模块组织。</p>
     </div>
-    <div class="masthead-stats is-two" aria-label="学习笔记统计">
-      <div class="masthead-stat-card">
-        <span class="masthead-stat-label">公开笔记</span>
-        <CountUp to={posts.length} />
-        <span class="masthead-stat-sub">含公式、图表与交互演示</span>
+    <div class="masthead-stats-col">
+      <div class="masthead-stats is-two" aria-label="学习笔记统计">
+        <div class="masthead-stat-card">
+          <span class="masthead-stat-label">公开笔记</span>
+          <CountUp to={posts.length} />
+          <span class="masthead-stat-sub">含公式、图表与交互演示</span>
+        </div>
+        <div class="masthead-stat-card">
+          <span class="masthead-stat-label">专题模块</span>
+          <CountUp to={modules.length} />
+          <span class="masthead-stat-sub">信息安全 + 网络安全</span>
+        </div>
       </div>
-      <div class="masthead-stat-card">
-        <span class="masthead-stat-label">专题模块</span>
-        <CountUp to={modules.length} />
-        <span class="masthead-stat-sub">信息安全 + 网络安全</span>
-      </div>
+      <p class="study-status">公开笔记数量不代表复习完成进度。</p>
     </div>
   </header>
   {series.map(([name, info]) => <section class="study-series-group" aria-label={info.title}><StudyModuleLinks modules={modules.filter((module) => module.series === name)} headingLevel="h2" /></section>)}
-  <p class="study-status">公开笔记数量不代表复习完成进度。</p>
 </BaseLayout>
