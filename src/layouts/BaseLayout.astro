@@ -98,7 +98,7 @@ const navItems = [
   </head>
   <body class={bodyClass}>
     <div class="dotgrid-hero-backdrop" aria-hidden="true">
-      <canvas data-ambient-grid></canvas>
+      <canvas data-ambient-grid data-ambient-static={path === '/' ? undefined : 'true'}></canvas>
     </div>
 
     <a class="skip-link" href="#main-content">跳到正文</a>

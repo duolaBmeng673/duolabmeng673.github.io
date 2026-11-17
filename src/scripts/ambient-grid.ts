@@ -9,10 +9,11 @@ if (canvas) {
   const ctx = canvas.getContext('2d');
   if (ctx) {
     const squareSize = 44;
+    const isStaticPage = canvas.hasAttribute('data-ambient-static');
     const motionMedia = window.matchMedia?.('(prefers-reduced-motion: reduce)');
     const pointerMedia = window.matchMedia?.('(hover: hover) and (pointer: fine)');
 
-    let reduceMotion = motionMedia?.matches ?? false;
+    let reduceMotion = isStaticPage || (motionMedia?.matches ?? false);
     let hasFinePointer = pointerMedia?.matches ?? true;
     let theme = document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
     let width = 0;
@@ -246,95 +247,97 @@ if (canvas) {
       { passive: true }
     );
 
-    window.addEventListener(
-      'pointermove',
-      (e) => {
-        if (reduceMotion || !hasFinePointer) return;
-        const rect = canvas.getBoundingClientRect();
-        const lx = e.clientX - rect.left;
-        const ly = e.clientY - rect.top;
-        if (lx >= 0 && lx <= rect.width && ly >= 0 && ly <= rect.height) {
-          pointer.x = lx;
-          pointer.y = ly;
-          pointer.inside = true;
-          igniteAt(lx, ly);
-          startLoop();
+    if (!isStaticPage) {
+      window.addEventListener(
+        'pointermove',
+        (e) => {
+          if (reduceMotion || !hasFinePointer) return;
+          const rect = canvas.getBoundingClientRect();
+          const lx = e.clientX - rect.left;
+          const ly = e.clientY - rect.top;
+          if (lx >= 0 && lx <= rect.width && ly >= 0 && ly <= rect.height) {
+            pointer.x = lx;
+            pointer.y = ly;
+            pointer.inside = true;
+            igniteAt(lx, ly);
+            startLoop();
+          } else {
+            pointer.inside = false;
+          }
+        },
+        { passive: true }
+      );
+
+      window.addEventListener(
+        'pointerdown',
+        (e) => {
+          if (reduceMotion || !hasFinePointer) return;
+          const rect = canvas.getBoundingClientRect();
+          const lx = e.clientX - rect.left;
+          const ly = e.clientY - rect.top;
+          if (lx >= 0 && lx <= rect.width && ly >= 0 && ly <= rect.height) {
+            ripples.push({
+              wx: lx + offsetX,
+              wy: ly + offsetY,
+              age: 0,
+              duration: 0.65,
+              speed: 380,
+            });
+            startLoop();
+          }
+        },
+        { passive: true }
+      );
+
+      document.addEventListener('mouseleave', () => {
+        pointer.inside = false;
+      });
+
+      document.addEventListener('visibilitychange', () => {
+        if (!document.hidden && inView && !reduceMotion) startLoop();
+        else if (document.hidden) stopLoop();
+      });
+
+      window.addEventListener('duolabmeng673:preset-change', () => {
+        syncTrailColor();
+      });
+
+      motionMedia?.addEventListener('change', (e) => {
+        reduceMotion = e.matches;
+        if (reduceMotion) {
+          activeCells.clear();
+          ripples.length = 0;
+          stopLoop();
+          renderFrame(performance.now());
         } else {
-          pointer.inside = false;
-        }
-      },
-      { passive: true }
-    );
-
-    window.addEventListener(
-      'pointerdown',
-      (e) => {
-        if (reduceMotion || !hasFinePointer) return;
-        const rect = canvas.getBoundingClientRect();
-        const lx = e.clientX - rect.left;
-        const ly = e.clientY - rect.top;
-        if (lx >= 0 && lx <= rect.width && ly >= 0 && ly <= rect.height) {
-          ripples.push({
-            wx: lx + offsetX,
-            wy: ly + offsetY,
-            age: 0,
-            duration: 0.65,
-            speed: 380,
-          });
           startLoop();
         }
-      },
-      { passive: true }
-    );
+      });
 
-    document.addEventListener('mouseleave', () => {
-      pointer.inside = false;
-    });
+      pointerMedia?.addEventListener('change', (e) => {
+        hasFinePointer = e.matches;
+        pointer.inside = false;
+        if (!hasFinePointer && !reduceMotion && inView && !document.hidden) startLoop();
+        else if (hasFinePointer && activeCells.size === 0 && ripples.length === 0) stopLoop();
+      });
 
-    document.addEventListener('visibilitychange', () => {
-      if (!document.hidden && inView && !reduceMotion) startLoop();
-      else if (document.hidden) stopLoop();
-    });
-
-    window.addEventListener('duolabmeng673:preset-change', () => {
-      syncTrailColor();
-    });
+      if ('IntersectionObserver' in window) {
+        new IntersectionObserver(
+          ([entry]) => {
+            inView = entry?.isIntersecting ?? true;
+            if (inView && !reduceMotion && !document.hidden) startLoop();
+            else if (!inView) stopLoop();
+          },
+          { threshold: 0.01 }
+        ).observe(canvas);
+      }
+    }
 
     new MutationObserver(() => {
       theme = document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
       syncTrailColor();
       if (!rafId) renderFrame(performance.now());
     }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme', 'data-preset', 'style'] });
-
-    motionMedia?.addEventListener('change', (e) => {
-      reduceMotion = e.matches;
-      if (reduceMotion) {
-        activeCells.clear();
-        ripples.length = 0;
-        stopLoop();
-        renderFrame(performance.now());
-      } else {
-        startLoop();
-      }
-    });
-
-    pointerMedia?.addEventListener('change', (e) => {
-      hasFinePointer = e.matches;
-      pointer.inside = false;
-      if (!hasFinePointer && !reduceMotion && inView && !document.hidden) startLoop();
-      else if (hasFinePointer && activeCells.size === 0 && ripples.length === 0) stopLoop();
-    });
-
-    if ('IntersectionObserver' in window) {
-      new IntersectionObserver(
-        ([entry]) => {
-          inView = entry?.isIntersecting ?? true;
-          if (inView && !reduceMotion && !document.hidden) startLoop();
-          else if (!inView) stopLoop();
-        },
-        { threshold: 0.01 }
-      ).observe(canvas);
-    }
 
     resize();
     renderFrame(performance.now());
