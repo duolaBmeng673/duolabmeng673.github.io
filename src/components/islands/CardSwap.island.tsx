@@ -83,14 +83,14 @@ export default function CardSwapIsland({ cards }: CardSwapIslandProps) {
     >
       <ReactBitsCardSwap
         ref={swapRef}
-        width={340}
-        height={210}
-        cardDistance={42}
-        verticalDistance={40}
-        depth={85}
+        width={280}
+        height={172}
+        cardDistance={32}
+        verticalDistance={28}
+        depth={70}
         skewAmount={6}
         visibleCards={4}
-        cardRadius={18}
+        cardRadius={16}
         delay={4000}
         speed={1}
         bounce={0.35}
