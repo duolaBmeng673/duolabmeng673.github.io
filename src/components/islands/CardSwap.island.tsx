@@ -52,6 +52,11 @@ export default function CardSwapIsland({ cards }: CardSwapIslandProps) {
   const [theme, setTheme] = useState<'dark' | 'light'>(() =>
     typeof document !== 'undefined' && document.documentElement.dataset.theme === 'light' ? 'light' : 'dark',
   );
+  const [motionPaused, setMotionPaused] = useState<boolean>(() => {
+    if (typeof document === 'undefined') return false;
+    const homeRoot = document.querySelector<HTMLElement>('[data-home-root]');
+    return homeRoot?.dataset.motion === 'paused';
+  });
   const swapRef = useRef<CardSwapHandle | null>(null);
   const pointerDownRef = useRef<{ x: number; y: number } | null>(null);
   const draggedRef = useRef(false);
@@ -63,7 +68,19 @@ export default function CardSwapIsland({ cards }: CardSwapIslandProps) {
     sync();
     const mo = new MutationObserver(sync);
     mo.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
-    return () => mo.disconnect();
+
+    const homeRoot = document.querySelector<HTMLElement>('[data-home-root]');
+    let motionMo: MutationObserver | null = null;
+    if (homeRoot) {
+      const syncMotion = () => setMotionPaused(homeRoot.dataset.motion === 'paused');
+      syncMotion();
+      motionMo = new MutationObserver(syncMotion);
+      motionMo.observe(homeRoot, { attributes: true, attributeFilter: ['data-motion'] });
+    }
+    return () => {
+      mo.disconnect();
+      motionMo?.disconnect();
+    };
   }, []);
 
   return (
@@ -97,7 +114,7 @@ export default function CardSwapIsland({ cards }: CardSwapIslandProps) {
         parallax={0.5}
         hoverSpread={0.12}
         dim={0.48}
-        autoplay
+        autoplay={!motionPaused}
         pauseOnHover
         draggable
         intro={false}

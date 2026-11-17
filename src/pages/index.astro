@@ -34,6 +34,7 @@ const activityPayloadJson = JSON.stringify({
 ---
 
 <BaseLayout bodyClass="home-page">
+  <div class="home-root" data-home-root data-motion="running">
   <section class="hero" aria-labelledby="hero-title">
     <div class="hgrid">
       <div>
@@ -269,7 +270,26 @@ const activityPayloadJson = JSON.stringify({
         <span class="sec-kicker">QUICK INDEX</span>
         <h2 id="explore-heading">知识点快查与专题直达</h2>
       </div>
-      <span class="sec-sub">悬停弹幕暂停或滑动浏览，右侧卡片可切换专题直达</span>
+      <div class="sec-head-actions">
+        <span class="sec-sub">悬停弹幕暂停或滑动浏览，右侧卡片可切换专题直达</span>
+        <button
+          type="button"
+          class="motion-toggle"
+          data-motion-toggle
+          aria-pressed="false"
+          aria-label="暂停动效"
+          title="暂停动效"
+        >
+          <svg class="motion-icon-pause" width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+            <rect x="3" y="2.5" width="3.5" height="11" rx="1" />
+            <rect x="9.5" y="2.5" width="3.5" height="11" rx="1" />
+          </svg>
+          <svg class="motion-icon-play" width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+            <path d="M4.2 2.8a.7.7 0 0 1 1.05-.6l8 5.2a.7.7 0 0 1 0 1.2l-8 5.2A.7.7 0 0 1 4.2 13.2V2.8z" />
+          </svg>
+          <span class="motion-toggle-text">暂停动效</span>
+        </button>
+      </div>
     </div>
 
     <div class="bento">
@@ -324,6 +344,7 @@ const activityPayloadJson = JSON.stringify({
     </span>
     <span class="home-tool-arrow" aria-hidden="true">→</span>
   </a>
+  </div>
 
   <script>
     import '../scripts/home';

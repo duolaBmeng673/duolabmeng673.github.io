@@ -2,6 +2,71 @@ import { STORAGE_KEYS } from '../lib/storage-keys';
 
 const reducedMotion = () => window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
 
+function initMotionController() {
+  const homeRoot = document.querySelector<HTMLElement>('[data-home-root]');
+  const toggleBtn = document.querySelector<HTMLButtonElement>('[data-motion-toggle]');
+  const labelNode = toggleBtn?.querySelector<HTMLElement>('.motion-toggle-text');
+  const listeners = new Set<() => void>();
+
+  let stored: string | null = null;
+  try {
+    stored = localStorage.getItem(STORAGE_KEYS.motion);
+  } catch {
+    stored = null;
+  }
+
+  let paused = stored === 'paused' ? true : stored === 'running' ? false : reducedMotion();
+
+  const apply = (persist: boolean) => {
+    if (homeRoot) {
+      homeRoot.dataset.motion = paused ? 'paused' : 'running';
+    }
+    if (toggleBtn) {
+      toggleBtn.setAttribute('aria-pressed', paused ? 'true' : 'false');
+      const nextLabel = paused ? '继续动效' : '暂停动效';
+      toggleBtn.setAttribute('aria-label', nextLabel);
+      toggleBtn.title = nextLabel;
+      if (labelNode) labelNode.textContent = nextLabel;
+    }
+    if (persist) {
+      try {
+        localStorage.setItem(STORAGE_KEYS.motion, paused ? 'paused' : 'running');
+      } catch {
+        // Ignore storage errors in private mode.
+      }
+    }
+    for (const fn of listeners) fn();
+  };
+
+  toggleBtn?.addEventListener('click', () => {
+    paused = !paused;
+    apply(true);
+  });
+
+  window.matchMedia?.('(prefers-reduced-motion: reduce)').addEventListener('change', (e) => {
+    try {
+      if (localStorage.getItem(STORAGE_KEYS.motion)) return;
+    } catch {
+      // Ignore storage errors.
+    }
+    paused = e.matches;
+    apply(false);
+  });
+
+  apply(false);
+
+  return {
+    isPaused: () => paused,
+    toggle: () => {
+      paused = !paused;
+      apply(true);
+    },
+    subscribe: (fn: () => void) => listeners.add(fn),
+  };
+}
+
+type MotionController = ReturnType<typeof initMotionController>;
+
 // 1. Stage Presets + Terminal + RSS Copy
 function initHeroStage() {
   const stage = document.querySelector<HTMLElement>('[data-hero-stage]');
@@ -98,7 +163,7 @@ function initHeroStage() {
 }
 
 // 2. Random Pooled Danmaku (5 lanes, +-6px Y jitter, bounded speed ratio <=1.6x, max 8 onscreen, pure CSS transform)
-function initDanmaku() {
+function initDanmaku(motionCtrl: MotionController) {
   const root = document.querySelector<HTMLElement>('[data-danmaku]');
   if (!root || root.dataset.initialized === '1') return;
   root.dataset.initialized = '1';
@@ -160,12 +225,13 @@ function initDanmaku() {
 
   const getSimNow = () => (running ? simAccumMs + (performance.now() - runStartedAt) : simAccumMs);
 
-  const canPlay = () => inView && !document.hidden && !hoveredOrFocused;
+  const canPlay = () => inView && !document.hidden && !hoveredOrFocused && !motionCtrl.isPaused();
 
   const syncPlayState = () => {
     const shouldRun = canPlay();
+    const userPaused = motionCtrl.isPaused();
     root.classList.toggle('is-inview', inView && !document.hidden);
-    root.classList.toggle('is-paused', hoveredOrFocused);
+    root.classList.toggle('is-paused', hoveredOrFocused || userPaused);
     if (shouldRun === running) return;
     if (shouldRun) {
       runStartedAt = performance.now();
@@ -307,6 +373,22 @@ function initDanmaku() {
     });
   });
 
+  motionCtrl.subscribe(syncPlayState);
+
+  let touchStart: { x: number; y: number } | null = null;
+  root.addEventListener('pointerdown', (e) => {
+    if (e.pointerType !== 'touch') return;
+    touchStart = { x: e.clientX, y: e.clientY };
+  }, { passive: true });
+  root.addEventListener('pointerup', (e) => {
+    if (e.pointerType !== 'touch' || !touchStart) return;
+    const dist = Math.hypot(e.clientX - touchStart.x, e.clientY - touchStart.y);
+    touchStart = null;
+    if (dist <= 8 && !(e.target as HTMLElement | null)?.closest('a')) {
+      motionCtrl.toggle();
+    }
+  });
+
   if ('IntersectionObserver' in window) {
     const io = new IntersectionObserver(
       ([entry]) => {
@@ -323,5 +405,6 @@ function initDanmaku() {
   }
 }
 
+const motionCtrl = initMotionController();
 initHeroStage();
-initDanmaku();
+initDanmaku(motionCtrl);

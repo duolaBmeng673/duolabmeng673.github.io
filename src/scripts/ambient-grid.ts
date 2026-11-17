@@ -10,10 +10,13 @@ if (canvas) {
   if (ctx) {
     const squareSize = 44;
     const isStaticPage = canvas.hasAttribute('data-ambient-static');
+    const homeRoot = document.querySelector<HTMLElement>('[data-home-root]');
     const motionMedia = window.matchMedia?.('(prefers-reduced-motion: reduce)');
     const pointerMedia = window.matchMedia?.('(hover: hover) and (pointer: fine)');
 
-    let reduceMotion = isStaticPage || (motionMedia?.matches ?? false);
+    let systemReduceMotion = motionMedia?.matches ?? false;
+    let userPaused = homeRoot?.dataset.motion === 'paused';
+    let reduceMotion = isStaticPage || systemReduceMotion || userPaused;
     let hasFinePointer = pointerMedia?.matches ?? true;
     let theme = document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
     let width = 0;
@@ -303,7 +306,8 @@ if (canvas) {
       });
 
       motionMedia?.addEventListener('change', (e) => {
-        reduceMotion = e.matches;
+        systemReduceMotion = e.matches;
+        reduceMotion = systemReduceMotion || userPaused;
         if (reduceMotion) {
           activeCells.clear();
           ripples.length = 0;
@@ -313,6 +317,21 @@ if (canvas) {
           startLoop();
         }
       });
+
+      if (homeRoot) {
+        new MutationObserver(() => {
+          userPaused = homeRoot.dataset.motion === 'paused';
+          reduceMotion = systemReduceMotion || userPaused;
+          if (reduceMotion) {
+            activeCells.clear();
+            ripples.length = 0;
+            stopLoop();
+            renderFrame(performance.now());
+          } else {
+            startLoop();
+          }
+        }).observe(homeRoot, { attributes: true, attributeFilter: ['data-motion'] });
+      }
 
       pointerMedia?.addEventListener('change', (e) => {
         hasFinePointer = e.matches;
