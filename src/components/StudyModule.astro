@@ -9,7 +9,7 @@ const info = getStudySeries(module.series);
 const chapters = getStudyChapters(module.posts);
 ---
 <BaseLayout title={`${module.title} · ${module.series}`} description={module.description}>
-  <KnowledgeDirectory posts={module.posts} showLegend={module.slug === 'information-security'}>
+  <KnowledgeDirectory posts={module.posts} showLegend={true}>
   <Fragment slot="intro">
   <header class="page-intro">
     <nav class="study-breadcrumb" aria-label="学习路径"><a href="/study-notes/">学习笔记</a><span>/</span><a href={`/study-notes/${info.slug}/`}>{module.series}</a><span>/</span><span aria-current="page">{module.title}</span></nav>
@@ -17,11 +17,29 @@ const chapters = getStudyChapters(module.posts);
   </header>
   <p class="study-status">{module.count} 篇公开笔记 · 按考纲顺序浏览，不代表复习完成进度。</p>
   </Fragment>
-  <div class="study-chapters" data-module-outline={module.slug}>
-    {chapters.map((chapter) => <section class="study-chapter" data-knowledge-chapter>
-      <header><span class="chapter-code">{chapter.code}</span><h2><a href={getChapterHref(chapter.posts[0])}>{chapter.title}</a></h2></header>
-      <StudyNoteList posts={chapter.posts} chapterCode={chapter.code} />
-    </section>)}
+  <div class="study-module-layout">
+    <aside class="study-chapter-nav" aria-label="章节目录">
+      <p class="study-chapter-nav-title">章节目录</p>
+      <nav>
+        {chapters.map((chapter, idx) => (
+          <a href={`#chapter-${chapter.code}`} class:list={{ 'is-active': idx === 0 }} data-chapter-nav-link={`chapter-${chapter.code}`}>
+            <span class="ch-nav-code">{chapter.code}</span>
+            <span class="ch-nav-name">{chapter.title}</span>
+            <span class="ch-nav-count">{chapter.posts.length}</span>
+          </a>
+        ))}
+      </nav>
+    </aside>
+    <div class="study-chapters" data-module-outline={module.slug}>
+      {chapters.map((chapter) => <section class="study-chapter" id={`chapter-${chapter.code}`} data-knowledge-chapter>
+        <header>
+          <span class="chapter-code">{chapter.code}</span>
+          <h2><a href={getChapterHref(chapter.posts[0])}>{chapter.title}</a></h2>
+          <span class="chapter-count">共 {chapter.posts.length} 篇</span>
+        </header>
+        <StudyNoteList posts={chapter.posts} chapterCode={chapter.code} />
+      </section>)}
+    </div>
   </div>
   <p slot="footer" class="home-about-links"><a class="text-link" href={`/study-notes/${info.slug}/`}>← 返回模块选择</a><a class="text-link" href="/study-notes/">全部学习笔记 →</a></p>
   </KnowledgeDirectory>

@@ -1,0 +1,21 @@
+---
+export interface Props {
+  to: number;
+  from?: number;
+  duration?: number;
+  class?: string;
+}
+
+const { to, from = 0, duration = 900, class: className = 'masthead-stat-num' } = Astro.props;
+---
+
+<span
+  class="countup-wrap"
+  data-countup={to}
+  data-countup-from={from}
+  data-countup-duration={duration}
+><strong class={className}>{to}</strong></span>
+
+<script>
+  import '../scripts/count-up';
+</script>

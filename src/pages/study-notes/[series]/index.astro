@@ -10,7 +10,26 @@ const { info, posts, name } = Astro.props;
 const modules = getStudyModuleSummaries(posts);
 ---
 <BaseLayout title={info.title} description={info.description}>
-  <header class="page-intro"><a class="text-link" href="/study-notes/">学习笔记 →</a><p class="eyebrow">考研复习 · {name}</p><h1>{info.title}</h1><p>{info.description}</p></header>
+  <header class="page-intro page-masthead">
+    <div>
+      <a class="back-link" href="/study-notes/">← 学习笔记</a>
+      <p class="eyebrow">考研复习 · {name}</p>
+      <h1>{info.title}</h1>
+      <p>{info.description}</p>
+    </div>
+    <div class="masthead-stats is-two" aria-label="系列统计">
+      <div class="masthead-stat-card">
+        <span class="masthead-stat-label">公开笔记</span>
+        <strong class="masthead-stat-num">{posts.length}</strong>
+        <span class="masthead-stat-sub">按考纲章节组织</span>
+      </div>
+      <div class="masthead-stat-card">
+        <span class="masthead-stat-label">核心模块</span>
+        <strong class="masthead-stat-num">{modules.length}</strong>
+        <span class="masthead-stat-sub">支持背诵模式与标签筛选</span>
+      </div>
+    </div>
+  </header>
   <p class="study-status">{posts.length} 篇公开笔记 · 选择模块，按考纲顺序复习。</p>
   <StudyModuleLinks modules={modules} />
 </BaseLayout>

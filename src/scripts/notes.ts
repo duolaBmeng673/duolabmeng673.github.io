@@ -105,4 +105,14 @@ document.querySelector('[data-clear-filters]')?.addEventListener('click', () => 
 document.querySelector('[data-clear-query]')?.addEventListener('click', () => { clearQuery(); void apply(); search?.focus(); });
 window.addEventListener('popstate', () => { readUrl(); void apply(false); });
 readUrl(); void apply(false);
+const sentinel = document.querySelector<HTMLElement>('[data-archive-sentinel]');
+const toolsBar = document.querySelector<HTMLElement>('.archive-tools');
+if (sentinel && toolsBar && 'IntersectionObserver' in window) {
+  new IntersectionObserver(
+    ([entry]) => {
+      toolsBar.classList.toggle('is-stuck', !entry?.isIntersecting && entry.boundingClientRect.top < 120);
+    },
+    { threshold: 0 },
+  ).observe(sentinel);
+}
 export {};

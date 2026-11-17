@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync, readdirSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { runInNewContext } from 'node:vm';
 import ts from 'typescript';
@@ -69,7 +69,7 @@ test('both modules and every chapter render exact chip labels as siblings of wor
   const moduleIds = new Set(), chapterIds = new Set();
   for (const page of [...modules, ...chapters]) {
     const html = read(page);
-    assert.equal((html.match(/data-knowledge-category=/g) ?? []).length, page === modules[0] ? 7 : 0);
+    assert.equal((html.match(/data-knowledge-category=/g) ?? []).length, modules.includes(page) ? 7 : 0);
     const rows = [...html.matchAll(/<li\b[^>]*data-knowledge-entry[^]*?<\/li>/g)].map(([row]) => row);
     assert.ok(rows.length > 0, page);
     if (modules.includes(page)) assert.equal(rows.length, page === modules[0] ? 16 : 19);
@@ -112,8 +112,18 @@ test('article headers and global post listings reuse the same knowledge labels w
     for (const [, content] of row.matchAll(/<a\b[^>]*>([^]*?)<\/a>/g)) assert.ok(!/<a\b/.test(content), 'title and filter links are siblings');
   }
   const homepage = read('dist/index.html');
-  assert.ok(homepage.includes('class="editorial-row knowledge-post-row"'));
-  assert.ok(homepage.includes('data-knowledge-label='));
+  const tagDict = JSON.parse(read('src/data/tags.json'));
+  const homeTagLinks = [...homepage.matchAll(/<a\b[^>]*href="([^"]+)"[^>]*data-knowledge-label="([^"]+)"[^>]*>/g)];
+  assert.ok(homeTagLinks.length >= Object.keys(tagDict).length);
+  for (const [, rawHref, rawLabel] of homeTagLinks) {
+    const label = decode(rawLabel);
+    assert.ok(Object.hasOwn(tagDict, label), `homepage tag matches tags.json: ${label}`);
+    const url = new URL(decode(rawHref), 'https://duolabmeng673.github.io');
+    assert.ok(existsSync(new URL('../dist' + decodeURIComponent(url.pathname) + 'index.html', import.meta.url)), url.pathname);
+    if (url.searchParams.has('tag')) {
+      assert.equal(url.searchParams.get('tag'), label);
+    }
+  }
   const paper = read('dist/blog/bert/index.html');
   assert.ok(paper.includes('class="article-description"'));
   assert.ok(paper.includes('class="tag-list"'));
@@ -160,18 +170,21 @@ test('directory clicks toggle AND filters, legend only dims, clear and browser h
   assert.equal(legends[0].focused, true);
 });
 
-test('only the information-security module renders one legend, with no copied mobile legend or empty placeholders', () => {
-  const html = read('dist/study-notes/837/information-security/index.html');
-  assert.equal((html.match(/<aside\b[^>]*aria-label="知识点类别图例"/g) ?? []).length, 1);
-  assert.equal((html.match(/data-knowledge-category=/g) ?? []).length, 7);
-  assert.equal((html.match(/<button\b[^>]*\sdata-knowledge-toggle(?:\s|>)/g) ?? []).length, 1);
-  assert.ok(html.includes('aria-controls="knowledge-legend-panel"'));
-  assert.ok(!html.includes('class="knowledge-controls"'));
-  const container = html.indexOf('class="knowledge-directory"');
-  assert.ok(container < html.indexOf('class="page-intro"'), 'legend container starts before the page intro');
-  assert.ok(container < html.indexOf('class="study-chapters"'), 'all chapters share the page-level reference');
-  assert.match(html, /class="home-about-links"[^]*?<\/p>\s*<\/div>/, 'container also includes the bottom navigation');
-  for (const page of ['dist/index.html', 'dist/blog/index.html', 'dist/study-notes/837/network-security/index.html', 'dist/study-notes/837/chapter/02/index.html', 'dist/study-notes/837/security-basics/index.html']) {
+test('both study modules render one sticky category toolbar with no copied mobile legend or empty placeholders', () => {
+  for (const page of ['dist/study-notes/837/information-security/index.html', 'dist/study-notes/837/network-security/index.html']) {
+    const html = read(page);
+    assert.equal((html.match(/<aside\b[^>]*aria-label="知识点类别图例"/g) ?? []).length, 1, page);
+    assert.equal((html.match(/data-knowledge-category=/g) ?? []).length, 7, page);
+    assert.equal((html.match(/data-knowledge-category-all(?:\s|>)/g) ?? []).length, 1, page);
+    assert.equal((html.match(/<button\b[^>]*\sdata-knowledge-toggle(?:\s|>)/g) ?? []).length, 1, page);
+    assert.ok(html.includes('aria-controls="knowledge-legend-panel"'), page);
+    assert.ok(!html.includes('class="knowledge-controls"'), page);
+    const container = html.indexOf('class="knowledge-directory"');
+    assert.ok(container < html.indexOf('class="page-intro"'), 'legend container starts before the page intro');
+    assert.ok(container < html.indexOf('class="study-chapters"'), 'all chapters share the page-level reference');
+    assert.match(html, /class="home-about-links"[^]*?<\/p>\s*<\/div>/, 'container also includes the bottom navigation');
+  }
+  for (const page of ['dist/index.html', 'dist/blog/index.html', 'dist/study-notes/837/chapter/02/index.html', 'dist/study-notes/837/security-basics/index.html']) {
     const other = read(page);
     assert.ok(!other.includes('aria-label="知识点类别图例"'), page);
     assert.ok(!/<button\b[^>]*\sdata-knowledge-toggle(?:\s|>)/.test(other), page);
@@ -192,7 +205,7 @@ test('one responsive legend opens, closes outside or with Escape, and transfers 
     querySelector(selector) { return { '[data-knowledge-selection]': selection, '[data-knowledge-status]': status, '[data-knowledge-empty]': empty, '[data-knowledge-clear]': clear, '[data-knowledge-controls]': controls, '[data-knowledge-toggle]': toggle }[selector]; },
   };
   const location = new URL('https://example.com/study-notes/837/information-security/');
-  const window = { matchMedia(query) { assert.equal(query, '(min-width: 1500px)'); return media; }, addEventListener() {} };
+  const window = { matchMedia(query) { assert.equal(query, '(min-width: 1024px)'); return media; }, addEventListener() {} };
   const script = ts.transpileModule(read('src/scripts/knowledge-directory.ts'), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 } }).outputText;
   runInNewContext(script, { document, location, window, history: { pushState() {} }, exports: {}, require: () => filtering });
   assert.equal(controls.hidden, true);

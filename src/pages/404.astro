@@ -1,0 +1,18 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout title="404 · 页面未找到" description="访问的页面不存在或已迁移，可返回首页、技术笔记或学习笔记继续浏览。" noindex={true}>
+  <section class="not-found-shell" aria-labelledby="not-found-title">
+    <div class="not-found-card">
+      <span class="not-found-code">404 · NOT FOUND</span>
+      <h1 id="not-found-title">页面没有找到</h1>
+      <p>你访问的地址可能已移动，或尚未发布对应笔记。可以从下方常用入口继续浏览，或使用顶部搜索框直达关键词。</p>
+      <div class="not-found-actions">
+        <a class="button primary" href="/">返回首页 →</a>
+        <a class="button" href="/blog/">技术笔记归档</a>
+        <a class="button" href="/study-notes/837/">HIT 837 学习笔记</a>
+        <a class="button" href="/tools/">常用工具</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 896 578" width="896" height="578" role="img" aria-labelledby="cidf-title cidf-desc">
+  <title id="cidf-title">图 7.14 CIDF 模型</title>
+  <desc id="cidf-desc">通用入侵检测框架（CIDF）模型：事件产生器 E 向事件分析器 A、事件数据库 D 与响应单元 R 输送事件数据；A 与 D 交互并输出给 R；R 经由 D 与 A 的信息启动适当响应。</desc>
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M1 1.5 L9 5 L1 8.5 z" fill="#334155" />
+    </marker>
+    <style>
+      .t { font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif; fill: #0f172a; text-anchor: middle; dominant-baseline: central; }
+      .lbl { font-size: 22px; font-weight: 500; }
+      .code { font-size: 26px; font-weight: 600; }
+      .cap { font-size: 23px; font-weight: 600; fill: #1e293b; }
+      .box { stroke: #334155; stroke-width: 2; }
+      .ln { fill: none; stroke: #334155; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    </style>
+  </defs>
+
+  <rect width="896" height="578" fill="#ffffff" />
+
+  <!-- Top Node Captions -->
+  <text class="t lbl" x="149" y="52">事件产生器</text>
+  <text class="t lbl" x="448" y="52">事件分析器</text>
+
+  <!-- Box E & Box A -->
+  <rect class="box" x="66" y="84" width="166" height="92" rx="8" fill="#eff6ff" />
+  <text class="t code" x="149" y="130">E</text>
+
+  <rect class="box" x="365" y="84" width="166" height="92" rx="8" fill="#eff6ff" />
+  <text class="t code" x="448" y="130">A</text>
+
+  <!-- Cylinder D (Event Database) -->
+  <path class="box" d="M66 306 L66 392 A83 22 0 0 0 232 392 L232 306 Z" fill="#fefce8" />
+  <path class="ln" d="M66 322 A83 22 0 0 0 232 322" />
+  <path class="ln" d="M66 334 A83 22 0 0 0 232 334" />
+  <ellipse class="box" cx="149" cy="306" rx="83" ry="22" fill="#fef9c3" />
+  <text class="t code" x="149" y="373">D</text>
+  <text class="t lbl" x="149" y="454">事件数据库</text>
+
+  <!-- Box R (Response Unit) -->
+  <rect class="box" x="365" y="314" width="166" height="92" rx="8" fill="#eff6ff" />
+  <text class="t code" x="448" y="360">R</text>
+  <text class="t lbl" x="448" y="454">响应单元</text>
+
+  <!-- Capsule: 适当响应 -->
+  <rect class="box" x="622" y="314" width="212" height="92" rx="34" fill="#ecfdf5" />
+  <line class="ln" x1="648" y1="316" x2="648" y2="404" />
+  <line class="ln" x1="808" y1="316" x2="808" y2="404" />
+  <text class="t lbl" x="728" y="360">适当响应</text>
+
+  <!-- Arrows -->
+  <!-- E -> A -->
+  <line class="ln" x1="232" y1="130" x2="361" y2="130" marker-end="url(#arr)" />
+  <!-- E -> D -->
+  <line class="ln" x1="149" y1="176" x2="149" y2="281" marker-end="url(#arr)" />
+  <!-- E -> R -->
+  <line class="ln" x1="216" y1="176" x2="362" y2="322" marker-end="url(#arr)" />
+  <!-- A -> D -->
+  <line class="ln" x1="381" y1="176" x2="232" y2="300" marker-end="url(#arr)" />
+  <!-- A -> R -->
+  <line class="ln" x1="448" y1="176" x2="448" y2="310" marker-end="url(#arr)" />
+  <!-- D -> R -->
+  <line class="ln" x1="232" y1="360" x2="361" y2="360" marker-end="url(#arr)" />
+  <!-- R -> 适当响应 -->
+  <line class="ln" x1="531" y1="360" x2="618" y2="360" marker-end="url(#arr)" />
+  <text class="t lbl" x="575" y="336">启动</text>
+
+  <!-- Figure Caption -->
+  <text class="t cap" x="448" y="534">图 7.14  CIDF 模型</text>
+</svg>

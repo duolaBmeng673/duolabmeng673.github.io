@@ -176,26 +176,155 @@ test('date click, empty selection, repeated selection and keyboard movement upda
   assert.equal(buttons.filter((button) => button.tabIndex === 0).length, 1);
 });
 
-test('the static homepage includes Chinese labels and daily details with unchanged publication-based history', () => {
+test('the static homepage includes Chinese labels and daily details with unchanged publication-based history', async () => {
   const html = read('dist/index.html');
-  assert.match(html, /<h2\b[^>]*id="activity-title"[^>]*>更新记录<\/h2>/);
-  assert.ok(html.includes('过去一年 · 写作、研究、学习与博客功能'));
+  assert.ok(html.includes('<span>activity.heatmap</span>'));
   assert.equal((html.match(/id="activity-detail"/g) ?? []).length, 1);
-  assert.ok(html.includes('data-activity-detail-groups'));
-  assert.ok(html.includes('aria-controls="activity-detail"'));
+  assert.ok(html.includes('data-activity-detail-items'));
+  assert.ok(html.includes('data-activity-fallback'));
   const decode = (text) => text.replace(/&quot;/g, '"').replace(/&#39;|&apos;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
-  const payload = JSON.parse(decode(html.match(/data-activity-data="([^"]+)"/)[1]));
+  const payload = JSON.parse(decode(html.match(/data-activity-payload="([^"]+)"/)[1]));
+  const { activities: sourceActivities } = await import('../src/data/activities.ts');
   assert.ok(payload.activities.some((record) => record.date === '2026-11-11' && record.type === 'site' && record.count === 1));
   const posts = JSON.parse(read('dist/search-index.json'));
   assert.equal(payload.writing.length, posts.length);
   for (const post of posts) assert.ok(payload.writing.some((entry) => entry.date === post.date && entry.description === post.title && entry.count === 1));
-  const end = html.match(/data-end="([^"]+)"/)[1];
-  const result = activity.createActivityCalendar([...payload.activities, ...payload.writing], new Date(`${end}T12:00:00`));
-  assert.ok(html.includes(`${result.activityDays} 个活跃日 · ${result.totalActivities} 次活动`));
-  const feature = result.columns.flat().find((day) => day?.date === '2026-11-11');
-  if (feature) {
-    const featureCell = [...html.matchAll(/<button\b[^>]*>/g)].find(([tag]) => tag.includes('data-date="2026-11-11"'))?.[0];
-    assert.ok(featureCell?.includes(`data-kind="${activity.activityKind(feature)}"`));
-    assert.ok(featureCell?.includes('博客功能：'));
+  const independentWriting = posts.map((post) => ({ date: post.date, type: 'writing', count: 1, description: post.title }));
+  const result = activity.createActivityCalendar([...sourceActivities, ...independentWriting], new Date(`${payload.buildDate}T12:00:00`));
+  const visible = activity.getVisibleCalendarStats(result, payload.buildDate, 34);
+  assert.ok(html.includes(`${visible.windowLabel} ${visible.activityDays} 活跃日 · ${visible.totalActivities} 次活动`));
+  assert.ok(html.includes(`${visible.windowLabel} · ${visible.activityDays} 活跃日 · ${visible.totalActivities} 次活动`));
+  assert.ok(html.includes('博客功能'));
+  const latestSite = sourceActivities.at(-1);
+  if (latestSite?.description) assert.ok(html.includes(latestSite.description));
+});
+
+test('getActivitySummaryStats computes longest streak, month totals, cross-year edges, same-day merges and empty state', () => {
+  const emptyCal = activity.createActivityCalendar([], new Date(2026, 10, 16));
+  assert.deepEqual(activity.getActivitySummaryStats(emptyCal, '2026-11-16'), { longestStreak: 0, monthActivities: 0 });
+
+  // Cross-month + cross-year boundary + multi-record same day + disjoint streaks
+  const crossRecords = [
+    { date: '2025-12-30', type: 'writing', count: 1 },
+    { date: '2025-12-31', type: 'coding', count: 2 },
+    { date: '2025-12-31', type: 'site', count: 1 },
+    { date: '2026-01-01', type: 'learning', count: 1 },
+    { date: '2026-01-02', type: 'research', count: 3 },
+    { date: '2026-01-04', type: 'writing', count: 2 },
+    { date: '2025-01-01', type: 'writing', count: 5 }, // out of 365-day window ending 2026-01-05
+  ];
+  const cal = activity.createActivityCalendar(crossRecords, new Date(2026, 0, 5), 365);
+  const stats = activity.getActivitySummaryStats(cal, '2026-01-05');
+  assert.equal(stats.longestStreak, 4, 'Dec 30..Jan 2 is a 4-day streak even with multiple records on Dec 31');
+  assert.equal(stats.monthActivities, 6, '2026-01 counts Jan 1 (1) + Jan 2 (3) + Jan 4 (2), ignoring 2025-01 and 2025-12');
+});
+
+test('build-time anchorDate (buildDate) determines month/year stats identically across client timezones', () => {
+  const code = `
+    import assert from 'node:assert/strict';
+    import { createActivityCalendar, getActivitySummaryStats } from ${JSON.stringify(new URL('../src/lib/activity.ts', import.meta.url).href)};
+    const items = [
+      { date: '2026-11-01', type: 'writing', count: 2 },
+      { date: '2026-11-02', type: 'learning', count: 1 },
+      { date: '2026-10-31', type: 'writing', count: 4 },
+    ];
+    const buildDate = '2026-11-16';
+    const anchor = new Date(buildDate + 'T00:00:00');
+    anchor.setHours(0, 0, 0, 0);
+    const cal = createActivityCalendar(items, anchor, 365);
+    assert.equal(cal.activityDays, 3);
+    assert.equal(cal.totalActivities, 7);
+    assert.deepEqual(getActivitySummaryStats(cal, buildDate), { longestStreak: 3, monthActivities: 3 });
+  `;
+  for (const TZ of ['Asia/Shanghai', 'America/Los_Angeles', 'Pacific/Auckland', 'UTC']) {
+    execFileSync(process.execPath, ['--experimental-strip-types', '--input-type=module', '-e', code], {
+      env: { ...process.env, TZ },
+      stdio: 'pipe',
+    });
   }
+});
+
+test('heatmap stats use build-time buildDate and remain invariant under runtime Date.now override', () => {
+  const islandSource = read('src/components/islands/ActivityHeatmap.island.tsx');
+  assert.ok(!islandSource.includes('Date.now'), 'ActivityHeatmap island must not read runtime Date.now()');
+  assert.ok(islandSource.includes('buildCalendar(writingItems, activityItems, actMap, buildDate)'));
+
+  const buildDate = '2026-11-16';
+  const items = [
+    { date: '2026-11-05', type: 'writing', count: 2 },
+    { date: '2026-11-14', type: 'site', count: 1 },
+    { date: '2026-10-31', type: 'learning', count: 3 },
+  ];
+  const compute = () => {
+    const anchor = new Date(`${buildDate}T00:00:00`);
+    anchor.setHours(0, 0, 0, 0);
+    const cal = activity.createActivityCalendar(items, anchor, 365);
+    const stats = activity.getActivitySummaryStats(cal, buildDate);
+    return {
+      activityDays: cal.activityDays,
+      totalActivities: cal.totalActivities,
+      monthActivities: stats.monthActivities,
+      longestStreak: stats.longestStreak,
+    };
+  };
+
+  const baseline = compute();
+  assert.deepEqual(baseline, { activityDays: 3, totalActivities: 6, monthActivities: 3, longestStreak: 1 });
+
+  const RealDate = globalThis.Date;
+  const fakeNow = RealDate.UTC(2035, 6, 15, 12, 0, 0);
+  class MockDate extends RealDate {
+    constructor(...args) {
+      if (args.length === 0) super(fakeNow);
+      else super(...args);
+    }
+    static now() {
+      return fakeNow;
+    }
+  }
+  globalThis.Date = MockDate;
+  try {
+    assert.deepEqual(compute(), baseline, '"本月" and "近一年" stats must stay anchored to buildDate when Date.now() jumps years ahead');
+  } finally {
+    globalThis.Date = RealDate;
+  }
+});
+
+test('window title and summary metrics derive from the same visible-weeks window', () => {
+  const buildDate = '2026-11-16';
+  const anchor = new Date(`${buildDate}T00:00:00`);
+  anchor.setHours(0, 0, 0, 0);
+  const records = [
+    { date: '2026-01-10', type: 'writing', count: 5 }, // outside 34-week window
+    { date: '2026-01-11', type: 'writing', count: 5 }, // outside 34-week window
+    { date: '2026-11-10', type: 'writing', count: 2 }, // inside 34-week window & current month
+    { date: '2026-11-11', type: 'site', count: 1 },    // inside 34-week window & current month
+  ];
+  const cal = activity.createActivityCalendar(records, anchor, 365);
+  const win34 = activity.getVisibleCalendarStats(cal, buildDate, 34);
+  assert.equal(win34.weeks, 34);
+  assert.equal(win34.windowLabel, '近 34 周');
+  assert.equal(win34.activityDays, 2);
+  assert.equal(win34.totalActivities, 3);
+  assert.equal(win34.longestStreak, 2);
+  assert.equal(win34.monthActivities, 3);
+
+  const winFull = activity.getVisibleCalendarStats(cal, buildDate, 53);
+  assert.equal(winFull.windowLabel, '近一年');
+  assert.equal(winFull.activityDays, 4);
+  assert.equal(winFull.totalActivities, 13);
+
+  const html = read('dist/index.html');
+  const decode = (text) => text.replace(/&quot;/g, '"').replace(/&#39;|&apos;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
+  const payload = JSON.parse(decode(html.match(/data-activity-payload="([^"]+)"/)[1]));
+  const builtCal = activity.createActivityCalendar(
+    [...payload.activities, ...payload.writing],
+    new Date(`${payload.buildDate}T00:00:00`),
+    365,
+  );
+  const expected = activity.getVisibleCalendarStats(builtCal, payload.buildDate, 34);
+  const plainHtml = html.replace(/<!--[\s\S]*?-->/g, '');
+  assert.ok(plainHtml.includes(`${expected.windowLabel} ${expected.activityDays} 活跃日 · ${expected.totalActivities} 次活动`));
+  assert.ok(plainHtml.includes(`最长连续 <strong>${expected.longestStreak} 天</strong>`));
+  assert.ok(plainHtml.includes(`本月活动 <strong>${expected.monthActivities} 次</strong>`));
 });

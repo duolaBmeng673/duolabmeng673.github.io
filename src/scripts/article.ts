@@ -73,6 +73,14 @@ document.querySelectorAll<HTMLImageElement>('.article-body img').forEach((image)
   hint.className = 'svg-hint'; hint.textContent = '查看 SVG 原图 →';
   link.append(hint);
 });
+const reducedMotion = () => window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
+const revealInsideFold = (element: HTMLElement) => {
+  let fold = element.closest<HTMLDetailsElement>('details.study-fold');
+  while (fold) {
+    fold.open = true;
+    fold = fold.parentElement?.closest<HTMLDetailsElement>('details.study-fold') ?? null;
+  }
+};
 const links = [...document.querySelectorAll<HTMLAnchorElement>('[data-toc-link]')];
 const headings = links.map((link) => document.getElementById(decodeURIComponent(link.hash.slice(1)))).filter((heading): heading is HTMLElement => Boolean(heading));
 const updateCurrent = () => {
@@ -84,6 +92,20 @@ const updateCurrent = () => {
     if (active) link.setAttribute('aria-current', 'location'); else link.removeAttribute('aria-current');
   });
 };
+const scrollToHeadingLink = (link: HTMLAnchorElement, event: MouseEvent) => {
+  if (!link.hash) return;
+  const id = decodeURIComponent(link.hash.slice(1));
+  const target = document.getElementById(id);
+  if (!target) return;
+  event.preventDefault();
+  revealInsideFold(target);
+  target.scrollIntoView({ behavior: reducedMotion() ? 'auto' : 'smooth', block: 'start' });
+  if (typeof history !== 'undefined') {
+    history.replaceState(null, '', `${location.pathname}${location.search}${link.hash}`);
+  }
+  updateCurrent();
+};
+links.forEach((link) => link.addEventListener('click', (event) => scrollToHeadingLink(link, event)));
 let framePending = false;
 document.addEventListener('study-mode-change', updateCurrent);
 if (headings.length) {
@@ -94,9 +116,115 @@ if (headings.length) {
   }, { passive: true });
   updateCurrent();
 }
-document.querySelectorAll<HTMLAnchorElement>('.article-toc-mobile a').forEach((link) => link.addEventListener('click', () => {
+document.querySelectorAll<HTMLAnchorElement>('.article-toc-mobile a').forEach((link) => link.addEventListener('click', (event) => {
+  scrollToHeadingLink(link, event);
   const details = link.closest('details'); if (details) details.open = false;
 }));
+
+const tocPanel = document.querySelector<HTMLElement>('[data-toc-panel]');
+if (tocPanel) {
+  const tocHeading = tocPanel.querySelector<HTMLElement>('[data-toc-heading]');
+  const jumpToggle = tocPanel.querySelector<HTMLButtonElement>('[data-toc-jump-toggle]');
+  const panes = [...tocPanel.querySelectorAll<HTMLElement>('[data-toc-pane]')];
+  const modulePanels = [...tocPanel.querySelectorAll<HTMLElement>('[data-toc-module-panel]')];
+  const openBtn = document.querySelector<HTMLButtonElement>('[data-toc-drawer-open]');
+  const closeBtn = tocPanel.querySelector<HTMLButtonElement>('[data-toc-drawer-close]');
+  const backdrop = document.querySelector<HTMLElement>('[data-toc-backdrop]');
+  const mobileMq = window.matchMedia?.('(max-width: 639px)');
+  let view: 'toc' | 'modules' | 'chapters' = 'toc';
+  let activeModuleLabel = '笔记直达';
+  let drawerOpen = false;
+
+  const syncDrawer = (nextOpen = drawerOpen) => {
+    const isMobile = Boolean(mobileMq?.matches);
+    drawerOpen = isMobile ? nextOpen : false;
+    if (openBtn) {
+      openBtn.hidden = !isMobile;
+      openBtn.setAttribute('aria-expanded', String(drawerOpen));
+    }
+    if (closeBtn) closeBtn.hidden = !isMobile;
+    if (backdrop) backdrop.hidden = !drawerOpen;
+    tocPanel.classList.toggle('is-open', drawerOpen);
+    tocPanel.inert = isMobile && !drawerOpen;
+  };
+
+  const scrollToActiveChapterItem = (pane: HTMLElement) => {
+    const visibleMod = modulePanels.find((p) => !p.hidden);
+    const activeItem = visibleMod?.querySelector<HTMLElement>('a.is-active, a[aria-current="page"]');
+    if (activeItem) {
+      requestAnimationFrame(() => {
+        activeItem.scrollIntoView({ block: 'center', behavior: reducedMotion() ? 'auto' : 'smooth' });
+      });
+    } else {
+      pane.scrollTop = 0;
+    }
+  };
+
+  const setView = (nextView: 'toc' | 'modules' | 'chapters', label?: string) => {
+    view = nextView;
+    if (label) activeModuleLabel = label;
+    tocPanel.dataset.tocView = nextView;
+    panes.forEach((pane) => {
+      const visible = pane.dataset.tocPane === nextView;
+      pane.setAttribute('aria-hidden', String(!visible));
+      if (visible && nextView === 'chapters') scrollToActiveChapterItem(pane);
+    });
+    if (jumpToggle) {
+      const inJump = nextView !== 'toc';
+      jumpToggle.textContent = inJump ? '返回目录' : '笔记直达';
+      jumpToggle.setAttribute('aria-expanded', String(inJump));
+      jumpToggle.classList.toggle('is-active', inJump);
+    }
+    if (tocHeading) {
+      tocHeading.textContent = nextView === 'toc' ? '目录' : nextView === 'modules' ? '笔记直达' : activeModuleLabel;
+    }
+  };
+
+  jumpToggle?.addEventListener('click', () => {
+    setView(view === 'toc' ? 'modules' : 'toc');
+  });
+
+  tocPanel.querySelectorAll<HTMLButtonElement>('[data-toc-select-module]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const slug = btn.dataset.tocSelectModule;
+      if (!slug) return;
+      modulePanels.forEach((panel) => {
+        panel.hidden = panel.dataset.tocModulePanel !== slug;
+      });
+      const label = btn.querySelector('strong')?.textContent?.trim() || '笔记直达';
+      setView('chapters', label);
+    });
+  });
+
+  tocPanel.querySelector('[data-toc-back-modules]')?.addEventListener('click', () => {
+    setView('modules');
+  });
+
+  openBtn?.addEventListener('click', () => {
+    syncDrawer(true);
+    (closeBtn ?? jumpToggle)?.focus();
+  });
+
+  const closeDrawer = (restoreFocus = true) => {
+    if (!drawerOpen) return;
+    syncDrawer(false);
+    if (restoreFocus) openBtn?.focus();
+  };
+
+  closeBtn?.addEventListener('click', () => closeDrawer(true));
+  backdrop?.addEventListener('click', () => closeDrawer(true));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && drawerOpen) {
+      e.preventDefault();
+      closeDrawer(true);
+    }
+  });
+  links.forEach((link) => link.addEventListener('click', () => {
+    if (mobileMq?.matches && drawerOpen) closeDrawer(false);
+  }));
+  mobileMq?.addEventListener('change', () => syncDrawer(false));
+  syncDrawer(false);
+}
 
 // Sandboxed local demos have opaque origins; trust only their Window and build key.
 const demos = [...document.querySelectorAll<HTMLIFrameElement>('iframe[data-demo-key]')];

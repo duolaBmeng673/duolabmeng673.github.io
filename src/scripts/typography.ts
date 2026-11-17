@@ -1,7 +1,7 @@
+import { STORAGE_KEYS } from '../lib/storage-keys';
+
 type FontSize = 'small' | 'medium' | 'large';
 type ThemeMode = 'dark' | 'light' | 'system';
-const STORAGE_KEY = 'duolabmeng673:typography:v1';
-const THEME_STORAGE_KEY = 'duolabmeng673:theme:v2';
 const scales = { small: '0.94', medium: '1', large: '1.12' };
 const root = document.documentElement;
 const sizes = document.querySelectorAll<HTMLButtonElement>('[data-font-size]');
@@ -12,7 +12,7 @@ const modes: ThemeMode[] = ['system', 'light', 'dark'];
 const media = matchMedia('(prefers-color-scheme: dark)');
 let settings: { size: FontSize; bold: boolean } = { size: 'medium', bold: false };
 try {
-  const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+  const saved = JSON.parse(localStorage.getItem(STORAGE_KEYS.typography) || '{}');
   if (saved.size in scales) settings.size = saved.size;
   settings.bold = saved.bold === true;
 } catch { /* Preferences are optional. */ }
@@ -23,11 +23,14 @@ const applyTypography = () => {
   root.toggleAttribute('data-font-bold', settings.bold);
   sizes.forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.fontSize === settings.size)));
   if (bold) bold.checked = settings.bold;
-  save(STORAGE_KEY, JSON.stringify(settings));
+  save(STORAGE_KEYS.typography, JSON.stringify(settings));
 };
+const themeMeta = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
 const applyTheme = () => {
-  root.dataset.theme = mode === 'system' ? (media.matches ? 'dark' : 'light') : mode;
+  const resolved = mode === 'system' ? (media.matches ? 'dark' : 'light') : mode;
+  root.dataset.theme = resolved;
   root.dataset.themeMode = mode;
+  if (themeMeta) themeMeta.content = resolved === 'dark' ? '#08070c' : '#f7f6f2';
 };
 sizes.forEach((button) => button.addEventListener('click', () => {
   settings.size = button.dataset.fontSize as FontSize;
@@ -36,7 +39,7 @@ sizes.forEach((button) => button.addEventListener('click', () => {
 bold?.addEventListener('change', () => { settings.bold = bold.checked; applyTypography(); });
 theme?.addEventListener('click', () => {
   mode = modes[(modes.indexOf(mode) + 1) % 3];
-  applyTheme(); save(THEME_STORAGE_KEY, mode);
+  applyTheme(); save(STORAGE_KEYS.theme, mode);
 });
 const shortcut = document.querySelector('[data-search-shortcut]');
 if (shortcut && /Mac/.test(navigator.userAgent)) shortcut.textContent = 'Cmd K';

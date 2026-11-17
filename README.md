@@ -48,6 +48,6 @@ npm run preview
 
 不随意改写文章实质内容或调整旧日期、URL、tags。必要的标题层级、错字、内部链接和元数据修复应保持最小范围；涉及技术结论的改动须有明确依据并记录。
 
-[技术交接](TECHNICAL_HANDOFF.md) · [定向优化记录](docs/REFINEMENT.md) · [此前审计](docs/BLOG_AUDIT.md)
+[技术交接](TECHNICAL_HANDOFF.md) · [定向优化记录](docs/REFINEMENT.md) · [前端规范](docs/frontend-conventions.md) · [上线方案](docs/launch-plan.md) · [此前审计](docs/BLOG_AUDIT.md)
 
 发现错误可使用文章末尾的勘误入口，或在[项目 Issues](https://github.com/duolaBmeng673/duolabmeng673.github.io/issues)中附上文章链接与问题说明。

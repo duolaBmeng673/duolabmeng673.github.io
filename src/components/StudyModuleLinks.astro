@@ -4,8 +4,28 @@ interface Props { modules: StudyModuleSummary[]; headingLevel?: 'h2' | 'h3' }
 const { modules, headingLevel: Heading = 'h2' } = Astro.props;
 ---
 <div class="study-series-list" aria-label="学习模块">
-  {modules.map((module) => <a class="study-series-row" data-category="Study Notes" href={module.href} data-study-module={module.slug}>
-    <div><p class="note-taxonomy">考研复习 · {module.series}</p><Heading class="module-title">{module.title}</Heading><p>{module.description}</p></div>
-    <span class="module-entry"><span>{module.count} 篇公开笔记</span><span>进入模块 →</span></span>
-  </a>)}
+  {modules.map((module) => <article class="study-series-row" data-category="Study Notes" data-study-module={module.slug}>
+    <div class="module-head">
+      <p class="note-taxonomy">考研复习 · {module.series}</p>
+      <Heading class="module-title"><a class="module-title-link" href={module.href}>{module.title}</a></Heading>
+      <p class="module-desc">{module.description}</p>
+    </div>
+    <div class="module-metrics">
+      <span class="module-metric-chip">{module.count} 篇笔记</span>
+      <span class="module-metric-chip">{module.chapterCount} 个章节</span>
+      <span class="module-metric-chip">{module.knowledgeTagCount} 个知识点</span>
+    </div>
+    <ul class="module-preview-list" aria-label={`${module.title}全部章节目录`}>
+      {module.previewChapters.map((ch) => (
+        <li class="module-preview-item">
+          <a href={ch.href}>
+            <span class="preview-code">{ch.code}</span>
+            <span class="preview-title">{ch.title}</span>
+            <span class="preview-count">{ch.count} 篇 →</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+    <a class="module-entry" href={module.href}><span>进入模块</span><span>→</span></a>
+  </article>)}
 </div>
