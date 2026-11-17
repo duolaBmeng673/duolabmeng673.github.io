@@ -37,6 +37,7 @@ const timeline = getTimeline(posts);
       </a>
     </div>
   </header>
+  <div class="archive-sentinel" data-archive-sentinel aria-hidden="true"></div>
   <section class="archive-tools" aria-label="文章筛选与浏览方式">
     <div class="archive-bar">
       <nav class="filter-row" aria-label="一级分类"><a class="filter-button is-active" href="/blog/" data-category-filter="all" aria-current="true">全部 <span>{regularPosts.length}</span></a>{summaries.map((summary) => <a class="filter-button" href={`/blog/?category=${encodeURIComponent(summary.category)}`} data-category-filter={summary.category}>{summary.category === 'Computer Science' ? '算法题解' : taxonomyLabel(summary.category)} <span>{summary.count}</span></a>)}</nav>
