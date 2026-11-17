@@ -1031,6 +1031,13 @@ a.masthead-stat-card:hover { transform: translateY(-2px); border-color: var(--bd
   transition: border-color var(--transition), background var(--transition), color var(--transition);
 }
 .article-taxonomy a.back-link:hover { border-color: var(--ac); background: var(--ac-soft); color: var(--ac); text-decoration: none; }
+@media (min-width: 640px) {
+  .article-taxonomy a.back-link,
+  .article-taxonomy a.back-link + span[aria-hidden="true"] { display: none; }
+}
+@media (max-width: 639px) {
+  .article-taxonomy > :not(.back-link) { display: none; }
+}
 .article-title-block { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: start; gap: 0.65rem 1rem; margin-bottom: 0.75rem; }
 .article-title-block h1 { margin-bottom: 0; font-size: clamp(1.85rem, 3.2vw, 2.7rem); overflow-wrap: anywhere; }
 .article-title-block .view-switch { justify-self: end; align-self: center; }
