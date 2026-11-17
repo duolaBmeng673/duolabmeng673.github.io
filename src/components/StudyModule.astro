@@ -35,7 +35,7 @@ const chapters = getStudyChapters(module.posts);
         <header>
           <span class="chapter-code">{chapter.code}</span>
           <h2><a href={getChapterHref(chapter.posts[0])}>{chapter.title}</a></h2>
-          <span class="chapter-count">{chapter.posts.length} 篇</span>
+          <span class="chapter-count">共 {chapter.posts.length} 篇</span>
         </header>
         <StudyNoteList posts={chapter.posts} chapterCode={chapter.code} />
       </section>)}
