@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 470" width="860" height="470" role="img" aria-label="ISO 7498-2 开放系统互连安全体系结构三维图">
+  <defs>
+    <marker id="ax-y" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M2 8 L5 2 L8 8 Z" fill="#6D28D9"/>
+    </marker>
+    <marker id="ax-x" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M2 2 L8 5 L2 8 Z" fill="#2563EB"/>
+    </marker>
+    <marker id="ax-z" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M2 2 L8 5 L2 8 Z" fill="#0D9488"/>
+    </marker>
+  </defs>
+
+  <rect width="860" height="470" rx="14" fill="#FAF9F6"/>
+
+  <!-- Header -->
+  <text x="36" y="42" font-family="system-ui,-apple-system,'Noto Sans SC',sans-serif" font-size="18" font-weight="700" fill="#18181B">ISO 7498-2 开放系统互连（OSI）安全体系结构</text>
+  <text x="36" y="64" font-family="system-ui,-apple-system,'Noto Sans SC',sans-serif" font-size="12.5" fill="#52525B">三维正交架构：在 OSI 七层协议栈上按需部署五类安全服务，并由八种安全机制支撑实现</text>
+
+  <!-- Left panel: Isometric 3D Axes & Conceptual Cube -->
+  <rect x="36" y="88" width="248" height="348" rx="12" fill="#FFFFFF" stroke="#E4E4E7" stroke-width="1.2"/>
+  <text x="160" y="114" text-anchor="middle" font-family="system-ui,-apple-system,'Noto Sans SC',sans-serif" font-size="13" font-weight="700" fill="#27272A">三维体系坐标</text>
+
+  <!-- Subtle 3D cube wireframe -->
+  <polygon points="154,195 210,165 210,235 154,265" fill="#EDE9FE" fill-opacity="0.45" stroke="#C4B5FD" stroke-width="1"/>
+  <polygon points="154,195 104,222 104,292 154,265" fill="#CCFBF1" fill-opacity="0.4" stroke="#5EEAD4" stroke-width="1"/>
+  <polygon points="104,292 154,265 210,235 160,262" fill="#DBEAFE" fill-opacity="0.45" stroke="#93C5FD" stroke-width="1"/>
+
+  <!-- Origin O -->
+  <circle cx="154" cy="265" r="4" fill="#18181B"/>
+  <!-- Y axis: OSI -->
+  <line x1="154" y1="265" x2="154" y2="145" stroke="#6D28D9" stroke-width="2.2" marker-end="url(#ax-y)"/>
+  <text x="154" y="136" text-anchor="middle" font-family="system-ui,-apple-system,'Noto Sans SC',sans-serif" font-size="11.5" font-weight="700" fill="#6D28D9">OSI 七层模型</text>
+
+  <!-- X axis: Security Mechanisms -->
+  <line x1="154" y1="265" x2="254" y2="265" stroke="#2563EB" stroke-width="2.2" marker-end="url(#ax-x)"/>
+  <text x="218" y="284" text-anchor="middle" font-family="system-ui,-apple-system,'Noto Sans SC',sans-serif" font-size="11.5" font-weight="700" fill="#2563EB">安全机制 (8)</text>
+
+  <!-- Z axis: Security Services -->
+  <line x1="154" y1="265" x2="72" y2="335" stroke="#0D9488" stroke-width="2.2" marker-end="url(#ax-z)"/>
+  <text x="96" y="355" text-anchor="middle" font-family="system-ui,-apple-system,'Noto Sans SC',sans-serif" font-size="11.5" font-weight="700" fill="#0D9488">安全服务 (5)</text>
+
+  <!-- Formula box -->
+  <rect x="52" y="374" width="216" height="44" rx="8" fill="#F4F4F5"/>
+  <text x="160" y="393" text-anchor="middle" font-family="system-ui,-apple-system,'Noto Sans SC',sans-serif" font-size="11" font-weight="600" fill="#3F3F46">安全点 = (协议层次, 安全服务, 实现机制)</text>
+  <text x="160" y="409" text-anchor="middle" font-family="system-ui,-apple-system,'Noto Sans SC',sans-serif" font-size="10.5" fill="#71717A">服务决定“做什么”，机制决定“怎么做”</text>
+
+  <!-- Column 2: Y Axis - OSI 7 Layers -->
+  <rect x="304" y="88" width="176" height="348" rx="12" fill="#FFFFFF" stroke="#C4B5FD" stroke-width="1.3"/>
+  <rect x="304" y="88" width="176" height="34" rx="12" fill="#F3E8FF"/>
+  <rect x="304" y="110" width="176" height="12" fill="#F3E8FF"/>
+  <text x="392" y="110" text-anchor="middle" font-family="system-ui,-apple-system,'Noto Sans SC',sans-serif" font-size="13" font-weight="700" fill="#581C87">① OSI 参考模型（7 层）</text>
+
+  <g font-family="system-ui,-apple-system,'Noto Sans SC',sans-serif" font-size="12.5" font-weight="600" fill="#27272A" text-anchor="middle">
+    <rect x="322" y="134" width="140" height="34" rx="7" fill="#FAF5FF" stroke="#DDD6FE"/><text x="392" y="156">7. 应用层</text>
+    <rect x="322" y="176" width="140" height="34" rx="7" fill="#FAF5FF" stroke="#DDD6FE"/><text x="392" y="198">6. 表示层</text>
+    <rect x="322" y="218" width="140" height="34" rx="7" fill="#FAF5FF" stroke="#DDD6FE"/><text x="392" y="240">5. 会话层</text>
+    <rect x="322" y="260" width="140" height="34" rx="7" fill="#FAF5FF" stroke="#DDD6FE"/><text x="392" y="282">4. 传输层</text>
+    <rect x="322" y="302" width="140" height="34" rx="7" fill="#FAF5FF" stroke="#DDD6FE"/><text x="392" y="324">3. 网络层</text>
+    <rect x="322" y="344" width="140" height="34" rx="7" fill="#FAF5FF" stroke="#DDD6FE"/><text x="392" y="366">2. 链路层</text>
+    <rect x="322" y="386" width="140" height="34" rx="7" fill="#FAF5FF" stroke="#DDD6FE"/><text x="392" y="408">1. 物理层</text>
+  </g>
+
+  <!-- Column 3 Top: Z Axis - 5 Security Services -->
+  <rect x="500" y="88" width="324" height="162" rx="12" fill="#FFFFFF" stroke="#99F6E4" stroke-width="1.3"/>
+  <rect x="500" y="88" width="324" height="34" rx="12" fill="#CCFBF1"/>
+  <rect x="500" y="110" width="324" height="12" fill="#CCFBF1"/>
+  <text x="662" y="110" text-anchor="middle" font-family="system-ui,-apple-system,'Noto Sans SC',sans-serif" font-size="13" font-weight="700" fill="#115E59">② 五类安全服务（需要提供什么保护）</text>
+
+  <g font-family="system-ui,-apple-system,'Noto Sans SC',sans-serif" font-size="12" font-weight="600" fill="#134E4A" text-anchor="middle">
+    <rect x="518" y="136" width="90" height="42" rx="8" fill="#F0FDFA" stroke="#5EEAD4"/><text x="563" y="161">鉴别服务</text>
+    <rect x="617" y="136" width="90" height="42" rx="8" fill="#F0FDFA" stroke="#5EEAD4"/><text x="662" y="161">访问控制</text>
+    <rect x="716" y="136" width="90" height="42" rx="8" fill="#F0FDFA" stroke="#5EEAD4"/><text x="761" y="161">数据机密性</text>
+    <rect x="546" y="190" width="110" height="42" rx="8" fill="#F0FDFA" stroke="#5EEAD4"/><text x="601" y="215">数据完整性</text>
+    <rect x="668" y="190" width="110" height="42" rx="8" fill="#F0FDFA" stroke="#5EEAD4"/><text x="723" y="215">抗抵赖性</text>
+  </g>
+
+  <!-- Column 3 Bottom: X Axis - 8 Security Mechanisms -->
+  <rect x="500" y="266" width="324" height="170" rx="12" fill="#FFFFFF" stroke="#BFDBFE" stroke-width="1.3"/>
+  <rect x="500" y="266" width="324" height="34" rx="12" fill="#DBEAFE"/>
+  <rect x="500" y="288" width="324" height="12" fill="#DBEAFE"/>
+  <text x="662" y="288" text-anchor="middle" font-family="system-ui,-apple-system,'Noto Sans SC',sans-serif" font-size="13" font-weight="700" fill="#1E3A8A">③ 八种安全机制（用什么技术实现）</text>
+
+  <g font-family="system-ui,-apple-system,'Noto Sans SC',sans-serif" font-size="11" font-weight="600" fill="#1E40AF" text-anchor="middle">
+    <rect x="516" y="314" width="68" height="46" rx="8" fill="#EFF6FF" stroke="#93C5FD"/><text x="550" y="341">加密</text>
+    <rect x="590" y="314" width="68" height="46" rx="8" fill="#EFF6FF" stroke="#93C5FD"/><text x="624" y="341">数字签名</text>
+    <rect x="664" y="314" width="68" height="46" rx="8" fill="#EFF6FF" stroke="#93C5FD"/><text x="698" y="341">访问控制</text>
+    <rect x="738" y="314" width="70" height="46" rx="8" fill="#EFF6FF" stroke="#93C5FD"/><text x="773" y="341">数据完整性</text>
+
+    <rect x="516" y="372" width="68" height="46" rx="8" fill="#EFF6FF" stroke="#93C5FD"/><text x="550" y="399">鉴别交换</text>
+    <rect x="590" y="372" width="68" height="46" rx="8" fill="#EFF6FF" stroke="#93C5FD"/><text x="624" y="399">业务流填充</text>
+    <rect x="664" y="372" width="68" height="46" rx="8" fill="#EFF6FF" stroke="#93C5FD"/><text x="698" y="399">路由控制</text>
+    <rect x="738" y="372" width="70" height="46" rx="8" fill="#EFF6FF" stroke="#93C5FD"/><text x="773" y="399">公证</text>
+  </g>
+</svg>
