@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import CountUpIsland from '../components/islands/CountUp.island';
+import CountUp from '../components/CountUp.astro';
 import { siteConfig } from '../config';
 import { getAllPosts } from '../lib/blog';
 
@@ -29,17 +29,17 @@ const studyPct = ((studyCount / totalCount) * 100).toFixed(1);
     <div class="masthead-stats" aria-label="站点收录统计">
       <div class="masthead-stat-card">
         <span class="masthead-stat-label">公开笔记</span>
-        <CountUpIsland client:visible to={posts.length} />
+        <CountUp to={posts.length} />
         <span class="masthead-stat-sub">持续同步构建</span>
       </div>
       <a class="masthead-stat-card" href="/blog/">
         <span class="masthead-stat-label">技术与论文</span>
-        <CountUpIsland client:visible to={researchCount + csCount} />
+        <CountUp to={researchCount + csCount} />
         <span class="masthead-stat-sub">论文 {researchCount} · 算法 {csCount}</span>
       </a>
       <a class="masthead-stat-card" href="/study-notes/837/">
         <span class="masthead-stat-label">837 专题</span>
-        <CountUpIsland client:visible to={studyCount} />
+        <CountUp to={studyCount} />
         <span class="masthead-stat-sub">信安 {infoSecCount} · 网安 {netSecCount}</span>
       </a>
     </div>
