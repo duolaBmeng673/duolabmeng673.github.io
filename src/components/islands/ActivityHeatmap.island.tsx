@@ -284,7 +284,7 @@ export default function ActivityHeatmapIsland({
       ctx.save();
       ctx.fillStyle = tsCol;
       const labelFontSize = m.cellW >= 11 ? 12 : m.cellW >= 9 ? 11 : 10;
-      ctx.font = `500 ${labelFontSize}px Inter, "Noto Sans SC", system-ui, sans-serif`;
+      ctx.font = `500 ${labelFontSize}px "Noto Sans SC", system-ui, sans-serif`;
       ctx.textBaseline = 'top';
       ctx.textAlign = 'left';
       let prevMonth = '';

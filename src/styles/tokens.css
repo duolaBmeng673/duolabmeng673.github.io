@@ -53,7 +53,7 @@
 
   --gutter: clamp(20px, 3vw, 56px);
   --maxw: 1760px;
-  --sans: Inter, "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+  --sans: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
   --serif: "Iowan Old Style", "Noto Serif SC", "Songti SC", Georgia, serif;
   --mono: "SF Mono", ui-monospace, Menlo, Monaco, Consolas, monospace;
 
