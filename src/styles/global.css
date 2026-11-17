@@ -1460,12 +1460,12 @@ a.masthead-stat-card:hover { transform: translateY(-2px); border-color: var(--bd
 .study-breadcrumb a:hover { text-decoration: underline; text-underline-offset: 3px; }
 .study-status { margin: 0.4rem 0 1.5rem; color: var(--ts); font-size: 0.84rem; }
 .masthead-stats-col { display: flex; flex-direction: column; align-items: stretch; }
-.masthead-stats-col .study-status { margin: 0.48rem 0 0; font-size: 0.75rem; color: var(--tm); text-align: right; }
+.page-intro .masthead-stats-col p.study-status { margin: 0.48rem 0 0; max-width: none; font-size: 0.75rem; line-height: 1.4; color: var(--tm); text-align: right; }
 @media (max-width: 859px) {
-  .masthead-stats-col .study-status { text-align: left; }
+  .page-intro .masthead-stats-col p.study-status { text-align: left; }
 }
 body.study-overview-page { display: flex; flex-direction: column; min-height: 100vh; min-height: 100dvh; }
-body.study-overview-page main { flex: 1 0 auto; min-height: calc(100vh - 16rem); min-height: calc(100dvh - 16rem); }
+body.study-overview-page main { flex: 1 0 auto; min-height: 0; }
 .study-chapter { padding: 1.55rem 0 0.5rem; }
 .study-chapter:first-child { padding-top: 0.85rem; }
 .study-chapter > header { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; margin-bottom: 0.9rem; padding-bottom: 0.55rem; border-bottom: 1px solid var(--bd); }
