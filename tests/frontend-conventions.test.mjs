@@ -165,3 +165,13 @@ test('homepage total shipped JS stays within 100 KB gzip budget', async () => {
     `Homepage JS gzip total ${(totalGzipBytes / 1024).toFixed(2)} KB exceeds 100 KB budget`,
   );
 });
+
+test('ambient-grid uses (hover: none) / (pointer: coarse) media query for non-home static mode and keeps desktop pointer listeners', () => {
+  const layoutSource = readFileSync(join(ROOT, 'src/layouts/BaseLayout.astro'), 'utf8');
+  assert.ok(!layoutSource.includes('data-ambient-static'), 'BaseLayout must not hardcode data-ambient-static for non-homepage routes');
+
+  const gridSource = readFileSync(join(ROOT, 'src/scripts/ambient-grid.ts'), 'utf8');
+  assert.match(gridSource, /hover:\s*none|pointer:\s*coarse/, 'ambient-grid must gate non-home static mode via (hover: none) / (pointer: coarse)');
+  assert.ok(gridSource.includes("'pointermove'"), 'ambient-grid must register pointermove listener for desktop');
+  assert.ok(gridSource.includes("'pointerdown'"), 'ambient-grid must register pointerdown listener for desktop');
+});

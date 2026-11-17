@@ -9,15 +9,20 @@ if (canvas) {
   const ctx = canvas.getContext('2d');
   if (ctx) {
     const squareSize = 44;
-    const isStaticPage = canvas.hasAttribute('data-ambient-static');
     const homeRoot = document.querySelector<HTMLElement>('[data-home-root]');
+    const isHome = Boolean(homeRoot) || document.body.classList.contains('home-page');
     const motionMedia = window.matchMedia?.('(prefers-reduced-motion: reduce)');
     const pointerMedia = window.matchMedia?.('(hover: hover) and (pointer: fine)');
+    const coarseOrNoHoverMedia = window.matchMedia?.('(hover: none), (pointer: coarse)');
 
     let systemReduceMotion = motionMedia?.matches ?? false;
     let userPaused = homeRoot?.dataset.motion === 'paused';
-    let reduceMotion = isStaticPage || systemReduceMotion || userPaused;
     let hasFinePointer = pointerMedia?.matches ?? true;
+    let isCoarseOrNoHover = coarseOrNoHoverMedia?.matches ?? false;
+    let reduceMotion = systemReduceMotion || userPaused || (!isHome && isCoarseOrNoHover);
+    const syncReduceMotion = () => {
+      reduceMotion = systemReduceMotion || userPaused || (!isHome && isCoarseOrNoHover);
+    };
     let theme = document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
     let width = 0;
     let height = 0;
@@ -250,64 +255,77 @@ if (canvas) {
       { passive: true }
     );
 
-    if (!isStaticPage) {
-      window.addEventListener(
-        'pointermove',
-        (e) => {
-          if (reduceMotion || !hasFinePointer) return;
-          const rect = canvas.getBoundingClientRect();
-          const lx = e.clientX - rect.left;
-          const ly = e.clientY - rect.top;
-          if (lx >= 0 && lx <= rect.width && ly >= 0 && ly <= rect.height) {
-            pointer.x = lx;
-            pointer.y = ly;
-            pointer.inside = true;
-            igniteAt(lx, ly);
-            startLoop();
-          } else {
-            pointer.inside = false;
-          }
-        },
-        { passive: true }
-      );
+    window.addEventListener(
+      'pointermove',
+      (e) => {
+        if (reduceMotion || !hasFinePointer) return;
+        const rect = canvas.getBoundingClientRect();
+        const lx = e.clientX - rect.left;
+        const ly = e.clientY - rect.top;
+        if (lx >= 0 && lx <= rect.width && ly >= 0 && ly <= rect.height) {
+          pointer.x = lx;
+          pointer.y = ly;
+          pointer.inside = true;
+          igniteAt(lx, ly);
+          startLoop();
+        } else {
+          pointer.inside = false;
+        }
+      },
+      { passive: true }
+    );
 
-      window.addEventListener(
-        'pointerdown',
-        (e) => {
-          if (reduceMotion || !hasFinePointer) return;
-          const rect = canvas.getBoundingClientRect();
-          const lx = e.clientX - rect.left;
-          const ly = e.clientY - rect.top;
-          if (lx >= 0 && lx <= rect.width && ly >= 0 && ly <= rect.height) {
-            ripples.push({
-              wx: lx + offsetX,
-              wy: ly + offsetY,
-              age: 0,
-              duration: 0.65,
-              speed: 380,
-            });
-            startLoop();
-          }
-        },
-        { passive: true }
-      );
+    window.addEventListener(
+      'pointerdown',
+      (e) => {
+        if (reduceMotion || !hasFinePointer) return;
+        const rect = canvas.getBoundingClientRect();
+        const lx = e.clientX - rect.left;
+        const ly = e.clientY - rect.top;
+        if (lx >= 0 && lx <= rect.width && ly >= 0 && ly <= rect.height) {
+          ripples.push({
+            wx: lx + offsetX,
+            wy: ly + offsetY,
+            age: 0,
+            duration: 0.65,
+            speed: 380,
+          });
+          startLoop();
+        }
+      },
+      { passive: true }
+    );
 
-      document.addEventListener('mouseleave', () => {
-        pointer.inside = false;
-      });
+    document.addEventListener('mouseleave', () => {
+      pointer.inside = false;
+    });
 
-      document.addEventListener('visibilitychange', () => {
-        if (!document.hidden && inView && !reduceMotion) startLoop();
-        else if (document.hidden) stopLoop();
-      });
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden && inView && !reduceMotion) startLoop();
+      else if (document.hidden) stopLoop();
+    });
 
-      window.addEventListener('duolabmeng673:preset-change', () => {
-        syncTrailColor();
-      });
+    window.addEventListener('duolabmeng673:preset-change', () => {
+      syncTrailColor();
+    });
 
-      motionMedia?.addEventListener('change', (e) => {
-        systemReduceMotion = e.matches;
-        reduceMotion = systemReduceMotion || userPaused;
+    motionMedia?.addEventListener('change', (e) => {
+      systemReduceMotion = e.matches;
+      syncReduceMotion();
+      if (reduceMotion) {
+        activeCells.clear();
+        ripples.length = 0;
+        stopLoop();
+        renderFrame(performance.now());
+      } else {
+        startLoop();
+      }
+    });
+
+    if (homeRoot) {
+      new MutationObserver(() => {
+        userPaused = homeRoot.dataset.motion === 'paused';
+        syncReduceMotion();
         if (reduceMotion) {
           activeCells.clear();
           ripples.length = 0;
@@ -316,40 +334,38 @@ if (canvas) {
         } else {
           startLoop();
         }
-      });
+      }).observe(homeRoot, { attributes: true, attributeFilter: ['data-motion'] });
+    }
 
-      if (homeRoot) {
-        new MutationObserver(() => {
-          userPaused = homeRoot.dataset.motion === 'paused';
-          reduceMotion = systemReduceMotion || userPaused;
-          if (reduceMotion) {
-            activeCells.clear();
-            ripples.length = 0;
-            stopLoop();
-            renderFrame(performance.now());
-          } else {
-            startLoop();
-          }
-        }).observe(homeRoot, { attributes: true, attributeFilter: ['data-motion'] });
+    const handlePointerMediaChange = () => {
+      hasFinePointer = pointerMedia?.matches ?? true;
+      isCoarseOrNoHover = coarseOrNoHoverMedia?.matches ?? false;
+      syncReduceMotion();
+      pointer.inside = false;
+      if (reduceMotion) {
+        activeCells.clear();
+        ripples.length = 0;
+        stopLoop();
+        renderFrame(performance.now());
+      } else if (!hasFinePointer && inView && !document.hidden) {
+        startLoop();
+      } else if (hasFinePointer && activeCells.size === 0 && ripples.length === 0) {
+        stopLoop();
       }
+    };
 
-      pointerMedia?.addEventListener('change', (e) => {
-        hasFinePointer = e.matches;
-        pointer.inside = false;
-        if (!hasFinePointer && !reduceMotion && inView && !document.hidden) startLoop();
-        else if (hasFinePointer && activeCells.size === 0 && ripples.length === 0) stopLoop();
-      });
+    pointerMedia?.addEventListener('change', handlePointerMediaChange);
+    coarseOrNoHoverMedia?.addEventListener('change', handlePointerMediaChange);
 
-      if ('IntersectionObserver' in window) {
-        new IntersectionObserver(
-          ([entry]) => {
-            inView = entry?.isIntersecting ?? true;
-            if (inView && !reduceMotion && !document.hidden) startLoop();
-            else if (!inView) stopLoop();
-          },
-          { threshold: 0.01 }
-        ).observe(canvas);
-      }
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(
+        ([entry]) => {
+          inView = entry?.isIntersecting ?? true;
+          if (inView && !reduceMotion && !document.hidden) startLoop();
+          else if (!inView) stopLoop();
+        },
+        { threshold: 0.01 }
+      ).observe(canvas);
     }
 
     new MutationObserver(() => {
