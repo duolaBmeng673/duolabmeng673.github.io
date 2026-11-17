@@ -109,3 +109,47 @@ export function getActivitySummaryStats(
 
   return { longestStreak, monthActivities };
 }
+
+export function getVisibleCalendarStats(
+  calendar: ReturnType<typeof createActivityCalendar>,
+  buildDate: string,
+  visibleCols: number,
+) {
+  const totalCols = calendar.columns.length;
+  const startCol = Math.max(0, totalCols - Math.max(1, visibleCols));
+  const weeks = totalCols - startCol;
+  const currentMonth = buildDate.slice(0, 7);
+
+  let activityDays = 0;
+  let totalActivities = 0;
+  let longestStreak = 0;
+  let runningStreak = 0;
+  let monthActivities = 0;
+
+  for (let c = startCol; c < totalCols; c++) {
+    const col = calendar.columns[c];
+    for (const day of col) {
+      if (!day) continue;
+      const dayTotal = activityTypes.reduce((sum, type) => sum + day.types[type], 0);
+      if (dayTotal > 0) {
+        activityDays += 1;
+        totalActivities += dayTotal;
+        runningStreak += 1;
+        if (runningStreak > longestStreak) longestStreak = runningStreak;
+        if (day.date.startsWith(currentMonth)) monthActivities += dayTotal;
+      } else {
+        runningStreak = 0;
+      }
+    }
+  }
+
+  const windowLabel = weeks >= 52 ? '近一年' : `近 ${weeks} 周`;
+  return {
+    weeks,
+    windowLabel,
+    activityDays,
+    totalActivities,
+    longestStreak,
+    monthActivities,
+  };
+}

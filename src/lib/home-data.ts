@@ -2,7 +2,7 @@ import { activities } from '../data/activities';
 import { siteConfig } from '../config';
 import {
   createActivityCalendar,
-  getActivitySummaryStats,
+  getVisibleCalendarStats,
   localDateKey,
   type ActivityRecord,
 } from './activity';
@@ -173,6 +173,7 @@ export async function getHomePageData() {
     label: taxonomyLabel(post.data.category),
     count: 1,
     description: getPostTitle(post),
+    href: getPostHref(post),
   }));
 
   const heatmapActivityItems: HeatmapItemPayload[] = activities.map((act) => ({
@@ -181,12 +182,13 @@ export async function getHomePageData() {
     label: act.type === 'site' ? '博客功能' : taxonomyLabel(act.type),
     count: act.count,
     description: act.description ?? '',
+    href: '/about/',
   }));
 
   const today = new Date();
   const buildDate = localDateKey(today);
   const calendar = createActivityCalendar([...activities, ...writingRecords], today);
-  const calendarSummary = getActivitySummaryStats(calendar, buildDate);
+  const visibleSummary = getVisibleCalendarStats(calendar, buildDate, 34);
 
   // Recent real records for static no-JS / pre-hydration fallback & initial active day
   const combinedItems = [...heatmapActivityItems, ...heatmapWritingItems].sort((a, b) =>
@@ -330,10 +332,12 @@ export async function getHomePageData() {
     swapCards,
     heatmap: {
       buildDate,
-      activeDays: calendar.activityDays,
-      totalActivities: calendar.totalActivities,
-      longestStreak: calendarSummary.longestStreak,
-      monthActivities: calendarSummary.monthActivities,
+      windowLabel: visibleSummary.windowLabel,
+      visibleWeeks: visibleSummary.weeks,
+      activeDays: visibleSummary.activityDays,
+      totalActivities: visibleSummary.totalActivities,
+      longestStreak: visibleSummary.longestStreak,
+      monthActivities: visibleSummary.monthActivities,
       latestActiveDate,
       latestActiveEntries,
       recentActivityPreview,

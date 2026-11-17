@@ -4,7 +4,7 @@ import {
   activityLevel,
   activityTypes,
   createActivityCalendar,
-  getActivitySummaryStats,
+  getVisibleCalendarStats,
   type ActivityRecord,
 } from '../../lib/activity';
 
@@ -14,6 +14,7 @@ export interface HeatmapItemPayload {
   label: string;
   count: number;
   description: string;
+  href?: string;
 }
 
 export interface ActivityHeatmapIslandProps {
@@ -25,6 +26,7 @@ export interface ActivityHeatmapIslandProps {
   initialTotalActivities: number;
   initialLongestStreak: number;
   initialMonthActivities: number;
+  initialWindowLabel?: string;
 }
 
 interface CalendarCell {
@@ -41,6 +43,16 @@ interface CalendarCell {
 const DESKTOP_COLS = 34;
 const PHONE_COLS = 22;
 const PAD = 2;
+const WEEKDAYS = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'] as const;
+
+function formatDateWithWeekday(dateStr?: string | null) {
+  if (!dateStr) return '—';
+  const parts = dateStr.split('-').map(Number);
+  if (parts.length !== 3 || parts.some(Number.isNaN)) return dateStr;
+  const [y, m, d] = parts;
+  const dow = WEEKDAYS[new Date(y, m - 1, d).getDay()];
+  return `${dateStr} · ${dow}`;
+}
 
 function buildHeatmapMap(writingItems: HeatmapItemPayload[], activityItems: HeatmapItemPayload[]) {
   const map: Record<string, HeatmapItemPayload[]> = {};
@@ -66,7 +78,6 @@ function buildCalendar(
   }));
 
   const calendar = createActivityCalendar(records, today, 365);
-  const summary = getActivitySummaryStats(calendar, anchorDateStr);
   const totalCols = calendar.columns.length;
   const cells: CalendarCell[] = [];
 
@@ -108,12 +119,9 @@ function buildCalendar(
     null;
 
   return {
+    calendar,
     totalCols,
     cells,
-    totalActs: calendar.totalActivities,
-    activeDays: calendar.activityDays,
-    longestStreak: summary.longestStreak,
-    monthActivities: summary.monthActivities,
     defaultSelected,
   };
 }
@@ -127,37 +135,53 @@ export default function ActivityHeatmapIsland({
   initialTotalActivities,
   initialLongestStreak,
   initialMonthActivities,
+  initialWindowLabel = `近 ${DESKTOP_COLS} 周`,
 }: ActivityHeatmapIslandProps) {
   const [hydrated, setHydrated] = useState(false);
   const [themeAttr, setThemeAttr] = useState<string>(() =>
     typeof document !== 'undefined' ? document.documentElement.dataset.theme || 'light' : 'light',
   );
+  const [visibleCols, setVisibleCols] = useState<number>(DESKTOP_COLS);
 
   const actMap = useMemo(() => buildHeatmapMap(writingItems, activityItems), [writingItems, activityItems]);
-  const { totalCols, cells, totalActs, activeDays, longestStreak, monthActivities, defaultSelected } = useMemo(
+  const { calendar, totalCols, cells, defaultSelected } = useMemo(
     () => buildCalendar(writingItems, activityItems, actMap, buildDate),
     [writingItems, activityItems, actMap, buildDate],
   );
+  const visibleStats = useMemo(
+    () => getVisibleCalendarStats(calendar, buildDate, visibleCols),
+    [calendar, buildDate, visibleCols],
+  );
 
-  const [selectedKey, setSelectedKey] = useState<string>(defaultSelected?.key || '');
+  const [pinnedKey, setPinnedKey] = useState<string | null>(null);
   const [hoveredCell, setHoveredCell] = useState<CalendarCell | null>(null);
+  const [focusedCell, setFocusedCell] = useState<CalendarCell | null>(null);
+  const [hasBottomOverflow, setHasBottomOverflow] = useState(false);
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const wrapRef = useRef<HTMLDivElement | null>(null);
+  const sidebarBodyRef = useRef<HTMLDivElement | null>(null);
   const metricsRef = useRef({
-    size: 10,
+    cellW: 10,
+    cellH: 13,
     gap: 2.5,
     offsetX: PAD,
     offsetY: PAD + 20,
-    colCount: totalCols,
-    width: 600,
+    colCount: Math.min(totalCols, DESKTOP_COLS),
+    width: 560,
     height: 120,
   });
-  const selectedKeyRef = useRef(selectedKey);
+  const pinnedKeyRef = useRef<string | null>(null);
   const hoveredKeyRef = useRef<string | null>(null);
-  selectedKeyRef.current = selectedKey;
+  const focusedKeyRef = useRef<string | null>(null);
+  pinnedKeyRef.current = pinnedKey;
 
-  const activeCell = hoveredCell || cells.find((c) => !c.future && c.key === selectedKey) || defaultSelected;
+  const pinnedCell = useMemo(
+    () => (pinnedKey ? cells.find((c) => !c.future && c.key === pinnedKey) || null : null),
+    [cells, pinnedKey],
+  );
+  const activeCell = hoveredCell || focusedCell || pinnedCell || defaultSelected;
+  const activeEntries = activeCell?.entries ?? [];
 
   useEffect(() => {
     setHydrated(true);
@@ -169,6 +193,25 @@ export default function ActivityHeatmapIsland({
     mo.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
     return () => mo.disconnect();
   }, []);
+
+  useEffect(() => {
+    const el = sidebarBodyRef.current;
+    if (!el) return undefined;
+    const updateOverflow = () => {
+      const overflowing = el.scrollHeight > el.clientHeight + 2 && el.scrollTop + el.clientHeight < el.scrollHeight - 2;
+      setHasBottomOverflow(overflowing);
+    };
+    el.scrollTop = 0;
+    const raf = requestAnimationFrame(updateOverflow);
+    el.addEventListener('scroll', updateOverflow, { passive: true });
+    const ro = 'ResizeObserver' in window ? new ResizeObserver(updateOverflow) : null;
+    ro?.observe(el);
+    return () => {
+      cancelAnimationFrame(raf);
+      el.removeEventListener('scroll', updateOverflow);
+      ro?.disconnect();
+    };
+  }, [hydrated, activeCell?.key, activeEntries.length]);
 
   useEffect(() => {
     if (!hydrated) return undefined;
@@ -188,13 +231,14 @@ export default function ActivityHeatmapIsland({
 
     const drawCell = (q: CalendarCell, startCol: number, m: typeof metricsRef.current, isHovered: boolean) => {
       const vc = q.c - startCol;
-      const x = m.offsetX + vc * (m.size + m.gap);
-      const y = m.offsetY + q.r * (m.size + m.gap);
+      const x = m.offsetX + vc * (m.cellW + m.gap);
+      const y = m.offsetY + q.r * (m.cellH + m.gap);
       const pop = isHovered ? 1.5 : 0;
       const rx = x - pop;
       const ry = y - pop;
-      const side = m.size + pop * 2;
-      const radius = isHovered ? Math.max(2.5, Math.round(m.size * 0.28)) : Math.max(2, Math.round(m.size * 0.22));
+      const w = m.cellW + pop * 2;
+      const h = m.cellH + pop * 2;
+      const radius = isHovered ? Math.max(2.5, Math.round(m.cellW * 0.28)) : Math.max(2, Math.round(m.cellW * 0.22));
 
       ctx.save();
       if (isHovered) {
@@ -203,13 +247,14 @@ export default function ActivityHeatmapIsland({
         ctx.shadowOffsetY = 1.5;
       }
       ctx.beginPath();
-      if (ctx.roundRect) ctx.roundRect(rx, ry, side, side, radius);
-      else ctx.rect(rx, ry, side, side);
+      if (ctx.roundRect) ctx.roundRect(rx, ry, w, h, radius);
+      else ctx.rect(rx, ry, w, h);
       ctx.fillStyle = q.onlySite ? siteCol : colors[q.lv];
       ctx.fill();
       ctx.restore();
 
-      const isSelected = Boolean(selectedKeyRef.current && q.key === selectedKeyRef.current);
+      const isPinned = Boolean(pinnedKeyRef.current && q.key === pinnedKeyRef.current);
+      const isFocused = Boolean(focusedKeyRef.current && q.key === focusedKeyRef.current);
       if (isHovered) {
         ctx.strokeStyle = elevCol;
         ctx.lineWidth = 2;
@@ -217,9 +262,16 @@ export default function ActivityHeatmapIsland({
         ctx.strokeStyle = txCol;
         ctx.lineWidth = 1.5;
         ctx.stroke();
-      } else if (isSelected) {
+      } else if (isPinned) {
+        ctx.strokeStyle = elevCol;
+        ctx.lineWidth = 2;
+        ctx.stroke();
         ctx.strokeStyle = txCol;
-        ctx.lineWidth = 1.5;
+        ctx.lineWidth = 1.6;
+        ctx.stroke();
+      } else if (isFocused) {
+        ctx.strokeStyle = txCol;
+        ctx.lineWidth = 1.2;
         ctx.stroke();
       }
     };
@@ -229,10 +281,9 @@ export default function ActivityHeatmapIsland({
       const startCol = totalCols - m.colCount;
       ctx.clearRect(0, 0, m.width, m.height);
 
-      // Draw top month tick labels aligned to first column of each month
       ctx.save();
       ctx.fillStyle = tsCol;
-      const labelFontSize = m.size >= 11.5 ? 12 : m.size >= 9 ? 11 : 10;
+      const labelFontSize = m.cellW >= 11 ? 12 : m.cellW >= 9 ? 11 : 10;
       ctx.font = `500 ${labelFontSize}px Inter, "Noto Sans SC", system-ui, sans-serif`;
       ctx.textBaseline = 'top';
       ctx.textAlign = 'left';
@@ -259,7 +310,7 @@ export default function ActivityHeatmapIsland({
           const monthNum = Number(colFirstDay.key.slice(5, 7));
           const labelText = `${monthNum}月`;
           const textW = ctx.measureText(labelText).width;
-          const x = m.offsetX + vc * (m.size + m.gap);
+          const x = m.offsetX + vc * (m.cellW + m.gap);
           if (x >= lastLabelRight + 8 && x + textW <= m.width - m.offsetX) {
             ctx.fillText(labelText, x, PAD);
             lastLabelRight = x + textW;
@@ -285,15 +336,18 @@ export default function ActivityHeatmapIsland({
     };
 
     const layout = () => {
-      const containerW = Math.max(220, box.clientWidth || box.getBoundingClientRect().width || 560);
+      const containerW = Math.max(220, box.clientWidth || box.getBoundingClientRect().width || 420);
       const isPhone = typeof window !== 'undefined' && window.innerWidth < 640;
       const colCount = Math.min(totalCols, isPhone ? PHONE_COLS : DESKTOP_COLS);
-      const gap = isPhone ? 3 : containerW >= 720 ? 3.5 : 2.5;
+      setVisibleCols((prev) => (prev === colCount ? prev : colCount));
+
+      const gap = isPhone ? 3 : containerW >= 540 ? 3 : 2.5;
       const availW = Math.max(120, containerW - PAD * 2);
-      const size = (availW - (colCount - 1) * gap) / colCount;
-      const labelH = size >= 11.5 ? 21 : 19;
+      const cellW = (availW - (colCount - 1) * gap) / colCount;
+      const cellH = isPhone ? cellW : Math.min(28, Math.round(cellW * 1.35 * 10) / 10);
+      const labelH = cellW >= 11 ? 20 : 18;
       const W = containerW;
-      const gridH = 7 * size + 6 * gap;
+      const gridH = 7 * cellH + 6 * gap;
       const offsetY = PAD + labelH;
       const H = Math.ceil(offsetY + gridH + PAD);
       const offsetX = PAD;
@@ -305,7 +359,7 @@ export default function ActivityHeatmapIsland({
       cv.height = Math.round(H * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-      metricsRef.current = { size, gap, offsetX, offsetY, colCount, width: W, height: H };
+      metricsRef.current = { cellW, cellH, gap, offsetX, offsetY, colCount, width: W, height: H };
       colors = [0, 1, 2, 3, 4].map((i) => cssVar(`--heat-${i}`, cssVar(`--h${i}`, '#e5e7eb')));
       siteCol = cssVar('--heat-site', cssVar('--h-site', '#52525b'));
       txCol = cssVar('--tx', '#121217');
@@ -318,12 +372,13 @@ export default function ActivityHeatmapIsland({
       const r = cv.getBoundingClientRect();
       const px = clientX - r.left;
       const py = clientY - r.top;
-      const { size, gap, offsetX, offsetY, colCount } = metricsRef.current;
+      const { cellW, cellH, gap, offsetX, offsetY, colCount } = metricsRef.current;
       const startCol = totalCols - colCount;
-      const step = size + gap;
+      const stepX = cellW + gap;
+      const stepY = cellH + gap;
       if (px < offsetX || py < offsetY) return null;
-      const vc = Math.floor((px - offsetX) / step);
-      const rr = Math.floor((py - offsetY) / step);
+      const vc = Math.floor((px - offsetX) / stepX);
+      const rr = Math.floor((py - offsetY) / stepY);
       const c = vc + startCol;
       if (vc >= 0 && vc < colCount && rr >= 0 && rr < 7) {
         const cell = cells[c * 7 + rr];
@@ -345,8 +400,8 @@ export default function ActivityHeatmapIsland({
     const onClick = (e: MouseEvent) => {
       const hit = hitCell(e.clientX, e.clientY);
       if (hit) {
-        selectedKeyRef.current = hit.key;
-        setSelectedKey(hit.key);
+        pinnedKeyRef.current = hit.key;
+        setPinnedKey(hit.key);
         draw();
       }
     };
@@ -359,14 +414,34 @@ export default function ActivityHeatmapIsland({
       }
     };
 
+    const onBlur = () => {
+      if (focusedKeyRef.current !== null) {
+        focusedKeyRef.current = null;
+        setFocusedCell(null);
+        draw();
+      }
+    };
+
     const onKeyDown = (e: KeyboardEvent) => {
       const startCol = totalCols - metricsRef.current.colCount;
       const validCells = cells.filter((c) => !c.future && c.key && c.c >= startCol);
       if (!validCells.length) return;
+      const currentKey = focusedKeyRef.current || pinnedKeyRef.current || defaultSelected?.key;
       const curIdx = Math.max(
         0,
-        validCells.findIndex((c) => c.key === selectedKeyRef.current),
+        validCells.findIndex((c) => c.key === currentKey),
       );
+
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        const target = validCells[curIdx];
+        if (!target) return;
+        pinnedKeyRef.current = target.key;
+        setPinnedKey(target.key);
+        draw();
+        return;
+      }
+
       let nextIdx = curIdx;
       if (e.key === 'ArrowLeft') nextIdx = Math.max(0, curIdx - 7);
       else if (e.key === 'ArrowRight') nextIdx = Math.min(validCells.length - 1, curIdx + 7);
@@ -379,8 +454,8 @@ export default function ActivityHeatmapIsland({
       e.preventDefault();
       const target = validCells[nextIdx];
       if (!target) return;
-      selectedKeyRef.current = target.key;
-      setSelectedKey(target.key);
+      focusedKeyRef.current = target.key;
+      setFocusedCell(target);
       draw();
     };
 
@@ -390,6 +465,7 @@ export default function ActivityHeatmapIsland({
     cv.addEventListener('pointermove', onMove);
     cv.addEventListener('click', onClick);
     cv.addEventListener('pointerleave', onLeave);
+    cv.addEventListener('blur', onBlur);
     cv.addEventListener('keydown', onKeyDown);
     window.addEventListener('scroll', onLeave, { passive: true });
     layout();
@@ -399,15 +475,17 @@ export default function ActivityHeatmapIsland({
       cv.removeEventListener('pointermove', onMove);
       cv.removeEventListener('click', onClick);
       cv.removeEventListener('pointerleave', onLeave);
+      cv.removeEventListener('blur', onBlur);
       cv.removeEventListener('keydown', onKeyDown);
       window.removeEventListener('scroll', onLeave);
     };
-  }, [hydrated, totalCols, cells, themeAttr]);
+  }, [hydrated, totalCols, cells, themeAttr, defaultSelected?.key]);
 
-  const statDays = hydrated ? activeDays : initialActiveDays;
-  const statTotal = hydrated ? totalActs : initialTotalActivities;
-  const statLongestStreak = hydrated ? longestStreak : initialLongestStreak;
-  const statMonthActs = hydrated ? monthActivities : initialMonthActivities;
+  const windowLabel = hydrated ? visibleStats.windowLabel : initialWindowLabel;
+  const statDays = hydrated ? visibleStats.activityDays : initialActiveDays;
+  const statTotal = hydrated ? visibleStats.totalActivities : initialTotalActivities;
+  const statLongestStreak = hydrated ? visibleStats.longestStreak : initialLongestStreak;
+  const statMonthActs = hydrated ? visibleStats.monthActivities : initialMonthActivities;
 
   const legendNode = (
     <span className="heat-legend">
@@ -424,8 +502,6 @@ export default function ActivityHeatmapIsland({
     </span>
   );
 
-  const activeEntries = activeCell?.entries ?? [];
-
   return (
     <>
       <div className="wt">
@@ -437,7 +513,7 @@ export default function ActivityHeatmapIsland({
         </span>
         <div className="wt-right">
           <span id="heatinfo" className="wt-stat">
-            {`近一年 ${statDays} 活跃日 · ${statTotal} 次活动`}
+            {`${windowLabel} ${statDays} 活跃日 · ${statTotal} 次活动`}
           </span>
         </div>
       </div>
@@ -451,12 +527,12 @@ export default function ActivityHeatmapIsland({
                 tabIndex={0}
                 role="group"
                 aria-controls="activity-detail"
-                aria-label={`近一年真实写作与功能活动热力图（${statDays} 活跃日，${statTotal} 次活动，可用方向键切换日期）`}
+                aria-label={`${windowLabel}真实写作与功能活动热力图（${statDays} 活跃日，${statTotal} 次活动，可用方向键切换日期、Enter 固定）`}
               />
             ) : (
               <div className="heat-static-fallback" data-activity-fallback>
                 <p className="heat-fallback-summary">
-                  {`过去一年 · ${initialActiveDays} 活跃日 · ${initialTotalActivities} 次活动（点击或悬停日期查看当日记录）`}
+                  {`${initialWindowLabel} · ${initialActiveDays} 活跃日 · ${initialTotalActivities} 次活动（点击或悬停日期查看当日记录）`}
                 </p>
                 <ul className="heat-fallback-list">
                   {recentFallbackItems.map((item, idx) => (
@@ -475,14 +551,6 @@ export default function ActivityHeatmapIsland({
           <div className="heat-stats-bar" data-activity-stats>
             <div className="heat-stats-metrics">
               <span className="heat-stat-item">
-                近一年活跃日 <strong>{statDays}</strong>
-              </span>
-              <span className="heat-stat-sep" aria-hidden="true">·</span>
-              <span className="heat-stat-item">
-                总活动 <strong>{statTotal}</strong>
-              </span>
-              <span className="heat-stat-sep" aria-hidden="true">·</span>
-              <span className="heat-stat-item">
                 最长连续 <strong>{statLongestStreak} 天</strong>
               </span>
               <span className="heat-stat-sep" aria-hidden="true">·</span>
@@ -495,25 +563,32 @@ export default function ActivityHeatmapIsland({
         </div>
         <aside className="heat-sidebar" id="activity-detail" aria-live="polite" aria-label="当日活动详情">
           <div className="heat-sidebar-head">
-            <span className="heat-sidebar-date">{activeCell?.key || '—'}</span>
+            <span className="heat-sidebar-date">{formatDateWithWeekday(activeCell?.key)}</span>
             <span className="heat-sidebar-count">
-              {activeEntries.length > 0 ? `${activeCell?.count ?? activeEntries.length} 次` : '无记录'}
+              {activeEntries.length > 0 ? `${activeCell?.count ?? activeEntries.length} 次` : '0 次'}
             </span>
           </div>
-          <div className="heat-sidebar-body" data-activity-detail-items>
+          <div
+            ref={sidebarBodyRef}
+            className={`heat-sidebar-body${hasBottomOverflow ? ' has-overflow' : ''}`}
+            data-activity-detail-items
+          >
             {activeEntries.length > 0 ? (
               <ul className="heat-sidebar-list">
                 {activeEntries.map((e, i) => (
-                  <li key={`${activeCell?.key ?? 'day'}-${i}`} title={e.description || e.label}>
-                    <span className="heat-popover-tag" data-type={e.type}>
-                      {e.label}
-                    </span>
-                    <span className="heat-sidebar-desc">{e.description || e.label}</span>
+                  <li key={`${activeCell?.key ?? 'day'}-${i}`}>
+                    <a className="heat-sidebar-card" href={e.href || '/blog/'} title={e.description || e.label}>
+                      <span className="heat-sidebar-cat">
+                        <i className="heat-cat-dot" data-type={e.type} aria-hidden="true" />
+                        <span>{e.label}</span>
+                      </span>
+                      <span className="heat-sidebar-title">{e.description || e.label}</span>
+                    </a>
                   </li>
                 ))}
               </ul>
             ) : (
-              <p className="heat-sidebar-empty">当天无记录</p>
+              <p className="heat-sidebar-empty">当天暂无公开记录</p>
             )}
           </div>
         </aside>

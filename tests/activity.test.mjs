@@ -191,8 +191,9 @@ test('the static homepage includes Chinese labels and daily details with unchang
   for (const post of posts) assert.ok(payload.writing.some((entry) => entry.date === post.date && entry.description === post.title && entry.count === 1));
   const independentWriting = posts.map((post) => ({ date: post.date, type: 'writing', count: 1, description: post.title }));
   const result = activity.createActivityCalendar([...sourceActivities, ...independentWriting], new Date(`${payload.buildDate}T12:00:00`));
-  assert.ok(html.includes(`近一年 ${result.activityDays} 活跃日 · ${result.totalActivities} 次活动`));
-  assert.ok(html.includes(`过去一年 · ${result.activityDays} 活跃日 · ${result.totalActivities} 次活动`));
+  const visible = activity.getVisibleCalendarStats(result, payload.buildDate, 34);
+  assert.ok(html.includes(`${visible.windowLabel} ${visible.activityDays} 活跃日 · ${visible.totalActivities} 次活动`));
+  assert.ok(html.includes(`${visible.windowLabel} · ${visible.activityDays} 活跃日 · ${visible.totalActivities} 次活动`));
   assert.ok(html.includes('博客功能'));
   const latestSite = sourceActivities.at(-1);
   if (latestSite?.description) assert.ok(html.includes(latestSite.description));
@@ -287,4 +288,43 @@ test('heatmap stats use build-time buildDate and remain invariant under runtime 
   } finally {
     globalThis.Date = RealDate;
   }
+});
+
+test('window title and summary metrics derive from the same visible-weeks window', () => {
+  const buildDate = '2026-11-16';
+  const anchor = new Date(`${buildDate}T00:00:00`);
+  anchor.setHours(0, 0, 0, 0);
+  const records = [
+    { date: '2026-01-10', type: 'writing', count: 5 }, // outside 34-week window
+    { date: '2026-01-11', type: 'writing', count: 5 }, // outside 34-week window
+    { date: '2026-11-10', type: 'writing', count: 2 }, // inside 34-week window & current month
+    { date: '2026-11-11', type: 'site', count: 1 },    // inside 34-week window & current month
+  ];
+  const cal = activity.createActivityCalendar(records, anchor, 365);
+  const win34 = activity.getVisibleCalendarStats(cal, buildDate, 34);
+  assert.equal(win34.weeks, 34);
+  assert.equal(win34.windowLabel, '近 34 周');
+  assert.equal(win34.activityDays, 2);
+  assert.equal(win34.totalActivities, 3);
+  assert.equal(win34.longestStreak, 2);
+  assert.equal(win34.monthActivities, 3);
+
+  const winFull = activity.getVisibleCalendarStats(cal, buildDate, 53);
+  assert.equal(winFull.windowLabel, '近一年');
+  assert.equal(winFull.activityDays, 4);
+  assert.equal(winFull.totalActivities, 13);
+
+  const html = read('dist/index.html');
+  const decode = (text) => text.replace(/&quot;/g, '"').replace(/&#39;|&apos;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
+  const payload = JSON.parse(decode(html.match(/data-activity-payload="([^"]+)"/)[1]));
+  const builtCal = activity.createActivityCalendar(
+    [...payload.activities, ...payload.writing],
+    new Date(`${payload.buildDate}T00:00:00`),
+    365,
+  );
+  const expected = activity.getVisibleCalendarStats(builtCal, payload.buildDate, 34);
+  const plainHtml = html.replace(/<!--[\s\S]*?-->/g, '');
+  assert.ok(plainHtml.includes(`${expected.windowLabel} ${expected.activityDays} 活跃日 · ${expected.totalActivities} 次活动`));
+  assert.ok(plainHtml.includes(`最长连续 <strong>${expected.longestStreak} 天</strong>`));
+  assert.ok(plainHtml.includes(`本月活动 <strong>${expected.monthActivities} 次</strong>`));
 });
