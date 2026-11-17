@@ -127,8 +127,38 @@ if (tocPanel) {
   const jumpToggle = tocPanel.querySelector<HTMLButtonElement>('[data-toc-jump-toggle]');
   const panes = [...tocPanel.querySelectorAll<HTMLElement>('[data-toc-pane]')];
   const modulePanels = [...tocPanel.querySelectorAll<HTMLElement>('[data-toc-module-panel]')];
+  const openBtn = document.querySelector<HTMLButtonElement>('[data-toc-drawer-open]');
+  const closeBtn = tocPanel.querySelector<HTMLButtonElement>('[data-toc-drawer-close]');
+  const backdrop = document.querySelector<HTMLElement>('[data-toc-backdrop]');
+  const mobileMq = window.matchMedia?.('(max-width: 639px)');
   let view: 'toc' | 'modules' | 'chapters' = 'toc';
   let activeModuleLabel = '笔记直达';
+  let drawerOpen = false;
+
+  const syncDrawer = (nextOpen = drawerOpen) => {
+    const isMobile = Boolean(mobileMq?.matches);
+    drawerOpen = isMobile ? nextOpen : false;
+    if (openBtn) {
+      openBtn.hidden = !isMobile;
+      openBtn.setAttribute('aria-expanded', String(drawerOpen));
+    }
+    if (closeBtn) closeBtn.hidden = !isMobile;
+    if (backdrop) backdrop.hidden = !drawerOpen;
+    tocPanel.classList.toggle('is-open', drawerOpen);
+    tocPanel.inert = isMobile && !drawerOpen;
+  };
+
+  const scrollToActiveChapterItem = (pane: HTMLElement) => {
+    const visibleMod = modulePanels.find((p) => !p.hidden);
+    const activeItem = visibleMod?.querySelector<HTMLElement>('a.is-active, a[aria-current="page"]');
+    if (activeItem) {
+      requestAnimationFrame(() => {
+        activeItem.scrollIntoView({ block: 'center', behavior: reducedMotion() ? 'auto' : 'smooth' });
+      });
+    } else {
+      pane.scrollTop = 0;
+    }
+  };
 
   const setView = (nextView: 'toc' | 'modules' | 'chapters', label?: string) => {
     view = nextView;
@@ -137,7 +167,7 @@ if (tocPanel) {
     panes.forEach((pane) => {
       const visible = pane.dataset.tocPane === nextView;
       pane.setAttribute('aria-hidden', String(!visible));
-      if (visible && nextView === 'chapters') pane.scrollTop = 0;
+      if (visible && nextView === 'chapters') scrollToActiveChapterItem(pane);
     });
     if (jumpToggle) {
       const inJump = nextView !== 'toc';
@@ -169,6 +199,31 @@ if (tocPanel) {
   tocPanel.querySelector('[data-toc-back-modules]')?.addEventListener('click', () => {
     setView('modules');
   });
+
+  openBtn?.addEventListener('click', () => {
+    syncDrawer(true);
+    (closeBtn ?? jumpToggle)?.focus();
+  });
+
+  const closeDrawer = (restoreFocus = true) => {
+    if (!drawerOpen) return;
+    syncDrawer(false);
+    if (restoreFocus) openBtn?.focus();
+  };
+
+  closeBtn?.addEventListener('click', () => closeDrawer(true));
+  backdrop?.addEventListener('click', () => closeDrawer(true));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && drawerOpen) {
+      e.preventDefault();
+      closeDrawer(true);
+    }
+  });
+  links.forEach((link) => link.addEventListener('click', () => {
+    if (mobileMq?.matches && drawerOpen) closeDrawer(false);
+  }));
+  mobileMq?.addEventListener('change', () => syncDrawer(false));
+  syncDrawer(false);
 }
 
 // Sandboxed local demos have opaque origins; trust only their Window and build key.

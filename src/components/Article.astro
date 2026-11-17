@@ -87,10 +87,13 @@ const canRecall = Boolean(study && headings.some((heading) => heading.depth >= 2
             </div>}
           </div>
           {post.data.subtitle && <p class="article-subtitle">{post.data.subtitle}</p>}
-          {knowledgeTags.length && study ? <KnowledgeChips tags={knowledgeTags} href={getStudyModuleHref(study)} /> : <p class="article-description">{post.data.description}</p>}
-          <div class="article-meta"><time datetime={post.data.pubDate.toISOString()}>{formatPostDate(post.data.pubDate)}</time>{post.data.updatedDate && <><span aria-hidden="true">·</span><span>更新于 <time datetime={post.data.updatedDate.toISOString()}>{formatPostDate(post.data.updatedDate)}</time></span></>}{study?.data.syllabusSection && <><span aria-hidden="true">·</span><span>考纲 {study.data.syllabusSection}</span></>}</div>
-          {!knowledgeTags.length && <div class="tag-list">{post.data.tags.map((tag) => <a href={`/blog/?tag=${encodeURIComponent(tag)}`}>{tag}</a>)}</div>}
+          {(!knowledgeTags.length || !study) && <p class="article-description">{post.data.description}</p>}
+          <div class="article-meta-bar">
+            {knowledgeTags.length && study ? <KnowledgeChips tags={knowledgeTags} href={getStudyModuleHref(study)} /> : <div class="tag-list">{post.data.tags.map((tag) => <a href={`/blog/?tag=${encodeURIComponent(tag)}`}>{tag}</a>)}</div>}
+            <div class="article-meta"><time datetime={post.data.pubDate.toISOString()}>{formatPostDate(post.data.pubDate)}</time>{post.data.updatedDate && <><span aria-hidden="true">·</span><span>更新于 <time datetime={post.data.updatedDate.toISOString()}>{formatPostDate(post.data.updatedDate)}</time></span></>}{study?.data.syllabusSection && <><span aria-hidden="true">·</span><span>考纲 {study.data.syllabusSection}</span></>}</div>
+          </div>
         </header>
+        <button type="button" class="toc-drawer-open-btn" data-toc-drawer-open aria-controls="article-toc-drawer" aria-expanded="false" hidden>目录</button>
         <div class="article-mobile-drawers">
           {sections.length > 0 && <details class="article-toc-mobile"><summary>目录 <span aria-hidden="true">⌄</span></summary><nav aria-label="移动端文章目录"><ol>{sections.map((heading) => <li class={`toc-level-${heading.depth}`}><a href={`#${heading.slug}`}><HeadingText text={heading.text} /></a></li>)}</ol></nav></details>}
           <details class="article-nav-mobile">
@@ -123,10 +126,14 @@ const canRecall = Boolean(study && headings.some((heading) => heading.depth >= 2
         {(previous || next) && <nav class="study-pagination" aria-label={study ? '按考纲顺序浏览' : '文章上下篇'}>{previous ? <a href={getPostHref(previous)} rel="prev"><small>{study ? '← 上一个知识点' : '← 上一篇'}</small><span>{study ? previous.data.title : getPostTitle(previous)}</span></a> : <span />}{next ? <a href={getPostHref(next)} rel="next"><small>{study ? '下一个知识点 →' : '下一篇 →'}</small><span>{study ? next.data.title : getPostTitle(next)}</span></a> : <span />}</nav>}
         <footer class="article-end"><a href={`${siteConfig.repository}/issues/new?${new URLSearchParams({ title: `笔记勘误：${post.data.title}`, body: `文章：${new URL(Astro.url.pathname, Astro.site).href}\n\n问题与建议：` })}`} target="_blank" rel="noreferrer">发现错误？反馈勘误 ↗</a><a href={study ? getStudyModuleHref(study) : '/blog/'}>{study ? '返回模块目录 →' : '返回技术笔记 →'}</a></footer>
       </div>
-      <aside class="article-toc" aria-label="文章章节" data-toc-panel data-toc-view="toc">
+      <div class="toc-drawer-backdrop" data-toc-backdrop hidden></div>
+      <aside class="article-toc" id="article-toc-drawer" aria-label="文章章节" data-toc-panel data-toc-view="toc">
         <div class="toc-header">
           <p class="panel-label" data-toc-heading>目录</p>
-          <button type="button" class="toc-jump-toggle" data-toc-jump-toggle aria-expanded="false">笔记直达</button>
+          <div class="toc-header-actions">
+            <button type="button" class="toc-jump-toggle" data-toc-jump-toggle aria-expanded="false">笔记直达</button>
+            <button type="button" class="toc-drawer-close" data-toc-drawer-close aria-label="关闭目录" hidden>×</button>
+          </div>
         </div>
         <div class="toc-viewport">
           <div class="toc-track" data-toc-track>
