@@ -13,9 +13,8 @@ const chapters = getStudyChapters(module.posts);
   <Fragment slot="intro">
   <header class="page-intro">
     <nav class="study-breadcrumb" aria-label="学习路径"><a href="/study-notes/">学习笔记</a><span>/</span><a href={`/study-notes/${info.slug}/`}>{module.series}</a><span>/</span><span aria-current="page">{module.title}</span></nav>
-    <p class="eyebrow">考研复习 · {module.series}</p><h1>{module.title}</h1><p>{module.description}</p>
+    <h1>{module.title}</h1>
   </header>
-  <p class="study-status">{module.count} 篇公开笔记 · 按考纲顺序浏览，不代表复习完成进度。</p>
   </Fragment>
   <div class="study-module-layout">
     <aside class="study-chapter-nav" aria-label="章节目录">

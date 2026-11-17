@@ -1727,7 +1727,7 @@ body.study-overview-page main { flex: 1 0 auto; min-height: 0; }
 @media (max-width: 639px) {
   .header-inner { gap: 0.35rem; }
   .header-tools { flex: 1 1 0%; justify-content: flex-end; min-width: 0; gap: 0.25rem; }
-  .brand { font-size: 0.84rem; }
+  .brand { display: none; }
   .header-search { flex: 1 1 0%; min-width: 0; max-width: none; }
   .header-search-form { padding: 0 0.45rem; gap: 0.28rem; }
   .theme-control, .type-settings summary, .mobile-menu-btn { min-width: 1.85rem; height: 1.85rem; padding: 0 0.4rem; }

@@ -288,3 +288,12 @@ span.knowledge-chip { cursor: inherit; }
 .article-header > .knowledge-tags { margin-bottom: 17px; }
 .timeline-row .knowledge-tags { margin-top: 8px; }
 .search-result .knowledge-tags { margin-top: 4px; }
+@media (max-width: 639px) {
+  .article-header .knowledge-tags,
+  .study-note-list .knowledge-tags,
+  .knowledge-entry .knowledge-tags,
+  .knowledge-post-row .knowledge-tags,
+  .timeline-row .knowledge-tags {
+    display: none;
+  }
+}

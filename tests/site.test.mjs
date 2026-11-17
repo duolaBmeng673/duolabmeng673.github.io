@@ -77,7 +77,7 @@ test('study entry points select independent modules and preserve existing chapte
     const route = prefix + module + '/';
     const html = read('dist' + route + 'index.html');
     assert.equal((html.match(/<h1(?:\s|>)/g) ?? []).length, 1);
-    assert.ok(html.includes(`${slugs.length} 篇公开笔记`));
+    assert.equal((html.match(/data-knowledge-tags=/g) ?? []).length, slugs.length);
     assert.ok(read('dist/sitemap.xml').includes(route));
     const positions = slugs.map((slug) => html.indexOf(`href="${prefix}${slug}/"`));
     assert.ok(positions.every((position) => position >= 0));

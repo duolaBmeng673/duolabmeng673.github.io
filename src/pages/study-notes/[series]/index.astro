@@ -6,14 +6,13 @@ export async function getStaticPaths() {
   const posts = await getPublicStudyNotes();
   return Object.entries(studySeries).filter(([name]) => posts.some((post) => post.data.series === name)).map(([name, info]) => ({ params: { series: info.slug }, props: { info, posts: posts.filter((post) => post.data.series === name), name } }));
 }
-const { info, posts, name } = Astro.props;
+const { info, posts } = Astro.props;
 const modules = getStudyModuleSummaries(posts);
 ---
 <BaseLayout title={info.title} description={info.description}>
   <header class="page-intro page-masthead">
     <div>
       <a class="back-link" href="/study-notes/">← 学习笔记</a>
-      <p class="eyebrow">考研复习 · {name}</p>
       <h1>{info.title}</h1>
       <p>{info.description}</p>
     </div>
