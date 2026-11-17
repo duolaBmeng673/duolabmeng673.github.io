@@ -15,8 +15,6 @@ import {
   type ReactElement,
   type ReactNode
 } from 'react';
-import { HugeiconsIcon } from '@hugeicons/react';
-import { BeachIcon, BridgeIcon, CloudIcon, SunsetIcon } from '@hugeicons/core-free-icons';
 import './CardSwap.css';
 
 const useIsomorphicLayoutEffect = typeof window === 'undefined' ? useEffect : useLayoutEffect;
@@ -193,29 +191,6 @@ const THEMES: Record<'dark' | 'light', Record<string, string>> = {
   }
 };
 
-const DEFAULT_ITEMS: CardSwapItem[] = [
-  {
-    title: 'Golden hour',
-    image: 'https://images.unsplash.com/photo-1514519334989-3d5c8b1a9f91?w=900&q=80&auto=format&fit=crop',
-    icon: <HugeiconsIcon icon={SunsetIcon} size={14} strokeWidth={1.8} />
-  },
-  {
-    title: 'Black beach',
-    image: 'https://images.unsplash.com/photo-1511300636408-a63a89df3482?w=900&q=80&auto=format&fit=crop',
-    icon: <HugeiconsIcon icon={BeachIcon} size={14} strokeWidth={1.8} />
-  },
-  {
-    title: 'Steel arches',
-    image: 'https://images.unsplash.com/photo-1520930528075-4ea5ead759f5?w=900&q=80&auto=format&fit=crop',
-    icon: <HugeiconsIcon icon={BridgeIcon} size={14} strokeWidth={1.8} />
-  },
-  {
-    title: 'Pink drift',
-    image: 'https://images.unsplash.com/photo-1778849097774-0ab2a873a858?w=900&q=80&auto=format&fit=crop',
-    icon: <HugeiconsIcon icon={CloudIcon} size={14} strokeWidth={1.8} />
-  }
-];
-
 const PERSPECTIVE = 900;
 const TAU = Math.PI * 2;
 const STEP = 1 / 240;
@@ -328,7 +303,7 @@ const CardSwap = forwardRef<CardSwapHandle, CardSwapProps>(
     const cards = useMemo<ReactElement[]>(() => {
       const custom = Children.toArray(children).filter(isValidElement);
       if (custom.length) return custom;
-      return (items?.length ? items : DEFAULT_ITEMS).map((item, index) => (
+      return (items ?? []).map((item, index) => (
         <ItemCard key={`${item.title ?? 'card'}-${index}`} item={item} />
       ));
     }, [children, items]);
