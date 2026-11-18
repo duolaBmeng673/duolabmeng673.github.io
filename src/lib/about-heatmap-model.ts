@@ -81,8 +81,19 @@ export function formatWeekdayDateLabel(dateStr?: string | null): string {
 export function resolveRangeBounds(
   rangeKey: string,
   buildDate: string,
+  earliestDate?: string,
 ): { start: Date; end: Date } {
   const buildAnchor = new Date(`${buildDate}T00:00:00`);
+  if (rangeKey === 'all') {
+    const end = new Date(buildAnchor);
+    if (earliestDate && /^\d{4}-\d{2}-\d{2}$/.test(earliestDate)) {
+      const start = new Date(`${earliestDate}T00:00:00`);
+      if (start <= end) return { start, end };
+    }
+    const fallbackStart = new Date(end);
+    fallbackStart.setDate(fallbackStart.getDate() - 370);
+    return { start: fallbackStart, end };
+  }
   if (/^\d{4}$/.test(rangeKey)) {
     const year = Number(rangeKey);
     const start = new Date(year, 0, 1);
@@ -110,7 +121,11 @@ export function buildAboutHeatmapModel(
   rangeKey = '53w',
   activeFilter: HeatmapCategory | 'all' = 'all',
 ): AboutHeatmapModel {
-  const { start, end } = resolveRangeBounds(rangeKey, buildDate);
+  let earliestDate = '';
+  for (const item of items) {
+    if (!earliestDate || item.date < earliestDate) earliestDate = item.date;
+  }
+  const { start, end } = resolveRangeBounds(rangeKey, buildDate, earliestDate);
   const startKey = localDateKey(start);
   const endKey = localDateKey(end);
 
@@ -237,6 +252,7 @@ export function buildAboutHeatmapModel(
 
   const monthLabels: Array<{ col: number; label: string }> = [];
   let prevYm = '';
+  let prevYear = '';
   for (let c = 0; c < columns.length; c++) {
     const firstValid = columns[c].find((cell) => cell !== null);
     if (!firstValid) continue;
@@ -247,7 +263,14 @@ export function buildAboutHeatmapModel(
         const probe = columns[c + 1]?.find((cell) => cell !== null);
         if (probe && probe.date.slice(0, 7) !== ym) continue;
       }
-      monthLabels.push({ col: c, label: `${Number(firstValid.date.slice(5, 7))}月` });
+      const year = firstValid.date.slice(0, 4);
+      const monthNum = Number(firstValid.date.slice(5, 7));
+      const showYear = rangeKey === 'all' && (year !== prevYear || monthNum === 1);
+      prevYear = year;
+      monthLabels.push({
+        col: c,
+        label: showYear ? `${year.slice(2)}年${monthNum}月` : `${monthNum}月`,
+      });
     }
   }
 

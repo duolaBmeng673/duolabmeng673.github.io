@@ -9,7 +9,6 @@ import {
 
 interface AboutPayload {
   buildDate: string;
-  yearsWithData: number[];
   entries: AboutHeatmapEntry[];
 }
 
@@ -29,11 +28,11 @@ function initAboutHeatmap(root: HTMLElement) {
 
   const bodyEl = root.querySelector<HTMLElement>('[data-about-body]');
   const gridColEl = root.querySelector<HTMLElement>('[data-about-grid-col]');
+  const scrollEl = root.querySelector<HTMLElement>('[data-about-scroll]');
   const calendarEl = root.querySelector<HTMLElement>('[data-about-calendar]');
   const monthsEl = root.querySelector<HTMLElement>('[data-about-months]');
   const monthTrackEl = root.querySelector<HTMLElement>('[data-about-month-track]');
   const weeksEl = root.querySelector<HTMLElement>('[data-about-weeks]');
-  const rangeBtns = [...root.querySelectorAll<HTMLButtonElement>('[data-heatmap-range]')];
   const filterBtns = [...root.querySelectorAll<HTMLButtonElement>('[data-filter-cat]')];
 
   const daysSummaryEl = root.querySelector<HTMLElement>('[data-about-summary-metric="days"]');
@@ -49,11 +48,17 @@ function initAboutHeatmap(root: HTMLElement) {
     return;
   }
 
+  let hasScrolledInitial = false;
+
   const syncGridMetrics = () => {
     if (!bodyEl || !gridColEl) return;
     const bodyW = bodyEl.clientWidth;
     if (!bodyW) return;
     const weekCount = Math.max(1, Number(calendarEl.getAttribute('aria-colcount')) || 53);
+    const colW = gridColEl.clientWidth || bodyW;
+    const gap = 3;
+    const side = colW < 420 ? 13 : colW < 700 ? 15 : 16;
+
     const twoCol = !window.matchMedia('(max-width: 1179px)').matches;
     const colCs = getComputedStyle(gridColEl);
     const padLeft = parseFloat(colCs.paddingLeft) || 0;
@@ -61,16 +66,6 @@ function initAboutHeatmap(root: HTMLElement) {
     const reservedRight = twoCol ? Math.min(330, Math.max(260, bodyW * 0.28)) + 16 : 0;
     const maxColW = Math.max(200, bodyW - reservedRight);
     const availWeeksW = Math.max(0, maxColW - padLeft - padRight - 20 - 4);
-
-    let gap = 3;
-    const minNeed3 = weekCount * 12 + (weekCount - 1) * 3;
-    const minNeed2 = weekCount * 12 + (weekCount - 1) * 2;
-    if (availWeeksW < minNeed3 && availWeeksW >= minNeed2) {
-      gap = 2;
-    }
-
-    const rawSide = Math.floor(availWeeksW / weekCount - gap);
-    const side = Math.max(12, Math.min(18, rawSide));
     const gridFits = weekCount * side + (weekCount - 1) * gap <= availWeeksW + 0.5;
 
     calendarEl.style.setProperty('--about-cell-size', `${side}px`);
@@ -78,9 +73,17 @@ function initAboutHeatmap(root: HTMLElement) {
     calendarEl.dataset.cellSize = String(side);
     calendarEl.dataset.cellGap = String(gap);
     bodyEl.dataset.gridFit = gridFits ? 'fit' : 'scroll';
+
+    if (scrollEl && !hasScrolledInitial) {
+      hasScrolledInitial = true;
+      scrollEl.scrollLeft = scrollEl.scrollWidth;
+      requestAnimationFrame(() => {
+        scrollEl.scrollLeft = scrollEl.scrollWidth;
+      });
+    }
   };
 
-  let activeRange = root.dataset.activeRange || '53w';
+  const activeRange = root.dataset.activeRange || 'all';
   let activeFilter: HeatmapCategory | 'all' =
     (root.dataset.activeFilter as HeatmapCategory | 'all') || 'all';
   let pinnedDate = root.dataset.pinnedDate || payload.buildDate;
@@ -161,10 +164,6 @@ function initAboutHeatmap(root: HTMLElement) {
 
     root.dataset.activeRange = activeRange;
     root.dataset.activeFilter = activeFilter;
-
-    for (const btn of rangeBtns) {
-      btn.setAttribute('aria-pressed', btn.dataset.heatmapRange === activeRange ? 'true' : 'false');
-    }
 
     for (const btn of filterBtns) {
       const cat = btn.dataset.filterCat as HeatmapCategory;
@@ -276,16 +275,6 @@ function initAboutHeatmap(root: HTMLElement) {
     syncGridMetrics();
   };
 
-  for (const btn of rangeBtns) {
-    btn.addEventListener('click', () => {
-      const next = btn.dataset.heatmapRange;
-      if (!next || next === activeRange) return;
-      activeRange = next;
-      previewDate = null;
-      renderAll();
-    });
-  }
-
   for (const btn of filterBtns) {
     btn.addEventListener('click', () => {
       const cat = btn.dataset.filterCat as HeatmapCategory;
@@ -387,6 +376,7 @@ function initAboutHeatmap(root: HTMLElement) {
     const targetBtn = orderedCells[nextIdx];
     if (targetBtn) {
       targetBtn.focus();
+      targetBtn.scrollIntoView({ block: 'nearest', inline: 'nearest' });
     }
   });
 

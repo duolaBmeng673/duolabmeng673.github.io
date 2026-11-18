@@ -482,38 +482,41 @@ test('shallow repository check aborts loudly while full clone succeeds', async (
   }
 });
 
-test('/about/ renders zero-React 53-week + multi-year heatmap with all 5 categories, accessible cells, and data-* bindings', async () => {
+test('/about/ renders zero-React full-history scrollable heatmap with all 5 categories, accessible cells, and data-* bindings', async () => {
   const aboutHtml = read('dist/about/index.html');
   assert.ok(!/<astro-island\b/i.test(aboutHtml), '/about/ must remain React-free');
   assert.ok(aboutHtml.includes('data-about-heatmap'));
   assert.ok(aboutHtml.includes('data-about-heatmap-payload='));
+  assert.ok(aboutHtml.includes('data-active-range="all"'));
+  assert.ok(aboutHtml.includes('data-about-scroll'));
+
+  // Removed UI elements must stay absent
+  assert.ok(!aboutHtml.includes('data-heatmap-range='), 'Year/range switch buttons must be removed');
+  assert.ok(!aboutHtml.includes('about-heat-subtitle'), 'Heatmap subtitle must be removed');
+  assert.ok(!aboutHtml.includes('data-activity-filtered-count'), 'Filter summary note must be removed');
 
   const decode = (text) => text.replace(/&quot;/g, '"').replace(/&#39;|&apos;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
   const payload = JSON.parse(decode(aboutHtml.match(/data-about-heatmap-payload="([^"]+)"/)[1]));
-  assert.ok(aboutHtml.includes('data-heatmap-range="53w"'));
-  for (const year of payload.yearsWithData) {
-    assert.ok(aboutHtml.includes(`data-heatmap-range="${year}"`), `Missing year switch button for ${year}`);
-  }
   for (const cat of ['paper', 'tech', 'study', 'revision', 'site']) {
     assert.ok(aboutHtml.includes(`data-filter-cat="${cat}"`), `Missing legend filter button for ${cat}`);
   }
-  const { getGitActivityResult } = await import('../src/lib/activity-git.ts');
-  const gitResult = getGitActivityResult();
-  assert.ok(aboutHtml.includes(`data-activity-filtered-count="${gitResult.filteredCount}"`));
 
   const cellLabels = [...aboutHtml.matchAll(/<button[^>]*role="gridcell"[^>]*data-date="([^"]+)"[^>]*>/g)];
-  assert.ok(cellLabels.length >= 365, `Expected >= 365 cells for 53-week default range, got ${cellLabels.length}`);
+  assert.ok(cellLabels.length >= 800, `Expected full-history >= 800 cells, got ${cellLabels.length}`);
+  assert.ok(aboutHtml.includes('data-date="2024-07-13"'), 'Full-history grid includes earliest 2024 record');
+  assert.ok(aboutHtml.includes(`data-date="${payload.buildDate}"`), 'Full-history grid includes buildDate');
   for (const [tag] of cellLabels) {
     assert.match(tag, /aria-label="[^"]+"/, 'Every active gridcell must have an aria-label');
   }
 
   const { buildAboutHeatmapModel } = await import('../src/lib/about-heatmap-model.ts');
-  const m53 = buildAboutHeatmapModel(payload.entries, payload.buildDate, '53w', 'all');
-  const m53Study = buildAboutHeatmapModel(payload.entries, payload.buildDate, '53w', 'study');
-  assert.ok(m53.totalActivities > m53Study.totalActivities && m53Study.totalActivities > 0);
-  assert.ok(m53.rawCategoryCounts.site > m53.categoryCounts.site, 'site raw count must exceed daily-capped count');
-  assert.ok(aboutHtml.includes(`data-capped-count="${m53.categoryCounts.site}"`));
-  assert.ok(aboutHtml.includes(`data-raw-count="${m53.rawCategoryCounts.site}"`));
+  const mAll = buildAboutHeatmapModel(payload.entries, payload.buildDate, 'all', 'all');
+  const mAllStudy = buildAboutHeatmapModel(payload.entries, payload.buildDate, 'all', 'study');
+  assert.ok(mAll.columns.length >= 120, `Expected >= 120 full-history week columns, got ${mAll.columns.length}`);
+  assert.ok(mAll.totalActivities > mAllStudy.totalActivities && mAllStudy.totalActivities > 0);
+  assert.ok(mAll.rawCategoryCounts.site > mAll.categoryCounts.site, 'site raw count must exceed daily-capped count');
+  assert.ok(aboutHtml.includes(`data-capped-count="${mAll.categoryCounts.site}"`));
+  assert.ok(aboutHtml.includes(`data-raw-count="${mAll.rawCategoryCounts.site}"`));
 
   // Verify same-day site capping on synthetic 35-commit day: level/total capped at 1 while entries keep all 35
   const sameDaySite = Array.from({ length: 35 }, (_, idx) => ({
@@ -586,7 +589,15 @@ test('/about/ renders pure square cells with fixed category priority and graysca
   const aboutCss = read('src/styles/about-heatmap.css');
   assert.doesNotMatch(aboutCss, /\.about-heat-cell[^}]*::before|\.about-heat-cell[^}]*::after|\.about-legend-swatch[^}]*::before/);
   assert.match(aboutCss, /\.about-heat-cell\s*\{[^}]*width:\s*var\(--about-cell-size\);[^}]*height:\s*var\(--about-cell-size\);[^}]*border-radius:\s*3px;/);
+  assert.match(aboutCss, /\.about-heat-calendar\s*\{[^}]*box-sizing:\s*content-box;[^}]*padding:\s*5px\s+7px\s+6px\s+5px;/);
   assert.ok(aboutHtml.includes('data-about-body') && aboutHtml.includes('data-about-grid-col') && aboutHtml.includes('data-about-month-track'));
+  assert.ok(
+    aboutHtml.indexOf('data-about-scroll') < aboutHtml.indexOf('data-about-legend') &&
+      aboutHtml.indexOf('data-about-legend') < aboutHtml.indexOf('data-about-detail'),
+    'Legend filter pills sit inside grid column directly below scrollable heatmap grid',
+  );
+  const globalCss = read('src/styles/global.css');
+  assert.match(globalCss, /:root\[data-theme="dark"\]\s+\.article\[data-category="Study Notes"\]\s*\{[^}]*--cat-study:\s*#46ab91;/);
 
   const tokensCss = read('src/styles/tokens.css');
   const hexToRgb = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));

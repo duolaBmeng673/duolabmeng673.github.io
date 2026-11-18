@@ -659,6 +659,11 @@ h1, h2, h3 {
 [data-category="Research"] { --category-color: var(--cat-research); }
 [data-category="Computer Science"] { --category-color: var(--cat-tech); }
 [data-category="Study Notes"] { --category-color: var(--cat-study); }
+:root[data-theme="dark"] .article[data-category="Study Notes"] {
+  /* Calmer muted teal for dark-theme study article bars & active TOC without altering homepage/heatmap tokens */
+  --cat-study: #46ab91;
+  --category-color: var(--cat-study);
+}
 .category-dot, .editorial-row .note-taxonomy::before, .timeline-row small::before,
 .search-result small::before, .study-series-row .note-taxonomy::before, .article-taxonomy::before {
   display: inline-block; flex: 0 0 auto; width: 7px; height: 7px; margin: 0 7px 1px 0;

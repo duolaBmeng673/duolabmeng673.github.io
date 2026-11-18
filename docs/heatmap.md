@@ -45,16 +45,16 @@
      - `site`（功能更新，`--heat-cat-site`）
    - 颜色单一定义在 [tokens.css](../src/styles/tokens.css)，同时修正了 `home.css` 与 `tokens.css` 间 `--c1`/`--c2` 语义对调问题；`/about/` 五类热力图颜色按亮/暗两套主题的去饱和灰度明度（`L*` 相邻阶差 ≥ 12）校准，确保灰度下也可辨。
 2. **首页（[ActivityHeatmap.island.tsx](../src/components/islands/ActivityHeatmap.island.tsx)）**：
-   - 保持 React 岛（`client:visible`）、单行统计栏与旁侧明细卡片结构；格子固定为整数正方形（`12px × 12px`，容器宽度 `< 340px` 时 `10px × 10px`，间距 `3px`，`2–3px` 圆角），显示周数完全由热力图容器可用宽度反算，统计口径跟随实际显示周数实时计算，窗口高度随内容自然适配。
+   - 保持 React 岛（`client:visible`）、单行统计栏与旁侧明细卡片结构；格子按热力图容器可用宽度自适应整数正方形边长（`< 340px` 时 `12px`，`< 450px` 时 `15px`，`< 580px` 时 `16px`，`>= 580px` 时 `18px`；间距 `3px`，`2–3px` 圆角），显示周数完全由容器可用宽度反算，统计口径跟随实际显示周数实时计算，窗口高度随内容自然适配。
    - **颜色跟随当前预设主色**：从 `.stage` 的 `--preset-accent` 派生 4 档浅到深色阶（图例同步跟随），主题或预设切换时仅重绘一次。
    - **首页仅展示内容 4 类**（论文笔记、技术笔记、学习笔记、修订），**不再传入 `site`（功能更新）且图例移除“功能更新”灰块**；首页不新增来自 `/about/` 的客户端 JS 逻辑。
 3. **`/about/` 完整热力图（[AboutHeatmap.astro](../src/components/AboutHeatmap.astro) + [about-heatmap.ts](../src/scripts/about-heatmap.ts)）**：
    - 采用**零 React（Astro 服务端格子 + 原生 TS）**方案，不扩展非首页 React 白名单。
-   - 格子与图例色块均为纯色正方格（`3px` 圆角，无内部几何标记）；格子边长按容器宽度自适应 `clamp(12, 18, ...)` 整数像素（默认 `3px` 间距，仅 `12px + 3px` 放不下时降到 `2px`，窄屏保持 `12px` 横向滚动），旁侧明细栏保持固定高度并内部滚动。**一天多类型时主色判定采用固定优先级：`论文 > 学习 > 技术 > 修订 > 功能更新`**（`paper > study > tech > revision > site`），其余类型仍全部保留在旁侧明细列表与格子 `aria-label` 中。
-   - 默认展示**近 53 周**（并动态生成有数据年份按钮 `2026`、`2025`、`2024`），上方展示总活跃天数、最长连续天数、总活动数、各类型统计及“已过滤 N 条琐碎提交”说明，支持五色图例单选筛选、悬停预览、点击固定及完整键盘方向键导航。
+   - 格子与图例色块均为纯色正方格（`3px` 圆角，无内部几何标记）；时间轴直接覆盖全量有记录历史（从最早记录日至构建日连续展示，支持横向滑动且初始滚动至最右侧最新记录；在 `.about-heat-calendar` 自身盒模型上保留 `padding: 5px 7px 6px 5px`，保证各浏览器滚到最右时选中外框完整不裁切）；旁侧明细栏保持固定高度并内部滚动。**一天多类型时主色判定采用固定优先级：`论文 > 学习 > 技术 > 修订 > 功能更新`**（`paper > study > tech > revision > site`），其余类型仍全部保留在旁侧明细列表与格子 `aria-label` 中。
+   - 上方展示总活跃天数、最长连续天数、总活动数；五色图例统计与单选筛选栏置于热力图网格列正下方，支持悬停预览、点击固定及完整键盘方向键导航（已移除副标题、年份切换按钮与过滤统计说明行）。
 
 ---
 
 ## 4. 验证要求
 
-【已核实】[activity.test.mjs](../tests/activity.test.mjs) 覆盖 `Asia/Shanghai` 归日（含 UTC `16:30` 跨日测试）、过滤命中与大提交封顶、新增笔记去重、真假 `git clone --depth=1` 浅克隆报错保护，以及 `/about/` 零 React、53 周与年份切换、`data-*` 绑定和 `aria-label` 检查。每次改动仍须按 `npm run build` → `npm test` → `git diff --check` 与浏览器明暗主题多视口检查。
+【已核实】[activity.test.mjs](../tests/activity.test.mjs) 覆盖 `Asia/Shanghai` 归日（含 UTC `16:30` 跨日测试）、过滤命中与大提交封顶、新增笔记去重、真假 `git clone --depth=1` 浅克隆报错保护，以及 `/about/` 零 React、全量横向时间轴与 `53w`/年份模型、`data-*` 绑定、防裁切内边距和 `aria-label` 检查。每次改动仍须按 `npm run build` → `npm test` → `git diff --check` 与浏览器明暗主题多视口检查。
