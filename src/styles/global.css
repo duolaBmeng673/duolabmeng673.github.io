@@ -14,9 +14,9 @@
   --border-control: rgba(18, 18, 24, 0.18);
   --nav-active: rgba(18, 18, 24, 0.08);
   --row-hover: rgba(18, 18, 24, 0.035);
-  --cat-research: #3b5fd0;
-  --cat-tech: #c2416b;
-  --cat-study: #0f8a7a;
+  --cat-research: var(--c1);
+  --cat-tech: var(--c2);
+  --cat-study: var(--c3);
   --accent: #6d28d9;
   --accent-strong: #5b21b6;
   --accent-soft: rgba(109, 40, 217, 0.09);
@@ -68,9 +68,9 @@
   --border-control: rgba(255, 255, 255, 0.2);
   --nav-active: rgba(255, 255, 255, 0.1);
   --row-hover: rgba(255, 255, 255, 0.045);
-  --cat-research: #7aa2ff;
-  --cat-tech: #ff8aa8;
-  --cat-study: #5fd6b8;
+  --cat-research: var(--c1);
+  --cat-tech: var(--c2);
+  --cat-study: var(--c3);
   --accent: #a78bfa;
   --accent-strong: #c4b5fd;
   --accent-soft: rgba(167, 139, 250, 0.15);

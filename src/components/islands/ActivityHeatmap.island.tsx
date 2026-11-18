@@ -10,7 +10,7 @@ import {
 
 export interface HeatmapItemPayload {
   date: string;
-  type: 'coding' | 'writing' | 'research' | 'learning' | 'site';
+  type: ActivityRecord['type'];
   label: string;
   count: number;
   description: string;
@@ -496,9 +496,6 @@ export default function ActivityHeatmapIsland({
       <i className="heat-swatch" style={{ background: 'var(--heat-3)' }} />
       <i className="heat-swatch" style={{ background: 'var(--heat-4)' }} />
       <span>多</span>
-      <span className="heat-legend-site">
-        <i className="heat-swatch" style={{ background: 'var(--heat-site)' }} /> 功能更新
-      </span>
     </span>
   );
 

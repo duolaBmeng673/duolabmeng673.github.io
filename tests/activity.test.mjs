@@ -176,27 +176,29 @@ test('date click, empty selection, repeated selection and keyboard movement upda
   assert.equal(buttons.filter((button) => button.tabIndex === 0).length, 1);
 });
 
-test('the static homepage includes Chinese labels and daily details with unchanged publication-based history', async () => {
+test('the static homepage displays content-only categories backed by Git revisions and publication history', async () => {
   const html = read('dist/index.html');
   assert.ok(html.includes('<span>activity.heatmap</span>'));
   assert.equal((html.match(/id="activity-detail"/g) ?? []).length, 1);
   assert.ok(html.includes('data-activity-detail-items'));
   assert.ok(html.includes('data-activity-fallback'));
+  assert.ok(!html.includes('heat-legend-site'), 'Homepage legend must not show 功能更新');
   const decode = (text) => text.replace(/&quot;/g, '"').replace(/&#39;|&apos;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
   const payload = JSON.parse(decode(html.match(/data-activity-payload="([^"]+)"/)[1]));
-  const { activities: sourceActivities } = await import('../src/data/activities.ts');
-  assert.ok(payload.activities.some((record) => record.date === '2026-11-11' && record.type === 'site' && record.count === 1));
+  assert.equal(payload.activities.some((record) => record.type === 'site'), false, 'Homepage payload must omit site updates');
+  const { getGitActivityResult } = await import('../src/lib/activity-git.ts');
+  const gitContentEntries = getGitActivityResult().entries.filter((entry) => entry.type !== 'site');
+  assert.equal(payload.activities.length, gitContentEntries.length);
   const posts = JSON.parse(read('dist/search-index.json'));
   assert.equal(payload.writing.length, posts.length);
   for (const post of posts) assert.ok(payload.writing.some((entry) => entry.date === post.date && entry.description === post.title && entry.count === 1));
   const independentWriting = posts.map((post) => ({ date: post.date, type: 'writing', count: 1, description: post.title }));
-  const result = activity.createActivityCalendar([...sourceActivities, ...independentWriting], new Date(`${payload.buildDate}T12:00:00`));
+  const result = activity.createActivityCalendar([...gitContentEntries, ...independentWriting], new Date(`${payload.buildDate}T12:00:00`));
   const visible = activity.getVisibleCalendarStats(result, payload.buildDate, 34);
   assert.ok(html.includes(`${visible.windowLabel} ${visible.activityDays} 活跃日 · ${visible.totalActivities} 次活动`));
   assert.ok(html.includes(`${visible.windowLabel} · ${visible.activityDays} 活跃日 · ${visible.totalActivities} 次活动`));
-  assert.ok(html.includes('博客功能'));
-  const latestSite = sourceActivities.at(-1);
-  if (latestSite?.description) assert.ok(html.includes(latestSite.description));
+  const latestItem = [...gitContentEntries, ...independentWriting].sort((a, b) => b.date.localeCompare(a.date))[0];
+  if (latestItem?.description) assert.ok(html.includes(latestItem.description));
 });
 
 test('getActivitySummaryStats computes longest streak, month totals, cross-year edges, same-day merges and empty state', () => {
@@ -332,4 +334,207 @@ test('window title and summary metrics derive from the same visible-weeks window
       `data-activity-stat="month"[^>]*data-activity-month="${expected.monthActivities}"[^>]*>[\\s\\S]*?<strong>${expected.monthActivities} 次</strong>`,
     ),
   );
+});
+
+test('git timestamps always normalize to Asia/Shanghai date regardless of runner timezone (UTC 16:30 -> next day)', async () => {
+  const { toShanghaiDateKey } = await import('../src/lib/activity-git.ts');
+  assert.equal(toShanghaiDateKey('2026-11-17T16:30:00Z'), '2026-11-18');
+  assert.equal(toShanghaiDateKey('2026-11-17T15:59:59Z'), '2026-11-17');
+
+  const code = `
+    import assert from 'node:assert/strict';
+    import { filterAndClassifyGitCommits } from ${JSON.stringify(new URL('../src/lib/activity-git.ts', import.meta.url).href)};
+    const res = filterAndClassifyGitCommits([
+      {
+        hash: 'abc1234',
+        shortHash: 'abc1234',
+        parentCount: 1,
+        committedAt: '2026-11-17T16:30:00Z',
+        author: 'YYF',
+        email: 'yyf@example.com',
+        subject: 'feat: late utc update',
+        files: [{ status: 'M', path: 'src/pages/about.astro' }],
+      },
+    ]);
+    assert.equal(res.entries.length, 1);
+    assert.equal(res.entries[0].date, '2026-11-18');
+  `;
+  for (const TZ of ['UTC', 'America/Los_Angeles', 'Asia/Shanghai']) {
+    execFileSync(process.execPath, ['--experimental-strip-types', '--input-type=module', '-e', code], {
+      env: { ...process.env, TZ },
+      stdio: 'pipe',
+    });
+  }
+});
+
+test('git filtering drops configured noise, deduplicates imported notes, and caps batch commits at 1 per category', async () => {
+  const { filterAndClassifyGitCommits, getGitActivityResult } = await import('../src/lib/activity-git.ts');
+  const synthetic = filterAndClassifyGitCommits([
+    { hash: '1', shortHash: '1', parentCount: 2, committedAt: '2026-11-10T10:00:00Z', author: 'a', email: 'a@x', subject: 'Merge branch', files: [{ status: 'M', path: 'src/pages/index.astro' }] },
+    { hash: '2', shortHash: '2', parentCount: 1, committedAt: '2026-11-10T10:00:00Z', author: 'dependabot[bot]', email: 'bot@github.com', subject: 'bump astro', files: [{ status: 'M', path: 'package.json' }] },
+    { hash: '3', shortHash: '3', parentCount: 1, committedAt: '2026-11-10T10:00:00Z', author: 'a', email: 'a@x', subject: 'Fix css glitch', files: [{ status: 'M', path: 'src/styles/global.css' }] },
+    { hash: '4', shortHash: '4', parentCount: 1, committedAt: '2026-11-10T10:00:00Z', author: 'a', email: 'a@x', subject: 'Revert "Fix css glitch"', files: [{ status: 'M', path: 'src/styles/global.css' }] },
+    { hash: '5', shortHash: '5', parentCount: 1, committedAt: '2026-11-10T10:00:00Z', author: 'a', email: 'a@x', subject: 'chore: cleanup', files: [{ status: 'D', path: 'public/foo.png' }] },
+    { hash: '6', shortHash: '6', parentCount: 1, committedAt: '2026-11-10T10:00:00Z', author: 'a', email: 'a@x', subject: 'adjust spacing', files: [{ status: 'M', path: 'src/pages/about.astro' }], isWhitespaceOnly: true },
+    { hash: '7', shortHash: '7', parentCount: 1, committedAt: '2026-11-10T10:00:00Z', author: 'a', email: 'a@x', subject: 'fix typo', files: [{ status: 'M', path: 'src/content/blog_read/bert.md' }], mdChangedChars: 12 },
+    {
+      hash: '8',
+      shortHash: '8',
+      parentCount: 1,
+      committedAt: '2026-11-18T03:00:00Z',
+      author: 'a',
+      email: 'a@x',
+      subject: 'perf(blog): batch migrate 68 images',
+      files: [
+        { status: 'M', path: 'src/layouts/BlogLayout.astro' },
+        { status: 'M', path: 'src/content/blog_read/bert.md' },
+        { status: 'M', path: 'src/content/blog_read/clip.md' },
+        { status: 'A', path: 'src/content/blog_read/bert/assets/image.png' },
+      ],
+      mdChangedChars: 120,
+    },
+    {
+      hash: '9',
+      shortHash: '9',
+      parentCount: 1,
+      committedAt: '2026-09-08T03:00:00Z',
+      author: 'a',
+      email: 'a@x',
+      subject: 'Publish 12 new paper notes',
+      files: [
+        { status: 'A', path: 'src/content/blog_read/bert.md' },
+        { status: 'A', path: 'src/content/blog_read/clip.md' },
+      ],
+    },
+  ]);
+
+  assert.equal(synthetic.filteredCount, 7);
+  assert.deepEqual(synthetic.filterHits, {
+    mergeCommits: 1,
+    botAuthors: 1,
+    revertNoise: 2,
+    messagePrefix: 1,
+    whitespaceOnly: 1,
+    tinyMarkdownOnly: 1,
+  });
+  assert.equal(synthetic.entries.length, 2, 'batch commit yields at most 1 revision + 1 site; added notes do not duplicate');
+  assert.deepEqual(synthetic.entries.map((e) => [e.category, e.count]), [['revision', 1], ['site', 1]]);
+
+  const realGit = getGitActivityResult();
+  assert.equal(realGit.filteredCount, Object.values(realGit.filterHits).reduce((a, b) => a + b, 0));
+  assert.ok(realGit.filteredCount > 0);
+  assert.equal(realGit.entries.filter((e) => e.shortHash === 'c0006fa').length, 2);
+  assert.equal(realGit.entries.filter((e) => e.shortHash === 'fdae2a2').length, 0);
+});
+
+test('buildDate uses Asia/Shanghai so UTC 16:30 lands on next day inside the final calendar cell across any runner TZ', () => {
+  const code = `
+    import assert from 'node:assert/strict';
+    import { createActivityCalendar } from ${JSON.stringify(new URL('../src/lib/activity.ts', import.meta.url).href)};
+    import { toShanghaiDateKey } from ${JSON.stringify(new URL('../src/lib/activity-git.ts', import.meta.url).href)};
+
+    const buildInstant = new Date('2026-11-17T16:30:00Z');
+    const buildDate = toShanghaiDateKey(buildInstant);
+    assert.equal(buildDate, '2026-11-18');
+
+    const commitDate = toShanghaiDateKey('2026-11-17T16:30:00Z');
+    assert.equal(commitDate, buildDate);
+
+    const anchor = new Date(buildDate + 'T00:00:00');
+    anchor.setHours(0, 0, 0, 0);
+    const cal = createActivityCalendar([{ date: commitDate, type: 'revision', count: 1, description: 'late utc fix' }], anchor, 365);
+    assert.equal(cal.end, '2026-11-18');
+    const validCells = cal.columns.flat().filter(Boolean);
+    const lastCell = validCells[validCells.length - 1];
+    assert.equal(lastCell.date, '2026-11-18');
+    assert.equal(lastCell.types.revision, 1);
+  `;
+  for (const TZ of ['UTC', 'America/Los_Angeles', 'Asia/Shanghai']) {
+    execFileSync(process.execPath, ['--experimental-strip-types', '--input-type=module', '-e', code], {
+      env: { ...process.env, TZ },
+      stdio: 'pipe',
+    });
+  }
+});
+
+test('shallow repository check aborts loudly while full clone succeeds', async () => {
+  const { mkdtempSync, rmSync } = await import('node:fs');
+  const { tmpdir } = await import('node:os');
+  const { join } = await import('node:path');
+  const { assertFullGitHistory, getGitActivityResult } = await import('../src/lib/activity-git.ts');
+
+  const root = new URL('..', import.meta.url).pathname.replace(/\/$/, '');
+  const tmp = mkdtempSync(join(tmpdir(), 'git-depth-check-'));
+  const shallowDir = join(tmp, 'shallow');
+  const fullDir = join(tmp, 'full');
+  try {
+    execFileSync('git', ['clone', '--depth=1', `file://${root}`, shallowDir], { stdio: 'pipe' });
+    assert.throws(() => assertFullGitHistory(shallowDir), /Shallow git repository detected/);
+
+    execFileSync('git', ['clone', `file://${root}`, fullDir], { stdio: 'pipe' });
+    assert.doesNotThrow(() => assertFullGitHistory(fullDir));
+    assert.equal(
+      getGitActivityResult({ cwd: fullDir, bypassCache: true }).totalCommits,
+      getGitActivityResult().totalCommits,
+    );
+  } finally {
+    rmSync(tmp, { recursive: true, force: true });
+  }
+});
+
+test('/about/ renders zero-React 53-week + multi-year heatmap with all 5 categories, accessible cells, and data-* bindings', async () => {
+  const aboutHtml = read('dist/about/index.html');
+  assert.ok(!/<astro-island\b/i.test(aboutHtml), '/about/ must remain React-free');
+  assert.ok(aboutHtml.includes('data-about-heatmap'));
+  assert.ok(aboutHtml.includes('data-about-heatmap-payload='));
+
+  const decode = (text) => text.replace(/&quot;/g, '"').replace(/&#39;|&apos;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
+  const payload = JSON.parse(decode(aboutHtml.match(/data-about-heatmap-payload="([^"]+)"/)[1]));
+  assert.ok(aboutHtml.includes('data-heatmap-range="53w"'));
+  for (const year of payload.yearsWithData) {
+    assert.ok(aboutHtml.includes(`data-heatmap-range="${year}"`), `Missing year switch button for ${year}`);
+  }
+  for (const cat of ['paper', 'tech', 'study', 'revision', 'site']) {
+    assert.ok(aboutHtml.includes(`data-filter-cat="${cat}"`), `Missing legend filter button for ${cat}`);
+  }
+  const { getGitActivityResult } = await import('../src/lib/activity-git.ts');
+  const gitResult = getGitActivityResult();
+  assert.ok(aboutHtml.includes(`data-activity-filtered-count="${gitResult.filteredCount}"`));
+
+  const cellLabels = [...aboutHtml.matchAll(/<button[^>]*role="gridcell"[^>]*data-date="([^"]+)"[^>]*>/g)];
+  assert.ok(cellLabels.length >= 365, `Expected >= 365 cells for 53-week default range, got ${cellLabels.length}`);
+  for (const [tag] of cellLabels) {
+    assert.match(tag, /aria-label="[^"]+"/, 'Every active gridcell must have an aria-label');
+  }
+
+  const { buildAboutHeatmapModel } = await import('../src/lib/about-heatmap-model.ts');
+  const m53 = buildAboutHeatmapModel(payload.entries, payload.buildDate, '53w', 'all');
+  const m53Study = buildAboutHeatmapModel(payload.entries, payload.buildDate, '53w', 'study');
+  assert.ok(m53.totalActivities > m53Study.totalActivities && m53Study.totalActivities > 0);
+  assert.ok(m53.rawCategoryCounts.site > m53.categoryCounts.site, 'site raw count must exceed daily-capped count');
+  assert.ok(aboutHtml.includes(`data-capped-count="${m53.categoryCounts.site}"`));
+  assert.ok(aboutHtml.includes(`data-raw-count="${m53.rawCategoryCounts.site}"`));
+
+  // Verify same-day site capping on synthetic 35-commit day: level/total capped at 1 while entries keep all 35
+  const sameDaySite = Array.from({ length: 35 }, (_, idx) => ({
+    date: '2026-11-16',
+    category: 'site',
+    categoryLabel: '功能更新',
+    description: `site commit #${idx + 1}`,
+    href: '/',
+    shortHash: `s${idx}`,
+  }));
+  const cappedModel = buildAboutHeatmapModel(sameDaySite, '2026-11-18', '53w', 'all');
+  const targetCell = cappedModel.columns.flat().find((c) => c && c.date === '2026-11-16');
+  assert.equal(targetCell.total, 1);
+  assert.equal(targetCell.rawTotal, 35);
+  assert.equal(targetCell.level, 1);
+  assert.equal(targetCell.entries.length, 35);
+  assert.equal(cappedModel.categoryCounts.site, 1);
+  assert.equal(cappedModel.rawCategoryCounts.site, 35);
+
+  const m2024 = buildAboutHeatmapModel(payload.entries, payload.buildDate, '2024', 'all');
+  const m2024Paper = buildAboutHeatmapModel(payload.entries, payload.buildDate, '2024', 'paper');
+  assert.equal(m2024.start, '2024-01-01');
+  assert.ok(m2024.totalActivities > 0 && m2024Paper.totalActivities > 0);
 });

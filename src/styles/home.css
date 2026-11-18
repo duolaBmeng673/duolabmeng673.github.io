@@ -831,12 +831,20 @@
   background: var(--heat-site);
 }
 
-.heat-cat-dot[data-type="learning"] {
+.heat-cat-dot[data-type="research"] {
   background: var(--c1, var(--ac));
 }
 
-.heat-cat-dot[data-type="research"] {
+.heat-cat-dot[data-type="coding"] {
   background: var(--c2, var(--ac));
+}
+
+.heat-cat-dot[data-type="learning"] {
+  background: var(--c3, var(--ac));
+}
+
+.heat-cat-dot[data-type="revision"] {
+  background: var(--cat-revision, var(--gold));
 }
 
 .heat-sidebar-title {

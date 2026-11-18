@@ -30,6 +30,11 @@
   --c1: #3b5fd0;
   --c2: #c2416b;
   --c3: #0f8a7a;
+  --cat-paper: var(--c1);
+  --cat-tech: var(--c2);
+  --cat-study: var(--c3);
+  --cat-revision: var(--gold);
+  --cat-site: #52525b;
   --dot: 109, 40, 217;
   --spot: 109, 40, 217;
   --vbg: #efede6;
@@ -119,6 +124,7 @@
   --c1: #7aa2ff;
   --c2: #ff8aa8;
   --c3: #5fd6b8;
+  --cat-site: #a1a1aa;
   --dot: 167, 139, 250;
   --spot: 167, 139, 250;
   --vbg: rgba(255, 255, 255, 0.045);

@@ -1,0 +1,257 @@
+---
+import type { HeatmapCategory } from '../lib/activity';
+import type { UnifiedHeatmapDataset } from '../lib/activity-data';
+import {
+  buildAboutHeatmapModel,
+  formatWeekdayDateLabel,
+  heatmapCategories,
+  heatmapCategoryMeta,
+  type AboutHeatmapEntry,
+} from '../lib/about-heatmap-model';
+import '../styles/about-heatmap.css';
+
+interface Props {
+  dataset: UnifiedHeatmapDataset;
+}
+
+const { dataset } = Astro.props;
+
+const entries: AboutHeatmapEntry[] = dataset.allItems.map((item) => ({
+  date: item.date,
+  category: item.category,
+  categoryLabel: item.categoryLabel,
+  description: item.description,
+  href: item.href,
+  shortHash: item.shortHash,
+}));
+
+const initialRange = '53w';
+const model = buildAboutHeatmapModel(entries, dataset.buildDate, initialRange, 'all');
+const allFlatCells = model.columns.flat().filter((cell): cell is NonNullable<typeof cell> => cell !== null);
+const selectedCell =
+  allFlatCells.find((cell) => cell.date === model.defaultSelectedDate) ??
+  allFlatCells.at(-1) ??
+  null;
+
+const weekdayLabels = ['日', '一', '二', '三', '四', '五', '六'];
+const payloadJson = JSON.stringify({
+  buildDate: dataset.buildDate,
+  yearsWithData: dataset.yearsWithData,
+  entries,
+});
+
+const colorVarFor = (cat: HeatmapCategory | 'none') =>
+  cat === 'none' ? undefined : `var(${heatmapCategoryMeta[cat].colorVar})`;
+
+const hits = dataset.filterStats.filterHits;
+---
+
+<section
+  class="about-heatmap-panel"
+  aria-labelledby="about-heatmap-title"
+  data-about-heatmap
+  data-active-range={initialRange}
+  data-active-filter="all"
+  data-pinned-date={selectedCell?.date ?? dataset.buildDate}
+  data-about-heatmap-payload={payloadJson}
+>
+  <div class="about-heat-head">
+    <div class="about-heat-title-wrap">
+      <h2 id="about-heatmap-title">全站活动与部署热力图</h2>
+      <p class="about-heat-subtitle">
+        覆盖近 53 周及历史有记录年份 · 论文、技术、837 学习首发按创作日（pubDate），修订与功能更新由 Git 自动同步
+      </p>
+    </div>
+    <div class="about-heat-ranges" role="group" aria-label="时间范围切换" data-about-ranges>
+      <button
+        type="button"
+        class="about-range-btn"
+        data-heatmap-range="53w"
+        aria-pressed="true"
+      >
+        近 53 周
+      </button>
+      {dataset.yearsWithData.map((year) => (
+        <button
+          type="button"
+          class="about-range-btn"
+          data-heatmap-range={String(year)}
+          aria-pressed="false"
+        >
+          {year} 年
+        </button>
+      ))}
+    </div>
+  </div>
+
+  <div class="about-heat-summary" data-about-summary>
+    <div class="about-summary-metrics">
+      <span data-about-summary-metric="days" data-value={model.activeDays}>
+        总活跃天数 <strong>{model.activeDays} 天</strong>
+      </span>
+      <span aria-hidden="true">·</span>
+      <span data-about-summary-metric="streak" data-value={model.longestStreak}>
+        最长连续 <strong>{model.longestStreak} 天</strong>
+      </span>
+      <span aria-hidden="true">·</span>
+      <span data-about-summary-metric="total" data-value={model.totalActivities} data-raw-value={model.rawTotalActivities}>
+        总活动数 <strong>{model.totalActivities} 次</strong>（明细 {model.rawTotalActivities} 条）
+      </span>
+    </div>
+
+    <div class="about-heat-legend" role="group" aria-label="按活动类型筛选（单选切换）" data-about-legend>
+      {heatmapCategories.map((cat) => {
+        const meta = heatmapCategoryMeta[cat];
+        return (
+          <button
+            type="button"
+            class="about-legend-btn"
+            data-filter-cat={cat}
+            data-count={model.categoryCounts[cat]}
+            data-capped-count={cat === 'site' ? model.categoryCounts.site : undefined}
+            data-raw-count={cat === 'site' ? model.rawCategoryCounts.site : undefined}
+            aria-pressed="false"
+            style={`--legend-color: var(${meta.colorVar});`}
+          >
+            <span class="about-legend-swatch" data-shape={meta.shape} aria-hidden="true" />
+            <span>{meta.label}</span>
+            {cat === 'site' ? (
+              <span>
+                <strong data-about-cat-count={cat} data-about-cat-capped="site">{model.categoryCounts.site}</strong>天/<span data-about-cat-raw="site">{model.rawCategoryCounts.site}</span>次
+              </span>
+            ) : (
+              <strong data-about-cat-count={cat}>{model.categoryCounts[cat]}</strong>
+            )}
+          </button>
+        );
+      })}
+    </div>
+  </div>
+
+  <div class="about-heat-body">
+    <div class="about-heat-grid-col">
+      <div class="about-heat-scroll" tabindex="0" aria-label="活动热力图网格（支持方向键移动与回车固定）">
+        <div
+          class="about-heat-calendar"
+          role="grid"
+          aria-labelledby="about-heatmap-title"
+          aria-rowcount="7"
+          aria-colcount={model.columns.length}
+          data-about-calendar
+          data-start={model.start}
+          data-end={model.end}
+        >
+          <div
+            class="about-heat-months"
+            aria-hidden="true"
+            style={`--about-week-count: ${model.columns.length};`}
+            data-about-months
+          >
+            <span />
+            {model.columns.map((_, colIdx) => {
+              const found = model.monthLabels.find((m) => m.col === colIdx);
+              return <span class="about-heat-month">{found ? found.label : ''}</span>;
+            })}
+          </div>
+          <div class="about-heat-grid" data-about-grid>
+            <div class="about-heat-weekdays" aria-hidden="true">
+              {weekdayLabels.map((label, idx) => <span>{idx % 2 === 1 ? label : ''}</span>)}
+            </div>
+            <div class="about-heat-weeks" data-about-weeks>
+              {model.columns.map((col, colIdx) => (
+                <div class="about-heat-week" role="presentation">
+                  {col.map((cell, rowIdx) => {
+                    if (!cell) {
+                      return (
+                        <button
+                          type="button"
+                          class="about-heat-cell is-outside"
+                          role="gridcell"
+                          aria-rowindex={rowIdx + 1}
+                          aria-colindex={colIdx + 1}
+                          aria-label="日期范围外"
+                          tabindex={-1}
+                          disabled
+                        />
+                      );
+                    }
+                    const isSelected = selectedCell?.date === cell.date;
+                    const secColor = colorVarFor(cell.secondaryCategory);
+                    return (
+                      <button
+                        type="button"
+                        class="about-heat-cell"
+                        role="gridcell"
+                        aria-rowindex={rowIdx + 1}
+                        aria-colindex={colIdx + 1}
+                        aria-label={cell.ariaLabel}
+                        aria-selected={isSelected ? 'true' : 'false'}
+                        aria-controls="about-heatmap-detail"
+                        tabindex={isSelected ? 0 : -1}
+                        data-date={cell.date}
+                        data-total={cell.total}
+                        data-raw-total={cell.rawTotal}
+                        data-level={cell.level}
+                        data-primary-category={cell.primaryCategory}
+                        data-categories={cell.categories.join(',')}
+                        data-mixed={cell.mixed ? 'true' : 'false'}
+                        style={secColor ? `--secondary-color: ${secColor};` : undefined}
+                        title={cell.ariaLabel}
+                      />
+                    );
+                  })}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <p class="about-heat-note" data-activity-filtered-count={dataset.filterStats.filteredCount}>
+        已过滤 {dataset.filterStats.filteredCount} 条琐碎提交（合并 {hits.mergeCommits} · 回退噪声 {hits.revertNoise} · 前缀 {hits.messagePrefix} · 纯空白 {hits.whitespaceOnly} · 极短文档 {hits.tinyMarkdownOnly} · 机器人 {hits.botAuthors}），提交时间统一按 Asia/Shanghai 归日。
+      </p>
+    </div>
+
+    <aside
+      class="about-heat-sidebar"
+      id="about-heatmap-detail"
+      aria-live="polite"
+      aria-label="当日活动与部署明细"
+      data-about-detail
+    >
+      <div class="about-heat-sidebar-head">
+        <span class="about-heat-sidebar-date" data-about-detail-date>
+          {formatWeekdayDateLabel(selectedCell?.date)}
+        </span>
+        <span class="about-heat-sidebar-meta">
+          <span class="about-heat-sidebar-pin" data-about-detail-mode>已固定</span>
+          <span data-about-detail-total data-raw-total={selectedCell?.rawTotal ?? 0}>{selectedCell?.rawTotal ?? 0} 条</span>
+        </span>
+      </div>
+      <div class="about-heat-sidebar-body" data-about-detail-body>
+        {selectedCell && selectedCell.entries.length > 0 ? (
+          <ul class="about-heat-entry-list" data-about-detail-list>
+            {selectedCell.entries.map((entry) => (
+              <li>
+                <a class="about-heat-entry-card" href={entry.href}>
+                  <span class="about-heat-entry-meta">
+                    <i class="about-heat-entry-dot" data-category={entry.category} aria-hidden="true" />
+                    <span>{entry.categoryLabel}</span>
+                    {entry.shortHash && <span class="about-heat-entry-hash">{entry.shortHash}</span>}
+                  </span>
+                  <span class="about-heat-entry-title">{entry.description}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p class="about-heat-empty" data-about-detail-empty>当天暂无公开记录</p>
+        )}
+      </div>
+    </aside>
+  </div>
+
+  <script>
+    import '../scripts/about-heatmap';
+  </script>
+</section>

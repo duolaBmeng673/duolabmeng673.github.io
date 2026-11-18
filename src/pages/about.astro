@@ -1,10 +1,13 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import CountUp from '../components/CountUp.astro';
+import AboutHeatmap from '../components/AboutHeatmap.astro';
 import { siteConfig } from '../config';
+import { buildActivityDataset } from '../lib/activity-data';
 import { getAllPosts } from '../lib/blog';
 
 const posts = await getAllPosts();
+const activityDataset = buildActivityDataset(posts);
 const researchCount = posts.filter((post) => post.collection === 'blog_read').length;
 const csCount = posts.filter((post) => post.collection === 'blog_huawei_examination').length;
 const infoSecCount = posts.filter((post) => post.collection === 'study_notes' && post.data.subject === '信息安全导论').length;
@@ -45,6 +48,7 @@ const studyPct = ((studyCount / totalCount) * 100).toFixed(1);
     </div>
   </section>
   <section class="about-grid" aria-label="个人信息">
+    <AboutHeatmap dataset={activityDataset} />
     <section class="about-panel is-wide">
       <h2>关注方向与主线</h2>
       <p style="color: var(--ts); line-height: 1.8; margin-bottom: 1rem;">

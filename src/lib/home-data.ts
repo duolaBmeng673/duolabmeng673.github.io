@@ -1,12 +1,7 @@
-import { activities } from '../data/activities';
 import { siteConfig } from '../config';
-import {
-  createActivityCalendar,
-  getVisibleCalendarStats,
-  localDateKey,
-  type ActivityRecord,
-} from './activity';
-import { getAllPosts, getPostHref, getPostTitle, taxonomyLabel, type BlogPost } from './blog';
+import { buildActivityDataset } from './activity-data';
+import { type ActivityRecord } from './activity';
+import { getAllPosts, getPostHref, getPostTitle, type BlogPost } from './blog';
 import { getKnowledgeTags } from './knowledge-tags';
 import { getStudyModuleHref, studyModules } from './study';
 
@@ -159,38 +154,17 @@ export async function getHomePageData() {
     },
   ];
 
-  // Build activity items from real posts + confirmed feature activities
-  const writingRecords: ActivityRecord[] = posts.map((post) => ({
-    date: post.data.pubDate.toISOString().slice(0, 10),
-    type: 'writing',
-    count: 1,
-    description: post.data.title,
-  }));
+  // Build activity items using the shared Git + publication dataset builder (homepage displays content categories only)
+  const activityDataset = buildActivityDataset(posts);
+  const {
+    buildDate,
+    visibleHomeSummary: visibleSummary,
+    rawWritingRecords: writingRecords,
+    rawContentActivityRecords: rawActivities,
+    writingItems: heatmapWritingItems,
+    contentActivityItems: heatmapActivityItems,
+  } = activityDataset;
 
-  const heatmapWritingItems: HeatmapItemPayload[] = posts.map((post) => ({
-    date: post.data.pubDate.toISOString().slice(0, 10),
-    type: 'writing',
-    label: taxonomyLabel(post.data.category),
-    count: 1,
-    description: getPostTitle(post),
-    href: getPostHref(post),
-  }));
-
-  const heatmapActivityItems: HeatmapItemPayload[] = activities.map((act) => ({
-    date: act.date,
-    type: act.type,
-    label: act.type === 'site' ? '博客功能' : taxonomyLabel(act.type),
-    count: act.count,
-    description: act.description ?? '',
-    href: '/about/',
-  }));
-
-  const today = new Date();
-  const buildDate = localDateKey(today);
-  const calendar = createActivityCalendar([...activities, ...writingRecords], today);
-  const visibleSummary = getVisibleCalendarStats(calendar, buildDate, 34);
-
-  // Recent real records for static no-JS / pre-hydration fallback & initial active day
   const combinedItems = [...heatmapActivityItems, ...heatmapWritingItems].sort((a, b) =>
     b.date.localeCompare(a.date),
   );
@@ -344,7 +318,7 @@ export async function getHomePageData() {
       writingItems: heatmapWritingItems,
       activityItems: heatmapActivityItems,
       rawWritingRecords: writingRecords,
-      rawActivities: activities,
+      rawActivities,
     },
   };
 }
