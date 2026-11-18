@@ -46,5 +46,47 @@
     "url": "https://aitshirtdesign.com",
     "category": "AI 工具",
     "description": "AI 中转服务评测参考。"
+  },
+  {
+    "name": "Simular Box",
+    "url": "https://box.simular.ai",
+    "category": "AI 工具",
+    "description": "AI 智能体云端虚拟机与浏览器运行环境。"
+  },
+  {
+    "name": "PriceAI",
+    "url": "https://priceai.cc",
+    "category": "AI 工具",
+    "description": "AI 订阅与中转 API 比价雷达。"
+  },
+  {
+    "name": "水獭比价",
+    "url": "https://shuita.xyz",
+    "category": "AI 工具",
+    "description": "AI 会员订阅与渠道价格对比参考。"
+  },
+  {
+    "name": "837 开源考研知识库",
+    "url": "https://wangan.online",
+    "category": "学习与社区",
+    "description": "837 信息安全考研开源学习知识库。"
+  },
+  {
+    "name": "中国大学 MOOC",
+    "url": "https://www.icourse163.org",
+    "category": "学习与社区",
+    "description": "高校精品在线开放课程平台。"
+  },
+  {
+    "name": "吾爱破解社区",
+    "url": "https://www.52pojie.cn/index.php",
+    "category": "学习与社区",
+    "description": "软件安全分析与逆向技术交流社区。"
+  },
+  {
+    "name": "菜鸟工具",
+    "url": "https://www.jyshare.com",
+    "category": "开发工具",
+    "description": "常用在线编程与开发辅助工具集合。"
   }
 ]
