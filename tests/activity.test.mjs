@@ -538,3 +538,85 @@ test('/about/ renders zero-React 53-week + multi-year heatmap with all 5 categor
   assert.equal(m2024.start, '2024-01-01');
   assert.ok(m2024.totalActivities > 0 && m2024Paper.totalActivities > 0);
 });
+
+test('/about/ renders pure square cells with fixed category priority and grayscale-distinguishable tokens', async () => {
+  const { buildAboutHeatmapModel } = await import('../src/lib/about-heatmap-model.ts');
+  const mixedEntries = [
+    ...Array.from({ length: 5 }, (_, i) => ({
+      date: '2026-11-10',
+      category: 'revision',
+      categoryLabel: '修订',
+      description: `rev ${i}`,
+      href: '/blog/',
+    })),
+    {
+      date: '2026-11-10',
+      category: 'paper',
+      categoryLabel: '论文笔记',
+      description: 'paper item',
+      href: '/blog/bert/',
+    },
+    ...Array.from({ length: 3 }, (_, i) => ({
+      date: '2026-11-11',
+      category: 'tech',
+      categoryLabel: '技术笔记',
+      description: `tech ${i}`,
+      href: '/blog/',
+    })),
+    {
+      date: '2026-11-11',
+      category: 'study',
+      categoryLabel: '学习笔记',
+      description: 'study item',
+      href: '/study-notes/837/',
+    },
+  ];
+  const model = buildAboutHeatmapModel(mixedEntries, '2026-11-18', '53w', 'all');
+  const cell10 = model.columns.flat().find((c) => c?.date === '2026-11-10');
+  const cell11 = model.columns.flat().find((c) => c?.date === '2026-11-11');
+  assert.equal(cell10.primaryCategory, 'paper', 'paper wins over 5 revisions on same day');
+  assert.equal(cell11.primaryCategory, 'study', 'study wins over 3 tech entries on same day');
+  assert.match(cell10.ariaLabel, /2026 年 11 月 10 日/);
+  assert.match(cell10.ariaLabel, /主要类型：论文笔记/);
+  assert.match(cell10.ariaLabel, /论文笔记 1 次/);
+  assert.match(cell10.ariaLabel, /修订 5 次/);
+
+  const aboutHtml = read('dist/about/index.html');
+  assert.ok(!aboutHtml.includes('data-shape='), 'legend swatches must be pure solid squares without shapes');
+  const aboutCss = read('src/styles/about-heatmap.css');
+  assert.doesNotMatch(aboutCss, /\.about-heat-cell[^}]*::before|\.about-heat-cell[^}]*::after|\.about-legend-swatch[^}]*::before/);
+  assert.match(aboutCss, /\.about-heat-cell\s*\{[^}]*width:\s*12px;[^}]*height:\s*12px;[^}]*border-radius:\s*3px;/);
+
+  const tokensCss = read('src/styles/tokens.css');
+  const hexToRgb = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
+  const relLum = (rgb) => rgb
+    .map((c) => c / 255)
+    .map((v) => (v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4))
+    .reduce((sum, v, i) => sum + v * [0.2126, 0.7152, 0.0722][i], 0);
+  const labL = (y) => (y > 0.008856 ? 116 * Math.cbrt(y) - 16 : 903.3 * y);
+  const parseThemeBlock = (block) => Object.fromEntries(
+    [...block.matchAll(/(--heat-cat-\w+):\s*(#[0-9a-fA-F]{6});/g)].map(([, k, v]) => [k, v]),
+  );
+  const lightBlock = tokensCss.match(/:root\s*\{([^]*?)\n\}/)[1];
+  const darkBlock = tokensCss.match(/:root\[data-theme="dark"\]\s*\{([^]*?)\n\}/)[1];
+  for (const [themeName, block] of [['light', lightBlock], ['dark', darkBlock]]) {
+    const palette = parseThemeBlock(block);
+    const lValues = Object.values(palette).map((hex) => labL(relLum(hexToRgb(hex)))).sort((a, b) => a - b);
+    assert.equal(lValues.length, 5, `${themeName} has all 5 --heat-cat-* colors`);
+    for (let i = 1; i < lValues.length; i++) {
+      assert.ok(lValues[i] - lValues[i - 1] >= 11, `${themeName} grayscale L* gap >= 11 (${lValues[i - 1].toFixed(1)} -> ${lValues[i].toFixed(1)})`);
+    }
+  }
+});
+
+test('homepage heatmap uses container-width integer square sizing and follows preset accent colors', () => {
+  const islandSource = read('src/components/islands/ActivityHeatmap.island.tsx');
+  assert.ok(!islandSource.includes('innerWidth'), 'heatmap sizing must be container-driven without window.innerWidth');
+  assert.match(islandSource, /Math\.floor\(/, 'square side length uses integer pixels');
+  assert.match(islandSource, /data-preset/);
+  assert.match(islandSource, /duolabmeng673:preset-change/);
+
+  const homeCss = read('src/styles/home.css');
+  assert.match(homeCss, /\.stage \.win\.w4\s*\{[^}]*--heat-1:[^}]*--preset-accent/);
+  assert.match(homeCss, /\.stage \.win\.w4\s*\{[^}]*--heat-4:\s*var\(--preset-accent/);
+});

@@ -1,5 +1,4 @@
 ---
-import type { HeatmapCategory } from '../lib/activity';
 import type { UnifiedHeatmapDataset } from '../lib/activity-data';
 import {
   buildAboutHeatmapModel,
@@ -39,9 +38,6 @@ const payloadJson = JSON.stringify({
   yearsWithData: dataset.yearsWithData,
   entries,
 });
-
-const colorVarFor = (cat: HeatmapCategory | 'none') =>
-  cat === 'none' ? undefined : `var(${heatmapCategoryMeta[cat].colorVar})`;
 
 const hits = dataset.filterStats.filterHits;
 ---
@@ -113,7 +109,7 @@ const hits = dataset.filterStats.filterHits;
             aria-pressed="false"
             style={`--legend-color: var(${meta.colorVar});`}
           >
-            <span class="about-legend-swatch" data-shape={meta.shape} aria-hidden="true" />
+            <span class="about-legend-swatch" aria-hidden="true" />
             <span>{meta.label}</span>
             {cat === 'site' ? (
               <span>
@@ -176,7 +172,6 @@ const hits = dataset.filterStats.filterHits;
                       );
                     }
                     const isSelected = selectedCell?.date === cell.date;
-                    const secColor = colorVarFor(cell.secondaryCategory);
                     return (
                       <button
                         type="button"
@@ -195,7 +190,6 @@ const hits = dataset.filterStats.filterHits;
                         data-primary-category={cell.primaryCategory}
                         data-categories={cell.categories.join(',')}
                         data-mixed={cell.mixed ? 'true' : 'false'}
-                        style={secColor ? `--secondary-color: ${secColor};` : undefined}
                         title={cell.ariaLabel}
                       />
                     );

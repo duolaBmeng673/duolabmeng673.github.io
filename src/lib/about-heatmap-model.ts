@@ -3,21 +3,20 @@ import {
   type HeatmapCategory,
 } from './activity.ts';
 
-export const heatmapCategories = ['paper', 'tech', 'study', 'revision', 'site'] as const;
+export const heatmapCategories = ['paper', 'study', 'tech', 'revision', 'site'] as const;
 
 export interface HeatmapCategoryMeta {
   key: HeatmapCategory;
   label: string;
   colorVar: string;
-  shape: 'circle' | 'diamond' | 'triangle' | 'bar' | 'ring';
 }
 
 export const heatmapCategoryMeta: Record<HeatmapCategory, HeatmapCategoryMeta> = {
-  paper: { key: 'paper', label: '论文笔记', colorVar: '--cat-paper', shape: 'circle' },
-  tech: { key: 'tech', label: '技术笔记', colorVar: '--cat-tech', shape: 'diamond' },
-  study: { key: 'study', label: '学习笔记', colorVar: '--cat-study', shape: 'triangle' },
-  revision: { key: 'revision', label: '修订', colorVar: '--cat-revision', shape: 'bar' },
-  site: { key: 'site', label: '功能更新', colorVar: '--cat-site', shape: 'ring' },
+  paper: { key: 'paper', label: '论文笔记', colorVar: '--heat-cat-paper' },
+  study: { key: 'study', label: '学习笔记', colorVar: '--heat-cat-study' },
+  tech: { key: 'tech', label: '技术笔记', colorVar: '--heat-cat-tech' },
+  revision: { key: 'revision', label: '修订', colorVar: '--heat-cat-revision' },
+  site: { key: 'site', label: '功能更新', colorVar: '--heat-cat-site' },
 };
 
 export interface AboutHeatmapEntry {
@@ -196,12 +195,13 @@ export function buildAboutHeatmapModel(
         runningStreak = 0;
       }
 
-      const sortedCats = [...presentCategories].sort((a, b) => {
-        const diff = cappedCount(agg, b) - cappedCount(agg, a);
-        return diff !== 0 ? diff : heatmapCategories.indexOf(a) - heatmapCategories.indexOf(b);
-      });
+      // Fixed multi-category priority: paper > study > tech > revision > site.
+      const sortedCats = [...presentCategories].sort(
+        (a, b) => heatmapCategories.indexOf(a) - heatmapCategories.indexOf(b),
+      );
 
-      const primaryCategory = sortedCats[0] ?? 'none';
+      const primary = sortedCats[0];
+      const primaryCategory = primary ?? 'none';
       const secondaryCategory = sortedCats[1] ?? 'none';
       const parts = sortedCats.map((cat) => {
         const rawN = agg?.counts[cat] ?? 0;
@@ -213,8 +213,8 @@ export function buildAboutHeatmapModel(
       });
       const dateCn = formatChineseDateLabel(date);
       const ariaLabel =
-        rawTotal > 0
-          ? `${dateCn}，${total} 次有效活动（${rawTotal} 条记录）：${parts.join('；')}`
+        rawTotal > 0 && primary
+          ? `${dateCn}，主要类型：${heatmapCategoryMeta[primary].label}，共 ${total} 次有效活动（${rawTotal} 条记录）：${parts.join('；')}`
           : `${dateCn}，当天没有活动`;
 
       col.push({

@@ -3,7 +3,6 @@ import {
   buildAboutHeatmapModel,
   formatWeekdayDateLabel,
   heatmapCategories,
-  heatmapCategoryMeta,
   type AboutHeatmapCell,
   type AboutHeatmapEntry,
 } from '../lib/about-heatmap-model.ts';
@@ -230,9 +229,6 @@ function initAboutHeatmap(root: HTMLElement) {
           btn.dataset.primaryCategory = cell.primaryCategory;
           btn.dataset.categories = cell.categories.join(',');
           btn.dataset.mixed = cell.mixed ? 'true' : 'false';
-          if (cell.secondaryCategory !== 'none') {
-            btn.style.setProperty('--secondary-color', `var(${heatmapCategoryMeta[cell.secondaryCategory].colorVar})`);
-          }
         }
         weekDiv.append(btn);
       });

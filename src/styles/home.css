@@ -511,6 +511,13 @@
   color: var(--ac);
 }
 
+.stage .win.w4 {
+  --heat-1: color-mix(in srgb, var(--preset-accent, var(--ac)) 32%, var(--bg));
+  --heat-2: color-mix(in srgb, var(--preset-accent, var(--ac)) 54%, var(--bg));
+  --heat-3: color-mix(in srgb, var(--preset-accent, var(--ac)) 76%, var(--bg));
+  --heat-4: var(--preset-accent, var(--ac));
+}
+
 /* Activity Heatmap Window & Static Fallback */
 .stage-heat-body {
   position: relative;

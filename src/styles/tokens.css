@@ -35,6 +35,11 @@
   --cat-study: var(--c3);
   --cat-revision: var(--gold);
   --cat-site: #52525b;
+  --heat-cat-paper: #2044b8;
+  --heat-cat-study: #16a38f;
+  --heat-cat-tech: #cc3568;
+  --heat-cat-revision: #eab02a;
+  --heat-cat-site: #2d2f36;
   --dot: 109, 40, 217;
   --spot: 109, 40, 217;
   --vbg: #efede6;
@@ -131,6 +136,11 @@
   --c2: #ff8aa8;
   --c3: #5fd6b8;
   --cat-site: #a1a1aa;
+  --heat-cat-paper: #3f6ef7;
+  --heat-cat-study: #80f2d2;
+  --heat-cat-tech: #ff6296;
+  --heat-cat-revision: #ebb038;
+  --heat-cat-site: #4d505c;
   --dot: 167, 139, 250;
   --spot: 167, 139, 250;
   --vbg: rgba(255, 255, 255, 0.045);

@@ -41,7 +41,6 @@ interface CalendarCell {
 }
 
 const DESKTOP_COLS = 34;
-const PHONE_COLS = 22;
 const PAD = 2;
 const WEEKDAYS = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'] as const;
 
@@ -141,6 +140,9 @@ export default function ActivityHeatmapIsland({
   const [themeAttr, setThemeAttr] = useState<string>(() =>
     typeof document !== 'undefined' ? document.documentElement.dataset.theme || 'light' : 'light',
   );
+  const [presetAttr, setPresetAttr] = useState<string>(() =>
+    typeof document !== 'undefined' ? document.documentElement.dataset.preset || 'all' : 'all',
+  );
   const [visibleCols, setVisibleCols] = useState<number>(DESKTOP_COLS);
 
   const actMap = useMemo(() => buildHeatmapMap(writingItems, activityItems), [writingItems, activityItems]);
@@ -185,13 +187,19 @@ export default function ActivityHeatmapIsland({
 
   useEffect(() => {
     setHydrated(true);
-    const syncTheme = () => {
+    const syncVisualAttrs = () => {
       setThemeAttr(document.documentElement.dataset.theme || 'light');
+      setPresetAttr(document.documentElement.dataset.preset || 'all');
     };
-    syncTheme();
-    const mo = new MutationObserver(syncTheme);
-    mo.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
-    return () => mo.disconnect();
+    syncVisualAttrs();
+    const mo = new MutationObserver(syncVisualAttrs);
+    mo.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme', 'data-preset'] });
+    const onPresetEvent = () => syncVisualAttrs();
+    window.addEventListener('duolabmeng673:preset-change', onPresetEvent);
+    return () => {
+      mo.disconnect();
+      window.removeEventListener('duolabmeng673:preset-change', onPresetEvent);
+    };
   }, []);
 
   useEffect(() => {
@@ -221,7 +229,7 @@ export default function ActivityHeatmapIsland({
     const ctx = cv.getContext('2d');
     if (!ctx) return undefined;
 
-    const cssVar = (n: string, fallback = '') => getComputedStyle(document.documentElement).getPropertyValue(n).trim() || fallback;
+    const cssVar = (n: string, fallback = '') => getComputedStyle(box).getPropertyValue(n).trim() || getComputedStyle(document.documentElement).getPropertyValue(n).trim() || fallback;
 
     let colors = [0, 1, 2, 3, 4].map((i) => cssVar(`--heat-${i}`, cssVar(`--h${i}`, '#e5e7eb')));
     let siteCol = cssVar('--heat-site', cssVar('--h-site', '#52525b'));
@@ -238,7 +246,7 @@ export default function ActivityHeatmapIsland({
       const ry = y - pop;
       const w = m.cellW + pop * 2;
       const h = m.cellH + pop * 2;
-      const radius = isHovered ? Math.max(2.5, Math.round(m.cellW * 0.28)) : Math.max(2, Math.round(m.cellW * 0.22));
+      const radius = isHovered ? 3 : Math.max(2, Math.min(3, Math.round(m.cellW * 0.2)));
 
       ctx.save();
       if (isHovered) {
@@ -336,21 +344,24 @@ export default function ActivityHeatmapIsland({
     };
 
     const layout = () => {
-      const containerW = Math.max(220, box.clientWidth || box.getBoundingClientRect().width || 420);
-      const isPhone = typeof window !== 'undefined' && window.innerWidth < 640;
-      const colCount = Math.min(totalCols, isPhone ? PHONE_COLS : DESKTOP_COLS);
+      const containerW = Math.max(220, Math.floor(box.clientWidth || box.getBoundingClientRect().width || 420));
+      const gap = 3;
+      const availW = Math.max(120, containerW - PAD * 2);
+      const minSide = containerW < 340 ? 10 : 12;
+      const refCellH = Math.min(28, ((availW - (DESKTOP_COLS - 1) * gap) / DESKTOP_COLS) * 1.35);
+      const side = Math.max(minSide, Math.min(20, Math.floor(refCellH)));
+      const colCount = Math.min(totalCols, Math.max(12, Math.floor((availW + gap) / (side + gap))));
       setVisibleCols((prev) => (prev === colCount ? prev : colCount));
 
-      const gap = isPhone ? 3 : containerW >= 540 ? 3 : 2.5;
-      const availW = Math.max(120, containerW - PAD * 2);
-      const cellW = (availW - (colCount - 1) * gap) / colCount;
-      const cellH = isPhone ? cellW : Math.min(28, Math.round(cellW * 1.35 * 10) / 10);
-      const labelH = cellW >= 11 ? 20 : 18;
+      const cellW = side;
+      const cellH = side;
+      const labelH = side >= 13 ? 20 : 18;
       const W = containerW;
-      const gridH = 7 * cellH + 6 * gap;
+      const gridW = colCount * side + (colCount - 1) * gap;
+      const gridH = 7 * side + 6 * gap;
+      const offsetX = Math.floor(PAD + Math.max(0, availW - gridW) / 2);
       const offsetY = PAD + labelH;
-      const H = Math.ceil(offsetY + gridH + PAD);
-      const offsetX = PAD;
+      const H = offsetY + gridH + PAD;
 
       const dpr = window.devicePixelRatio || 1;
       cv.style.width = `${W}px`;
@@ -479,7 +490,7 @@ export default function ActivityHeatmapIsland({
       cv.removeEventListener('keydown', onKeyDown);
       window.removeEventListener('scroll', onLeave);
     };
-  }, [hydrated, totalCols, cells, themeAttr, defaultSelected?.key]);
+  }, [hydrated, totalCols, cells, themeAttr, presetAttr, defaultSelected?.key]);
 
   const windowLabel = hydrated ? visibleStats.windowLabel : initialWindowLabel;
   const statDays = hydrated ? visibleStats.activityDays : initialActiveDays;
