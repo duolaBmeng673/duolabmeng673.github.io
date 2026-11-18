@@ -26,33 +26,33 @@ tags:
 
 考虑网络参数***W ***：
 
-![image\.png](/articles/squeezerfacenet/image%204.png)
+![image\.png](./squeezerfacenet/assets/image-4.png)
 
 以及以输入x和输出y对为元素的训练集***D ***：
 
-![image\.png](/articles/squeezerfacenet/image.png)
+![image\.png](./squeezerfacenet/assets/image.png)
 
 网络训练的目标是最小化分类错误***E***，通过求解该式：
 
-![image\.png](/articles/squeezerfacenet/image%205.png)
+![image\.png](./squeezerfacenet/assets/image-5.png)
 
 一个参数的重要性分数被定义为移除该参数后对错误的影响，该参数诱导误差可量化为参数去除前后的***E ***的差平方：
 
-![image\.png](/articles/squeezerfacenet/image%203.png)
+![image\.png](./squeezerfacenet/assets/image-3.png)
 
 但是，这样做计算成本很高，为了避免这个问题，使用一阶泰勒展开来逼近***W ***附近的***Im***：
 
-![image\.png](/articles/squeezerfacenet/image%207.png)
+![image\.png](./squeezerfacenet/assets/image-7.png)
 
 而梯度元素定义为：
 
-![image\.png](/articles/squeezerfacenet/image%202.png)
+![image\.png](./squeezerfacenet/assets/image-2.png)
 
 梯度***g***可由反向传播获得，大大简化了***Im ***的计算
 
 同时定义***s ***个参数组成的集合***Ws*** 的共同重要性分数为：
 
-![image\.png](/articles/squeezerfacenet/image%208.png)
+![image\.png](./squeezerfacenet/assets/image-8.png)
 
 算法解释：
 
@@ -80,11 +80,11 @@ tags:
 
 实验表明，SqueezerFaceNet 在 VGGFace2\-Pose 数据集上的表现优于 SqueezeFacePoseNet。具体结果表现在同姿势和跨姿势的实验中，SqueezerFaceNet 在正面与正面 \(F\-F\) 和三分之四视角 \(3/4\-3/4\) 的验证结果中表现更好。对于五图像模板的实验，网络的表现更加稳定，而对于单图像模板的实验，准确率下降更快。
 
-![image\.png](/articles/squeezerfacenet/image%201.png)
+![image\.png](./squeezerfacenet/assets/image-1.png)
 
 剪枝实验表明，在剔除网络中 10\-15% 的卷积滤波器后，网络的性能略有回升，特别是在多图像模板的验证中，网络在剪除 30\-40% 的滤波器后仍然能够保持相当的性能。剪枝后通过重新训练，网络能恢复部分精度损失，直到约 15% 的滤波器被移除后，单图像模板的性能开始迅速下降。
 
-![image\.png](/articles/squeezerfacenet/image%206.png)
+![image\.png](./squeezerfacenet/assets/image-6.png)
 
 最后，剪枝过程使得 SqueezerFaceNet 的参数数量从 1\.24M 减少到 0\.94M，而在五图像模板实验中，网络参数可减少至 0\.65M，精度损失仍然较小。
 

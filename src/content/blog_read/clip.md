@@ -42,7 +42,7 @@ tags:
 
 ## Selecting an Efficient Pre\-Training Method
 
-![image\.png](/articles/clip/image%205.png)
+![image\.png](./clip/assets/image-5.png)
 
 最初团队打算从头开始联合训练图像CNN和文本transformer来预测图像的标题，但结果并不是很可观。根据上图显示，Transformer语言模型学习识别ImageNete类要比一个更简单的预测相同文本的词袋编码慢三倍，同时计算量也比较大。
 
@@ -52,7 +52,7 @@ tags:
 
 1. 给定N对图片\-文本对，训练CLIP使其预测N\*N个图片\-文本对中可能发生的N个，N\*N个对的分配如图所示：
 
-![image\.png](/articles/clip/image%206.png)
+![image\.png](./clip/assets/image-6.png)
 
 2. 联合训练图像编码器和文本编码器以最大化每批中N对真实对的图片文本嵌入的余弦相似度，同时最小化\(N\*2\-N\)个有误对嵌入的余弦相似度，并在这些相似度分数上优化了对称交叉熵损失。
 
@@ -96,23 +96,23 @@ CLIP预训练的每一步都可被视为优化随机创建的代理对计算机�
 
 此节主要将CLIP与N\-Grams进行性能对比，利用YFCC100M数据集训练CLIP、ResNet\-50和Visual N\-Gram模型，结果如下：
 
-![image\.png](/articles/clip/image%204.png)
+![image\.png](./clip/assets/image-4.png)
 
 ### Analysis of Zero\-Shot CLIP Performance
 
 作者在27个数据集上进行实验来表现CLIP的零样本迁移学习性能：
 
-![image\.png](/articles/clip/image%203.png)
+![image\.png](./clip/assets/image-3.png)
 
 ## Representation Learning
 
 在表征学习方面，选用线性分类器进行评估而放弃微调模型。采用12个数据集来评估模型性能，结果如图所示：
 
-![image\.png](/articles/clip/image%201.png)
+![image\.png](./clip/assets/image-1.png)
 
 之后利用27个数据集将CLIP与其他最佳模型进行对比并进行性能可视化处理：
 
-![image\.png](/articles/clip/image.png)
+![image\.png](./clip/assets/image.png)
 
 ## Robustness to Natural Distribution Shift 自然分布变化的鲁棒性
 
@@ -126,7 +126,7 @@ CLIP预训练的每一步都可被视为优化随机创建的代理对计算机�
 
 团队将人类在零样本学习和少样本学习的成绩与CLIP作对比，对比指标是平均每类分类精度，结果如图所示：
 
-![image\.png](/articles/clip/image%202.png)
+![image\.png](./clip/assets/image-2.png)
 
 结果发现CLIP性能远高于人类，但人类学习方式和成绩提升特点和CLIP有很大不同，从零样本到少样本，人类成绩提升很多，这为CLIP算法改进提供了重要思路。
 

@@ -30,7 +30,7 @@ LLM在电子表格处理方面有着巨大潜力，但其性能受到token约束
 
 综上，效果如图所示
 
-![image\.png](/articles/spreadsheet-llm/image.png)
+![image\.png](./spreadsheetllm/assets/image.png)
 
 该论文有以下贡献：1、提出SpreadSheet工作和SheetCompresessor编码；2、微调尖端LLM并证明SpreadSheet方法的超高性能；3、提出了 CoS 并在扩展表 QA 上对其进行了验证，突出了其在智能用户交互方面的潜力。
 

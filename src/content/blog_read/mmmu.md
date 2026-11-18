@@ -36,7 +36,7 @@ MMMU分为三部分：few\-shot开发集、验证集和测试集；few\-shot数�
 
 MMMU基准测试为多模态基础模型引入了四个关键挑战（如图）特别强调了专家级视觉感知能力和详细推理能力
 
-![image\.png](/articles/mmmu/image%203.png)
+![image\.png](./mmmu/assets/image-3.png)
 
 ## Data Curation Process:
 
@@ -48,7 +48,7 @@ MMMU基准测试为多模态基础模型引入了四个关键挑战（如图）�
 
 MMMU对比其他数据集在深度和广度上进行扩充，从广度的角度来看，MMMU基准测试旨在涵盖30种图像格式的大学级知识，包括图表、表格、图表、化学结构、照片、绘画、几何形状、音乐片、医学图像等。在深度方面，以前的基准通常需要常识知识或简单的物理或时间推理。相比之下，MMMU基准需要对大学级主题知识进行深思熟虑的推理。
 
-![image\.png](/articles/mmmu/image%202.png)
+![image\.png](./mmmu/assets/image-2.png)
 
 
 
@@ -74,7 +74,7 @@ MMMU对比其他数据集在深度和广度上进行扩充，从广度的角度�
 
 结果显示，人类专家对该基准测试的准确率高于表中所有大模型，这证明了人类专业知识与当前模型在 MMMU 基准上的性能之间的仍然存在差距。这反映了基准的严格标准。在 Science、Health \& Medicine 和 Technology \&amp; Engineering 等领域，任务通常涉及复杂的感知和复杂的推理，模型的性能较低。
 
-![image\.png](/articles/mmmu/image.png)
+![image\.png](./mmmu/assets/image.png)
 
 ## Analysis of Image Types and Difficulties:
 
@@ -86,7 +86,7 @@ MMMU对比其他数据集在深度和广度上进行扩充，从广度的角度�
 
 # Error Analysis and Future Work:
 
-![image\.png](/articles/mmmu/image%201.png)
+![image\.png](./mmmu/assets/image-1.png)
 
 ## Perceptual Errors
 

@@ -22,7 +22,7 @@ SpreadSheet检测任务是检测给定表上的所有表并定位它们各自的
 
 IoU指标是评估表检测任务成功与否的指标之一，计算计算预测框与真实框的交集面积与二者并集的比例，其阈值常被设置为0\.5，但是为了适应以后的表结构分析和数据摘要发现任务，我们需要更加准确的边界检测方法。因此，我们定义了一个 **Error\-of\-Boundary \(EoB\)** 度量来衡量检测结果与基本事实边界框对齐的精度。EoB=0 表示检测到的边界框与预期答案完全匹配，而 EoB≤2 表示足够优秀。
 
-![image\.png](/articles/tablesense/image%202.png)
+![image\.png](./tablesense/assets/image-2.png)
 
 TableSense数据集采用网络爬取的电子表格语料库数据集WebSheet ，包括 4,290,022 个Sheets。其中WebSheet10k 包含 10,220 个英文Sheets，全部由人类标记其准确表格区域并人为验证；WebSheet400为测试集
 
@@ -30,13 +30,13 @@ TableSense数据集采用网络爬取的电子表格语料库数据集WebSheet �
 
 ## TableSense Framework:
 
-![image\.png](/articles/tablesense/image%203.png)
+![image\.png](./tablesense/assets/image-3.png)
 
 上图展示了TableSense的架构，它分为三个部分：
 
 1. 单元格特征化：在向下输入之前，需要提取单元格特征
 
-![image\.png](/articles/tablesense/image%206.png)
+![image\.png](./tablesense/assets/image-6.png)
 
 2. CNN主干：CNN用于捕获单元格空间相关性并从输入单元格矩阵中学习高级表示。
 
@@ -56,9 +56,9 @@ TableSense数据集采用网络爬取的电子表格语料库数据集WebSheet �
 
 在目标检测中，我们不太关心精确的边界框位置，而是检测到的边界框和地面实况之间的重叠比率。因此采用的 BBR 成本函数建模为
 
-![image\.png](/articles/tablesense/image.png)
+![image\.png](./tablesense/assets/image.png)
 
-![image\.png](/articles/tablesense/image%205.png)
+![image\.png](./tablesense/assets/image-5.png)
 
 其中 x,y 表示边界框的质心坐标，h,w 表示边框的宽度和高度；x\*代表真实框的质心坐标；x\(a\)代表网格初始给定参考框\(锚框\)坐标。
 
@@ -66,7 +66,7 @@ TableSense数据集采用网络爬取的电子表格语料库数据集WebSheet �
 
 因为我们的目标是最小化偏移量，所以 x,y,h,w 等变量的更新方式随边框尺度变化而变化，
 
-![image\.png](/articles/tablesense/image%204.png)
+![image\.png](./tablesense/assets/image-4.png)
 
 BBR 损失计算方法缺乏对大表的误差较不敏感，针对小表的相对误差表现较好。
 
@@ -86,7 +86,7 @@ BBR 和 PBR 的损失一起添加到端到端训练中。虽然 BBR 和 PBR 都�
 
 将 TableSense 方法与其他算法和检测方式进行EoB 指标评估，结果如下：
 
-![image\.png](/articles/tablesense/image%201.png)
+![image\.png](./tablesense/assets/image-1.png)
 
 可见 TableSense表现优越。
 

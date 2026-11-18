@@ -68,7 +68,7 @@ SheetCopilot旨在实现“自然语言控制excel处理”。为此，编者为
 
 题者设计了系统提示模板，将LMs转化为copilots助手，prompt包含以下成分：一般作用描述；带有参数的原子动作列表；一组输出要求以及用户和助手之间的多轮交互示例
 
-![1737166616239\_d\.png](/articles/sheetcopilot/1737166616239_d.png)
+![1737166616239\_d\.png](./sheetcopilot/assets/1737166616239_d.png)
 
 一般作用描述是LMs理解上下文的锚点；原子动作列表为LMs提供了任务规划所需的接口信息；输出要求告诉LMs如何生成可以编程提取和执行的文本
 
@@ -90,7 +90,7 @@ SheetCopilot旨在实现“自然语言控制excel处理”。为此，编者为
 
 此阶段将系统提示P，初始任务指令I，表状态St和规划历史Ht连接起来，并要求LMs计划下一个原子动作A\(t\+1\)
 
-![1737168378760\_d\.png](/articles/sheetcopilot/1737168378760_d.png)
+![1737168378760\_d\.png](./sheetcopilot/assets/1737168378760_d.png)
 
 ### Revising Stage:
 

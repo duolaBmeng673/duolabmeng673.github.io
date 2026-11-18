@@ -66,13 +66,13 @@ GPT的研究隶属于自然语言的半监督学习领域内。然而，以前�
 
 给定一组无监督的tokens语料库 U=\{u1, \. \. \. , un\}，使用标准语言建模目标使该值最大化：
 
-![image\.png](/articles/gpt-1/image%205.png)
+![image\.png](./gpt-1/assets/image-5.png)
 
 k是上下文窗口的大小，条件概率P使用参数为Θ的神经网络建模，用随机梯度下降来训练这些参数。
 
 模型架构使用多层Transformer编码器（transformers变体），该模型能够对上下文tokens进行多头注意力操作，之后在位置前馈层产生目标tokens的输出分布：
 
-![image\.png](/articles/gpt-1/image%208.png)
+![image\.png](./gpt-1/assets/image-8.png)
 
 U = \(u\(−k\),\., u\(−1\)\) 是标记的上下文向量，n是层数，We 是token嵌入矩阵，Wp 是位置嵌入矩阵。
 
@@ -82,15 +82,15 @@ U = \(u\(−k\),\., u\(−1\)\) 是标记的上下文向量，n是层数，We �
 
 对于数据C=\{x1,x2, \.\.\. ,xm\}，和对应标签y，输入预训练模型来获得最终的Transformers激活h\(l , m\)：
 
-![image\.png](/articles/gpt-1/image%209.png)
+![image\.png](./gpt-1/assets/image-9.png)
 
 进一步提供了最大值目标：
 
-![image\.png](/articles/gpt-1/image%2012.png)
+![image\.png](./gpt-1/assets/image-12.png)
 
 此外，将语言建模目标作为辅助目标加入到微调步骤中可以提高模型的泛化能力并且加速收敛。故可引用3\.1中的L1\(U\)，给其权值为λ：
 
-![image\.png](/articles/gpt-1/image%2013.png)
+![image\.png](./gpt-1/assets/image-13.png)
 
 总体而言，微调期间需要的唯一额外参数为Wy，分隔符标记的嵌入。
 
@@ -98,7 +98,7 @@ U = \(u\(−k\),\., u\(−1\)\) 是标记的上下文向量，n是层数，We �
 
 为保证GPT的多任务泛用性，需保证输入形式一致，模型可接受的输入为（以文本分类任务为例）
 
-![image\.png](/articles/gpt-1/image%2011.png)
+![image\.png](./gpt-1/assets/image-11.png)
 
 因为该模型基于连续性文本序列进行预训练，编者采用遍历式方法将结构性的输入转化成模型可处理的输入。
 
@@ -106,19 +106,19 @@ U = \(u\(−k\),\., u\(−1\)\) 是标记的上下文向量，n是层数，We �
 
 连接前提p和假设h，中间有分隔符标记\($\)：
 
-![image\.png](/articles/gpt-1/image%202.png)
+![image\.png](./gpt-1/assets/image-2.png)
 
 ### Similarity
 
 评估两段文本相似度，对文本顺序没有固有要求，于是可以独立构造两段序列表征（二者文本顺序不同）。在输入到线性输入层之前他们是按元素添加的：
 
-![image\.png](/articles/gpt-1/image%204.png)
+![image\.png](./gpt-1/assets/image-4.png)
 
 ### Question Answering and Commonsense Reasoning
 
 对于问答和常识推理任务，考虑正文文档\(z\)，问题\(q\)和一组可能回答\{a\(k\)\}，按照\[z; q; $; a\(k\)\]顺序连接，构造\|\{a\(k\)\}\|个序列，分别独立输入模型，最后在softmax层归一化以产生可能回答的输出分布：
 
-![image\.png](/articles/gpt-1/image%203.png)
+![image\.png](./gpt-1/assets/image-3.png)
 
 # Experiments
 
@@ -146,7 +146,7 @@ U = \(u\(−k\),\., u\(−1\)\) 是标记的上下文向量，n是层数，We �
 
 课题组根据五个数据集进行评估，包括图像字幕 \(SNLI\)、转录语音、流行小说和政府报告 \(MNLI\)、维基百科文章 \(QNLI\)、科学考试 \(SciTail\) 或新闻文章 \(RTE\)，结果如下所示
 
-![image\.png](/articles/gpt-1/image%201.png)
+![image\.png](./gpt-1/assets/image-1.png)
 
 尽管有些结果不太理想\(RTE\)，编者猜测使用更大的数据集可能改善模型性能表现。
 
@@ -154,13 +154,13 @@ U = \(u\(−k\),\., u\(−1\)\) 是标记的上下文向量，n是层数，We �
 
 使用含有更多推理类型问题的RACE数据集以及还在the Story Cloze Test上进行评估，模型表现由于先前最佳结果
 
-![image\.png](/articles/gpt-1/image.png)
+![image\.png](./gpt-1/assets/image.png)
 
 ### Semantic Similarity
 
 使用Microsoft Paraphrase 语料库 \(MRPC\)、Quora Question Pairs \(QQP\) 数据集和语义文本相似度基准\(STS\-B\)，在三个语义相似性任务中的两个上获得了最先进的结果
 
-![image\.png](/articles/gpt-1/image%2014.png)
+![image\.png](./gpt-1/assets/image-14.png)
 
 ### Classification
 
@@ -170,7 +170,7 @@ U = \(u\(−k\),\., u\(−1\)\) 是标记的上下文向量，n是层数，We �
 
 ## Impact of number of layers transferred
 
-![image\.png](/articles/gpt-1/image%207.png)
+![image\.png](./gpt-1/assets/image-7.png)
 
 由图像可知，在试验范围内随着迁移层数的增加，两个任务在训练和验证步骤上的验证准确率均有增加，课件每个层在解决特定任务上均有有效功能。
 
@@ -178,7 +178,7 @@ U = \(u\(−k\),\., u\(−1\)\) 是标记的上下文向量，n是层数，We �
 
 为解释语言模型的预训练和transformers架构的有效性的原因，课题组从迁移学习和零样本行为方面入手，设计底层生成模型执行任务而进行无监督微调作为LSTM架构模型与GPT模型作对比，结果显示LSTM模型有更大的方差。相比之下，Transformers架构在迁移学习上性能表现稳定
 
-![image\.png](/articles/gpt-1/image%206.png)
+![image\.png](./gpt-1/assets/image-6.png)
 
 ## Ablation studies
 
@@ -190,7 +190,7 @@ U = \(u\(−k\),\., u\(−1\)\) 是标记的上下文向量，n是层数，We �
 
 3. 预训练过程有无监督
 
-![image\.png](/articles/gpt-1/image%2010.png)
+![image\.png](./gpt-1/assets/image-10.png)
 
 结果可知当前模型为最佳选择。
 

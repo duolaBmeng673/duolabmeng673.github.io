@@ -64,7 +64,7 @@ MathVista包含两个子集：testmin和test，testmin包含1000个示例，而t
 
 ## Data Analysis：
 
-![image\.png](/articles/mathvista/image%203.png)
+![image\.png](./mathvista/assets/image-3.png)
 
 如图表所示，问题类型分为选择题和自由作答题。自由作答题的答案分为整数、浮点数或列表，同时大量的独特图像、问题和答案确保了MATHVISTA中模式的多样性。
 
@@ -80,7 +80,7 @@ MathVista基准测试评估基于短回答文本，其主要步骤分为三步�
 
 MathVista中示例回答为文本答案的多项选择题或数值答案。
 
-![image\.png](/articles/mathvista/image%202.png)
+![image\.png](./mathvista/assets/image-2.png)
 
 ## Experimental Setup\&Experimental Results:
 
@@ -90,7 +90,7 @@ MathVista中示例回答为文本答案的多项选择题或数值答案。
 
 LLM方面，GPT\-4V表现最佳，但仍然比人类方表现落后10\.4%。此外，由于处理视觉的模型架构、语言等方面的不同，各模型表现差异巨大。
 
-![image\.png](/articles/mathvista/image.png)
+![image\.png](./mathvista/assets/image.png)
 
 ## Fine\-grained Results:
 
@@ -102,7 +102,7 @@ LLM方面，GPT\-4V表现最佳，但仍然比人类方表现落后10\.4%。此�
 
 团队在实验过程中对模型的故障原因进行分析
 
-![image\.png](/articles/mathvista/image%201.png)
+![image\.png](./mathvista/assets/image-1.png)
 
 由图\(a\)可知44\.6%的错误由于错误的答案和解释，同时观察到Bard相应部分错误\(6\.8%和8\.1%\)的原因在于得出正确的答案而进行了错误的解释。
 

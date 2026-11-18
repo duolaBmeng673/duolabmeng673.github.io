@@ -38,7 +38,7 @@ tags:
 
 表格任务可以大致分为表相关、制表软件相关、数据库相关和文档相关任务。这些任务要求 AI 模型直接理解表内容，编写代码来操纵电子表格，编写 SQL 访问数据库，或从文档中提取表数据。
 
-![image\.png](/articles/llm-table-processing-survey/image.png)
+![image\.png](./llm-table-processing-survey/assets/image.png)
 
 
 

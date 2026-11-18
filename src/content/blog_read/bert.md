@@ -32,7 +32,7 @@ tags:
 
 下图是BERT，OpenAI GPT，ELMo三个模型的架构差异。个人理解为BERT每个token均受其上下文tokens影响；而GPT中每个token仅受上文所有tokens影响；ELMo将从左到右和从右到左的过程分别放在两个框架之内，似乎每个token仅受上一个token和下一个token影响。
 
-![image\.png](/articles/bert/image%203.png)
+![image\.png](./bert/assets/image-3.png)
 
 # 2\.Related work
 
@@ -72,7 +72,7 @@ ELMo将词嵌入研究概括为不同的维度，推出了几个主要NLP基准�
 
 3\.句子被打包成一个序列，以两种方法区分句子：首先，用特殊序列\[SEP\]分开；之后为每个标记添加一个学习嵌入，表示其句子归属\(A\\B\)，将输入嵌入表示为E，特殊\[CLS\]令牌的最终隐藏向量表示为C，第i个输入标记的最终隐藏向量表示为Ti。
 
-![image\.png](/articles/bert/image%205.png)
+![image\.png](./bert/assets/image-5.png)
 
 ## 3\.1 Pre\-training BERT
 
@@ -116,7 +116,7 @@ NSP任务涉及对两句子之间关系，语言模型并不能捕捉到这样�
 
 设batch size为32，每三轮对所有GLUE任务数据进行微调。经过一系列步骤得到最终的BERT\(BASE\)和BERT\(LARGE\)。由下图可知模型表现优异，附录B\.1对MNLI，QQP等数据集做出了详细解释。
 
-![image\.png](/articles/bert/image.png)
+![image\.png](./bert/assets/image.png)
 
 ## 4\.2 SQuAD v1\.1\&v2\.0
 
@@ -126,19 +126,19 @@ NSP任务涉及对两句子之间关系，语言模型并不能捕捉到这样�
 
 在v2\.0数据集中，团队简单拓展了SQuAD v1\.1 BERT模型来完成这项任务。
 
-![image\.png](/articles/bert/image%201.png)
+![image\.png](./bert/assets/image-1.png)
 
 ## 4\.3 SWAG
 
 对抗性生成情境数据集，个人理解为给出四个句子序列进行排序。方法为设一特定于任务的参数为向量，将其与4\.1中提及的C作点积，最后利用softmax函数来计算每句的得分。
 
-![image\.png](/articles/bert/image%204.png)
+![image\.png](./bert/assets/image-4.png)
 
 
 
 ## 4\.4 训练方法图解
 
-![image\.png](/articles/bert/image%202.png)
+![image\.png](./bert/assets/image-2.png)
 
 如图，\(a\)为句子对分类任务，输出分类标签；\(b\)为单句子分类任务，输出分类标签；\(c\)为问答任务，输出答案文本跨度；\(d\)为单句标注任务，每个token对应输出一个标注。
 

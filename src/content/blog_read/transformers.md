@@ -28,7 +28,7 @@ Transformer架构提出完全摈弃递归卷积神经网络，完全依靠注意
 
 ### 图示：
 
-![image\.png](/articles/transformers/image%206.png)
+![image\.png](./transformers/assets/image-6.png)
 
 ### Encoding编码器：
 
@@ -36,7 +36,7 @@ Transformer架构提出完全摈弃递归卷积神经网络，完全依靠注意
 
 每个子层的输出为如图，其中Sublayer\(x\)为子层本身的函数。
 
-![image\.png](/articles/transformers/image%203.png)
+![image\.png](./transformers/assets/image-3.png)
 
 为了便于残差连接，所有子层和嵌入层的输出维度为d\(model\)=512。
 
@@ -54,9 +54,9 @@ Transformer架构提出完全摈弃递归卷积神经网络，完全依靠注意
 
 计算：计算查询和键的点积，之后除以dk的二分之一次方，将结果代入到softmax函数中，得到Attention结果\(Q矩阵是一组查询的注意力函数，矩阵K和V对应键和值\)。
 
-![image\.png](/articles/transformers/image%208.png)
+![image\.png](./transformers/assets/image-8.png)
 
-![image\.png](/articles/transformers/image%204.png)
+![image\.png](./transformers/assets/image-4.png)
 
 ### Multi\-Head Attention多头注意力
 
@@ -66,9 +66,9 @@ Transformer架构提出完全摈弃递归卷积神经网络，完全依靠注意
 
 每层多头注意力由h=8层等比例缩放点积注意力构成。
 
-![image\.png](/articles/transformers/image.png)
+![image\.png](./transformers/assets/image.png)
 
-![image\.png](/articles/transformers/image%205.png)
+![image\.png](./transformers/assets/image-5.png)
 
 ### Applications of Attention in our Model
 
@@ -80,7 +80,7 @@ Transformer架构提出完全摈弃递归卷积神经网络，完全依靠注意
 
 每层都包含全连接的前馈网络，有两个线性变换构成，中间有一个ReLU激活。
 
-![image\.png](/articles/transformers/image%209.png)
+![image\.png](./transformers/assets/image-9.png)
 
 ## 4\.Embeddings and Softmax
 
@@ -92,7 +92,7 @@ Transformer架构提出完全摈弃递归卷积神经网络，完全依靠注意
 
 使用正余弦函数来进行位置编码、学习和固定（pos:位置；i:维度）
 
-![image\.png](/articles/transformers/image%201.png)
+![image\.png](./transformers/assets/image-1.png)
 
 易知位置编码的每个维度对应一个函数值，语序模型轻松关注相对位置。
 
@@ -108,7 +108,7 @@ Transformer架构提出完全摈弃递归卷积神经网络，完全依靠注意
 
 数据对比如下所示：
 
-![image\.png](/articles/transformers/image%207.png)
+![image\.png](./transformers/assets/image-7.png)
 
 由此可见，自注意力机制在普遍情况下可以做到更少的计算复杂度，可以产生更多的可解释型模型。
 
@@ -130,7 +130,7 @@ Transformer架构提出完全摈弃递归卷积神经网络，完全依靠注意
 
 Adam优化器，学习率根据下列公式变化：
 
-![image\.png](/articles/transformers/image%202.png)
+![image\.png](./transformers/assets/image-2.png)
 
 ## Regularization正则化
 

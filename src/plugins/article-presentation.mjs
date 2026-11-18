@@ -100,10 +100,12 @@ const isReference = (node, reference) => node.type === 'element'
   && ['img', 'a'].includes(node.tagName)
   && String(node.properties?.[node.tagName === 'img' ? 'src' : 'href'] ?? '').replace(/^\.\//, '') === reference;
 
+const seenFirstArticleImage = new WeakSet();
+
 export const articlePresentation = {
   name: 'article-display-only',
   element: {
-    filter: ['h2', 'h3', 'h4', 'h5', 'h6', 'p', 'li', 'blockquote'],
+    filter: ['h2', 'h3', 'h4', 'h5', 'h6', 'p', 'li', 'blockquote', 'img'],
     visit(node, context) {
       if (/^h[2-6]$/.test(node.tagName)) {
         if (context.textContent(node).includes('⭐')) context.setProperty(node, 'children', priority(node.children));
@@ -111,6 +113,17 @@ export const articlePresentation = {
       }
       const slug = context.data.astro?.frontmatter.studySlug;
       const demo = demos[slug];
+      if (node.tagName === 'img') {
+        if (demo && isReference(node, demo.reference)) return;
+        const docKey = context.data.astro ?? context.data;
+        if (!seenFirstArticleImage.has(docKey)) {
+          seenFirstArticleImage.add(docKey);
+          if (!node.properties?.loading) context.setProperty(node, 'loading', 'eager');
+        } else if (!node.properties?.loading) {
+          context.setProperty(node, 'loading', 'lazy');
+        }
+        return;
+      }
       if (!demo) return;
       const reference = node.children?.find((child) => isReference(child, demo.reference));
       if (!reference) return;

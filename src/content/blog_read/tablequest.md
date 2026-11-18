@@ -28,7 +28,7 @@ TableQuest是新的基准测试，旨在评估LLM在各种复杂场景中对表�
 
 考虑到问题的难度，作者采用人机混合验证方法来验证问题与答案的相关性、合理性和有效性。
 
-![image\.png](/articles/tablequest/image%201.png)
+![image\.png](./tablequest/assets/image-1.png)
 
 # Experiments
 
@@ -40,7 +40,7 @@ TableQuest是新的基准测试，旨在评估LLM在各种复杂场景中对表�
 
 各大开/闭源模型 ELO 评分如图所示：
 
-![image\.png](/articles/tablequest/image.png)
+![image\.png](./tablequest/assets/image.png)
 
 使用 7 个最先进的模型的结果表明，虽然 LLM 可以以合理的准确性定位事实，但它们难以进行复杂的推理和多步计算。
 
