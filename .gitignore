@@ -5,7 +5,8 @@ dist/
 npm-debug.log*
 
 # Local source archive and duplicate imports; deployable copies live in
-# src/content/blog_read/*.md and public/articles/.
+# src/content/blog_read/*.md and src/content/blog_read/*/assets/.
 article/
 src/content/blog/*/
-src/content/blog_read/*/
+src/content/blog_read/*/*
+!src/content/blog_read/*/assets/
