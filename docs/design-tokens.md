@@ -12,7 +12,7 @@
 
 ## 已核实的令牌入口
 
-- 【已核实】[src/styles/tokens.css](../src/styles/tokens.css) 与 [src/styles/global.css](../src/styles/global.css) 定义全站 React Bits 浅／深色基底、正文、交互、辅色、字体、圆角（`--r-nav` 到 `--r-vis`）、首页舞台窗口字号 `--win-fs: clamp(12px, calc(10.85px + 0.302vw), 16px)` 与版心变量（`--gutter: clamp(20px, 3vw, 56px)`、`--maxw: 1760px`）；[BaseLayout](../src/layouts/BaseLayout.astro) 负责首屏主题／字号恢复与共享样式，[typography.ts](../src/scripts/typography.ts) 负责主题／字体设置。没有第二套独立知识点主题状态。
+- 【已核实】[src/styles/tokens.css](../src/styles/tokens.css) 与 [src/styles/global.css](../src/styles/global.css) 定义全站 React Bits 浅／深色基底、正文、交互、辅色、字体、圆角（`--r-nav` 到 `--r-vis`）、首页舞台窗口字号 `--win-fs: clamp(12px, calc(10.85px + 0.302vw), 16px)`、学习笔记正文与目录字号阶梯（`--fs-article-body: 1.02rem`、`--fs-study-h2: 1.46rem`、`--fs-study-h3: 1.22rem`、`--fs-study-label: 1.09rem`、`--fs-toc-2: max(12px, 0.84rem)`、`--fs-toc-3: max(12px, 0.76rem)`）与版心变量（`--gutter: clamp(20px, 3vw, 56px)`、`--maxw: 1760px`）；[BaseLayout](../src/layouts/BaseLayout.astro) 负责首屏主题／字号恢复与共享样式，[typography.ts](../src/scripts/typography.ts) 负责主题／字体设置。没有第二套独立知识点主题状态。
 - 【已核实】[src/styles/knowledge-tags.css](../src/styles/knowledge-tags.css) 定义七类 `--knowledge-*`、中性标签与图例样式；条目、文章、搜索候选共用同一组色块变量。
 
 【已核实】以下色值逐项来自上述两个 CSS 文件，十六进制大小写不影响颜色：

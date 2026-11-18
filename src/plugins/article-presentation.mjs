@@ -1,5 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
+import { BADGE_PREFIX, OPEN_BRACKET_RE } from './heading-tokens.mjs';
 
 const element = (tagName, properties, children = []) => ({ type: 'element', tagName, properties, children });
 const text = (value) => ({ type: 'text', value });
@@ -12,6 +13,38 @@ const priority = (children) => children.flatMap((child) => {
   }
   return [{ ...child, ...(child.children ? { children: priority(child.children) } : {}) }];
 });
+
+function decorateHeadingLead(children, state = { done: false }) {
+  return children.flatMap((child) => {
+    if (state.done) return [child];
+    if (child.type === 'text') {
+      if (!child.value) return [child];
+      state.done = true;
+      if (child.value.startsWith(BADGE_PREFIX)) {
+        const rest = child.value.slice(BADGE_PREFIX.length);
+        const badge = element('span', { className: ['heading-badge'], dataBadge: '原题' }, [
+          element('span', { className: ['heading-badge-paren'], ariaHidden: 'true' }, [text('（')]),
+          text('原题'),
+          element('span', { className: ['heading-badge-paren'], ariaHidden: 'true' }, [text('）')]),
+        ]);
+        return rest ? [badge, text(rest)] : [badge];
+      }
+      const match = child.value.match(OPEN_BRACKET_RE);
+      if (match) {
+        const ch = match[1];
+        const rest = child.value.slice(ch.length);
+        const punct = element('span', { className: ['lead-punct'] }, [text(ch)]);
+        return rest ? [punct, text(rest)] : [punct];
+      }
+      return [child];
+    }
+    if (child.children?.length) {
+      return [{ ...child, children: decorateHeadingLead(child.children, state) }];
+    }
+    state.done = true;
+    return [child];
+  });
+}
 
 // Explicitly reviewed local demos only; never embed arbitrary article URLs.
 const patternRoot = '../content/837考研/网络安全基础考点笔记总结/5 典型模式匹配算法/';
@@ -108,7 +141,9 @@ export const articlePresentation = {
     filter: ['h2', 'h3', 'h4', 'h5', 'h6', 'p', 'li', 'blockquote', 'img'],
     visit(node, context) {
       if (/^h[2-6]$/.test(node.tagName)) {
-        if (context.textContent(node).includes('⭐')) context.setProperty(node, 'children', priority(node.children));
+        let nextChildren = decorateHeadingLead(node.children);
+        if (context.textContent(node).includes('⭐')) nextChildren = priority(nextChildren);
+        context.setProperty(node, 'children', nextChildren);
         return;
       }
       const slug = context.data.astro?.frontmatter.studySlug;

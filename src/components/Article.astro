@@ -72,7 +72,7 @@ for (const question of study?.data.questions ?? []) {
 const canRecall = Boolean(study && headings.some((heading) => heading.depth >= 2));
 ---
 <BaseLayout title={post.data.title} description={post.data.description} bodyClass="article-page" type="article" published={post.data.pubDate} updated={post.data.updatedDate}>
-  <article class="article has-toc">
+  <article class="article has-toc" data-category={post.data.category}>
     <div class="reading-progress" aria-hidden="true"></div>
     <div class="article-layout">
       <div class="article-main">
@@ -82,8 +82,7 @@ const canRecall = Boolean(study && headings.some((heading) => heading.depth >= 2
             <h1 class:list={{ 'title-long': getPostTitle(post).length > 26 }}>{getPostTitle(post)}</h1>
             {canRecall && <div class="recall-tools" data-recall-tools hidden>
               <div class="view-switch" role="group" aria-label="阅读模式"><button type="button" class="view-button is-active" data-study-mode="read" aria-pressed="true">阅读模式</button><button type="button" class="view-button" data-study-mode="recall" aria-pressed="false">背诵模式</button></div>
-              <div class="recall-subbar" data-recall-actions hidden><button type="button" class="view-button" data-recall-all="show">展开全部内容</button><button type="button" class="view-button" data-recall-all="hide">收起全部内容</button></div>
-              <p class="recall-hint" data-recall-hint hidden>点击标题独立展开或收起；各级标题与加粗小标题保留原文层次，可同时展开多个内容。</p>
+              <div class="view-switch recall-subbar" data-recall-actions role="group" aria-label="展开与收起控制" hidden><button type="button" class="view-button" data-recall-all="show">展开全部</button><button type="button" class="view-button" data-recall-all="hide">收起全部</button></div>
             </div>}
           </div>
           {post.data.subtitle && <p class="article-subtitle">{post.data.subtitle}</p>}

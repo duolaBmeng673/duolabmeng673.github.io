@@ -6,7 +6,22 @@ if (body && tools) {
   const stack: { depth: number; content: HTMLElement }[] = [];
   let headingDepth = 1;
   let mode = 'read';
+  const showAllBtn = tools.querySelector<HTMLButtonElement>('[data-recall-all="show"]');
+  const hideAllBtn = tools.querySelector<HTMLButtonElement>('[data-recall-all="hide"]');
   const notify = () => document.dispatchEvent(new Event('study-mode-change'));
+  const syncActions = () => {
+    const active = mode === 'recall';
+    const allOpen = active && entries.length > 0 && entries.every((entry) => entry.open);
+    const allClosed = active && entries.length > 0 && entries.every((entry) => !entry.open);
+    if (showAllBtn) {
+      showAllBtn.disabled = allOpen;
+      showAllBtn.setAttribute('aria-disabled', String(allOpen));
+    }
+    if (hideAllBtn) {
+      hideAllBtn.disabled = allClosed;
+      hideAllBtn.setAttribute('aria-disabled', String(allClosed));
+    }
+  };
   // Build a hierarchy from rendered nodes. Source Markdown, images, and code stay intact.
   for (const node of nodes) {
     const heading = node instanceof HTMLElement && /^H[1-6]$/.test(node.tagName);
@@ -25,7 +40,10 @@ if (body && tools) {
       const content = document.createElement('div'); content.className = 'study-fold-content';
       details.append(summary, content);
       (stack.at(-1)?.content ?? body).append(details);
-      details.addEventListener('toggle', notify);
+      details.addEventListener('toggle', () => {
+        syncActions();
+        notify();
+      });
       entries.push(details); stack.push({ depth, content });
     } else {
       if (heading) stack.length = 0;
@@ -37,7 +55,7 @@ if (body && tools) {
     mode = next;
     body.classList.toggle('is-recalling', mode === 'recall');
     entries.forEach((entry) => { entry.open = mode === 'read'; });
-    tools.querySelectorAll<HTMLElement>('[data-recall-actions], [data-recall-hint]').forEach((node) => { node.hidden = mode !== 'recall'; });
+    tools.querySelectorAll<HTMLElement>('[data-recall-actions]').forEach((node) => { node.hidden = mode !== 'recall'; });
     buttons.forEach((button) => {
       const active = button.dataset.studyMode === mode;
       button.classList.toggle('is-active', active); button.setAttribute('aria-pressed', String(active));
@@ -52,11 +70,19 @@ if (body && tools) {
         summary?.removeAttribute('aria-disabled');
       }
     });
+    syncActions();
     notify();
   };
   buttons.forEach((button) => button.addEventListener('click', () => changeMode(button.dataset.studyMode ?? 'read')));
   tools.querySelectorAll<HTMLButtonElement>('[data-recall-all]').forEach((button) => button.addEventListener('click', () => {
-    entries.forEach((entry) => { entry.open = button.dataset.recallAll === 'show'; });
+    const show = button.dataset.recallAll === 'show';
+    const wasFocused = document.activeElement === button;
+    entries.forEach((entry) => { entry.open = show; });
+    syncActions();
+    if (wasFocused && button.disabled) {
+      const counterpart = show ? hideAllBtn : showAllBtn;
+      if (counterpart && !counterpart.disabled) counterpart.focus({ preventScroll: true });
+    }
     notify();
   }));
   const revealTarget = (hash: string) => {
@@ -69,6 +95,7 @@ if (body && tools) {
       if (ancestor instanceof HTMLDetailsElement) ancestor.open = true;
       ancestor = ancestor.parentElement;
     }
+    syncActions();
     requestAnimationFrame(() => { target.scrollIntoView({ block: 'start' }); notify(); });
   };
   document.querySelectorAll<HTMLAnchorElement>('.article-toc a, .article-toc-mobile a').forEach((link) => link.addEventListener('click', () => revealTarget(link.hash)));

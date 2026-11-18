@@ -335,3 +335,47 @@ test('all markdown-referenced SVG assets in 837 study notes exist and pass XML s
   }
   assert.ok(checked >= 30, `Expected at least 30 active SVG references in 837 notes, found ${checked}`);
 });
+
+test('study notes render leading-bracket alignment, 原题 badges in body and TOC, and recall toolbar data hooks', () => {
+  const yuantiRoutes = [
+    { route: '/study-notes/837/firewall-netfilter/', count: 1 },
+    { route: '/study-notes/837/intrusion-detection-snort/', count: 4 },
+    { route: '/study-notes/837/ipsec/', count: 3 },
+    { route: '/study-notes/837/risk-management/', count: 1 },
+    { route: '/study-notes/837/set/', count: 1 },
+    { route: '/study-notes/837/ssl/', count: 2 },
+  ];
+  let totalBadges = 0;
+  for (const { route, count } of yuantiRoutes) {
+    const html = read(`dist${route}index.html`);
+    const bodyBadges = html.match(/<h2\b[^>]*><span class="heading-badge" data-badge="原题"><span class="heading-badge-paren" aria-hidden="true">（<\/span>原题<span class="heading-badge-paren" aria-hidden="true">）<\/span><\/span>/g) ?? [];
+    assert.equal(bodyBadges.length, count, `${route} body badge count`);
+    const tocBadges = html.match(/class="heading-badge heading-badge-toc" data-badge="原题"/g) ?? [];
+    assert.equal(tocBadges.length, count * 2, `${route} renders 原题 badge in both desktop/drawer TOC and tablet mobile TOC`);
+    totalBadges += bodyBadges.length;
+  }
+  assert.equal(totalBadges, 12);
+
+  const snortHtml = read('dist/study-notes/837/intrusion-detection-snort/index.html');
+  assert.ok(snortHtml.includes('<h2 id="原题入侵检测模型的过程"><span class="heading-badge" data-badge="原题">'));
+  assert.equal((snortHtml.match(/<h4\b[^>]*><span class="lead-punct">（<\/span>/g) ?? []).length, 10);
+  const basicsHtml = read('dist/study-notes/837/security-basics/index.html');
+  assert.equal((basicsHtml.match(/<h4\b[^>]*><span class="lead-punct">（<\/span>/g) ?? []).length, 7);
+
+  assert.ok(snortHtml.includes('data-recall-tools'));
+  assert.ok(snortHtml.includes('data-study-mode="read"'));
+  assert.ok(snortHtml.includes('data-study-mode="recall"'));
+  assert.ok(snortHtml.includes('data-recall-actions'));
+  assert.ok(snortHtml.includes('data-recall-all="show"'));
+  assert.ok(snortHtml.includes('data-recall-all="hide"'));
+  assert.ok(!snortHtml.includes('data-recall-hint'));
+
+  const blogHtml = read('dist/blog/bert/index.html');
+  assert.ok(!blogHtml.includes('data-study-body'));
+  assert.ok(!blogHtml.includes('data-recall-tools'));
+
+  const css = read('src/styles/global.css');
+  assert.match(css, /\.lead-punct\s*\{[^}]*margin-left:\s*-0\.5em/);
+  assert.match(css, /@supports\s*\(text-spacing-trim:\s*trim-start\)/);
+  assert.match(css, /\.recall-tools\s+\.view-button\s*\{[^}]*min-height:\s*max\(36px,\s*2\.25rem\)/);
+});

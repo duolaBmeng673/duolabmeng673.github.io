@@ -78,6 +78,12 @@
   --fw-body: 400;
   --font-scale: 1;
   --win-fs: clamp(12px, calc(10.85px + 0.302vw), 16px);
+  --fs-article-body: 1.02rem;
+  --fs-study-h2: 1.46rem;
+  --fs-study-h3: 1.22rem;
+  --fs-study-label: 1.09rem;
+  --fs-toc-2: max(12px, 0.84rem);
+  --fs-toc-3: max(12px, 0.76rem);
   --header-h: 72px;
   --header-offset: var(--header-h);
 }
