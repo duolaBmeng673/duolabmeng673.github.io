@@ -2,7 +2,7 @@ export const BADGE_PREFIX = '（原题）';
 export const OPEN_BRACKET_RE = /^([（【「《『〈〔〖])/;
 
 /**
- * Split plain heading text into display tokens (leading badge / full-width open bracket / priority star / text)
+ * Split plain heading text into display tokens (leading badge / full-width open bracket / text)
  * while keeping raw source characters intact for IDs, anchors, search, and copy-paste.
  */
 export function tokenizeHeadingText(value) {
@@ -20,14 +20,7 @@ export function tokenizeHeadingText(value) {
     }
   }
 
-  if (rest.includes('⭐')) {
-    rest.split('⭐').forEach((part, index) => {
-      if (index > 0) tokens.push({ type: 'priority', value: '⭐' });
-      if (part) tokens.push({ type: 'text', value: part });
-    });
-  } else if (rest) {
-    tokens.push({ type: 'text', value: rest });
-  }
+  if (rest) tokens.push({ type: 'text', value: rest });
 
   return tokens;
 }

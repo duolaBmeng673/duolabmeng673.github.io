@@ -23,7 +23,7 @@ tags: ["网络安全", "libpcap", "WinPcap", "BPF"]
 - `libpcap`（Linux）和 `winpcap`（Windows）都是**数据链路层编程接口**。
 - 使用时需先设置**混杂模式**，并可通过 **BPF 语法**编译、设置过滤器，对数据包进行过滤。
 
-### 二、应用编程流程 🟨
+### 二、应用编程流程
 
 ![alt text](libpcap_call_order.svg)
 | 步骤 | 函数 | 作用 |

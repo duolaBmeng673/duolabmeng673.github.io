@@ -4,15 +4,6 @@ import { BADGE_PREFIX, OPEN_BRACKET_RE } from './heading-tokens.mjs';
 
 const element = (tagName, properties, children = []) => ({ type: 'element', tagName, properties, children });
 const text = (value) => ({ type: 'text', value });
-const priority = (children) => children.flatMap((child) => {
-  if (child.type === 'text' && child.value.includes('⭐')) {
-    return child.value.split('⭐').flatMap((part, index) => [
-      ...(index ? [element('span', { className: ['priority-badge'], role: 'img', ariaLabel: '重点' }, [text('⭐')])] : []),
-      text(part),
-    ]);
-  }
-  return [{ ...child, ...(child.children ? { children: priority(child.children) } : {}) }];
-});
 
 function decorateHeadingLead(children, state = { done: false }) {
   return children.flatMap((child) => {
@@ -141,9 +132,7 @@ export const articlePresentation = {
     filter: ['h2', 'h3', 'h4', 'h5', 'h6', 'p', 'li', 'blockquote', 'img'],
     visit(node, context) {
       if (/^h[2-6]$/.test(node.tagName)) {
-        let nextChildren = decorateHeadingLead(node.children);
-        if (context.textContent(node).includes('⭐')) nextChildren = priority(nextChildren);
-        context.setProperty(node, 'children', nextChildren);
+        context.setProperty(node, 'children', decorateHeadingLead(node.children));
         return;
       }
       const slug = context.data.astro?.frontmatter.studySlug;

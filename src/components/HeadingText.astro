@@ -12,8 +12,5 @@ const tokens = tokenizeHeadingText(text);
   if (token.type === 'lead-punct') {
     return <span class="lead-punct">{token.value}</span>;
   }
-  if (token.type === 'priority') {
-    return <span class="priority-badge" role="img" aria-label="重点">⭐</span>;
-  }
   return token.value;
 })}

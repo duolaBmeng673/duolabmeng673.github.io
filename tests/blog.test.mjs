@@ -83,7 +83,7 @@ test('activity calendar uses local dates, sums activity types, and handles leap 
 });
 test('heading presentation transforms leading full-width brackets and 原题 badge without mutating IDs or tokens', () => {
   const { html } = markdownToHtml(
-    '## （原题）入侵检测模型\n\n### 【重点】检测方法\n\n#### （1）静态包过滤 ⭐',
+    '## （原题）入侵检测模型\n\n### 【重点】检测方法\n\n#### （1）静态包过滤',
     {
       mdastPlugins: [articleHeadings],
       hastPlugins: [articlePresentation],
@@ -92,14 +92,13 @@ test('heading presentation transforms leading full-width brackets and 原题 bad
   );
   assert.match(html, /<h2 id="原题入侵检测模型"><span class="heading-badge" data-badge="原题"><span class="heading-badge-paren" aria-hidden="true">（<\/span>原题<span class="heading-badge-paren" aria-hidden="true">）<\/span><\/span>入侵检测模型<\/h2>/);
   assert.match(html, /<h3 id="重点检测方法"><span class="lead-punct">【<\/span>重点】检测方法<\/h3>/);
-  assert.match(html, /<h4 id="1静态包过滤-"><span class="lead-punct">（<\/span>1）静态包过滤 <span class="priority-badge" role="img" aria-label="重点">⭐<\/span><\/h4>/);
+  assert.match(html, /<h4 id="1静态包过滤"><span class="lead-punct">（<\/span>1）静态包过滤<\/h4>/);
   assert.deepEqual(tokenizeHeadingText('（原题）SSL 协议位于哪一层？'), [
     { type: 'badge', badge: '原题', open: '（', label: '原题', close: '）' },
     { type: 'text', value: 'SSL 协议位于哪一层？' },
   ]);
-  assert.deepEqual(tokenizeHeadingText('《信息安全》⭐'), [
+  assert.deepEqual(tokenizeHeadingText('《信息安全》'), [
     { type: 'lead-punct', value: '《' },
     { type: 'text', value: '信息安全》' },
-    { type: 'priority', value: '⭐' },
   ]);
 });
