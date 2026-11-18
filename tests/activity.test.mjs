@@ -585,7 +585,8 @@ test('/about/ renders pure square cells with fixed category priority and graysca
   assert.ok(!aboutHtml.includes('data-shape='), 'legend swatches must be pure solid squares without shapes');
   const aboutCss = read('src/styles/about-heatmap.css');
   assert.doesNotMatch(aboutCss, /\.about-heat-cell[^}]*::before|\.about-heat-cell[^}]*::after|\.about-legend-swatch[^}]*::before/);
-  assert.match(aboutCss, /\.about-heat-cell\s*\{[^}]*width:\s*12px;[^}]*height:\s*12px;[^}]*border-radius:\s*3px;/);
+  assert.match(aboutCss, /\.about-heat-cell\s*\{[^}]*width:\s*var\(--about-cell-size\);[^}]*height:\s*var\(--about-cell-size\);[^}]*border-radius:\s*3px;/);
+  assert.ok(aboutHtml.includes('data-about-body') && aboutHtml.includes('data-about-grid-col') && aboutHtml.includes('data-about-month-track'));
 
   const tokensCss = read('src/styles/tokens.css');
   const hexToRgb = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));

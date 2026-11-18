@@ -27,8 +27,11 @@ function initAboutHeatmap(root: HTMLElement) {
 
   root.dataset.initialized = 'true';
 
+  const bodyEl = root.querySelector<HTMLElement>('[data-about-body]');
+  const gridColEl = root.querySelector<HTMLElement>('[data-about-grid-col]');
   const calendarEl = root.querySelector<HTMLElement>('[data-about-calendar]');
   const monthsEl = root.querySelector<HTMLElement>('[data-about-months]');
+  const monthTrackEl = root.querySelector<HTMLElement>('[data-about-month-track]');
   const weeksEl = root.querySelector<HTMLElement>('[data-about-weeks]');
   const rangeBtns = [...root.querySelectorAll<HTMLButtonElement>('[data-heatmap-range]')];
   const filterBtns = [...root.querySelectorAll<HTMLButtonElement>('[data-filter-cat]')];
@@ -45,6 +48,37 @@ function initAboutHeatmap(root: HTMLElement) {
   if (!calendarEl || !monthsEl || !weeksEl || !detailDateEl || !detailModeEl || !detailTotalEl || !detailBodyEl) {
     return;
   }
+
+  const syncGridMetrics = () => {
+    if (!bodyEl || !gridColEl) return;
+    const bodyW = bodyEl.clientWidth;
+    if (!bodyW) return;
+    const weekCount = Math.max(1, Number(calendarEl.getAttribute('aria-colcount')) || 53);
+    const twoCol = !window.matchMedia('(max-width: 1179px)').matches;
+    const colCs = getComputedStyle(gridColEl);
+    const padLeft = parseFloat(colCs.paddingLeft) || 0;
+    const padRight = parseFloat(colCs.paddingRight) || 0;
+    const reservedRight = twoCol ? Math.min(330, Math.max(260, bodyW * 0.28)) + 16 : 0;
+    const maxColW = Math.max(200, bodyW - reservedRight);
+    const availWeeksW = Math.max(0, maxColW - padLeft - padRight - 20 - 4);
+
+    let gap = 3;
+    const minNeed3 = weekCount * 12 + (weekCount - 1) * 3;
+    const minNeed2 = weekCount * 12 + (weekCount - 1) * 2;
+    if (availWeeksW < minNeed3 && availWeeksW >= minNeed2) {
+      gap = 2;
+    }
+
+    const rawSide = Math.floor(availWeeksW / weekCount - gap);
+    const side = Math.max(12, Math.min(18, rawSide));
+    const gridFits = weekCount * side + (weekCount - 1) * gap <= availWeeksW + 0.5;
+
+    calendarEl.style.setProperty('--about-cell-size', `${side}px`);
+    calendarEl.style.setProperty('--about-cell-gap', `${gap}px`);
+    calendarEl.dataset.cellSize = String(side);
+    calendarEl.dataset.cellGap = String(gap);
+    bodyEl.dataset.gridFit = gridFits ? 'fit' : 'scroll';
+  };
 
   let activeRange = root.dataset.activeRange || '53w';
   let activeFilter: HeatmapCategory | 'all' =
@@ -179,7 +213,7 @@ function initAboutHeatmap(root: HTMLElement) {
     calendarEl.setAttribute('aria-colcount', String(model.columns.length));
     monthsEl.style.setProperty('--about-week-count', String(model.columns.length));
 
-    const monthNodes: HTMLElement[] = [document.createElement('span')];
+    const monthNodes: HTMLElement[] = [];
     for (let colIdx = 0; colIdx < model.columns.length; colIdx++) {
       const span = document.createElement('span');
       span.className = 'about-heat-month';
@@ -187,7 +221,8 @@ function initAboutHeatmap(root: HTMLElement) {
       span.textContent = label;
       monthNodes.push(span);
     }
-    monthsEl.replaceChildren(...monthNodes);
+    if (monthTrackEl) monthTrackEl.replaceChildren(...monthNodes);
+    else monthsEl.replaceChildren(document.createElement('span'), ...monthNodes);
 
     cellMap = new Map();
     orderedCells = [];
@@ -238,6 +273,7 @@ function initAboutHeatmap(root: HTMLElement) {
     weeksEl.replaceChildren(...weekNodes);
     updateSelectionStates();
     renderDetail(previewDate || pinnedDate, previewDate ? '预览' : '已固定');
+    syncGridMetrics();
   };
 
   for (const btn of rangeBtns) {
@@ -356,6 +392,12 @@ function initAboutHeatmap(root: HTMLElement) {
 
   // Ensure initial DOM uses identical client hydration state
   renderAll();
+  if (bodyEl && 'ResizeObserver' in window) {
+    const ro = new ResizeObserver(syncGridMetrics);
+    ro.observe(bodyEl);
+  } else {
+    window.addEventListener('resize', syncGridMetrics);
+  }
 }
 
 document.querySelectorAll<HTMLElement>('[data-about-heatmap]').forEach(initAboutHeatmap);

@@ -347,15 +347,13 @@ export default function ActivityHeatmapIsland({
       const containerW = Math.max(220, Math.floor(box.clientWidth || box.getBoundingClientRect().width || 420));
       const gap = 3;
       const availW = Math.max(120, containerW - PAD * 2);
-      const minSide = containerW < 340 ? 10 : 12;
-      const refCellH = Math.min(28, ((availW - (DESKTOP_COLS - 1) * gap) / DESKTOP_COLS) * 1.35);
-      const side = Math.max(minSide, Math.min(20, Math.floor(refCellH)));
+      const side = containerW < 340 ? 10 : 12;
       const colCount = Math.min(totalCols, Math.max(12, Math.floor((availW + gap) / (side + gap))));
       setVisibleCols((prev) => (prev === colCount ? prev : colCount));
 
       const cellW = side;
       const cellH = side;
-      const labelH = side >= 13 ? 20 : 18;
+      const labelH = 18;
       const W = containerW;
       const gridW = colCount * side + (colCount - 1) * gap;
       const gridH = 7 * side + 6 * gap;
