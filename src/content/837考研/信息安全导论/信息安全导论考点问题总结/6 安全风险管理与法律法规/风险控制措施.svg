@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 474" width="760" height="474" role="img" aria-label="具体风险控制措施分类与属性对照表">
+  <rect width="760" height="474" fill="#FFFFFF"/>
+  <g font-family="system-ui,-apple-system,'PingFang SC','Microsoft YaHei',sans-serif" font-size="14" fill="#111827">
+    <!-- 表头 -->
+    <rect x="16" y="16" width="728" height="42" fill="#F1F5F9"/>
+    <line x1="16" y1="16" x2="744" y2="16" stroke="#1F2937" stroke-width="1.8"/>
+    <line x1="16" y1="58" x2="744" y2="58" stroke="#1F2937" stroke-width="1.4"/>
+    <text x="86" y="42" text-anchor="middle" font-weight="700" font-size="15">类别</text>
+    <text x="380" y="42" text-anchor="middle" font-weight="700" font-size="15">措施</text>
+    <text x="674" y="42" text-anchor="middle" font-weight="700" font-size="15">属性</text>
+
+    <!-- 竖线 -->
+    <line x1="156" y1="16" x2="156" y2="458" stroke="#374151" stroke-width="1.2"/>
+    <line x1="604" y1="16" x2="604" y2="458" stroke="#374151" stroke-width="1.2"/>
+
+    <!-- 技术类 -->
+    <text x="86" y="146" text-anchor="middle" font-weight="600" font-size="15">技术类</text>
+    <g transform="translate(174, 86)">
+      <text x="0" y="0">身份认证技术</text>
+      <text x="0" y="25">加密技术</text>
+      <text x="0" y="50">防火墙技术</text>
+      <text x="0" y="75">入侵检测技术</text>
+      <text x="0" y="100">系统审计</text>
+      <text x="0" y="125">蜜罐、蜜网技术</text>
+    </g>
+    <g transform="translate(674, 86)" text-anchor="middle">
+      <text x="0" y="0">预防性</text>
+      <text x="0" y="25">预防性</text>
+      <text x="0" y="50">预防性</text>
+      <text x="0" y="75">检查性</text>
+      <text x="0" y="100">检查性</text>
+      <text x="0" y="125">纠正性</text>
+    </g>
+    <line x1="16" y1="226" x2="744" y2="226" stroke="#374151" stroke-width="1.2"/>
+
+    <!-- 运营类 -->
+    <text x="86" y="280" text-anchor="middle" font-weight="600" font-size="15">运营类</text>
+    <g transform="translate(174, 254)">
+      <text x="0" y="0">物理访问控制，如重要设备使用授权等；</text>
+      <text x="0" y="26">容灾、容侵，如系统备份、数据备份等；</text>
+      <text x="0" y="52">物理安全检测技术，防盗技术、防火技术等；</text>
+    </g>
+    <g transform="translate(674, 254)" text-anchor="middle">
+      <text x="0" y="0">预防性</text>
+      <text x="0" y="26">预防性</text>
+      <text x="0" y="52">检查性</text>
+    </g>
+    <line x1="16" y1="322" x2="744" y2="322" stroke="#374151" stroke-width="1.2"/>
+
+    <!-- 管理类 -->
+    <text x="86" y="394" text-anchor="middle" font-weight="600" font-size="15">管理类</text>
+    <g transform="translate(174, 349)">
+      <text x="0" y="0">责任分配</text>
+      <text x="0" y="24">权限管理</text>
+      <text x="0" y="48">安全培训</text>
+      <text x="0" y="72">人员控制</text>
+      <text x="0" y="96">定期安全审计</text>
+    </g>
+    <g transform="translate(674, 349)" text-anchor="middle">
+      <text x="0" y="0">预防性</text>
+      <text x="0" y="24">预防性</text>
+      <text x="0" y="48">预防性</text>
+      <text x="0" y="72">预防性</text>
+      <text x="0" y="96">检查性</text>
+    </g>
+    <line x1="16" y1="458" x2="744" y2="458" stroke="#1F2937" stroke-width="1.8"/>
+  </g>
+</svg>

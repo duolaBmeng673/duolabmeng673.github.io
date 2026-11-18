@@ -3,7 +3,7 @@ import react from '@astrojs/react';
 import { satteri } from '@astrojs/markdown-satteri';
 import katex from 'katex';
 import { articleHeadings } from './src/plugins/article-headings.mjs';
-import { articlePresentation } from './src/plugins/article-presentation.mjs';
+import { articlePresentation, articleSvgHtml } from './src/plugins/article-presentation.mjs';
 import { articleInlineSvg } from './src/plugins/article-inline-svg.mjs';
 import { createCssVariablesTheme } from '@shikijs/core';
 
@@ -26,7 +26,7 @@ export default defineConfig({
   markdown: {
     processor: satteri({
       features: { math: true },
-      mdastPlugins: [articleHeadings, articleInlineSvg, {
+      mdastPlugins: [articleHeadings, articleInlineSvg, articleSvgHtml, {
         name: 'katex-formulas',
         math: (node, context) => renderMath(node, context, true),
         inlineMath: (node, context) => renderMath(node, context, false),

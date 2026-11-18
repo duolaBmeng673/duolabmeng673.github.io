@@ -379,3 +379,67 @@ test('study notes render leading-bracket alignment, 原题 badges in body and TO
   assert.match(css, /@supports\s*\(text-spacing-trim:\s*trim-start\)/);
   assert.match(css, /\.recall-tools\s+\.view-button\s*\{[^}]*min-height:\s*max\(36px,\s*2\.25rem\)/);
 });
+
+test('SVG diagrams carry data-svg-diagram dynamically and dark filter targets elements without touching rasters, KaTeX, or iframe demos', () => {
+  function walkHtml(dir) {
+    const out = [];
+    for (const entry of readdirSync(dir, { withFileTypes: true })) {
+      const p = `${dir}/${entry.name}`;
+      if (entry.isDirectory()) out.push(...walkHtml(p));
+      else if (entry.name.endsWith('.html')) out.push(p);
+    }
+    return out;
+  }
+
+  let discoveredSvgs = 0;
+  let taggedSvgs = 0;
+  let rasterTagged = 0;
+  let katexTagged = 0;
+  let iframeTagged = 0;
+
+  for (const file of walkHtml('dist')) {
+    const html = readFileSync(file, 'utf8');
+    const bodyMatch = html.match(/<div class="article-body[^"]*"[\s\S]*$/);
+    if (!bodyMatch) continue;
+    const body = bodyMatch[0].split('</article>')[0];
+
+    for (const [tag] of body.matchAll(/<iframe\b[^>]*>/gi)) {
+      if (tag.includes('data-svg-diagram')) iframeTagged++;
+    }
+
+    const bodyWithoutIframes = body.replace(/<iframe\b[^>]*>[\s\S]*?<\/iframe>/gi, '');
+
+    for (const [tag] of bodyWithoutIframes.matchAll(/<img\b[^>]*>/gi)) {
+      const src = (tag.match(/src=["']([^"']+)["']/i) || [])[1] || '';
+      const isSvg = /\.svg(?:$|[?#])/i.test(src) || src.startsWith('data:image/svg+xml');
+      const hasAttr = /\bdata-svg-diagram="true"/.test(tag);
+      if (isSvg) {
+        discoveredSvgs++;
+        if (hasAttr) taggedSvgs++;
+      } else if (hasAttr) {
+        rasterTagged++;
+      }
+    }
+
+    for (const [tag] of bodyWithoutIframes.matchAll(/<svg\b[^>]*>/gi)) {
+      const hasAttr = /\bdata-svg-diagram="true"/.test(tag);
+      const isKatex = tag.includes('viewBox="0 0 400000') || (/\baria-hidden="true"/.test(tag) && !/\brole="img"/.test(tag));
+      if (isKatex) {
+        if (hasAttr) katexTagged++;
+      } else {
+        discoveredSvgs++;
+        if (hasAttr) taggedSvgs++;
+      }
+    }
+  }
+
+  assert.ok(discoveredSvgs > 0, 'Expected at least one built SVG diagram');
+  assert.equal(taggedSvgs, discoveredSvgs, 'Every discovered static SVG diagram must be tagged with data-svg-diagram="true"');
+  assert.equal(rasterTagged, 0, 'PNG/JPG/WebP raster images must never receive data-svg-diagram');
+  assert.equal(katexTagged, 0, 'KaTeX math SVGs must never receive data-svg-diagram');
+  assert.equal(iframeTagged, 0, 'Sandboxed iframe srcdoc demos (ac/kmp) must never receive data-svg-diagram');
+
+  const css = read('src/styles/global.css');
+  assert.match(css, /:root\[data-theme="dark"\]\s+\.article-body\s+\[data-svg-diagram="true"\]\s*\{[^}]*filter:\s*invert\(/);
+  assert.doesNotMatch(css, /\.article-svg-link[^}]*filter:/);
+});

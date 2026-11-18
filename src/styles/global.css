@@ -1713,6 +1713,9 @@ body.study-overview-page main { flex: 1 0 auto; min-height: 0; }
 }
 .is-recalling .study-fold-content { margin: 0.75rem 0 0.75rem 0.2rem; padding-left: 1rem; border-left: 2px solid color-mix(in srgb, var(--cat-study) 32%, transparent); }
 .article-body img[src$=".svg"] { width: 100%; height: auto; background: var(--svg-bg); padding: 0.75rem; border: 1px solid var(--bd); border-radius: var(--r-row); }
+:root[data-theme="dark"] .article-body [data-svg-diagram="true"] {
+  filter: invert(0.92) hue-rotate(180deg) contrast(1.08) brightness(1.05);
+}
 .article-svg-link { display: block; margin: 1.6em 0; }
 .article-svg-link img { margin-bottom: 0.5em; }
 .svg-hint { display: block; text-align: right; color: var(--tm); font-size: 0.76rem; }

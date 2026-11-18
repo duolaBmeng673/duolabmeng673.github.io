@@ -126,18 +126,62 @@ const isReference = (node, reference) => node.type === 'element'
 
 const seenFirstArticleImage = new WeakSet();
 
+// Marks raw inline <svg> diagrams and isolated <img src="data:image/svg+xml..."> in mdast html blocks.
+// Runs before katex-formulas in mdastPlugins so KaTeX math SVGs and iframe srcdoc demos are untouched.
+export const articleSvgHtml = {
+  name: 'article-svg-html-marker',
+  html(node, context) {
+    if (!node.value) return;
+    let next = node.value;
+    if (/<svg\b/i.test(next) && !next.includes('class="katex')) {
+      next = next.replace(/<svg\b([^>]*)>/gi, (full, attrs) => {
+        if (/\bdata-svg-diagram=/i.test(attrs)) return full;
+        if (/\baria-hidden="true"/i.test(attrs) && !/\brole="img"/i.test(attrs)) return full;
+        if (/\bviewBox="0 0 400000\b/i.test(attrs)) return full;
+        return `<svg data-svg-diagram="true"${attrs}>`;
+      });
+    }
+    if (/<img\b/i.test(next)) {
+      next = next.replace(/<img\b([^>]*)>/gi, (full, attrs) => {
+        if (/\bdata-svg-diagram=/i.test(attrs)) return full;
+        const srcM = attrs.match(/\bsrc=["']([^"']+)["']/i);
+        const src = srcM?.[1] ?? '';
+        if (/\.svg(?:$|[?#])/i.test(src) || src.startsWith('data:image/svg+xml')) {
+          return `<img data-svg-diagram="true"${attrs}>`;
+        }
+        return full;
+      });
+    }
+    if (next !== node.value) context.setProperty(node, 'value', next);
+  },
+};
+
 export const articlePresentation = {
   name: 'article-display-only',
   element: {
-    filter: ['h2', 'h3', 'h4', 'h5', 'h6', 'p', 'li', 'blockquote', 'img'],
+    filter: ['h2', 'h3', 'h4', 'h5', 'h6', 'p', 'li', 'blockquote', 'img', 'svg'],
     visit(node, context) {
       if (/^h[2-6]$/.test(node.tagName)) {
         context.setProperty(node, 'children', decorateHeadingLead(node.children));
         return;
       }
+      if (node.tagName === 'svg') {
+        const vb = String(node.properties?.viewBox ?? '');
+        const isKatexSvg = node.properties?.width === '400em'
+          || vb.startsWith('0 0 400000')
+          || (node.properties?.ariaHidden === 'true' && node.properties?.role !== 'img');
+        if (!isKatexSvg && !node.properties?.['data-svg-diagram']) {
+          context.setProperty(node, 'data-svg-diagram', 'true');
+        }
+        return;
+      }
       const slug = context.data.astro?.frontmatter.studySlug;
       const demo = demos[slug];
       if (node.tagName === 'img') {
+        const src = String(node.properties?.src ?? '');
+        if (/\.svg(?:$|[?#])/i.test(src) || src.startsWith('data:image/svg+xml')) {
+          context.setProperty(node, 'data-svg-diagram', 'true');
+        }
         if (demo && isReference(node, demo.reference)) return;
         const docKey = context.data.astro ?? context.data;
         if (!seenFirstArticleImage.has(docKey)) {
