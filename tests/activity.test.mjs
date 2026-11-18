@@ -326,5 +326,10 @@ test('window title and summary metrics derive from the same visible-weeks window
   const plainHtml = html.replace(/<!--[\s\S]*?-->/g, '');
   assert.ok(plainHtml.includes(`${expected.windowLabel} ${expected.activityDays} 活跃日 · ${expected.totalActivities} 次活动`));
   assert.ok(plainHtml.includes(`最长连续 <strong>${expected.longestStreak} 天</strong>`));
-  assert.ok(plainHtml.includes(`本月活动 <strong>${expected.monthActivities} 次</strong>`));
+  assert.match(
+    plainHtml,
+    new RegExp(
+      `data-activity-stat="month"[^>]*data-activity-month="${expected.monthActivities}"[^>]*>[\\s\\S]*?<strong>${expected.monthActivities} 次</strong>`,
+    ),
+  );
 });

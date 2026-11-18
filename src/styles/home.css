@@ -550,8 +550,8 @@
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 0.3rem 0.45rem;
-  padding: 0.28rem 0.56rem;
+  gap: 0.3rem 0.32rem;
+  padding: 0.28rem 0.42rem;
   border-radius: var(--r-chip);
   border: 1px solid color-mix(in srgb, var(--bd) 85%, transparent);
   background: color-mix(in srgb, var(--bg-elev) 64%, transparent);

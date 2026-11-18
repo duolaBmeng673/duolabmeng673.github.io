@@ -554,8 +554,8 @@ export default function ActivityHeatmapIsland({
                 最长连续 <strong>{statLongestStreak} 天</strong>
               </span>
               <span className="heat-stat-sep" aria-hidden="true">·</span>
-              <span className="heat-stat-item">
-                本月活动 <strong>{statMonthActs} 次</strong>
+              <span className="heat-stat-item" data-activity-stat="month" data-activity-month={statMonthActs}>
+                本月 <strong>{statMonthActs} 次</strong>
               </span>
             </div>
             {legendNode}
