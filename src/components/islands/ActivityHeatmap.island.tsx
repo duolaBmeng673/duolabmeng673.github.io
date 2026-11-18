@@ -283,7 +283,7 @@ export default function ActivityHeatmapIsland({
 
       ctx.save();
       ctx.fillStyle = tsCol;
-      const labelFontSize = m.cellW >= 11 ? 12 : m.cellW >= 9 ? 11 : 10;
+      const labelFontSize = Math.max(12, Math.min(18, m.cellW >= 14 ? 13 : 12));
       ctx.font = `500 ${labelFontSize}px "Noto Sans SC", system-ui, sans-serif`;
       ctx.textBaseline = 'top';
       ctx.textAlign = 'left';
