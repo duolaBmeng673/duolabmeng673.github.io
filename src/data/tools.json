@@ -42,6 +42,12 @@
     "description": "React 组件资源。"
   },
   {
+    "name": "RareUI",
+    "url": "https://www.rareui.com/components",
+    "category": "前端组件",
+    "description": "现代 UI 组件与交互效果库。"
+  },
+  {
     "name": "AI 中转站评测",
     "url": "https://aitshirtdesign.com",
     "category": "AI 工具",
@@ -88,5 +94,23 @@
     "url": "https://www.jyshare.com",
     "category": "开发工具",
     "description": "常用在线编程与开发辅助工具集合。"
+  },
+  {
+    "name": "GPT 对话导出器",
+    "url": "https://chromewebstore.google.com/detail/chatgpt-%E5%AF%BC%E5%87%BA%E5%99%A8-chatgpt-%E8%BD%AC%E6%8D%A2%E4%B8%BA-p/ilmdofdhpnhffldihboadndccenlnfll?hl=zh-CN",
+    "category": "Google 组件",
+    "description": "将 ChatGPT 对话导出为 PDF / Markdown 等格式。"
+  },
+  {
+    "name": "Claude Usage Meter",
+    "url": "https://chromewebstore.google.com/detail/claude-usage-meter/kgpahkcgadpnklinijdojapiadnfelae?hl=zh-CN",
+    "category": "Google 组件",
+    "description": "实时查看 Claude 用量限额与重置时间。"
+  },
+  {
+    "name": "Scriber",
+    "url": "https://chromewebstore.google.com/detail/scriber-%E2%80%94-download-public/jfbjfbndikbkdccjfdigeinhclgjfdnp?hl=zh-CN",
+    "category": "Google 组件",
+    "description": "一键下载公开可访问的网页 PDF 文档。"
   }
 ]
