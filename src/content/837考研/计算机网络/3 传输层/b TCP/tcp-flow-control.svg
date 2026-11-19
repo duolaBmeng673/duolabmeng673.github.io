@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 500" width="760" height="500" role="img">
+  <title>TCP 利用可变接收窗口 rwnd 进行流量控制</title>
+  <desc>按时间顺序展示发送方 A 与接收方 B 通过 ACK 报文段携带可变接收窗口 rwnd 动态控制发送字节流的过程，包含中间分组丢失的处理。</desc>
+  <defs>
+    <marker id="tcp-flow-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#1f2937" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+  <g font-family="'PingFang SC','Noto Sans SC','Microsoft YaHei',system-ui,sans-serif">
+    <text x="380" y="44" text-anchor="middle" font-size="18" font-weight="600" fill="#1f2937">利用可变窗口 rwnd 实现 TCP 流量控制</text>
+
+    <!-- Participants -->
+    <rect x="32" y="64" width="144" height="36" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+    <text x="104" y="87" text-anchor="middle" font-size="14" font-weight="600" fill="#1e40af">主机 A（发送方）</text>
+
+    <rect x="288" y="64" width="144" height="36" rx="8" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
+    <text x="360" y="87" text-anchor="middle" font-size="14" font-weight="600" fill="#115e59">主机 B（接收方）</text>
+
+    <line x1="104" y1="100" x2="104" y2="468" stroke="#94a3b8" stroke-width="1" stroke-dasharray="6 4"/>
+    <line x1="360" y1="100" x2="360" y2="468" stroke="#94a3b8" stroke-width="1" stroke-dasharray="6 4"/>
+
+    <!-- Right side note column header -->
+    <text x="456" y="87" text-anchor="start" font-size="14" font-weight="600" fill="#1f2937">窗口变化与说明</text>
+
+    <!-- Step 1 -->
+    <line x1="104" y1="136" x2="356" y2="136" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#tcp-flow-arrow)"/>
+    <text x="232" y="126" text-anchor="middle" font-size="12" font-weight="400" fill="#1e40af">seq=1, DATA</text>
+    <text x="456" y="140" font-size="12" font-weight="400" fill="#4b5563">A 发了 1~100，还能发 300 字节</text>
+
+    <!-- Step 2 -->
+    <line x1="104" y1="180" x2="356" y2="180" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#tcp-flow-arrow)"/>
+    <text x="232" y="170" text-anchor="middle" font-size="12" font-weight="400" fill="#1e40af">seq=101, DATA</text>
+    <text x="456" y="184" font-size="12" font-weight="400" fill="#4b5563">A 发了 101~200，还能发 200 字节</text>
+
+    <!-- Step 3: lost packet -->
+    <line x1="104" y1="224" x2="296" y2="224" stroke="#94a3b8" stroke-width="1.5"/>
+    <text x="232" y="214" text-anchor="middle" font-size="12" font-weight="600" fill="#991b1b">seq=201, DATA ✗ 丢失</text>
+
+    <!-- Step 4: B acks rwnd=300 -->
+    <line x1="360" y1="268" x2="108" y2="268" stroke="#ef4444" stroke-width="2" marker-end="url(#tcp-flow-arrow)"/>
+    <text x="232" y="258" text-anchor="middle" font-size="12" font-weight="600" fill="#991b1b">ACK=1, ack=201, rwnd=300</text>
+    <text x="456" y="272" font-size="12" font-weight="600" fill="#991b1b">B 允许 A 发 201~500 共 300 字节</text>
+
+    <!-- Step 5 -->
+    <line x1="104" y1="312" x2="356" y2="312" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#tcp-flow-arrow)"/>
+    <text x="232" y="302" text-anchor="middle" font-size="12" font-weight="400" fill="#1e40af">seq=301, DATA</text>
+    <text x="456" y="316" font-size="12" font-weight="400" fill="#4b5563">A 发了 301~400，还能发 100 字节</text>
+
+    <!-- Step 6 -->
+    <line x1="104" y1="356" x2="356" y2="356" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#tcp-flow-arrow)"/>
+    <text x="232" y="346" text-anchor="middle" font-size="12" font-weight="400" fill="#1e40af">seq=401, DATA</text>
+    <text x="456" y="360" font-size="12" font-weight="400" fill="#4b5563">A 发了 401~500，不能再发新数据</text>
+
+    <!-- Step 7: B acks rwnd=100 -->
+    <line x1="360" y1="400" x2="108" y2="400" stroke="#ef4444" stroke-width="2" marker-end="url(#tcp-flow-arrow)"/>
+    <text x="232" y="390" text-anchor="middle" font-size="12" font-weight="600" fill="#991b1b">ACK=1, ack=501, rwnd=100</text>
+    <text x="456" y="404" font-size="12" font-weight="600" fill="#991b1b">B 允许 A 发 501~600 共 100 字节</text>
+
+    <!-- Step 8 -->
+    <line x1="104" y1="444" x2="356" y2="444" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#tcp-flow-arrow)"/>
+    <text x="232" y="434" text-anchor="middle" font-size="12" font-weight="400" fill="#1e40af">seq=501, DATA</text>
+    <text x="456" y="448" font-size="12" font-weight="400" fill="#4b5563">A 发完 501~600 后 B 回 rwnd=0，A 暂停</text>
+  </g>
+</svg>
