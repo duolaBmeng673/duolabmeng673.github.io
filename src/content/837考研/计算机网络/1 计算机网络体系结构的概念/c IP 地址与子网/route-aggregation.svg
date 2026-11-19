@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 328" width="760" height="328" role="img">
+  <title>路由聚合（构成超网）</title>
+  <desc>路由器 R1 通过 R2 到达两个连续的 /17 网络，将路由表项聚合为一条 206.1.0.0/16 超网路由。</desc>
+  <g font-family="'PingFang SC','Noto Sans SC','Microsoft YaHei',system-ui,sans-serif">
+    <text x="380" y="44" text-anchor="middle" font-size="18" font-weight="600" fill="#1f2937">路由聚合（构成超网）</text>
+
+    <!-- Orthogonal topology edges -->
+    <line x1="120" y1="136" x2="296" y2="136" stroke="#1f2937" stroke-width="1.5"/>
+    <path d="M352 136 H424 V100 H496" fill="none" stroke="#1f2937" stroke-width="1.5"/>
+    <path d="M424 136 V180 H496" fill="none" stroke="#1f2937" stroke-width="1.5"/>
+
+    <!-- Routers -->
+    <circle cx="96" cy="136" r="28" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+    <text x="96" y="141" text-anchor="middle" font-size="14" font-weight="600" fill="#1e40af">R1</text>
+
+    <circle cx="324" cy="136" r="28" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+    <text x="324" y="141" text-anchor="middle" font-size="14" font-weight="600" fill="#1e40af">R2</text>
+
+    <!-- Network boxes -->
+    <rect x="496" y="68" width="224" height="64" rx="8" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
+    <text x="608" y="96" text-anchor="middle" font-size="14" font-weight="600" fill="#115e59">网络 1</text>
+    <text x="608" y="118" text-anchor="middle" font-size="12" font-weight="400" fill="#115e59">206.1.0.0/17</text>
+
+    <rect x="496" y="148" width="224" height="64" rx="8" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
+    <text x="608" y="176" text-anchor="middle" font-size="14" font-weight="600" fill="#115e59">网络 2</text>
+    <text x="608" y="198" text-anchor="middle" font-size="12" font-weight="400" fill="#115e59">206.1.128.0/17</text>
+
+    <!-- Aggregation callout box -->
+    <rect x="40" y="232" width="344" height="72" rx="8" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5"/>
+    <text x="212" y="258" text-anchor="middle" font-size="14" font-weight="400" fill="#92400e">R1 聚合后只需一条路由表项</text>
+    <text x="212" y="284" text-anchor="middle" font-size="14" font-weight="600" fill="#92400e">206.1.0.0/16 → 下一跳 R2</text>
+  </g>
+</svg>

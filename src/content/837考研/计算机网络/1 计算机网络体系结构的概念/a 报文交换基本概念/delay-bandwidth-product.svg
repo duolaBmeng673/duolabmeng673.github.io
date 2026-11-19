@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 288" width="760" height="288" role="img">
+  <title>时延带宽积示意图：链路就像一根空心管道</title>
+  <desc>将网络链路类比为圆柱形空心管道，横截面积表示信道带宽，长度表示传播时延，管道可容纳的比特数等于传播时延与信道带宽的乘积。</desc>
+  <defs>
+    <marker id="delay-bw-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#1f2937" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+  <g font-family="'PingFang SC','Noto Sans SC','Microsoft YaHei',system-ui,sans-serif">
+    <text x="380" y="44" text-anchor="middle" font-size="18" font-weight="600" fill="#1f2937">时延带宽积：链路就像一根空心管道</text>
+
+    <!-- Dimension arrow broken around centered label -->
+    <line x1="120" y1="80" x2="296" y2="80" stroke="#94a3b8" stroke-width="1.5" marker-start="url(#delay-bw-arrow)"/>
+    <line x1="464" y1="80" x2="640" y2="80" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#delay-bw-arrow)"/>
+    <text x="380" y="85" text-anchor="middle" font-size="14" font-weight="400" fill="#1f2937">长度 = 传播时延</text>
+
+    <!-- Pipe body -->
+    <rect x="120" y="104" width="520" height="96" fill="#eff6ff" stroke="none"/>
+    <line x1="120" y1="104" x2="640" y2="104" stroke="#3b82f6" stroke-width="1.5"/>
+    <line x1="120" y1="200" x2="640" y2="200" stroke="#3b82f6" stroke-width="1.5"/>
+    <ellipse cx="120" cy="152" rx="24" ry="48" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
+    <ellipse cx="640" cy="152" rx="24" ry="48" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+
+    <!-- Pipe labels -->
+    <text x="380" y="144" text-anchor="middle" font-size="16" font-weight="600" fill="#1e40af">链路（管道体积）</text>
+    <text x="380" y="172" text-anchor="middle" font-size="14" font-weight="400" fill="#1e40af">可容纳比特数 = 传播时延 × 信道带宽</text>
+
+    <!-- Endpoint labels -->
+    <text x="120" y="232" text-anchor="middle" font-size="14" font-weight="600" fill="#115e59">发送端</text>
+    <text x="120" y="256" text-anchor="middle" font-size="12" font-weight="400" fill="#4b5563">横截面积 = 带宽</text>
+
+    <text x="640" y="232" text-anchor="middle" font-size="14" font-weight="600" fill="#1e40af">接收端</text>
+    <text x="640" y="256" text-anchor="middle" font-size="12" font-weight="400" fill="#4b5563">首个比特到达时刻</text>
+  </g>
+</svg>

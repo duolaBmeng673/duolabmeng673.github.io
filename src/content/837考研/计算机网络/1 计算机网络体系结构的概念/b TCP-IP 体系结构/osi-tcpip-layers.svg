@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 448" width="760" height="448" role="img">
+  <title>三种网络体系结构分层对照</title>
+  <desc>对比 OSI 七层模型、TCP/IP 四层模型与教学用五层原理模型的各层对应关系。</desc>
+  <g font-family="'PingFang SC','Noto Sans SC','Microsoft YaHei',system-ui,sans-serif">
+    <text x="380" y="44" text-anchor="middle" font-size="18" font-weight="600" fill="#1f2937">三种网络体系结构分层对照</text>
+
+    <text x="140" y="76" text-anchor="middle" font-size="16" font-weight="600" fill="#1f2937">OSI 七层模型</text>
+    <text x="380" y="76" text-anchor="middle" font-size="16" font-weight="600" fill="#1f2937">TCP/IP 四层模型</text>
+    <text x="620" y="76" text-anchor="middle" font-size="16" font-weight="600" fill="#1f2937">五层模型（原理）</text>
+
+    <!-- OSI 7 layers (y=96..416, each height=40, gap=4) -->
+    <g stroke-width="1.5">
+      <rect x="36" y="96" width="208" height="40" rx="8" fill="#eff6ff" stroke="#3b82f6"/>
+      <rect x="36" y="140" width="208" height="40" rx="8" fill="#eff6ff" stroke="#3b82f6"/>
+      <rect x="36" y="184" width="208" height="40" rx="8" fill="#eff6ff" stroke="#3b82f6"/>
+      <rect x="36" y="232" width="208" height="40" rx="8" fill="#fffbeb" stroke="#f59e0b"/>
+      <rect x="36" y="280" width="208" height="40" rx="8" fill="#f0fdfa" stroke="#14b8a6"/>
+      <rect x="36" y="328" width="208" height="40" rx="8" fill="#f8fafc" stroke="#94a3b8"/>
+      <rect x="36" y="372" width="208" height="40" rx="8" fill="#f8fafc" stroke="#94a3b8"/>
+    </g>
+    <g text-anchor="middle" font-size="14" font-weight="400">
+      <text x="140" y="121" fill="#1e40af">7 应用层</text>
+      <text x="140" y="165" fill="#1e40af">6 表示层</text>
+      <text x="140" y="209" fill="#1e40af">5 会话层</text>
+      <text x="140" y="257" fill="#92400e">4 运输层</text>
+      <text x="140" y="305" fill="#115e59">3 网络层</text>
+      <text x="140" y="353" fill="#1f2937">2 数据链路层</text>
+      <text x="140" y="397" fill="#1f2937">1 物理层</text>
+    </g>
+
+    <!-- TCP/IP 4 layers -->
+    <g stroke-width="1.5">
+      <rect x="276" y="96" width="208" height="128" rx="8" fill="#eff6ff" stroke="#3b82f6"/>
+      <rect x="276" y="232" width="208" height="40" rx="8" fill="#fffbeb" stroke="#f59e0b"/>
+      <rect x="276" y="280" width="208" height="40" rx="8" fill="#f0fdfa" stroke="#14b8a6"/>
+      <rect x="276" y="328" width="208" height="84" rx="8" fill="#f8fafc" stroke="#94a3b8"/>
+    </g>
+    <g text-anchor="middle">
+      <text x="380" y="152" font-size="14" font-weight="600" fill="#1e40af">应用层</text>
+      <text x="380" y="176" font-size="12" font-weight="400" fill="#4b5563">(HTTP、SMTP、DNS…)</text>
+      <text x="380" y="257" font-size="14" font-weight="400" fill="#92400e">运输层 (TCP / UDP)</text>
+      <text x="380" y="305" font-size="14" font-weight="400" fill="#115e59">网际层 (IP)</text>
+      <text x="380" y="364" font-size="14" font-weight="600" fill="#1f2937">网络接口层</text>
+      <text x="380" y="388" font-size="12" font-weight="400" fill="#4b5563">(链路层)</text>
+    </g>
+
+    <!-- 5-layer model -->
+    <g stroke-width="1.5">
+      <rect x="516" y="96" width="208" height="128" rx="8" fill="#eff6ff" stroke="#3b82f6"/>
+      <rect x="516" y="232" width="208" height="40" rx="8" fill="#fffbeb" stroke="#f59e0b"/>
+      <rect x="516" y="280" width="208" height="40" rx="8" fill="#f0fdfa" stroke="#14b8a6"/>
+      <rect x="516" y="328" width="208" height="40" rx="8" fill="#f8fafc" stroke="#94a3b8"/>
+      <rect x="516" y="372" width="208" height="40" rx="8" fill="#f8fafc" stroke="#94a3b8"/>
+    </g>
+    <g text-anchor="middle" font-size="14" font-weight="400">
+      <text x="620" y="165" fill="#1e40af">5 应用层</text>
+      <text x="620" y="257" fill="#92400e">4 运输层</text>
+      <text x="620" y="305" fill="#115e59">3 网络层</text>
+      <text x="620" y="353" fill="#1f2937">2 数据链路层</text>
+      <text x="620" y="397" fill="#1f2937">1 物理层</text>
+    </g>
+  </g>
+</svg>

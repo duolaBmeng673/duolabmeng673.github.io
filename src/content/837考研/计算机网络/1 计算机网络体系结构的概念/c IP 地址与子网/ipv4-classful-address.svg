@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 400" width="760" height="400" role="img">
+  <title>IPv4 分类地址结构（32 位）</title>
+  <desc>展示 IPv4 A 类、B 类、C 类、D 类和 E 类地址的前缀标志位、网络号与主机号位数及首字节范围。</desc>
+  <g font-family="'PingFang SC','Noto Sans SC','Microsoft YaHei',system-ui,sans-serif">
+    <text x="380" y="44" text-anchor="middle" font-size="18" font-weight="600" fill="#1f2937">IPv4 分类地址结构（32 位）</text>
+
+    <!-- Bit markers -->
+    <g font-size="12" font-weight="400" fill="#4b5563">
+      <text x="96" y="76" text-anchor="start">0</text>
+      <text x="416" y="76" text-anchor="middle">16 (bit)</text>
+      <text x="736" y="76" text-anchor="end">32</text>
+    </g>
+
+    <!-- Class labels (left column x=24..88) -->
+    <g font-size="14" font-weight="600" fill="#1f2937" text-anchor="start">
+      <text x="24" y="113">A 类</text>
+      <text x="24" y="161">B 类</text>
+      <text x="24" y="209">C 类</text>
+      <text x="24" y="257">D 类</text>
+      <text x="24" y="305">E 类</text>
+    </g>
+
+    <!-- Row A: prefix(48) + net(144) + host(448) = 640 (x=96..736) -->
+    <g stroke-width="1.5">
+      <rect x="96" y="88" width="48" height="40" rx="8" fill="#f8fafc" stroke="#94a3b8"/>
+      <rect x="148" y="88" width="144" height="40" rx="8" fill="#eff6ff" stroke="#3b82f6"/>
+      <rect x="296" y="88" width="440" height="40" rx="8" fill="#f0fdfa" stroke="#14b8a6"/>
+
+      <!-- Row B: prefix(48) + net(216) + host(368) -->
+      <rect x="96" y="136" width="48" height="40" rx="8" fill="#f8fafc" stroke="#94a3b8"/>
+      <rect x="148" y="136" width="216" height="40" rx="8" fill="#eff6ff" stroke="#3b82f6"/>
+      <rect x="368" y="136" width="368" height="40" rx="8" fill="#f0fdfa" stroke="#14b8a6"/>
+
+      <!-- Row C: prefix(56) + net(344) + host(232) -->
+      <rect x="96" y="184" width="56" height="40" rx="8" fill="#f8fafc" stroke="#94a3b8"/>
+      <rect x="156" y="184" width="344" height="40" rx="8" fill="#eff6ff" stroke="#3b82f6"/>
+      <rect x="504" y="184" width="232" height="40" rx="8" fill="#f0fdfa" stroke="#14b8a6"/>
+
+      <!-- Row D: prefix(64) + multicast(568) -->
+      <rect x="96" y="232" width="64" height="40" rx="8" fill="#f8fafc" stroke="#94a3b8"/>
+      <rect x="164" y="232" width="572" height="40" rx="8" fill="#fffbeb" stroke="#f59e0b"/>
+
+      <!-- Row E: prefix(64) + reserved(568) -->
+      <rect x="96" y="280" width="64" height="40" rx="8" fill="#f8fafc" stroke="#94a3b8"/>
+      <rect x="164" y="280" width="572" height="40" rx="8" fill="#f8fafc" stroke="#94a3b8"/>
+    </g>
+
+    <g text-anchor="middle" font-size="14" font-weight="400">
+      <text x="120" y="113" font-size="12" font-weight="600" fill="#1f2937">0</text>
+      <text x="220" y="113" fill="#1e40af">网络号 (7位)</text>
+      <text x="516" y="113" fill="#115e59">主机号 (24位)</text>
+
+      <text x="120" y="161" font-size="12" font-weight="600" fill="#1f2937">10</text>
+      <text x="256" y="161" fill="#1e40af">网络号 (14位)</text>
+      <text x="552" y="161" fill="#115e59">主机号 (16位)</text>
+
+      <text x="124" y="209" font-size="12" font-weight="600" fill="#1f2937">110</text>
+      <text x="328" y="209" fill="#1e40af">网络号 (21位)</text>
+      <text x="620" y="209" fill="#115e59">主机号 (8位)</text>
+
+      <text x="128" y="257" font-size="12" font-weight="600" fill="#1f2937">1110</text>
+      <text x="450" y="257" fill="#92400e">多播地址 (28位)</text>
+
+      <text x="128" y="305" font-size="12" font-weight="600" fill="#1f2937">1111</text>
+      <text x="450" y="305" fill="#4b5563">保留，留作今后使用</text>
+    </g>
+
+    <!-- Bottom note block -->
+    <rect x="24" y="336" width="712" height="40" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="1" data-role="note"/>
+    <text x="380" y="361" text-anchor="middle" font-size="12" font-weight="400" fill="#1f2937">首字节范围：A 1~126（0、127 保留） · B 128~191 · C 192~223 · D 224~239 · E 240~255</text>
+  </g>
+</svg>
