@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 424" width="760" height="424" role="img">
+  <title>ARP 解析流程：广播请求与单播响应</title>
+  <desc>展示同一局域网广播域内，主机 A 广播发送 ARP 请求（目的 MAC 为全 F），非目标主机 C 丢弃，目标主机 B 单播返回 ARP 响应的过程。</desc>
+  <defs>
+    <marker id="arp-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#1f2937" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+  <g font-family="'PingFang SC','Noto Sans SC','Microsoft YaHei',system-ui,sans-serif">
+    <text x="380" y="44" text-anchor="middle" font-size="18" font-weight="600" fill="#1f2937">ARP 解析流程：广播请求（问 MAC）+ 单播响应（回 MAC）</text>
+
+    <!-- LAN group container -->
+    <rect x="24" y="64" width="712" height="256" rx="12" fill="#f8fafc" stroke="#94a3b8" stroke-width="1" stroke-dasharray="6 4" data-role="group"/>
+    <text x="40" y="92" text-anchor="start" font-size="16" font-weight="600" fill="#1f2937">同一局域网（广播域）</text>
+
+    <!-- Host A (Sender) -->
+    <rect x="48" y="152" width="176" height="72" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+    <text x="136" y="180" text-anchor="middle" font-size="14" font-weight="600" fill="#1e40af">主机 A（发送方）</text>
+    <text x="136" y="204" text-anchor="middle" font-size="12" font-weight="400" fill="#4b5563">已知 B 的 IP，查 MAC</text>
+
+    <!-- Host C (Non-target) -->
+    <rect x="536" y="104" width="176" height="72" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
+    <text x="624" y="132" text-anchor="middle" font-size="14" font-weight="600" fill="#1f2937">主机 C（非目标）</text>
+    <text x="624" y="156" text-anchor="middle" font-size="12" font-weight="400" fill="#4b5563">收到广播后丢弃</text>
+
+    <!-- Host B (Target) -->
+    <rect x="536" y="224" width="176" height="72" rx="8" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
+    <text x="624" y="252" text-anchor="middle" font-size="14" font-weight="600" fill="#115e59">主机 B（目标）</text>
+    <text x="624" y="276" text-anchor="middle" font-size="12" font-weight="400" fill="#4b5563">写入 A 映射并单播回复</text>
+
+    <!-- Orthogonal broadcast request (dashed blue) -->
+    <path d="M224 176 H496 V140 H532" fill="none" stroke="#3b82f6" stroke-width="1.5" stroke-dasharray="6 4" marker-end="url(#arp-arrow)"/>
+    <path d="M496 176 V244 H532" fill="none" stroke="#3b82f6" stroke-width="1.5" stroke-dasharray="6 4" marker-end="url(#arp-arrow)"/>
+
+    <text x="360" y="144" text-anchor="middle" font-size="14" font-weight="400" fill="#1e40af">① ARP 请求（广播发送）</text>
+    <text x="360" y="164" text-anchor="middle" font-size="12" font-weight="400" fill="#4b5563">目的 MAC：FF-FF-FF-FF-FF-FF</text>
+
+    <!-- Orthogonal unicast response (solid teal) -->
+    <path d="M536 276 H264 V204 H228" fill="none" stroke="#14b8a6" stroke-width="2" marker-end="url(#arp-arrow)"/>
+
+    <text x="380" y="244" text-anchor="middle" font-size="14" font-weight="400" fill="#115e59">② ARP 响应（单播发送）</text>
+    <text x="380" y="264" text-anchor="middle" font-size="12" font-weight="400" fill="#4b5563">包含 B 的 IP ↔ MAC 映射</text>
+
+    <!-- Bottom note block (margin >= 24) -->
+    <rect x="24" y="336" width="712" height="64" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="1" data-role="note"/>
+    <text x="380" y="360" text-anchor="middle" font-size="12" font-weight="400" fill="#1f2937">注：若 A 的 ARP 高速缓存中已有 B 的映射，则直接取用，无需广播发送 ARP 请求</text>
+    <text x="380" y="384" text-anchor="middle" font-size="12" font-weight="400" fill="#4b5563">图例：虚线箭头表示局域网广播发送，实线箭头表示点对点单播响应</text>
+  </g>
+</svg>

@@ -90,7 +90,7 @@ questions:
 
 ## SVG 插图
 
-在 Markdown 中使用原相对路径，例如 `![栈结构](<./format_string_attack_stack_compare.svg>)`。SVG 通过 Astro 现有图片管线打包到 `/_astro/`，从 viewBox 得到宽高；不转成低清位图、不修改源 SVG。文章内保持比例、适应正文宽度，并保留白色底板，确保深色主题下原图的深色文字仍清晰。启用 JavaScript 后可点击图或“查看 SVG 原图”在新标签页查看原始尺寸图；无 JavaScript 时图片仍正常渲染。
+SVG 的画布、字号、配色、连线、时序图模板与无障碍规范详见 [笔记设计规范.md](../src/content/837考研/笔记设计规范.md#五svg-设计规范重点)。站点构建层将 Markdown 相对路径引用的独立 `.svg` 经 Astro 图片管线打包到 `/_astro/`，保持等比缩放、白底卡片容器与暗色滤镜，支持新标签页查看原图。
 
 ## 搜索、排序与公开边界
 
