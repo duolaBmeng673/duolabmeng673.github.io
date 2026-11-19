@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 392" width="760" height="392" role="img">
+  <title>HTTP 请求报文与响应报文结构</title>
+  <desc>对比 HTTP 请求报文与响应报文的四段组成：开始行（请求行或状态行）、首部行、空行 CRLF 与实体主体。</desc>
+  <g font-family="'PingFang SC','Noto Sans SC','Microsoft YaHei',system-ui,sans-serif">
+    <text x="380" y="44" text-anchor="middle" font-size="18" font-weight="600" fill="#1f2937">HTTP 请求报文与响应报文结构</text>
+
+    <text x="196" y="76" text-anchor="middle" font-size="16" font-weight="600" fill="#1f2937">(a) HTTP 请求报文</text>
+    <text x="564" y="76" text-anchor="middle" font-size="16" font-weight="600" fill="#1f2937">(b) HTTP 响应报文</text>
+
+    <!-- Request Packet (x=48..344, w=296) -->
+    <g stroke-width="1.5">
+      <rect x="48" y="88" width="296" height="64" rx="8" fill="#eff6ff" stroke="#3b82f6"/>
+      <rect x="48" y="156" width="296" height="64" rx="8" fill="#fffbeb" stroke="#f59e0b"/>
+      <rect x="48" y="224" width="296" height="40" rx="8" fill="#f8fafc" stroke="#94a3b8"/>
+      <rect x="48" y="268" width="296" height="64" rx="8" fill="#f0fdfa" stroke="#14b8a6"/>
+    </g>
+    <g text-anchor="middle">
+      <text x="196" y="114" font-size="14" font-weight="600" fill="#1e40af">请求行</text>
+      <text x="196" y="136" font-size="12" font-weight="400" fill="#4b5563">方法 SP URL SP 版本 CRLF</text>
+      <text x="196" y="182" font-size="14" font-weight="600" fill="#92400e">首部行</text>
+      <text x="196" y="204" font-size="12" font-weight="400" fill="#4b5563">首部字段名 : 值 CRLF ……</text>
+      <text x="196" y="249" font-size="12" font-weight="400" fill="#1f2937">CRLF（空行，分隔首部与主体）</text>
+      <text x="196" y="294" font-size="14" font-weight="600" fill="#115e59">实体主体</text>
+      <text x="196" y="316" font-size="12" font-weight="400" fill="#4b5563">（通常不用）</text>
+    </g>
+
+    <!-- Response Packet (x=416..712, w=296) -->
+    <g stroke-width="1.5">
+      <rect x="416" y="88" width="296" height="64" rx="8" fill="#eff6ff" stroke="#3b82f6"/>
+      <rect x="416" y="156" width="296" height="64" rx="8" fill="#fffbeb" stroke="#f59e0b"/>
+      <rect x="416" y="224" width="296" height="40" rx="8" fill="#f8fafc" stroke="#94a3b8"/>
+      <rect x="416" y="268" width="296" height="64" rx="8" fill="#f0fdfa" stroke="#14b8a6"/>
+    </g>
+    <g text-anchor="middle">
+      <text x="564" y="114" font-size="14" font-weight="600" fill="#1e40af">状态行</text>
+      <text x="564" y="136" font-size="12" font-weight="400" fill="#4b5563">版本 SP 状态码 SP 短语 CRLF</text>
+      <text x="564" y="182" font-size="14" font-weight="600" fill="#92400e">首部行</text>
+      <text x="564" y="204" font-size="12" font-weight="400" fill="#4b5563">首部字段名 : 值 CRLF ……</text>
+      <text x="564" y="249" font-size="12" font-weight="400" fill="#1f2937">CRLF（空行，分隔首部与主体）</text>
+      <text x="564" y="294" font-size="14" font-weight="600" fill="#115e59">实体主体</text>
+      <text x="564" y="316" font-size="12" font-weight="400" fill="#4b5563">（有些响应报文不用）</text>
+    </g>
+
+    <!-- Bottom note block -->
+    <rect x="24" y="340" width="712" height="28" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="1" data-role="note"/>
+    <text x="380" y="359" text-anchor="middle" font-size="12" font-weight="400" fill="#1f2937">两种报文都由三部分组成，区别仅在“开始行”：请求行 vs 状态行</text>
+  </g>
+</svg>

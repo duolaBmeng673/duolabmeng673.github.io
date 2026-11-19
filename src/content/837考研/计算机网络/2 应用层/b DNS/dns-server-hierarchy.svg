@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 368" width="760" height="368" role="img">
+  <title>DNS 域名服务器层次结构</title>
+  <desc>展示根域名服务器、顶级域名服务器（com、org、cn）与下级权限域名服务器之间的层次管辖关系。</desc>
+  <g font-family="'PingFang SC','Noto Sans SC','Microsoft YaHei',system-ui,sans-serif">
+    <text x="380" y="44" text-anchor="middle" font-size="18" font-weight="600" fill="#1f2937">DNS 域名服务器层次结构</text>
+
+    <!-- Level labels -->
+    <g font-size="12" font-weight="600" fill="#4b5563" text-anchor="start">
+      <text x="24" y="92">根域名服务器</text>
+      <text x="24" y="176">顶级域名服务器</text>
+      <text x="24" y="280">权限域名服务器</text>
+    </g>
+
+    <!-- Orthogonal tree edges -->
+    <g stroke="#94a3b8" stroke-width="1.5" fill="none">
+      <path d="M432 108 V124 H256 V140"/>
+      <path d="M432 108 V140"/>
+      <path d="M432 124 H624 V140"/>
+      <line x1="256" y1="204" x2="256" y2="248"/>
+      <line x1="624" y1="204" x2="624" y2="220"/>
+      <line x1="624" y1="260" x2="624" y2="280"/>
+    </g>
+
+    <!-- Root server -->
+    <rect x="352" y="68" width="160" height="40" rx="8" fill="#fef2f2" stroke="#ef4444" stroke-width="1.5"/>
+    <text x="432" y="93" text-anchor="middle" font-size="14" font-weight="600" fill="#991b1b">根域名服务器</text>
+
+    <!-- TLD servers -->
+    <g fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5">
+      <rect x="184" y="140" width="144" height="64" rx="8"/>
+      <rect x="360" y="140" width="144" height="64" rx="8"/>
+      <rect x="552" y="140" width="144" height="64" rx="8"/>
+    </g>
+    <g text-anchor="middle" font-size="14" font-weight="600" fill="#1e40af">
+      <text x="256" y="168">com 域名</text><text x="256" y="188">服务器</text>
+      <text x="432" y="168">org 域名</text><text x="432" y="188">服务器</text>
+      <text x="624" y="168">cn 域名</text><text x="624" y="188">服务器</text>
+    </g>
+
+    <!-- Authoritative servers -->
+    <g fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5">
+      <rect x="176" y="248" width="160" height="64" rx="8"/>
+      <rect x="536" y="220" width="176" height="40" rx="8"/>
+      <rect x="536" y="280" width="176" height="64" rx="8"/>
+    </g>
+    <g text-anchor="middle" font-size="14" font-weight="400" fill="#115e59">
+      <text x="256" y="276">cskaoyan.com</text><text x="256" y="296">域名服务器</text>
+      <text x="624" y="245">edu.cn 域名服务器</text>
+      <text x="624" y="308">hust.edu.cn</text><text x="624" y="328" font-size="12">域名服务器</text>
+    </g>
+  </g>
+</svg>

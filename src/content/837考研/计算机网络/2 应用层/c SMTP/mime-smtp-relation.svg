@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 328" width="760" height="328" role="img">
+  <title>MIME 与 SMTP 的关系（不改动 SMTP）</title>
+  <desc>展示发送端先经 MIME 将非 ASCII 数据转为 7 位 ASCII 码再交由 SMTP 传输，接收端经 MIME 逆转换还原非 ASCII 数据。</desc>
+  <defs>
+    <marker id="mime-smtp-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#1f2937" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+  <g font-family="'PingFang SC','Noto Sans SC','Microsoft YaHei',system-ui,sans-serif">
+    <text x="380" y="44" text-anchor="middle" font-size="18" font-weight="600" fill="#1f2937">MIME 与 SMTP 的关系（不改动 SMTP）</text>
+
+    <!-- Left stack -->
+    <rect x="88" y="72" width="128" height="40" rx="8" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
+    <rect x="88" y="160" width="128" height="40" rx="8" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5"/>
+    <rect x="88" y="248" width="128" height="40" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+    <g text-anchor="middle" font-size="14" font-weight="600">
+      <text x="152" y="97" fill="#115e59">用户</text>
+      <text x="152" y="185" fill="#92400e">MIME</text>
+      <text x="152" y="273" fill="#1e40af">SMTP</text>
+    </g>
+
+    <!-- Right stack -->
+    <rect x="544" y="72" width="128" height="40" rx="8" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
+    <rect x="544" y="160" width="128" height="40" rx="8" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5"/>
+    <rect x="544" y="248" width="128" height="40" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+    <g text-anchor="middle" font-size="14" font-weight="600">
+      <text x="608" y="97" fill="#115e59">用户</text>
+      <text x="608" y="185" fill="#92400e">MIME</text>
+      <text x="608" y="273" fill="#1e40af">SMTP</text>
+    </g>
+
+    <!-- Arrows -->
+    <line x1="152" y1="116" x2="152" y2="156" stroke="#1f2937" stroke-width="1.5" marker-start="url(#mime-smtp-arrow)" marker-end="url(#mime-smtp-arrow)"/>
+    <line x1="152" y1="204" x2="152" y2="244" stroke="#1f2937" stroke-width="1.5" marker-start="url(#mime-smtp-arrow)" marker-end="url(#mime-smtp-arrow)"/>
+    <line x1="608" y1="116" x2="608" y2="156" stroke="#1f2937" stroke-width="1.5" marker-start="url(#mime-smtp-arrow)" marker-end="url(#mime-smtp-arrow)"/>
+    <line x1="608" y1="204" x2="608" y2="244" stroke="#1f2937" stroke-width="1.5" marker-start="url(#mime-smtp-arrow)" marker-end="url(#mime-smtp-arrow)"/>
+    <line x1="220" y1="268" x2="540" y2="268" stroke="#3b82f6" stroke-width="1.5" marker-start="url(#mime-smtp-arrow)" marker-end="url(#mime-smtp-arrow)"/>
+
+    <!-- Labels -->
+    <text x="168" y="140" text-anchor="start" font-size="12" font-weight="400" fill="#115e59">非 ASCII 码</text>
+    <text x="168" y="228" text-anchor="start" font-size="12" font-weight="400" fill="#92400e">7 位 ASCII 码</text>
+    <text x="592" y="140" text-anchor="end" font-size="12" font-weight="400" fill="#115e59">非 ASCII 码</text>
+    <text x="592" y="228" text-anchor="end" font-size="12" font-weight="400" fill="#92400e">7 位 ASCII 码</text>
+    <text x="380" y="256" text-anchor="middle" font-size="12" font-weight="600" fill="#1e40af">7 位 ASCII 码</text>
+  </g>
+</svg>

@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 400" width="760" height="400" role="img">
+  <title>DNS 层次域名空间树状结构</title>
+  <desc>展示互联网域名空间的树状层级划分：根域以下依次为顶级域名、二级域名、三级域名和四级域名。</desc>
+  <g font-family="'PingFang SC','Noto Sans SC','Microsoft YaHei',system-ui,sans-serif">
+    <text x="380" y="44" text-anchor="middle" font-size="18" font-weight="600" fill="#1f2937">DNS 层次域名空间树状结构</text>
+
+    <!-- Level labels (left column) -->
+    <g font-size="12" font-weight="600" fill="#4b5563" text-anchor="start">
+      <text x="24" y="149">顶级域名</text>
+      <text x="24" y="217">二级域名</text>
+      <text x="24" y="285">三级域名</text>
+      <text x="24" y="353">四级域名</text>
+    </g>
+
+    <!-- Orthogonal tree connectors -->
+    <g stroke="#94a3b8" stroke-width="1.5" fill="none">
+      <!-- Root to TLDs -->
+      <path d="M408 100 V112 H192 V124"/>
+      <path d="M408 112 H304 V124"/>
+      <path d="M408 112 H528 V124"/>
+      <path d="M408 112 H664 V124"/>
+      <!-- com to 2nd level -->
+      <path d="M192 164 V178 H144 V192"/>
+      <path d="M192 178 H256 V192"/>
+      <!-- cn to 2nd level -->
+      <path d="M528 164 V178 H480 V192"/>
+      <path d="M528 178 H600 V192"/>
+      <!-- cskaoyan to 3rd level -->
+      <path d="M144 232 V246 H104 V260"/>
+      <path d="M144 246 H200 V260"/>
+      <!-- edu to hust -->
+      <path d="M480 232 V260"/>
+      <!-- hust to 4th level -->
+      <path d="M480 300 V314 H432 V328"/>
+      <path d="M480 314 H536 V328"/>
+    </g>
+
+    <!-- Root -->
+    <rect x="372" y="64" width="72" height="36" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
+    <text x="408" y="87" text-anchor="middle" font-size="14" font-weight="600" fill="#1f2937">根</text>
+
+    <!-- TLDs -->
+    <g fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5">
+      <rect x="152" y="124" width="80" height="40" rx="8"/>
+      <rect x="264" y="124" width="80" height="40" rx="8"/>
+      <rect x="488" y="124" width="80" height="40" rx="8"/>
+      <rect x="624" y="124" width="80" height="40" rx="8"/>
+    </g>
+    <g text-anchor="middle" font-size="14" font-weight="600" fill="#1e40af">
+      <text x="192" y="149">com</text>
+      <text x="304" y="149">org</text>
+      <text x="528" y="149">cn</text>
+      <text x="664" y="149">uk</text>
+    </g>
+
+    <!-- 2nd level -->
+    <g fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5">
+      <rect x="96" y="192" width="96" height="40" rx="8"/>
+      <rect x="208" y="192" width="96" height="40" rx="8"/>
+      <rect x="440" y="192" width="80" height="40" rx="8"/>
+      <rect x="560" y="192" width="80" height="40" rx="8"/>
+    </g>
+    <g text-anchor="middle" font-size="14" font-weight="400" fill="#92400e">
+      <text x="144" y="217">cskaoyan</text>
+      <text x="256" y="217">google</text>
+      <text x="480" y="217">edu</text>
+      <text x="600" y="217">com</text>
+    </g>
+
+    <!-- 3rd level -->
+    <g fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5">
+      <rect x="64" y="260" width="80" height="40" rx="8"/>
+      <rect x="160" y="260" width="80" height="40" rx="8"/>
+      <rect x="440" y="260" width="80" height="40" rx="8"/>
+    </g>
+    <g text-anchor="middle" font-size="14" font-weight="400" fill="#115e59">
+      <text x="104" y="285">www</text>
+      <text x="200" y="285">mail</text>
+      <text x="480" y="285">hust</text>
+    </g>
+
+    <!-- 4th level -->
+    <g fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5">
+      <rect x="392" y="328" width="80" height="40" rx="8"/>
+      <rect x="496" y="328" width="80" height="40" rx="8"/>
+    </g>
+    <g text-anchor="middle" font-size="14" font-weight="400" fill="#1f2937">
+      <text x="432" y="353">www</text>
+      <text x="536" y="353">mail</text>
+    </g>
+  </g>
+</svg>
