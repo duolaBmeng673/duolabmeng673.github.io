@@ -225,7 +225,7 @@ function initDanmaku(motionCtrl: MotionController) {
 
   const getSimNow = () => (running ? simAccumMs + (performance.now() - runStartedAt) : simAccumMs);
 
-  const canPlay = () => inView && !document.hidden && !hoveredOrFocused && !motionCtrl.isPaused();
+  const canPlay = () => inView && !document.hidden && !hoveredOrFocused && !motionCtrl.isPaused() && !reducedMotion();
 
   const syncPlayState = () => {
     const shouldRun = canPlay();

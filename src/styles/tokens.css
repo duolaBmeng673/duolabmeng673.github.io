@@ -14,16 +14,27 @@
   --box-hover-border: #121217;
   --lift: translateY(-2px);
   --lift-border: var(--box-hover-border);
-  --lift-dur: .18s;
+  --dur-1: 120ms;
+  --dur-2: 220ms;
+  --dur-3: 400ms;
+  --ease-out: cubic-bezier(.22, 1, .36, 1);
+  --lift-dur: var(--dur-1);
+  --transition: var(--dur-2) var(--ease-out);
   --glass: rgba(18, 18, 24, 0.032);
   --navg: rgba(247, 246, 242, 0.84);
   --cardg: rgba(255, 255, 255, 0.84);
   --hi: rgba(255, 255, 255, 0.94);
   --sh: rgba(18, 18, 24, 0.065);
-  --ac: #6d28d9;
-  --ac-strong: #5b21b6;
-  --ac-soft: rgba(109, 40, 217, 0.09);
-  --btn: #6d28d9;
+  --brand-ac: #6d28d9;
+  --brand-ac-strong: #5b21b6;
+  --brand-ac-soft: rgba(109, 40, 217, 0.09);
+  --study-ac: #0b6e61;
+  --study-ac-strong: #08544a;
+  --study-ac-soft: rgba(15, 138, 122, 0.11);
+  --ac: var(--brand-ac);
+  --ac-strong: var(--brand-ac-strong);
+  --ac-soft: var(--brand-ac-soft);
+  --btn: var(--brand-ac);
   --btnt: #ffffff;
 
   --gold: #b87c0c;
@@ -44,7 +55,15 @@
   --spot: 109, 40, 217;
   --vbg: #efede6;
   --code-bg: #f4f3ef;
-  --svg-bg: #ffffff;
+  --svg-bg: var(--bg-elev);
+  --preset-all: #2563eb;
+  --preset-all-hi: #38bdf8;
+  --preset-research: #5227ff;
+  --preset-research-hi: #c084fc;
+  --preset-cs: #c2416b;
+  --preset-cs-hi: #fb7185;
+  --preset-837: #0d9488;
+  --preset-837-hi: #34d399;
 
   --syntax-background: #f8fafc;
   --syntax-foreground: #24292e;
@@ -64,8 +83,16 @@
   --gutter: clamp(20px, 3vw, 56px);
   --maxw: 1760px;
   --sans: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
-  --serif: "Iowan Old Style", "Noto Serif SC", "Songti SC", Georgia, serif;
+  --serif: var(--sans);
   --mono: "SF Mono", ui-monospace, Menlo, Monaco, Consolas, monospace;
+
+  --fs-xs: max(12px, 0.75rem);
+  --fs-sm: max(12px, 0.8125rem);
+  --fs-base: 0.9375rem;
+  --fs-md: 1.0625rem;
+  --fs-lg: 1.25rem;
+  --fs-xl: 1.6rem;
+  --fs-display: clamp(2.2rem, 4vw, 3.4rem);
 
   --r-nav: 0.5rem;
   --r-btn: 0.4375rem;
@@ -109,10 +136,16 @@
   --cardg: rgba(17, 16, 25, 0.76);
   --hi: rgba(255, 255, 255, 0.11);
   --sh: rgba(0, 0, 0, 0.55);
-  --ac: #a78bfa;
-  --ac-strong: #c4b5fd;
-  --ac-soft: rgba(167, 139, 250, 0.15);
-  --btn: #a78bfa;
+  --brand-ac: #a78bfa;
+  --brand-ac-strong: #c4b5fd;
+  --brand-ac-soft: rgba(167, 139, 250, 0.15);
+  --study-ac: #5fd6b8;
+  --study-ac-strong: #86e6cc;
+  --study-ac-soft: rgba(95, 214, 184, 0.14);
+  --ac: var(--brand-ac);
+  --ac-strong: var(--brand-ac-strong);
+  --ac-soft: var(--brand-ac-soft);
+  --btn: var(--brand-ac);
   --btnt: #100921;
   --svg-bg: #f8fafc;
 

@@ -8,13 +8,18 @@ export async function getStaticPaths() {
 }
 const { info, posts } = Astro.props;
 const modules = getStudyModuleSummaries(posts);
+const moduleNames = modules.map((module) => module.title);
+const moduleSummary = moduleNames.length > 1
+  ? `${moduleNames.slice(0, -1).join('、')}与${moduleNames.at(-1)}`
+  : (moduleNames[0] ?? '专题');
+const seriesDescription = `${info.description}包含${moduleSummary}等 ${modules.length} 个专题模块。`;
 ---
-<BaseLayout title={info.title} description={info.description}>
+<BaseLayout title={info.title} description={seriesDescription}>
   <header class="page-intro page-masthead">
     <div>
       <a class="back-link" href="/study-notes/">← 学习笔记</a>
       <h1>{info.title}</h1>
-      <p>{info.description}</p>
+      <p>{seriesDescription}</p>
     </div>
     <div class="masthead-stats is-two" aria-label="系列统计">
       <div class="masthead-stat-card">
@@ -25,7 +30,7 @@ const modules = getStudyModuleSummaries(posts);
       <div class="masthead-stat-card">
         <span class="masthead-stat-label">核心模块</span>
         <strong class="masthead-stat-num">{modules.length}</strong>
-        <span class="masthead-stat-sub">支持背诵模式与标签筛选</span>
+        <span class="masthead-stat-sub">{moduleNames.join(' · ')}</span>
       </div>
     </div>
   </header>

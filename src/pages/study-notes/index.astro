@@ -6,13 +6,18 @@ import { getPublicStudyNotes, studySeries, getStudyModuleSummaries } from '../..
 const posts = await getPublicStudyNotes();
 const series = Object.entries(studySeries).filter(([name]) => posts.some((post) => post.data.series === name));
 const modules = getStudyModuleSummaries(posts);
+const moduleNames = modules.map((module) => module.title);
+const moduleSummary = moduleNames.length > 1
+  ? `${moduleNames.slice(0, -1).join('、')}与${moduleNames.at(-1)}`
+  : (moduleNames[0] ?? '专题');
+const overviewDescription = `HIT 837 专业课考研笔记，按${moduleSummary}模块组织。`;
 ---
-<BaseLayout title="学习笔记" description="HIT 837 专业课考研笔记，按信息安全与网络安全模块组织。" bodyClass="study-overview-page">
+<BaseLayout title="学习笔记" description={overviewDescription} bodyClass="study-overview-page">
   <header class="page-intro page-masthead">
     <div>
       <p class="eyebrow">学习笔记</p>
       <h1>学习笔记</h1>
-      <p>HIT 837 专业课考研笔记，按信息安全与网络安全模块组织。</p>
+      <p>{overviewDescription}</p>
     </div>
     <div class="masthead-stats-col">
       <div class="masthead-stats is-two" aria-label="学习笔记统计">
@@ -24,7 +29,7 @@ const modules = getStudyModuleSummaries(posts);
         <div class="masthead-stat-card">
           <span class="masthead-stat-label">专题模块</span>
           <CountUp to={modules.length} />
-          <span class="masthead-stat-sub">信息安全 + 网络安全</span>
+          <span class="masthead-stat-sub">{moduleNames.join(' · ')}</span>
         </div>
       </div>
       <p class="study-status">公开笔记数量不代表复习完成进度。</p>

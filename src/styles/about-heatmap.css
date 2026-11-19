@@ -127,7 +127,7 @@
 
 .about-heat-grid-col {
   min-width: 0;
-  padding-left: 0.78rem;
+  padding-left: 1rem;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -140,11 +140,11 @@
 
 .about-heat-scroll {
   min-width: 0;
-  width: calc(100% + 5px);
-  max-width: calc(100% + 5px);
-  margin-left: -5px;
+  width: 100%;
+  max-width: 100%;
   overflow-x: auto;
-  padding: 0 0 4px;
+  padding: 0 4px 4px 12px;
+  scroll-padding-inline: 16px;
   scrollbar-width: thin;
   scrollbar-color: var(--bd-strong) transparent;
 }
@@ -152,8 +152,8 @@
 .about-heat-calendar {
   --about-cell-size: 12px;
   --about-cell-gap: 3px;
-  --about-weekday-w: 20px;
-  --about-grid-gap: 4px;
+  --about-weekday-w: 22px;
+  --about-grid-gap: 6px;
   box-sizing: content-box;
   width: max-content;
   padding: 5px 7px 6px 5px;
@@ -229,7 +229,7 @@
   border: 1px solid var(--bd);
   background: var(--heat-0);
   cursor: pointer;
-  transition: transform 120ms ease, outline-color 120ms ease, opacity 120ms ease;
+  transition: transform var(--dur-1) var(--ease-out), outline-color var(--dur-1) var(--ease-out), opacity var(--dur-1) var(--ease-out);
 }
 
 .about-heat-cell.is-outside,
@@ -316,7 +316,14 @@
   flex: 1 1 auto;
   min-height: 0;
   overflow-y: auto;
-  padding-right: 0.15rem;
+  scrollbar-width: thin;
+  padding-right: 0.25rem;
+  padding-bottom: 1.25rem;
+}
+
+.about-heat-sidebar-body.has-overflow {
+  -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 20px), transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 calc(100% - 20px), transparent 100%);
 }
 
 .about-heat-entry-list {

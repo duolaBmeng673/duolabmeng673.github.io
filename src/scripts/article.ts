@@ -83,14 +83,106 @@ const revealInsideFold = (element: HTMLElement) => {
 };
 const links = [...document.querySelectorAll<HTMLAnchorElement>('[data-toc-link]')];
 const headings = links.map((link) => document.getElementById(decodeURIComponent(link.hash.slice(1)))).filter((heading): heading is HTMLElement => Boolean(heading));
-const updateCurrent = () => {
-  const visible = headings.filter((heading) => heading.getClientRects().length > 0);
-  const current = [...visible].reverse().find((heading) => heading.getBoundingClientRect().top <= 150) ?? visible[0];
+const tocList = document.querySelector<HTMLOListElement>('[data-toc-pane="toc"] ol');
+const parentH2ById = new Map<string, string>();
+const groupByH2 = new Map<string, HTMLLIElement>();
+if (tocList && links.length) {
+  const items = [...tocList.children].filter((el): el is HTMLLIElement => el.tagName === 'LI');
+  let currentH2Id = '';
+  let currentSubList: HTMLOListElement | null = null;
+  for (const li of items) {
+    const a = li.querySelector<HTMLAnchorElement>('a[data-toc-link]');
+    const slug = a?.hash ? decodeURIComponent(a.hash.slice(1)) : '';
+    if (li.classList.contains('toc-level-2')) {
+      currentH2Id = slug;
+      currentSubList = null;
+    } else if (li.classList.contains('toc-level-3') && currentH2Id) {
+      if (slug) parentH2ById.set(slug, currentH2Id);
+      if (!currentSubList) {
+        const groupLi = document.createElement('li');
+        groupLi.className = 'toc-sub-group';
+        groupLi.dataset.tocGroup = currentH2Id;
+        currentSubList = document.createElement('ol');
+        currentSubList.className = 'toc-sub-list';
+        groupLi.append(currentSubList);
+        li.before(groupLi);
+        groupByH2.set(currentH2Id, groupLi);
+      }
+      currentSubList.append(li);
+    }
+  }
+  if (groupByH2.size > 0) tocList.classList.add('has-toc-collapse');
+}
+let tocIndicator: HTMLSpanElement | null = null;
+if (tocList && links.length) {
+  tocIndicator = document.createElement('span');
+  tocIndicator.className = 'toc-slide-indicator';
+  tocIndicator.setAttribute('aria-hidden', 'true');
+  tocList.prepend(tocIndicator);
+  tocList.classList.add('has-toc-indicator');
+}
+const syncTocIndicator = () => {
+  if (!tocIndicator || !tocList) return;
+  const active = links.find((link) => link.classList.contains('is-current'));
+  const item = active?.closest<HTMLElement>('li');
+  if (!item || item.offsetHeight === 0 || tocList.offsetHeight === 0) {
+    tocIndicator.classList.remove('is-ready');
+    return;
+  }
+  const top = item.getBoundingClientRect().top - tocList.getBoundingClientRect().top + 2;
+  const height = Math.max(12, item.getBoundingClientRect().height - 4);
+  tocIndicator.style.transform = `translateY(${Math.round(top)}px)`;
+  tocIndicator.style.height = `${Math.round(height)}px`;
+  tocIndicator.classList.add('is-ready');
+};
+const syncExpandedGroups = (activeId?: string) => {
+  if (!groupByH2.size) return;
+  const activeH2 = activeId
+    ? (parentH2ById.get(activeId) ?? (groupByH2.has(activeId) ? activeId : ''))
+    : '';
+  for (const [h2Id, group] of groupByH2) {
+    const expanded = h2Id === activeH2;
+    group.classList.toggle('is-expanded', expanded);
+    group.querySelectorAll<HTMLAnchorElement>('a[data-toc-link]').forEach((a) => {
+      if (expanded) a.removeAttribute('tabindex');
+      else a.setAttribute('tabindex', '-1');
+    });
+  }
+};
+const setCurrentById = (activeId?: string) => {
   links.forEach((link) => {
-    const active = current?.id === decodeURIComponent(link.hash.slice(1));
+    const active = Boolean(activeId) && activeId === decodeURIComponent(link.hash.slice(1));
     link.classList.toggle('is-current', active);
     if (active) link.setAttribute('aria-current', 'location'); else link.removeAttribute('aria-current');
   });
+  syncExpandedGroups(activeId);
+  syncTocIndicator();
+};
+let tocScrollLock = false;
+let tocScrollLockTimer = 0;
+let tocScrollEndHandler: (() => void) | null = null;
+const clearTocScrollLock = () => {
+  tocScrollLock = false;
+  if (tocScrollLockTimer) {
+    window.clearTimeout(tocScrollLockTimer);
+    tocScrollLockTimer = 0;
+  }
+  if (tocScrollEndHandler) {
+    window.removeEventListener('scrollend', tocScrollEndHandler);
+    tocScrollEndHandler = null;
+  }
+};
+const flashArrivedHeading = (target: HTMLElement) => {
+  target.classList.remove('is-arrived');
+  void target.offsetWidth;
+  target.classList.add('is-arrived');
+  window.setTimeout(() => target.classList.remove('is-arrived'), 680);
+};
+const updateCurrent = () => {
+  if (tocScrollLock) return;
+  const visible = headings.filter((heading) => heading.getClientRects().length > 0);
+  const current = [...visible].reverse().find((heading) => heading.getBoundingClientRect().top <= 150) ?? visible[0];
+  setCurrentById(current?.id);
 };
 const scrollToHeadingLink = (link: HTMLAnchorElement, event: MouseEvent) => {
   if (!link.hash) return;
@@ -99,18 +191,44 @@ const scrollToHeadingLink = (link: HTMLAnchorElement, event: MouseEvent) => {
   if (!target) return;
   event.preventDefault();
   revealInsideFold(target);
-  target.scrollIntoView({ behavior: reducedMotion() ? 'auto' : 'smooth', block: 'start' });
+  const reduce = reducedMotion();
+  clearTocScrollLock();
+  tocScrollLock = !reduce;
+  setCurrentById(id);
+  if (reduce) {
+    target.scrollIntoView({ behavior: 'auto', block: 'start' });
+  } else {
+    let arrived = false;
+    const finishArrival = () => {
+      if (arrived) return;
+      arrived = true;
+      clearTocScrollLock();
+      setCurrentById(id);
+      flashArrivedHeading(target);
+    };
+    tocScrollEndHandler = finishArrival;
+    window.addEventListener('scrollend', finishArrival, { once: true });
+    tocScrollLockTimer = window.setTimeout(finishArrival, 620);
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
   if (typeof history !== 'undefined') {
     history.replaceState(null, '', `${location.pathname}${location.search}${link.hash}`);
   }
-  updateCurrent();
 };
 links.forEach((link) => link.addEventListener('click', (event) => scrollToHeadingLink(link, event)));
 let framePending = false;
-document.addEventListener('study-mode-change', updateCurrent);
+document.addEventListener('study-mode-change', () => { clearTocScrollLock(); updateCurrent(); });
+if (tocList) {
+  tocList.addEventListener('transitionend', (e) => {
+    if ((e.target as HTMLElement)?.classList?.contains('toc-sub-group')) syncTocIndicator();
+  });
+  if ('ResizeObserver' in window) {
+    new ResizeObserver(syncTocIndicator).observe(tocList);
+  }
+}
 if (headings.length) {
   window.addEventListener('scroll', () => {
-    if (framePending) return;
+    if (tocScrollLock || framePending) return;
     framePending = true;
     requestAnimationFrame(() => { updateCurrent(); framePending = false; });
   }, { passive: true });
@@ -121,16 +239,42 @@ document.querySelectorAll<HTMLAnchorElement>('.article-toc-mobile a').forEach((l
   const details = link.closest('details'); if (details) details.open = false;
 }));
 
+const chapterSwitchers = [...document.querySelectorAll<HTMLDetailsElement>('[data-chapter-switcher]')];
+if (chapterSwitchers.length) {
+  document.addEventListener('click', (event) => {
+    const target = event.target as Node | null;
+    chapterSwitchers.forEach((switcher) => {
+      if (switcher.open && target && !switcher.contains(target)) switcher.open = false;
+    });
+  });
+  document.addEventListener('keydown', (event) => {
+    if (event.key !== 'Escape') return;
+    chapterSwitchers.forEach((switcher) => {
+      if (!switcher.open) return;
+      event.preventDefault();
+      switcher.open = false;
+      switcher.querySelector<HTMLElement>('summary')?.focus();
+    });
+  });
+}
+
 const tocPanel = document.querySelector<HTMLElement>('[data-toc-panel]');
 if (tocPanel) {
   const tocHeading = tocPanel.querySelector<HTMLElement>('[data-toc-heading]');
   const jumpToggle = tocPanel.querySelector<HTMLButtonElement>('[data-toc-jump-toggle]');
   const panes = [...tocPanel.querySelectorAll<HTMLElement>('[data-toc-pane]')];
   const modulePanels = [...tocPanel.querySelectorAll<HTMLElement>('[data-toc-module-panel]')];
+  const moduleTabs = [...tocPanel.querySelectorAll<HTMLButtonElement>('[data-toc-module-tab]')];
+  const jumpFilter = tocPanel.querySelector<HTMLInputElement>('[data-toc-jump-filter]');
+  const jumpEmpty = tocPanel.querySelector<HTMLElement>('[data-toc-jump-empty]');
   const openBtn = document.querySelector<HTMLButtonElement>('[data-toc-drawer-open]');
   const closeBtn = tocPanel.querySelector<HTMLButtonElement>('[data-toc-drawer-close]');
   const backdrop = document.querySelector<HTMLElement>('[data-toc-backdrop]');
+  const navMobile = document.querySelector<HTMLDetailsElement>('.article-nav-mobile');
+  const articleJumpBtns = [...document.querySelectorAll<HTMLButtonElement>('[data-article-jump-open]')];
   const mobileMq = window.matchMedia?.('(max-width: 639px)');
+  const currentModuleSlug = tocPanel.dataset.currentModule || modulePanels[0]?.dataset.tocModulePanel || '';
+  let activeModuleSlug = currentModuleSlug;
   let view: 'toc' | 'modules' | 'chapters' = 'toc';
   let activeModuleLabel = '笔记直达';
   let drawerOpen = false;
@@ -153,11 +297,35 @@ if (tocPanel) {
     const activeItem = visibleMod?.querySelector<HTMLElement>('a.is-active, a[aria-current="page"]');
     if (activeItem) {
       requestAnimationFrame(() => {
-        activeItem.scrollIntoView({ block: 'center', behavior: reducedMotion() ? 'auto' : 'smooth' });
+        const paneRect = pane.getBoundingClientRect();
+        const itemRect = activeItem.getBoundingClientRect();
+        const targetTop = pane.scrollTop + (itemRect.top - paneRect.top) - pane.clientHeight / 2 + itemRect.height / 2;
+        pane.scrollTo({ top: Math.max(0, targetTop), behavior: reducedMotion() ? 'auto' : 'smooth' });
       });
     } else {
       pane.scrollTop = 0;
     }
+  };
+
+  const applyJumpFilter = (rawQuery: string) => {
+    const query = rawQuery.trim().toLowerCase();
+    let visibleCount = 0;
+    modulePanels.forEach((panel) => {
+      let panelCount = 0;
+      panel.querySelectorAll<HTMLElement>('.toc-jump-group').forEach((group) => {
+        let groupCount = 0;
+        group.querySelectorAll<HTMLElement>('[data-toc-jump-item]').forEach((item) => {
+          const text = item.dataset.searchText ?? item.textContent?.toLowerCase() ?? '';
+          const hit = !query || text.includes(query);
+          item.hidden = !hit;
+          if (hit) groupCount += 1;
+        });
+        group.hidden = groupCount === 0;
+        panelCount += groupCount;
+      });
+      if (!panel.hidden) visibleCount = panelCount;
+    });
+    if (jumpEmpty) jumpEmpty.hidden = visibleCount > 0;
   };
 
   const setView = (nextView: 'toc' | 'modules' | 'chapters', label?: string) => {
@@ -180,19 +348,96 @@ if (tocPanel) {
     }
   };
 
+  const activateModule = (slug: string, focusFilter = false) => {
+    const targetSlug = slug || modulePanels[0]?.dataset.tocModulePanel || '';
+    if (!targetSlug) return;
+    activeModuleSlug = targetSlug;
+    modulePanels.forEach((panel) => {
+      panel.hidden = panel.dataset.tocModulePanel !== targetSlug;
+    });
+    let resolvedLabel = '笔记直达';
+    moduleTabs.forEach((tab) => {
+      const active = tab.dataset.tocModuleTab === targetSlug;
+      tab.classList.toggle('is-active', active);
+      tab.setAttribute('aria-selected', String(active));
+      if (active) resolvedLabel = tab.dataset.moduleLabel || tab.textContent?.trim() || resolvedLabel;
+    });
+    if (!moduleTabs.length) {
+      const fallbackBtn = tocPanel.querySelector<HTMLElement>(`[data-toc-select-module="${targetSlug}"] strong`);
+      if (fallbackBtn?.textContent) resolvedLabel = fallbackBtn.textContent.trim();
+    }
+    setView('chapters', resolvedLabel);
+    applyJumpFilter(jumpFilter?.value ?? '');
+    if (focusFilter && jumpFilter) {
+      requestAnimationFrame(() => jumpFilter.focus({ preventScroll: true }));
+    }
+  };
+
+  const openJumpPanel = () => {
+    if (mobileMq?.matches) {
+      syncDrawer(true);
+      activateModule(activeModuleSlug || currentModuleSlug, true);
+      return;
+    }
+    if (getComputedStyle(tocPanel).display === 'none' && navMobile) {
+      navMobile.open = true;
+      navMobile.scrollIntoView({ block: 'nearest', behavior: reducedMotion() ? 'auto' : 'smooth' });
+      navMobile.querySelector<HTMLElement>('summary')?.focus();
+      return;
+    }
+    activateModule(activeModuleSlug || currentModuleSlug, true);
+  };
+
   jumpToggle?.addEventListener('click', () => {
-    setView(view === 'toc' ? 'modules' : 'toc');
+    if (view === 'toc') {
+      activateModule(activeModuleSlug || currentModuleSlug, true);
+    } else {
+      setView('toc');
+    }
+  });
+
+  moduleTabs.forEach((tab) => {
+    tab.addEventListener('click', () => {
+      const slug = tab.dataset.tocModuleTab;
+      if (slug) activateModule(slug, true);
+    });
+  });
+
+  jumpFilter?.addEventListener('input', () => {
+    applyJumpFilter(jumpFilter.value);
+  });
+
+  jumpFilter?.addEventListener('keydown', (event) => {
+    if (event.key !== 'Escape') return;
+    event.stopPropagation();
+    if (jumpFilter.value) {
+      jumpFilter.value = '';
+      applyJumpFilter('');
+      return;
+    }
+    if (mobileMq?.matches && drawerOpen) closeDrawer(true);
+    else setView('toc');
+  });
+
+  articleJumpBtns.forEach((btn) => btn.addEventListener('click', openJumpPanel));
+
+  document.addEventListener('keydown', (event) => {
+    if (!event.altKey || event.ctrlKey || event.metaKey || event.code !== 'KeyJ') return;
+    const target = event.target as HTMLElement | null;
+    if (target && target !== jumpFilter && (/^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName) || target.isContentEditable)) return;
+    event.preventDefault();
+    if (view === 'chapters' && (!mobileMq?.matches || drawerOpen)) {
+      if (mobileMq?.matches) closeDrawer(true);
+      else setView('toc');
+    } else {
+      openJumpPanel();
+    }
   });
 
   tocPanel.querySelectorAll<HTMLButtonElement>('[data-toc-select-module]').forEach((btn) => {
     btn.addEventListener('click', () => {
       const slug = btn.dataset.tocSelectModule;
-      if (!slug) return;
-      modulePanels.forEach((panel) => {
-        panel.hidden = panel.dataset.tocModulePanel !== slug;
-      });
-      const label = btn.querySelector('strong')?.textContent?.trim() || '笔记直达';
-      setView('chapters', label);
+      if (slug) activateModule(slug, true);
     });
   });
 

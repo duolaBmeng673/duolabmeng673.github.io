@@ -2,14 +2,29 @@
 import BaseLayout from '../../../../layouts/BaseLayout.astro';
 import KnowledgeDirectory from '../../../../components/KnowledgeDirectory.astro';
 import StudyNoteList from '../../../../components/StudyNoteList.astro';
+import StudyNavBar from '../../../../components/StudyNavBar.astro';
+import StudyQuickJumpDialog from '../../../../components/StudyQuickJumpDialog.astro';
 import { getPublicStudyNotes, getStudyChapters, getStudyModuleHref, studyModules, studySeries } from '../../../../lib/study';
 export async function getStaticPaths() {
   const posts = await getPublicStudyNotes();
   return Object.entries(studySeries).flatMap(([name, info]) => getStudyChapters(posts.filter((post) => post.data.series === name)).map((chapter) => ({ params: { series: info.slug, chapter: chapter.key }, props: { info, chapter } })));
 }
 const { info, chapter } = Astro.props;
+const currentSeries = chapter.posts[0].data.series;
+const currentModuleSlug = studyModules[chapter.subject].slug;
 ---
 <BaseLayout title={`${chapter.subject} · ${chapter.code} ${chapter.title} · ${info.title}`} description={`${chapter.subject}：${chapter.title}的已有学习笔记。`}>
-  <header class="page-intro"><a class="text-link" href={getStudyModuleHref(chapter.posts[0])}>← {studyModules[chapter.subject].title} · {info.title}</a><p class="eyebrow">{chapter.subject} · 考纲章节 {chapter.code}</p><h1>{chapter.title}</h1><p>{chapter.posts.length} 篇公开笔记 · 按考纲顺序浏览</p></header>
+  <header class="page-intro">
+    <a class="text-link" href={getStudyModuleHref(chapter.posts[0])}>← {studyModules[chapter.subject].title} · {info.title}</a>
+    <div class="study-intro-head">
+      <div>
+        <p class="eyebrow">{chapter.subject} · 考纲章节 {chapter.code}</p>
+        <h1>{chapter.title}</h1>
+        <p>{chapter.posts.length} 篇公开笔记 · 按考纲顺序浏览</p>
+      </div>
+      <StudyNavBar series={currentSeries} currentModuleSlug={currentModuleSlug} />
+    </div>
+  </header>
   <KnowledgeDirectory posts={chapter.posts}><StudyNoteList posts={chapter.posts} chapterCode={chapter.code} /></KnowledgeDirectory>
+  <StudyQuickJumpDialog series={currentSeries} currentModuleSlug={currentModuleSlug} />
 </BaseLayout>

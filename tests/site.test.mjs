@@ -84,8 +84,9 @@ test('study entry points select independent modules and preserve existing chapte
     const positions = slugs.map((slug) => html.indexOf(`href="${prefix}${slug}/"`));
     assert.ok(positions.every((position) => position >= 0));
     assert.deepEqual(positions, [...positions].sort((a, b) => a - b), 'syllabus order');
+    const dirHtml = html.split('id="study-quick-jump-dialog"')[0];
     const others = Object.entries(modules).filter(([key]) => key !== module).flatMap(([, values]) => values);
-    for (const slug of others) assert.ok(!html.includes(`href="${prefix}${slug}/"`), 'no cross-module articles');
+    for (const slug of others) assert.ok(!dirHtml.includes(`href="${prefix}${slug}/"`), 'no cross-module articles inside directory');
     slugs.forEach((slug, i) => {
       const article = read('dist' + prefix + slug + '/index.html');
       assert.ok(article.includes(`class="back-link" href="${route}"`));
@@ -469,4 +470,50 @@ test('built site HTML, search index, RSS, and sitemap contain no forbidden terms
     const hits = findForbiddenMatches(content);
     assert.deepEqual(hits, [], `Forbidden term found in built artifact ${file}: ${JSON.stringify(hits)}`);
   }
+});
+
+test('study module pages include module switcher, adjacent module footer links, and quick jump dialog', () => {
+  const modules = [
+    { slug: 'information-security', next: '下一模块：网络安全' },
+    { slug: 'network-security', prev: '← 上一模块：信息安全', next: '下一模块：计算机网络' },
+    { slug: 'computer-networks', prev: '← 上一模块：网络安全' },
+  ];
+
+  for (const mod of modules) {
+    const html = read(`dist/study-notes/837/${mod.slug}/index.html`);
+    assert.match(html, /class="study-module-switcher"/);
+    assert.match(html, /id="study-quick-jump-dialog"/);
+    assert.match(html, /data-study-jump-filter/);
+    assert.match(html, /class="home-about-links"[^]*?<\/p>\s*<\/div>/);
+    if (mod.prev) assert.match(html, new RegExp(mod.prev.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+    if (mod.next) assert.match(html, new RegExp(mod.next.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+    assert.equal((html.match(/data-study-jump-item/g) ?? []).length > 0, true);
+  }
+});
+
+test('study articles include header quick jump bar, chapter switcher, TOC jump filter, and cross-module pagination', () => {
+  const c45 = read('dist/study-notes/837/decision-tree-c45/index.html');
+  assert.match(c45, /class="article-quick-jump"/);
+  assert.match(c45, /class="article-chapter-switcher"/);
+  assert.match(c45, /data-article-jump-open/);
+  assert.match(c45, /data-toc-jump-filter/);
+  assert.match(c45, /data-toc-module-tab="network-security"/);
+  assert.match(c45, /<details class="mobile-jump-module" open>/);
+
+  const studyArticleDirs = readdirSync('dist/study-notes/837', { withFileTypes: true })
+    .filter((entry) => entry.isDirectory() && !['information-security', 'network-security', 'computer-networks', 'chapter'].includes(entry.name))
+    .map((entry) => `dist/study-notes/837/${entry.name}/index.html`);
+
+  assert.ok(studyArticleDirs.length > 0);
+  let hasCrossPrev = false;
+  let hasCrossNext = false;
+  for (const file of studyArticleDirs) {
+    const html = read(file);
+    assert.match(html, /class="article-quick-jump"/);
+    assert.match(html, /data-toc-jump-filter/);
+    if (/上一模块（/.test(html)) hasCrossPrev = true;
+    if (/下一模块（/.test(html)) hasCrossNext = true;
+  }
+  assert.ok(hasCrossPrev, 'Expected at least one study note at module boundary with previous cross-module link');
+  assert.ok(hasCrossNext, 'Expected at least one study note at module boundary with next cross-module link');
 });

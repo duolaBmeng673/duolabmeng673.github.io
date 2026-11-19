@@ -1,0 +1,36 @@
+---
+import { getPublicStudyNotes, getStudyModuleSummaries } from '../lib/study';
+
+interface Props {
+  series: string;
+  currentModuleSlug: string;
+}
+
+const { series, currentModuleSlug } = Astro.props;
+const allPosts = await getPublicStudyNotes();
+const modules = getStudyModuleSummaries(allPosts.filter((post) => post.data.series === series));
+---
+<div class="study-nav-bar">
+  <nav class="study-module-switcher" aria-label="专题模块快速切换">
+    {modules.map((mod) => (
+      <a
+        href={mod.href}
+        class:list={['study-module-pill', { 'is-active': mod.slug === currentModuleSlug }]}
+        aria-current={mod.slug === currentModuleSlug ? 'page' : undefined}
+      >
+        <span>{mod.title}</span>
+        <small>{mod.count}</small>
+      </a>
+    ))}
+  </nav>
+  <button
+    type="button"
+    class="study-quick-jump-trigger"
+    data-study-jump-open
+    aria-expanded="false"
+    aria-controls="study-quick-jump-dialog"
+    title="快捷键 Option/Alt + J"
+  >
+    笔记直达 <kbd aria-hidden="true">Alt J</kbd>
+  </button>
+</div>

@@ -65,7 +65,7 @@ function initAboutHeatmap(root: HTMLElement) {
     const padRight = parseFloat(colCs.paddingRight) || 0;
     const reservedRight = twoCol ? Math.min(330, Math.max(260, bodyW * 0.28)) + 16 : 0;
     const maxColW = Math.max(200, bodyW - reservedRight);
-    const availWeeksW = Math.max(0, maxColW - padLeft - padRight - 20 - 4);
+    const availWeeksW = Math.max(0, maxColW - padLeft - padRight - 22 - 6 - 22);
     const gridFits = weekCount * side + (weekCount - 1) * gap <= availWeeksW + 0.5;
 
     calendarEl.style.setProperty('--about-cell-size', `${side}px`);
@@ -91,6 +91,13 @@ function initAboutHeatmap(root: HTMLElement) {
   let cellMap = new Map<string, AboutHeatmapCell>();
   let orderedCells: HTMLButtonElement[] = [];
 
+  const syncDetailOverflow = () => {
+    const overflowing = detailBodyEl.scrollHeight > detailBodyEl.clientHeight + 2
+      && detailBodyEl.scrollTop + detailBodyEl.clientHeight < detailBodyEl.scrollHeight - 2;
+    detailBodyEl.classList.toggle('has-overflow', overflowing);
+  };
+  detailBodyEl.addEventListener('scroll', syncDetailOverflow, { passive: true });
+
   const renderDetail = (date: string | null, modeLabel: string) => {
     const cell = date ? cellMap.get(date) ?? null : null;
     detailDateEl.textContent = formatWeekdayDateLabel(cell?.date ?? date);
@@ -105,6 +112,7 @@ function initAboutHeatmap(root: HTMLElement) {
       p.dataset.aboutDetailEmpty = '';
       p.textContent = '当天暂无公开记录';
       detailBodyEl.replaceChildren(p);
+      detailBodyEl.classList.remove('has-overflow');
       return;
     }
 
@@ -147,6 +155,8 @@ function initAboutHeatmap(root: HTMLElement) {
     }
 
     detailBodyEl.replaceChildren(ul);
+    detailBodyEl.scrollTop = 0;
+    requestAnimationFrame(syncDetailOverflow);
   };
 
   const updateSelectionStates = () => {

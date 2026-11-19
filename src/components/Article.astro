@@ -4,24 +4,33 @@ import { siteConfig } from '../config';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import HeadingText from './HeadingText.astro';
 import KnowledgeChips from './KnowledgeChips.astro';
+import { enrichHeadingsWithMath } from '../plugins/heading-tokens.mjs';
 import { getKnowledgeTags } from '../lib/knowledge-tags';
 import { getBlogPosts, getPostHref, getPostTitle, taxonomyLabel, formatPostDate, type BlogPost } from '../lib/blog';
-import { getChapterHref, getPublicStudyNotes, getStudyChapters, getStudySeries, getStudyModuleHref, studyModules } from '../lib/study';
+import { getChapterHref, getChapterKey, getPublicStudyNotes, getStudyChapters, getStudySeries, getStudyModuleHref, studyModules, type StudyPost } from '../lib/study';
 interface Props { post: BlogPost }
 const { post } = Astro.props;
 const { Content, headings } = await render(post);
-const sections = headings.filter((heading) => heading.depth >= 2 && heading.depth <= 3);
+const displayHeadings: typeof headings = enrichHeadingsWithMath(headings, post.body ?? '', post.data.title, post.data.shortTitle);
+const sections = displayHeadings.filter((heading) => heading.depth >= 2 && heading.depth <= 3);
 const study = post.collection === 'study_notes' ? post : undefined;
 const knowledgeTags = study ? getKnowledgeTags(study.id) : [];
 const info = study ? getStudySeries(study.data.series) : undefined;
 const allStudyNotes = await getPublicStudyNotes();
 const allBlogPosts = study ? [] : await getBlogPosts();
 const ordered: BlogPost[] = study
-  ? allStudyNotes.filter((note) => note.data.series === study.data.series && note.data.subject === study.data.subject)
+  ? allStudyNotes.filter((note) => note.data.series === study.data.series)
   : allBlogPosts;
 const index = ordered.findIndex((item) => item.collection === post.collection && item.id === post.id);
 const previous = index > 0 ? ordered[index - 1] : undefined;
 const next = index >= 0 && index + 1 < ordered.length ? ordered[index + 1] : undefined;
+const prevIsCrossModule = Boolean(study && previous && previous.collection === 'study_notes' && previous.data.subject !== study.data.subject);
+const nextIsCrossModule = Boolean(study && next && next.collection === 'study_notes' && next.data.subject !== study.data.subject);
+const chapterNotes = study
+  ? ordered.filter((item): item is StudyPost => item.collection === 'study_notes' && getChapterKey(item) === getChapterKey(study))
+  : [];
+const chapterPos = study ? chapterNotes.findIndex((item) => item.id === study.id) : -1;
+const currentJumpSlug = study ? studyModules[study.data.subject].slug : 'blog';
 
 const studyJumpModules = (['信息安全导论', '网络安全基础', '计算机网络'] as const).map((subject) => {
   const modPosts = allStudyNotes.filter((note) => note.data.subject === subject);
@@ -91,6 +100,51 @@ const canRecall = Boolean(study && headings.some((heading) => heading.depth >= 2
             {knowledgeTags.length && study ? <KnowledgeChips tags={knowledgeTags} href={getStudyModuleHref(study)} /> : <div class="tag-list">{post.data.tags.map((tag) => <a href={`/blog/?tag=${encodeURIComponent(tag)}`}>{tag}</a>)}</div>}
             <div class="article-meta"><time datetime={post.data.pubDate.toISOString()}>{formatPostDate(post.data.pubDate)}</time>{post.data.updatedDate && <><span aria-hidden="true">·</span><span>更新于 <time datetime={post.data.updatedDate.toISOString()}>{formatPostDate(post.data.updatedDate)}</time></span></>}{study?.data.syllabusSection && <><span aria-hidden="true">·</span><span>考纲 {study.data.syllabusSection}</span></>}</div>
           </div>
+          {study && (
+            <div class="article-quick-jump" aria-label="知识点快速跳转">
+              {previous ? (
+                <a class="quick-jump-pill" href={getPostHref(previous)} rel="prev" title={getPostTitle(previous)}>
+                  ← {prevIsCrossModule && previous.collection === 'study_notes' ? `${studyModules[previous.data.subject].title} · 上一节` : '上一节'}
+                </a>
+              ) : (
+                <span class="quick-jump-pill is-disabled" aria-disabled="true">← 已是首篇</span>
+              )}
+              {chapterNotes.length > 0 && (
+                <details class="article-chapter-switcher" data-chapter-switcher>
+                  <summary class="quick-jump-pill is-switcher">
+                    <span>本章 {chapterPos >= 0 ? `${chapterPos + 1}/${chapterNotes.length}` : `${chapterNotes.length} 篇`}</span>
+                    <span class="chapter-switcher-caret" aria-hidden="true">⌄</span>
+                  </summary>
+                  <div class="chapter-switcher-menu" role="region" aria-label="同章知识点列表">
+                    <p class="chapter-switcher-head">
+                      <a href={getChapterHref(study)}>{study.data.syllabusChapter} {study.data.chapterTitle}</a>
+                    </p>
+                    <ol class="chapter-switcher-list">
+                      {chapterNotes.map((item) => (
+                        <li>
+                          <a href={getPostHref(item)} class:list={{ 'is-active': item.id === study.id }} aria-current={item.id === study.id ? 'page' : undefined}>
+                            <span class="chapter-switcher-code">{item.data.syllabusSection ?? item.data.syllabusChapter}</span>
+                            <span class="chapter-switcher-name">{item.data.shortTitle ?? item.data.title}</span>
+                          </a>
+                        </li>
+                      ))}
+                    </ol>
+                  </div>
+                </details>
+              )}
+              {next ? (
+                <a class="quick-jump-pill" href={getPostHref(next)} rel="next" title={getPostTitle(next)}>
+                  {nextIsCrossModule && next.collection === 'study_notes' ? `下一节 · ${studyModules[next.data.subject].title}` : '下一节'} →
+                </a>
+              ) : (
+                <span class="quick-jump-pill is-disabled" aria-disabled="true">已是末篇 →</span>
+              )}
+              <button type="button" class="quick-jump-pill is-action" data-article-jump-open>
+                <span>笔记直达</span>
+                <kbd aria-hidden="true">Alt J</kbd>
+              </button>
+            </div>
+          )}
         </header>
         <button type="button" class="toc-drawer-open-btn" data-toc-drawer-open aria-controls="article-toc-drawer" aria-expanded="false" hidden>目录</button>
         <div class="article-mobile-drawers">
@@ -99,7 +153,7 @@ const canRecall = Boolean(study && headings.some((heading) => heading.depth >= 2
             <summary>笔记直达 <span aria-hidden="true">⌄</span></summary>
             <nav aria-label="移动端笔记直达">
               {jumpModules.map((mod) => (
-                <details class="mobile-jump-module">
+                <details class="mobile-jump-module" open={mod.slug === currentJumpSlug}>
                   <summary>{mod.title} <span>{mod.meta}</span></summary>
                   {mod.chapters.map((group) => (
                     <div class="article-nav-group">
@@ -122,11 +176,11 @@ const canRecall = Boolean(study && headings.some((heading) => heading.depth >= 2
           </details>
         </div>
         <div class="article-body" data-study-body={study ? '' : undefined}><Content /></div>
-        {(previous || next) && <nav class="study-pagination" aria-label={study ? '按考纲顺序浏览' : '文章上下篇'}>{previous ? <a href={getPostHref(previous)} rel="prev"><small>{study ? '← 上一个知识点' : '← 上一篇'}</small><span>{study ? previous.data.title : getPostTitle(previous)}</span></a> : <span />}{next ? <a href={getPostHref(next)} rel="next"><small>{study ? '下一个知识点 →' : '下一篇 →'}</small><span>{study ? next.data.title : getPostTitle(next)}</span></a> : <span />}</nav>}
+        {(previous || next) && <nav class="study-pagination" aria-label={study ? '按考纲顺序浏览' : '文章上下篇'}>{previous ? <a href={getPostHref(previous)} rel="prev"><small>{study ? (prevIsCrossModule && previous.collection === 'study_notes' ? `← 上一模块（${studyModules[previous.data.subject].title}）` : '← 上一个知识点') : '← 上一篇'}</small><span>{study ? previous.data.title : getPostTitle(previous)}</span></a> : <span />}{next ? <a href={getPostHref(next)} rel="next"><small>{study ? (nextIsCrossModule && next.collection === 'study_notes' ? `下一模块（${studyModules[next.data.subject].title}） →` : '下一个知识点 →') : '下一篇 →'}</small><span>{study ? next.data.title : getPostTitle(next)}</span></a> : <span />}</nav>}
         <footer class="article-end"><a href={`${siteConfig.repository}/issues/new?${new URLSearchParams({ title: `笔记勘误：${post.data.title}`, body: `文章：${new URL(Astro.url.pathname, Astro.site).href}\n\n问题与建议：` })}`} target="_blank" rel="noreferrer">发现错误？反馈勘误 ↗</a><a href={study ? getStudyModuleHref(study) : '/blog/'}>{study ? '返回模块目录 →' : '返回技术笔记 →'}</a></footer>
       </div>
       <div class="toc-drawer-backdrop" data-toc-backdrop hidden></div>
-      <aside class="article-toc" id="article-toc-drawer" aria-label="文章章节" data-toc-panel data-toc-view="toc">
+      <aside class="article-toc" id="article-toc-drawer" aria-label="文章章节" data-toc-panel data-toc-view="toc" data-current-module={currentJumpSlug}>
         <div class="toc-header">
           <p class="panel-label" data-toc-heading>目录</p>
           <div class="toc-header-actions">
@@ -158,16 +212,42 @@ const canRecall = Boolean(study && headings.some((heading) => heading.depth >= 2
               </div>
             </div>
             <div class="toc-pane" data-toc-pane="chapters" aria-hidden="true">
-              <button type="button" class="toc-back-btn" data-toc-back-modules>← 返回模块选择</button>
+              <div class="toc-chapters-toolbar">
+                {jumpModules.length > 1 && (
+                  <div class="toc-module-tabs" role="tablist" aria-label="切换笔记模块">
+                    {jumpModules.map((mod) => (
+                      <button
+                        type="button"
+                        role="tab"
+                        class:list={['toc-module-tab', { 'is-active': mod.slug === currentJumpSlug }]}
+                        data-toc-module-tab={mod.slug}
+                        data-module-label={mod.title}
+                        aria-selected={mod.slug === currentJumpSlug ? 'true' : 'false'}
+                      >
+                        {mod.title}
+                      </button>
+                    ))}
+                  </div>
+                )}
+                <input
+                  type="search"
+                  class="toc-jump-filter"
+                  data-toc-jump-filter
+                  placeholder="筛选知识点或考纲节号…"
+                  aria-label="筛选笔记知识点"
+                  autocomplete="off"
+                />
+              </div>
+              <p class="toc-jump-empty" data-toc-jump-empty hidden>没有匹配的知识点</p>
               {jumpModules.map((mod) => (
-                <div class="toc-chapter-panel" data-toc-module-panel={mod.slug} hidden>
+                <div class="toc-chapter-panel" data-toc-module-panel={mod.slug} hidden={mod.slug !== currentJumpSlug}>
                   <p class="toc-module-current">{mod.title}</p>
                   {mod.chapters.map((ch) => (
                     <div class="toc-jump-group">
                       <p class="toc-jump-group-title">{ch.heading}</p>
                       <ol>
                         {ch.items.map((item) => (
-                          <li>
+                          <li data-toc-jump-item data-search-text={`${item.code} ${item.title} ${ch.heading}`.toLowerCase()}>
                             <a href={item.href} class:list={{ 'is-active': item.active }} aria-current={item.active ? 'page' : undefined}>
                               <span class="toc-jump-code">{item.code}</span>
                               <span class="toc-jump-name">{item.title}</span>

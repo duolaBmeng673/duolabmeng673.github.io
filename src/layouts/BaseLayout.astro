@@ -29,6 +29,15 @@ const {
 const pageTitle = title === siteConfig.title ? title : `${title} | ${siteConfig.name}`;
 const buildSha = import.meta.env.PUBLIC_BUILD_SHA ?? 'local';
 const path = Astro.url.pathname;
+const channel = path === '/'
+  ? 'home'
+  : path.startsWith('/study-notes/')
+    ? 'study'
+    : path.startsWith('/blog/')
+      ? 'blog'
+      : path.startsWith('/tools/')
+        ? 'tools'
+        : 'site';
 const isNotFound = path === '/404' || path === '/404/' || path === '/404.html';
 const image = new URL('/og-default.png', Astro.site);
 
@@ -96,7 +105,7 @@ const navItems = [
       })();
     </script>
   </head>
-  <body class={bodyClass}>
+  <body class={bodyClass} data-channel={channel}>
     <div class="dotgrid-hero-backdrop" aria-hidden="true">
       <canvas data-ambient-grid></canvas>
     </div>
@@ -105,7 +114,7 @@ const navItems = [
 
     <header class="site-header" data-page={path === '/' ? 'home' : 'subpage'}>
       <div class="header-inner">
-        <a class="brand" href="/">duolaBmeng673<span class="gd" aria-hidden="true"></span></a>
+        <a class="brand" href="/"><span class="brand-full">duolaBmeng673</span><span class="brand-short" aria-hidden="true">d673</span><span class="gd" aria-hidden="true"></span></a>
 
         <nav class="nav" aria-label="主导航">
           {navItems.map((item) => (

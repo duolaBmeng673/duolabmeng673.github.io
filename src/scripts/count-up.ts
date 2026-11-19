@@ -9,29 +9,13 @@ if (els.length > 0) {
 
     const target = el.querySelector<HTMLElement>('strong') ?? el;
     const to = Number(el.dataset.countup);
-    const from = Number(el.dataset.countupFrom ?? 0);
-    const duration = Number(el.dataset.countupDuration ?? 900);
-    if (reduceMotion || !Number.isFinite(to) || to <= from || duration <= 0) {
-      target.textContent = String(to);
-      return;
-    }
+    if (!Number.isFinite(to)) return;
+    target.textContent = String(to);
+    if (reduceMotion) return;
 
-    let startTime = 0;
-    target.textContent = String(from);
-
-    const tick = (now: number) => {
-      if (!startTime) startTime = now;
-      const progress = Math.min(1, (now - startTime) / duration);
-      const eased = 1 - Math.pow(1 - progress, 4);
-      target.textContent = String(Math.round(from + (to - from) * eased));
-      if (progress < 1 && !document.hidden) {
-        window.requestAnimationFrame(tick);
-      } else {
-        target.textContent = String(to);
-      }
-    };
-
-    window.requestAnimationFrame(tick);
+    const duration = Math.min(450, Math.max(120, Number(el.dataset.countupDuration ?? 360)));
+    el.classList.add('is-entering');
+    window.setTimeout(() => el.classList.remove('is-entering'), duration);
   };
 
   if ('IntersectionObserver' in window) {

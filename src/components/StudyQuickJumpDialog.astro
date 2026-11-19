@@ -1,0 +1,104 @@
+---
+import { getPublicStudyNotes, getStudyChapters, getStudyHref, getStudyModuleSummaries } from '../lib/study';
+
+interface Props {
+  series: string;
+  currentModuleSlug: string;
+}
+
+const { series, currentModuleSlug } = Astro.props;
+const allPosts = await getPublicStudyNotes();
+const seriesPosts = allPosts.filter((post) => post.data.series === series);
+const modules = getStudyModuleSummaries(seriesPosts).map((mod) => ({
+  ...mod,
+  chapters: getStudyChapters(mod.posts),
+}));
+---
+<div
+  id="study-quick-jump-dialog"
+  class="study-jump-dialog"
+  data-study-jump-dialog
+  data-default-module={currentModuleSlug}
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="study-jump-title"
+  hidden
+>
+  <div class="study-jump-backdrop" data-study-jump-close></div>
+  <div class="study-jump-surface">
+    <div class="study-jump-head">
+      <div class="study-jump-title-row">
+        <p class="panel-label">快速跳转</p>
+        <h2 id="study-jump-title">笔记直达</h2>
+      </div>
+      <button type="button" class="study-jump-close" data-study-jump-close aria-label="关闭笔记直达">×</button>
+    </div>
+
+    <div class="study-jump-tabs" role="tablist" aria-label="按模块切换">
+      <button
+        type="button"
+        role="tab"
+        class="study-jump-tab"
+        data-study-jump-tab="all"
+        aria-selected="false"
+      >
+        全部 <small>{seriesPosts.length}</small>
+      </button>
+      {modules.map((mod) => (
+        <button
+          type="button"
+          role="tab"
+          class:list={['study-jump-tab', { 'is-active': mod.slug === currentModuleSlug }]}
+          data-study-jump-tab={mod.slug}
+          aria-selected={mod.slug === currentModuleSlug ? 'true' : 'false'}
+        >
+          {mod.title} <small>{mod.count}</small>
+        </button>
+      ))}
+    </div>
+
+    <div class="study-jump-search-row">
+      <input
+        type="search"
+        class="study-jump-filter"
+        data-study-jump-filter
+        placeholder="筛选考纲号（如 3.a）或笔记标题…"
+        autocomplete="off"
+        aria-label="筛选考纲号或笔记标题"
+      />
+    </div>
+
+    <div class="study-jump-body" data-study-jump-list>
+      {modules.map((mod) =>
+        mod.chapters.map((ch) => (
+          <section
+            class="study-jump-group"
+            data-study-jump-group={mod.slug}
+            hidden={mod.slug !== currentModuleSlug}
+          >
+            <h3>
+              <span class="study-jump-mod-tag">{mod.title}</span>
+              <span>{ch.code} {ch.title}</span>
+            </h3>
+            <ol>
+              {ch.posts.map((note) => {
+                const code = note.data.syllabusSection ?? ch.code;
+                const searchText = `${code} ${note.data.title} ${ch.code} ${ch.title} ${mod.title}`.toLowerCase();
+                return (
+                  <li data-study-jump-item data-search-text={searchText}>
+                    <a href={getStudyHref(note)}>
+                      <span class="study-jump-code">{code}</span>
+                      <span class="study-jump-name">{note.data.title}</span>
+                      <span class="study-jump-arrow" aria-hidden="true">→</span>
+                    </a>
+                  </li>
+                );
+              })}
+            </ol>
+          </section>
+        ))
+      )}
+      <p class="study-jump-empty" data-study-jump-empty hidden>没有匹配的笔记，请尝试其他考纲号或关键词。</p>
+    </div>
+  </div>
+</div>

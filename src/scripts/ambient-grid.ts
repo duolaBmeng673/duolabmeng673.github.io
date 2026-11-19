@@ -92,6 +92,22 @@ if (canvas) {
       canvas.height = Math.floor(height * dpr);
     };
 
+    const getHeaderExclusion = (canvasRect?: DOMRect) => {
+      const header = document.querySelector<HTMLElement>('.site-header');
+      if (!header) return null;
+      const hr = header.getBoundingClientRect();
+      const cr = canvasRect ?? canvas.getBoundingClientRect();
+      const left = hr.left - cr.left;
+      const top = hr.top - cr.top;
+      if (hr.width <= 0 || hr.height <= 0 || top > cr.height || top + hr.height < 0) return null;
+      return {
+        left: Math.max(0, left),
+        top: Math.max(0, top - 12),
+        right: Math.min(cr.width, left + hr.width),
+        bottom: Math.min(cr.height, top + hr.height),
+      };
+    };
+
     const boostCell = (gx: number, gy: number, energy: number) => {
       const key = `${gx},${gy}`;
       const prev = activeCells.get(key) || 0;
@@ -185,6 +201,19 @@ if (canvas) {
 
       if (!reduceMotion) {
         const decay = Math.exp(-dt * 2.7);
+        const headerBox = getHeaderExclusion();
+        ctx.save();
+        if (headerBox) {
+          ctx.beginPath();
+          ctx.rect(0, 0, width, height);
+          ctx.rect(
+            headerBox.left,
+            headerBox.top,
+            Math.max(0, headerBox.right - headerBox.left),
+            Math.max(0, headerBox.bottom - headerBox.top),
+          );
+          ctx.clip('evenodd');
+        }
         for (const [key, energy] of activeCells.entries()) {
           const nextEnergy = energy * decay;
           if (nextEnergy < 0.012) {
@@ -206,6 +235,7 @@ if (canvas) {
           ctx.lineWidth = 1;
           ctx.strokeRect(sx + 0.5, sy + 0.5, squareSize - 1, squareSize - 1);
         }
+        ctx.restore();
       }
 
       ctx.strokeStyle = palette.line;
@@ -262,7 +292,11 @@ if (canvas) {
         const rect = canvas.getBoundingClientRect();
         const lx = e.clientX - rect.left;
         const ly = e.clientY - rect.top;
-        if (lx >= 0 && lx <= rect.width && ly >= 0 && ly <= rect.height) {
+        const headerBox = getHeaderExclusion(rect);
+        const insideHeader = headerBox
+          && lx >= headerBox.left && lx <= headerBox.right
+          && ly >= headerBox.top && ly <= headerBox.bottom;
+        if (!insideHeader && lx >= 0 && lx <= rect.width && ly >= 0 && ly <= rect.height) {
           pointer.x = lx;
           pointer.y = ly;
           pointer.inside = true;
