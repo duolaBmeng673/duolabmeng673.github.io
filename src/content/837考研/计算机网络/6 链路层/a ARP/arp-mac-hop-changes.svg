@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 368" width="760" height="368" role="img">
+  <title>跨网段通信中 IP 地址不变而 MAC 地址逐跳变化的 ARP 场景</title>
+  <desc>展示数据包经过网 1、网 2、网 3 与路由器 R₁、R₂ 转发时，3 跳中每跳的源与目的 MAC 地址如何更换，而源与目的 IP 始终保持不变。</desc>
+  <g font-family="'PingFang SC','Noto Sans SC','Microsoft YaHei',system-ui,sans-serif">
+    <text x="380" y="44" text-anchor="middle" font-size="18" font-weight="600" fill="#1f2937">跨局域网转发：源/目的 IP 不变，MAC 地址逐跳更换</text>
+
+    <!-- Networks (group boxes) -->
+    <rect x="24" y="68" width="184" height="140" rx="12" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5" stroke-dasharray="6 4" data-role="group"/>
+    <text x="116" y="96" text-anchor="middle" font-size="14" font-weight="600" fill="#1e40af">网 1</text>
+
+    <rect x="288" y="68" width="184" height="140" rx="12" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5" stroke-dasharray="6 4" data-role="group"/>
+    <text x="380" y="96" text-anchor="middle" font-size="14" font-weight="600" fill="#115e59">网 2</text>
+
+    <rect x="552" y="68" width="184" height="140" rx="12" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="6 4" data-role="group"/>
+    <text x="644" y="96" text-anchor="middle" font-size="14" font-weight="600" fill="#92400e">网 3</text>
+
+    <!-- Orthogonal bus connections -->
+    <g stroke="#4b5563" stroke-width="1.5" fill="none">
+      <line x1="104" y1="128" x2="224" y2="128"/>
+      <path d="M104 176 H160 V128"/>
+      <line x1="272" y1="128" x2="488" y2="128"/>
+      <line x1="380" y1="128" x2="380" y2="156"/>
+      <line x1="536" y1="128" x2="656" y2="128"/>
+    </g>
+
+    <!-- Hosts (w=64, h=36 gives L/R>=16, T/B>=8) -->
+    <g fill="#f8fafc" stroke="#3b82f6" stroke-width="1.5">
+      <rect x="40" y="110" width="64" height="36" rx="8"/>
+      <rect x="40" y="158" width="64" height="36" rx="8"/>
+    </g>
+    <text x="72" y="133" text-anchor="middle" font-size="12" font-weight="600" fill="#1e40af">H₁</text>
+    <text x="72" y="181" text-anchor="middle" font-size="12" font-weight="600" fill="#1e40af">H₂</text>
+
+    <rect x="348" y="156" width="64" height="36" rx="8" fill="#f8fafc" stroke="#14b8a6" stroke-width="1.5"/>
+    <text x="380" y="179" text-anchor="middle" font-size="12" font-weight="600" fill="#115e59">H₃</text>
+
+    <rect x="656" y="110" width="64" height="36" rx="8" fill="#f8fafc" stroke="#f59e0b" stroke-width="1.5"/>
+    <text x="688" y="133" text-anchor="middle" font-size="12" font-weight="600" fill="#92400e">H₄</text>
+
+    <!-- Routers R1, R2 (neutral, r=24) -->
+    <circle cx="248" cy="128" r="24" fill="#f8fafc" stroke="#94a3b8" stroke-width="2"/>
+    <text x="248" y="133" text-anchor="middle" font-size="14" font-weight="600" fill="#1f2937">R₁</text>
+
+    <circle cx="512" cy="128" r="24" fill="#f8fafc" stroke="#94a3b8" stroke-width="2"/>
+    <text x="512" y="133" text-anchor="middle" font-size="14" font-weight="600" fill="#1f2937">R₂</text>
+
+    <!-- MAC interface labels cleanly inside networks & >= 6px above bus -->
+    <g font-size="12" font-weight="600" fill="#1f2937" text-anchor="middle">
+      <text x="184" y="116">L₁</text>
+      <text x="312" y="116">L₂</text>
+      <text x="448" y="116">L₃</text>
+      <text x="576" y="116">L₄</text>
+    </g>
+
+    <!-- Hop-by-hop MAC frame annotations below (3 cards w=224, gap=20) -->
+    <rect x="24" y="224" width="224" height="64" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+    <text x="136" y="248" text-anchor="middle" font-size="14" font-weight="600" fill="#1e40af">第 1 跳（H₁ → R₁）</text>
+    <text x="136" y="270" text-anchor="middle" font-size="12" font-weight="400" fill="#1e40af">源 MAC: H₁ → 目的 MAC: L₁</text>
+
+    <rect x="268" y="224" width="224" height="64" rx="8" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
+    <text x="380" y="248" text-anchor="middle" font-size="14" font-weight="600" fill="#115e59">第 2 跳（R₁ → R₂）</text>
+    <text x="380" y="270" text-anchor="middle" font-size="12" font-weight="400" fill="#115e59">源 MAC: L₂ → 目的 MAC: L₃</text>
+
+    <rect x="512" y="224" width="224" height="64" rx="8" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5"/>
+    <text x="624" y="248" text-anchor="middle" font-size="14" font-weight="600" fill="#92400e">第 3 跳（R₂ → H₄）</text>
+    <text x="624" y="270" text-anchor="middle" font-size="12" font-weight="400" fill="#92400e">源 MAC: L₄ → 目的 MAC: H₄</text>
+
+    <!-- Bottom note block -->
+    <rect x="24" y="304" width="712" height="40" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="1" data-role="note"/>
+    <text x="380" y="329" text-anchor="middle" font-size="12" font-weight="400" fill="#1f2937">各跳重新封装 MAC 首部与尾部（MAC 逐跳变），但上层 IP 数据报中的源 IP 与目的 IP 始终不变</text>
+  </g>
+</svg>
