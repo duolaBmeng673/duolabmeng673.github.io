@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 416" width="760" height="416" role="img">
+  <title>RIP 距离向量更新流程与路由更新规则</title>
+  <desc>展示路由器收到邻居 X 的 RIP 报文后的距离加 1 与逐项比对三种更新分支、180 秒超时置 16 跳不可达规则，以及 RIP 的三要素与优缺点。</desc>
+  <defs>
+    <marker id="rip-flow-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#1f2937" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+  <g font-family="'PingFang SC','Noto Sans SC','Microsoft YaHei',system-ui,sans-serif">
+    <text x="380" y="44" text-anchor="middle" font-size="18" font-weight="600" fill="#1f2937">RIP 距离向量算法更新流程（收到邻居 X 的报文）</text>
+
+    <!-- Step 1 -->
+    <rect x="24" y="72" width="200" height="88" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+    <text x="124" y="98" text-anchor="middle" font-size="14" font-weight="600" fill="#1e40af">① 修改收到的 RIP 报文</text>
+    <text x="124" y="122" text-anchor="middle" font-size="12" font-weight="400" fill="#1e40af">下一跳全部改为 X</text>
+    <text x="124" y="142" text-anchor="middle" font-size="12" font-weight="400" fill="#1e40af">所有“距离”字段 + 1</text>
+
+    <!-- Arrow 1 -> 2 -->
+    <line x1="224" y1="116" x2="240" y2="116" stroke="#1f2937" stroke-width="1.5" marker-end="url(#rip-flow-arrow)"/>
+
+    <!-- Step 2 (neutral decision box) -->
+    <rect x="244" y="72" width="200" height="88" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
+    <text x="344" y="106" text-anchor="middle" font-size="14" font-weight="600" fill="#1f2937">② 逐项比对目的网络 N</text>
+    <text x="344" y="130" text-anchor="middle" font-size="12" font-weight="400" fill="#4b5563">判断原路由表情况</text>
+
+    <!-- Strictly orthogonal 90° branch paths -->
+    <path d="M444 100 H460 V104 H476" fill="none" stroke="#14b8a6" stroke-width="1.5" marker-end="url(#rip-flow-arrow)"/>
+    <path d="M444 116 H460 V180 H476" fill="none" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#rip-flow-arrow)"/>
+    <path d="M444 132 H460 V266 H476" fill="none" stroke="#1f2937" stroke-width="1.5" marker-end="url(#rip-flow-arrow)"/>
+
+    <!-- Case A -->
+    <rect x="480" y="72" width="256" height="64" rx="8" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
+    <text x="608" y="98" text-anchor="middle" font-size="14" font-weight="600" fill="#115e59">无目的网络 N → 直接添加</text>
+    <text x="608" y="120" text-anchor="middle" font-size="12" font-weight="400" fill="#115e59">发现新可达网络</text>
+
+    <!-- Case B -->
+    <rect x="480" y="148" width="256" height="64" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+    <text x="608" y="174" text-anchor="middle" font-size="14" font-weight="600" fill="#1e40af">已有 N 且下一跳 = X → 直接替换</text>
+    <text x="608" y="196" text-anchor="middle" font-size="12" font-weight="400" fill="#1e40af">以新消息为准（无论变大或变小）</text>
+
+    <!-- Case C -->
+    <rect x="480" y="224" width="256" height="84" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
+    <text x="608" y="250" text-anchor="middle" font-size="14" font-weight="600" fill="#1f2937">已有 N 且下一跳 ≠ X</text>
+    <text x="608" y="272" text-anchor="middle" font-size="12" font-weight="400" fill="#4b5563">仅当新距离 d &lt; 原距离时更新</text>
+    <text x="608" y="292" text-anchor="middle" font-size="12" font-weight="400" fill="#4b5563">否则保持原表项不变</text>
+
+    <!-- Step 3: Timeout warning -->
+    <rect x="24" y="200" width="420" height="108" rx="8" fill="#fef2f2" stroke="#ef4444" stroke-width="1.5"/>
+    <text x="234" y="228" text-anchor="middle" font-size="14" font-weight="600" fill="#991b1b">③ 超时与不可达判定（默认 180 秒）</text>
+    <text x="234" y="254" text-anchor="middle" font-size="12" font-weight="400" fill="#991b1b">若 180 秒未收到邻居路由更新 → 标记该邻居不可达（距离 = 16）</text>
+    <text x="234" y="276" text-anchor="middle" font-size="12" font-weight="400" fill="#991b1b">允许路径最多 15 跳，16 表示不可达（仅适用小型互联网）</text>
+
+    <!-- Footer summary -->
+    <rect x="24" y="328" width="712" height="64" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="1" data-role="note"/>
+    <text x="380" y="352" text-anchor="middle" font-size="12" font-weight="600" fill="#1f2937">三要素：仅和相邻路由器交换 ｜ 交换完整路由表 ｜ 每隔 30 秒周期更新（拓扑变化时及时通告）</text>
+    <text x="380" y="374" text-anchor="middle" font-size="12" font-weight="400" fill="#4b5563">特点：实现简单、好消息传播得快；但网络故障时会出现“坏消息传播得慢”（慢收敛至 16）</text>
+  </g>
+</svg>

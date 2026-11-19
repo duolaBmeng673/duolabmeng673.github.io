@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 456" width="760" height="456" role="img">
+  <title>BGP 发言人、自治系统 AS 关系与路径向量交换</title>
+  <desc>左侧展示不同自治系统 AS 间的 BGP 发言人建立 TCP 会话，右侧展示路径向量通过记录经过的 AS 序列来避免路由环路。</desc>
+  <g font-family="'PingFang SC','Noto Sans SC','Microsoft YaHei',system-ui,sans-serif">
+    <text x="380" y="44" text-anchor="middle" font-size="18" font-weight="600" fill="#1f2937">BGP 发言人关系与路径向量交换示例</text>
+
+    <!-- Left group (a) -->
+    <rect x="24" y="64" width="336" height="304" rx="12" fill="#f8fafc" stroke="#94a3b8" stroke-width="1" stroke-dasharray="6 4" data-role="group"/>
+    <text x="40" y="92" text-anchor="start" font-size="16" font-weight="600" fill="#1f2937">(a) BGP 发言人之间建立 TCP 会话</text>
+
+    <!-- AS1, AS2, AS3 boxes inside (a) -->
+    <rect x="36" y="108" width="120" height="108" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5" data-role="group"/>
+    <text x="68" y="136" text-anchor="middle" font-size="14" font-weight="600" fill="#1e40af">AS₁</text>
+    <text x="68" y="156" text-anchor="middle" font-size="12" font-weight="400" fill="#1e40af">运行 IGP</text>
+
+    <rect x="232" y="108" width="120" height="108" rx="8" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5" data-role="group"/>
+    <text x="316" y="136" text-anchor="middle" font-size="14" font-weight="600" fill="#115e59">AS₂</text>
+    <text x="316" y="156" text-anchor="middle" font-size="12" font-weight="400" fill="#115e59">运行 IGP</text>
+
+    <rect x="76" y="244" width="232" height="84" rx="8" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5" data-role="group"/>
+    <text x="192" y="312" text-anchor="middle" font-size="14" font-weight="600" fill="#92400e">AS₃（运行 IGP）</text>
+
+    <!-- eBGP TCP orthogonal connections -->
+    <g stroke="#1f2937" stroke-width="2" fill="none">
+      <line x1="144" y1="168" x2="244" y2="168"/>
+      <line x1="128" y1="184" x2="128" y2="256"/>
+      <line x1="260" y1="184" x2="260" y2="256"/>
+    </g>
+    <text x="194" y="158" text-anchor="middle" font-size="12" font-weight="600" fill="#1f2937">TCP 连接</text>
+
+    <!-- Speaker nodes (r=16) -->
+    <circle cx="128" cy="168" r="16" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+    <text x="128" y="173" text-anchor="middle" font-size="12" font-weight="600" fill="#1e40af">S₁</text>
+
+    <circle cx="260" cy="168" r="16" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
+    <text x="260" y="173" text-anchor="middle" font-size="12" font-weight="600" fill="#115e59">S₂</text>
+
+    <circle cx="128" cy="272" r="16" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5"/>
+    <text x="128" y="277" text-anchor="middle" font-size="12" font-weight="600" fill="#92400e">S₃</text>
+
+    <circle cx="260" cy="272" r="16" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5"/>
+    <text x="260" y="277" text-anchor="middle" font-size="12" font-weight="600" fill="#92400e">S₄</text>
+
+    <text x="192" y="352" text-anchor="middle" font-size="12" font-weight="400" fill="#4b5563">S₁~S₄ 为各 AS 的 BGP 发言人（互为邻站）</text>
+
+    <!-- Right group (b) -->
+    <rect x="372" y="64" width="364" height="304" rx="12" fill="#f8fafc" stroke="#94a3b8" stroke-width="1" stroke-dasharray="6 4" data-role="group"/>
+    <text x="388" y="92" text-anchor="start" font-size="16" font-weight="600" fill="#1f2937">(b) 路径向量防环通告示例</text>
+
+    <!-- Orthogonal topology edges in (b) -->
+    <g stroke="#4b5563" stroke-width="1.5" fill="none">
+      <path d="M432 212 V192 H500"/>
+      <path d="M432 268 V288 H500"/>
+      <path d="M604 180 H616 V148 H624"/>
+      <path d="M604 204 H616 V220 H624"/>
+      <line x1="604" y1="288" x2="624" y2="288"/>
+    </g>
+
+    <!-- Announcement callout 1 -->
+    <rect x="384" y="108" width="176" height="56" rx="8" fill="#f8fafc" stroke="#3b82f6" stroke-width="1"/>
+    <text x="472" y="132" text-anchor="middle" font-size="12" font-weight="600" fill="#1e40af">① AS₂ 通知 AS₁：</text>
+    <text x="472" y="152" text-anchor="middle" font-size="12" font-weight="400" fill="#1e40af">N₁~N₄ 可经 (AS₂)</text>
+
+    <!-- Backbone AS1 -->
+    <rect x="384" y="212" width="104" height="56" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+    <text x="436" y="236" text-anchor="middle" font-size="12" font-weight="600" fill="#1e40af">主干网 AS₁</text>
+    <text x="436" y="256" text-anchor="middle" font-size="12" font-weight="400" fill="#1e40af">BGP 发言人</text>
+
+    <!-- Regional ISP AS2 & AS3 -->
+    <rect x="500" y="164" width="104" height="56" rx="8" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5"/>
+    <text x="552" y="188" text-anchor="middle" font-size="12" font-weight="600" fill="#92400e">地区 ISP AS₂</text>
+    <text x="552" y="208" text-anchor="middle" font-size="12" font-weight="400" fill="#92400e">BGP 发言人</text>
+
+    <rect x="500" y="260" width="104" height="56" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
+    <text x="552" y="284" text-anchor="middle" font-size="12" font-weight="600" fill="#1f2937">地区 ISP AS₃</text>
+    <text x="552" y="304" text-anchor="middle" font-size="12" font-weight="400" fill="#4b5563">BGP 发言人</text>
+
+    <!-- Local ISPs AS4, AS5, AS6 -->
+    <rect x="624" y="116" width="100" height="56" rx="8" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
+    <text x="674" y="140" text-anchor="middle" font-size="12" font-weight="600" fill="#115e59">AS₄: N₁, N₂</text>
+    <text x="674" y="160" text-anchor="middle" font-size="12" font-weight="400" fill="#115e59">本地 ISP</text>
+
+    <rect x="624" y="188" width="100" height="56" rx="8" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
+    <text x="674" y="212" text-anchor="middle" font-size="12" font-weight="600" fill="#115e59">AS₅: N₃, N₄</text>
+    <text x="674" y="232" text-anchor="middle" font-size="12" font-weight="400" fill="#115e59">本地 ISP</text>
+
+    <rect x="624" y="260" width="100" height="56" rx="8" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
+    <text x="674" y="284" text-anchor="middle" font-size="12" font-weight="600" fill="#115e59">AS₆: N₅</text>
+    <text x="674" y="304" text-anchor="middle" font-size="12" font-weight="400" fill="#115e59">本地 ISP</text>
+
+    <!-- Bottom explanation note block -->
+    <rect x="24" y="380" width="712" height="52" rx="8" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1" data-role="note"/>
+    <text x="380" y="402" text-anchor="middle" font-size="12" font-weight="600" fill="#115e59">② 主干网 AS₁ 再向 AS₃ 通告：到达 N₁~N₄ 可沿路径 (AS₁, AS₂)</text>
+    <text x="380" y="422" text-anchor="middle" font-size="12" font-weight="400" fill="#115e59">路径中记录经过的 AS 序列，若含自身 AS 编号则丢弃，避免环路</text>
+  </g>
+</svg>
