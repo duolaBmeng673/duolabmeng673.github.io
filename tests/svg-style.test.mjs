@@ -1,21 +1,26 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { readdirSync, readFileSync } from 'node:fs';
+import { basename } from 'node:path';
 
-const PILOT_SVGS = [
-  {
-    path: 'src/content/837考研/计算机网络/6 链路层/b WIFI/csma-cd-collision-window.svg',
-    prefix: 'csma-cd-',
-  },
-  {
-    path: 'src/content/837考研/计算机网络/6 链路层/a ARP/arp-broadcast-unicast.svg',
-    prefix: 'arp-',
-  },
-  {
-    path: 'src/content/837考研/计算机网络/6 链路层/b WIFI/wifi-rts-cts-nav.svg',
-    prefix: 'wifi-',
-  },
-];
+const NET_ROOT = new URL('../src/content/837考研/计算机网络/', import.meta.url);
+
+function walkSvgs(dirUrl, relBase = '') {
+  const results = [];
+  for (const entry of readdirSync(dirUrl, { withFileTypes: true })) {
+    if (entry.isDirectory()) {
+      results.push(...walkSvgs(new URL(`${entry.name}/`, dirUrl), `${relBase}${entry.name}/`));
+    } else if (entry.name.endsWith('.svg')) {
+      results.push({
+        path: `src/content/837考研/计算机网络/${relBase}${entry.name}`,
+        prefixPrefix: basename(entry.name, '.svg').split('-')[0],
+      });
+    }
+  }
+  return results.sort((a, b) => a.path.localeCompare(b.path));
+}
+
+const NETWORK_SVGS = walkSvgs(NET_ROOT);
 
 const ALLOWED_COLORS = new Set([
   // 中性
@@ -82,8 +87,11 @@ const contrastRatio = (fg, bg) => {
   return (Math.max(l1, l2) + 0.05) / (Math.min(l1, l2) + 0.05);
 };
 
-test('pilot SVGs strictly satisfy v1 static style specification', () => {
-  for (const { path, prefix } of PILOT_SVGS) {
+test('all 计算机网络 SVGs strictly satisfy v1 static style specification', () => {
+  assert.equal(NETWORK_SVGS.length, 33, `expected 33 network SVGs, got ${NETWORK_SVGS.length}`);
+  const globalMarkerIds = new Set();
+
+  for (const { path, prefixPrefix } of NETWORK_SVGS) {
     const svg = readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
 
     // 1. viewBox width = 760, height <= 520
@@ -99,13 +107,15 @@ test('pilot SVGs strictly satisfy v1 static style specification', () => {
     assert.ok(!/<style[\s>]/i.test(svg), `${path}: must not contain <style> block`);
     assert.ok(!/@keyframes|animation\s*:/i.test(svg), `${path}: must not contain CSS animation`);
 
-    // 3. Unique IDs & single prefixed marker
+    // 3. Unique IDs & single prefixed marker (unique across all 计算机网络 SVGs)
     const ids = [...svg.matchAll(/\bid="([^"]+)"/g)].map((m) => m[1]);
     assert.equal(new Set(ids).size, ids.length, `${path}: duplicate id detected`);
     const markers = [...svg.matchAll(/<marker\b[^>]*\bid="([^"]+)"/g)].map((m) => m[1]);
     assert.ok(markers.length <= 1, `${path}: at most 1 <marker> allowed, found ${markers.length}`);
     for (const mid of markers) {
-      assert.ok(mid.startsWith(prefix), `${path}: marker id "${mid}" must start with "${prefix}"`);
+      assert.ok(mid.startsWith(`${prefixPrefix}-`), `${path}: marker id "${mid}" must start with "${prefixPrefix}-"`);
+      assert.ok(!globalMarkerIds.has(mid), `${path}: duplicate marker id across SVGs "${mid}"`);
+      globalMarkerIds.add(mid);
     }
 
     // 4. Colors strictly from v1 palette & max 3 accent roles

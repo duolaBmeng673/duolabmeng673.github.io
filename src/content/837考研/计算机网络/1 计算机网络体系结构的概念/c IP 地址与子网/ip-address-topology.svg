@@ -16,13 +16,13 @@
 
     <!-- LAN3 Group -->
     <rect x="24" y="232" width="216" height="128" rx="12" fill="#f8fafc" stroke="#94a3b8" stroke-width="1" stroke-dasharray="6 4" data-role="group"/>
-    <text x="40" y="260" text-anchor="start" font-size="16" font-weight="600" fill="#115e59">LAN₃: 1.1.1.16/29</text>
+    <text x="40" y="260" text-anchor="start" font-size="16" font-weight="600" fill="#1e40af">LAN₃: 1.1.1.16/29</text>
     <rect x="88" y="296" width="88" height="36" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
     <text x="132" y="319" text-anchor="middle" font-size="12" font-weight="400" fill="#1f2937">交换机</text>
-    <text x="40" y="300" text-anchor="start" font-size="12" font-weight="400" fill="#115e59">1.1.1.17</text>
-    <text x="184" y="300" text-anchor="start" font-size="12" font-weight="400" fill="#115e59">1.1.1.18</text>
-    <line x1="40" y1="314" x2="88" y2="314" stroke="#14b8a6" stroke-width="1.5"/>
-    <line x1="176" y1="314" x2="224" y2="314" stroke="#14b8a6" stroke-width="1.5"/>
+    <text x="40" y="300" text-anchor="start" font-size="12" font-weight="400" fill="#1e40af">1.1.1.17</text>
+    <text x="184" y="300" text-anchor="start" font-size="12" font-weight="400" fill="#1e40af">1.1.1.18</text>
+    <line x1="40" y1="314" x2="88" y2="314" stroke="#3b82f6" stroke-width="1.5"/>
+    <line x1="176" y1="314" x2="224" y2="314" stroke="#3b82f6" stroke-width="1.5"/>
 
     <!-- LAN2 Group -->
     <rect x="520" y="136" width="216" height="156" rx="12" fill="#f8fafc" stroke="#94a3b8" stroke-width="1" stroke-dasharray="6 4" data-role="group"/>
@@ -41,7 +41,7 @@
     <text x="276" y="136" text-anchor="middle" font-size="12" font-weight="400" fill="#1e40af">1.1.1.4</text>
 
     <line x1="224" y1="314" x2="312" y2="314" stroke="#1f2937" stroke-width="1.5"/>
-    <text x="276" y="304" text-anchor="middle" font-size="12" font-weight="400" fill="#115e59">1.1.1.19</text>
+    <text x="276" y="304" text-anchor="middle" font-size="12" font-weight="400" fill="#1e40af">1.1.1.19</text>
 
     <line x1="472" y1="218" x2="536" y2="218" stroke="#1f2937" stroke-width="1.5"/>
     <text x="496" y="208" text-anchor="middle" font-size="12" font-weight="400" fill="#1e40af">1.1.1.13</text>
