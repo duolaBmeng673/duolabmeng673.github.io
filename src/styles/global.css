@@ -1366,11 +1366,13 @@ a.masthead-stat-card:hover { transform: translateY(-2px); border-color: var(--bd
   border-collapse: collapse;
   font-family: var(--sans);
   font-size: 0.875rem;
+  overflow-wrap: break-word;
 }
 .article-body th, .article-body td { padding: 0.65rem 0.85rem; border-bottom: 1px solid var(--bd); text-align: left; vertical-align: top; }
 .article-body tbody tr:last-child td,
 .article-body table > tr:last-child td { border-bottom: 0; }
-.article-body th { background: var(--vbg); color: var(--tx); font-weight: var(--fw-m); }
+.article-body th { background: var(--vbg); color: var(--tx); font-weight: var(--fw-m); white-space: nowrap; }
+.article-body td:first-child { min-width: 7.5em; }
 .article-body hr { margin: 2em 0; border: 0; border-top: 1px solid var(--bd); }
 .article-end { display: flex; justify-content: space-between; gap: 1.25rem; margin-top: 3rem; padding-top: 1.1rem; border-top: 1px solid var(--bd); color: var(--tm); font-family: var(--sans); font-size: 0.8rem; }
 .article-end a { color: var(--ac); font-weight: var(--fw-m); }

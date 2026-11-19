@@ -66,6 +66,7 @@ test('study entry points select independent modules and preserve existing chapte
   const modules = {
     'information-security': ['security-basics', 'classical-ciphers-design-principles', 'symmetric-key-cryptography-des', 'public-key-cryptography-dh-rsa', 'hash-functions-principles', 'symmetric-authentication-kerberos', 'public-key-authentication-pki', 'access-control-models', 'windows-authentication-access-control', 'traditional-computer-viruses', 'firewall-netfilter', 'intrusion-detection-snort', 'ipsec', 'ssl', 'set', 'risk-management'],
     'network-security': ['network-protocol-vulnerabilities', 'dos-ddos-attacks', 'format-string-buffer-overflow', 'web-attack-techniques', 'network-packet-capture', 'packet-capture-bpf', 'libpcap-winpcap', 'host-discovery', 'port-scanning', 'kmp-algorithm', 'bm-algorithm', 'ac-algorithm', 'wm-algorithm', 'decision-tree-c45', 'naive-bayes-classification', 'k-means-clustering', 'agglomerative-clustering', 'divisive-clustering', 'dbscan-clustering'],
+    'computer-networks': ['cn-message-switching', 'cn-tcp-ip-architecture', 'cn-ip-address-subnet', 'cn-web-http', 'cn-dns', 'cn-smtp', 'cn-udp', 'cn-tcp', 'cn-congestion-control', 'cn-socket-udp', 'cn-socket-tcp', 'cn-socket-raw', 'cn-link-state-ospf', 'cn-distance-vector-rip', 'cn-bgp', 'cn-arp', 'cn-wifi', 'cn-cdma'],
   };
   const prefix = '/study-notes/837/';
   for (const entry of ['dist/study-notes/index.html', 'dist/study-notes/837/index.html']) {
@@ -225,7 +226,8 @@ test('homepage, blog archive and about stats match public collection counts', ()
   const csCount = countMarkdown(new URL('../src/content/blog_huawei_examination/', import.meta.url), { excludeHeld: true }).length;
   const infoSecCount = countMarkdown(new URL('../src/content/837考研/信息安全导论/', import.meta.url), { recursive: true }).length;
   const netSecCount = countMarkdown(new URL('../src/content/837考研/网络安全基础考点笔记总结/', import.meta.url), { recursive: true }).length;
-  const studyCount = infoSecCount + netSecCount;
+  const cnCount = countMarkdown(new URL('../src/content/837考研/计算机网络/', import.meta.url), { recursive: true }).length;
+  const studyCount = infoSecCount + netSecCount + cnCount;
   const regularCount = researchCount + csCount;
   const totalCount = regularCount + studyCount;
 
@@ -246,7 +248,7 @@ test('homepage, blog archive and about stats match public collection counts', ()
   assert.deepEqual(aboutStats, [totalCount, regularCount, studyCount]);
   const breakdownCounts = [...aboutHtml.matchAll(/class="about-breakdown"[\s\S]*?<\/ul>/g)][0][0]
     .matchAll(/<strong>(\d+)\s*篇<\/strong>/g);
-  assert.deepEqual([...breakdownCounts].map((m) => Number(m[1])), [researchCount, csCount, infoSecCount, netSecCount]);
+  assert.deepEqual([...breakdownCounts].map((m) => Number(m[1])), [researchCount, csCount, infoSecCount, netSecCount, cnCount]);
 });
 
 test('404 page is generated with noindex and excluded from sitemap and search index', () => {

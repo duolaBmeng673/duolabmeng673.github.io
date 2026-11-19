@@ -13,6 +13,7 @@ export const studySeries = {
 export const studyModules = {
   信息安全导论: { slug: 'information-security', title: '信息安全', description: '基本概念、密码学基础、身份认证与访问控制、病毒、防火墙、入侵检测、安全传输协议与风险管理。' },
   网络安全基础: { slug: 'network-security', title: '网络安全', description: '网络攻击、数据获取、扫描技术、模式匹配与分类聚类算法。' },
+  计算机网络: { slug: 'computer-networks', title: '计算机网络', description: '体系结构与 IP 子网、应用层协议、传输层与拥塞控制、Socket 编程、网络层路由协议与链路层协议。' },
 } as const;
 
 // Keep all published information-security chapter URLs unchanged.

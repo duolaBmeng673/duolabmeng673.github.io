@@ -78,6 +78,9 @@ export async function getHomePageData() {
   const netSecPosts = studyPosts
     .filter((post) => post.collection === 'study_notes' && post.data.subject === '网络安全基础')
     .sort((a, b) => (a.collection === 'study_notes' && b.collection === 'study_notes' ? a.data.order - b.data.order : 0));
+  const cnPosts = studyPosts
+    .filter((post) => post.collection === 'study_notes' && post.data.subject === '计算机网络')
+    .sort((a, b) => (a.collection === 'study_notes' && b.collection === 'study_notes' ? a.data.order - b.data.order : 0));
 
   const presets: StagePreset[] = [
     {
@@ -300,6 +303,7 @@ export async function getHomePageData() {
         count: studyPosts.length,
         infoSecCount: infoSecPosts.length,
         netSecCount: netSecPosts.length,
+        cnCount: cnPosts.length,
       },
     },
     allKnowledgeTags,

@@ -10,14 +10,14 @@ const read = (path) => readFileSync(new URL('../' + path, import.meta.url), 'utf
 const entries = JSON.parse(read('src/data/knowledge-entries.json'));
 const dictionary = JSON.parse(read('src/data/tags.json'));
 
-test('all 35 notes have knowledge points while the eight approved entries and 47 mappings remain exact', () => {
+test('all 53 notes have knowledge points while the eight approved entries and 47 mappings remain exact', () => {
   const approvedIds = ['symmetric-key-cryptography-des', 'public-key-cryptography-dh-rsa', 'hash-functions-principles', 'symmetric-authentication-kerberos', 'public-key-authentication-pki', 'access-control-models', 'windows-authentication-access-control', 'traditional-computer-viruses'];
   const approved = Object.fromEntries(approvedIds.map((id) => [id, entries[id]]));
   const approvedDictionary = Object.fromEntries(Object.values(approved).flatMap((entry) => entry.knowledgeTags.map((name) => [name, dictionary[name]])));
   const digest = (value) => createHash('sha256').update(JSON.stringify(value)).digest('hex');
   assert.equal(digest(approved), 'b06a4aa4926edd0cce7d11d90bcab8a69c5bd8bc0283f69d420b2e8c6c7cde36');
   assert.equal(digest(approvedDictionary), 'ca8282f493f0eb920826aad3443049789a11e791f9efcecc09d1efcff7b42574');
-  assert.equal(Object.keys(entries).length, 35);
+  assert.equal(Object.keys(entries).length, 53);
   assert.deepEqual(Object.keys(knowledgeCategories), ['concept', 'algorithm', 'protocol', 'model', 'struct', 'threat', 'defense']);
   for (const entry of Object.values(entries)) {
     assert.ok(entry.knowledgeTags.length > 0);
@@ -64,15 +64,21 @@ test('knowledge filters use intersection and round-trip exact labels without los
 });
 
 test('both modules and every chapter render exact chip labels as siblings of working article links', () => {
-  const modules = ['dist/study-notes/837/information-security/index.html', 'dist/study-notes/837/network-security/index.html'];
-  const chapters = readdirSync(new URL('../dist/study-notes/837/chapter/', import.meta.url)).map((name) => `dist/study-notes/837/chapter/${name}/index.html`);
+  const modules = [
+    'dist/study-notes/837/information-security/index.html',
+    'dist/study-notes/837/network-security/index.html',
+    'dist/study-notes/837/computer-networks/index.html',
+  ];
+  const expectedCounts = { [modules[0]]: 16, [modules[1]]: 19, [modules[2]]: 18 };
+  const chapters = readdirSync(new URL('../dist/study-notes/837/chapter/', import.meta.url))
+    .map((name) => `dist/study-notes/837/chapter/${name}/index.html`);
   const moduleIds = new Set(), chapterIds = new Set();
   for (const page of [...modules, ...chapters]) {
     const html = read(page);
     assert.equal((html.match(/data-knowledge-category=/g) ?? []).length, modules.includes(page) ? 7 : 0);
     const rows = [...html.matchAll(/<li\b[^>]*data-knowledge-entry[^]*?<\/li>/g)].map(([row]) => row);
     assert.ok(rows.length > 0, page);
-    if (modules.includes(page)) assert.equal(rows.length, page === modules[0] ? 16 : 19);
+    if (modules.includes(page)) assert.equal(rows.length, expectedCounts[page]);
     for (const row of rows) {
       const id = row.match(/href="\/study-notes\/837\/([^/]+)\/"/)?.[1];
       assert.ok(entries[id], `configured note: ${id}`);

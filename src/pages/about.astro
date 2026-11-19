@@ -12,7 +12,8 @@ const researchCount = posts.filter((post) => post.collection === 'blog_read').le
 const csCount = posts.filter((post) => post.collection === 'blog_huawei_examination').length;
 const infoSecCount = posts.filter((post) => post.collection === 'study_notes' && post.data.subject === '信息安全导论').length;
 const netSecCount = posts.filter((post) => post.collection === 'study_notes' && post.data.subject === '网络安全基础').length;
-const studyCount = infoSecCount + netSecCount;
+const cnCount = posts.filter((post) => post.collection === 'study_notes' && post.data.subject === '计算机网络').length;
+const studyCount = infoSecCount + netSecCount + cnCount;
 const totalCount = posts.length || 1;
 const researchPct = ((researchCount / totalCount) * 100).toFixed(1);
 const csPct = ((csCount / totalCount) * 100).toFixed(1);
@@ -43,7 +44,7 @@ const studyPct = ((studyCount / totalCount) * 100).toFixed(1);
       <a class="masthead-stat-card" href="/study-notes/837/">
         <span class="masthead-stat-label">837 专题</span>
         <CountUp to={studyCount} />
-        <span class="masthead-stat-sub">信安 {infoSecCount} · 网安 {netSecCount}</span>
+        <span class="masthead-stat-sub">信安 {infoSecCount} · 网安 {netSecCount} · 计网 {cnCount}</span>
       </a>
     </div>
   </section>
@@ -72,6 +73,7 @@ const studyPct = ((studyCount / totalCount) * 100).toFixed(1);
         <li><span><i style="background: var(--cat-tech);" />算法与工程（CS）</span><strong>{csCount} 篇</strong></li>
         <li><span><i style="background: var(--cat-study);" />《信息安全导论》</span><strong>{infoSecCount} 篇</strong></li>
         <li><span><i style="background: var(--ac);" />《网络安全基础》</span><strong>{netSecCount} 篇</strong></li>
+        <li><span><i style="background: var(--cat-study);" />《计算机网络》</span><strong>{cnCount} 篇</strong></li>
       </ul>
     </section>
     <section class="about-panel is-wide">
