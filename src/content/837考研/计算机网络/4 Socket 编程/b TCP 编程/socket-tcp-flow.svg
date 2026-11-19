@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 520" width="760" height="520" role="img">
+  <title>TCP 套接字（SOCK_STREAM）编程流程图</title>
+  <desc>展示 TCP 客户端与服务器端的套接字建立、监听、三次握手阻塞连接、请求响应收发及关闭流程。</desc>
+  <defs>
+    <marker id="socket-tcp-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#1f2937" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+  <g font-family="'PingFang SC','Noto Sans SC','Microsoft YaHei',system-ui,sans-serif">
+    <text x="380" y="44" text-anchor="middle" font-size="18" font-weight="600" fill="#1f2937">TCP 套接字（SOCK_STREAM）编程流程</text>
+
+    <text x="140" y="76" text-anchor="middle" font-size="16" font-weight="600" fill="#1e40af">客户端 CLIENT</text>
+    <text x="532" y="76" text-anchor="middle" font-size="16" font-weight="600" fill="#115e59">服务器 SERVER</text>
+
+    <!-- Client boxes (x=40..240, w=200) -->
+    <g stroke-width="1.5">
+      <rect x="40" y="92" width="200" height="36" rx="8" fill="#eff6ff" stroke="#3b82f6"/>
+      <rect x="40" y="144" width="200" height="36" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-dasharray="6 4"/>
+      <rect x="40" y="244" width="200" height="48" rx="8" fill="#fffbeb" stroke="#f59e0b"/>
+      <rect x="40" y="308" width="200" height="36" rx="8" fill="#eff6ff" stroke="#3b82f6"/>
+      <rect x="40" y="360" width="200" height="36" rx="8" fill="#fffbeb" stroke="#f59e0b"/>
+      <rect x="40" y="412" width="200" height="36" rx="8" fill="#eff6ff" stroke="#3b82f6"/>
+    </g>
+    <g text-anchor="middle" font-size="12" font-weight="600">
+      <text x="140" y="115" fill="#1e40af">s = socket()</text>
+      <text x="140" y="167" fill="#4b5563">bind()（可选）</text>
+      <text x="140" y="273" fill="#92400e">connect(s) *</text>
+      <text x="140" y="331" fill="#1e40af">send(s)</text>
+      <text x="140" y="383" fill="#92400e">recv(s) *</text>
+      <text x="140" y="435" fill="#1e40af">closesocket(s)</text>
+    </g>
+
+    <!-- Server boxes (x=432..632, w=200) -->
+    <g stroke-width="1.5">
+      <rect x="432" y="92" width="200" height="36" rx="8" fill="#f0fdfa" stroke="#14b8a6"/>
+      <rect x="432" y="144" width="200" height="36" rx="8" fill="#f0fdfa" stroke="#14b8a6"/>
+      <rect x="432" y="196" width="200" height="36" rx="8" fill="#f0fdfa" stroke="#14b8a6"/>
+      <rect x="432" y="244" width="200" height="48" rx="8" fill="#fffbeb" stroke="#f59e0b"/>
+      <rect x="432" y="308" width="200" height="36" rx="8" fill="#fffbeb" stroke="#f59e0b"/>
+      <rect x="432" y="360" width="200" height="36" rx="8" fill="#f0fdfa" stroke="#14b8a6"/>
+      <rect x="432" y="412" width="200" height="36" rx="8" fill="#f0fdfa" stroke="#14b8a6"/>
+    </g>
+    <g text-anchor="middle" font-size="12" font-weight="600">
+      <text x="532" y="115" fill="#115e59">s = socket()</text>
+      <text x="532" y="167" fill="#115e59">bind(s)</text>
+      <text x="532" y="219" fill="#115e59">listen(s)</text>
+      <text x="532" y="273" fill="#92400e">ns = accept(s) *</text>
+      <text x="532" y="331" fill="#92400e">recv(ns) *</text>
+      <text x="532" y="383" fill="#115e59">send(ns)</text>
+      <text x="532" y="435" fill="#115e59">closesocket(ns)</text>
+    </g>
+
+    <!-- Vertical arrows (solid to avoid dashed-arrow legend ambiguity) -->
+    <g stroke="#1f2937" stroke-width="1.5" marker-end="url(#socket-tcp-arrow)">
+      <line x1="140" y1="128" x2="140" y2="140"/>
+      <line x1="140" y1="180" x2="140" y2="240"/>
+      <line x1="140" y1="292" x2="140" y2="304"/>
+      <line x1="140" y1="344" x2="140" y2="356"/>
+      <line x1="140" y1="396" x2="140" y2="408"/>
+
+      <line x1="532" y1="128" x2="532" y2="140"/>
+      <line x1="532" y1="180" x2="532" y2="192"/>
+      <line x1="532" y1="232" x2="532" y2="240"/>
+      <line x1="532" y1="292" x2="532" y2="304"/>
+      <line x1="532" y1="344" x2="532" y2="356"/>
+      <line x1="532" y1="396" x2="532" y2="408"/>
+    </g>
+
+    <!-- Server loop arrow -->
+    <path d="M632 430 H672 V268 H636" fill="none" stroke="#1f2937" stroke-width="1.5" marker-end="url(#socket-tcp-arrow)"/>
+    <text x="684" y="320" text-anchor="start" font-size="12" font-weight="400" fill="#4b5563">循环：</text>
+    <text x="684" y="340" text-anchor="start" font-size="12" font-weight="400" fill="#4b5563">处理</text>
+    <text x="684" y="360" text-anchor="start" font-size="12" font-weight="400" fill="#4b5563">下一个</text>
+    <text x="684" y="380" text-anchor="start" font-size="12" font-weight="400" fill="#4b5563">客户</text>
+
+    <!-- Cross arrows (strictly horizontal, well spaced) -->
+    <line x1="240" y1="252" x2="428" y2="252" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#socket-tcp-arrow)"/>
+    <text x="336" y="242" text-anchor="middle" font-size="12" font-weight="600" fill="#1e40af">① 连接请求（SYN）</text>
+
+    <line x1="432" y1="286" x2="244" y2="286" stroke="#14b8a6" stroke-width="1.5" marker-end="url(#socket-tcp-arrow)"/>
+    <text x="336" y="276" text-anchor="middle" font-size="12" font-weight="600" fill="#115e59">连接确认（三次握手）</text>
+
+    <line x1="240" y1="326" x2="428" y2="326" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#socket-tcp-arrow)"/>
+    <text x="336" y="316" text-anchor="middle" font-size="12" font-weight="600" fill="#1e40af">② 发送请求</text>
+
+    <line x1="432" y1="378" x2="244" y2="378" stroke="#14b8a6" stroke-width="1.5" marker-end="url(#socket-tcp-arrow)"/>
+    <text x="336" y="368" text-anchor="middle" font-size="12" font-weight="600" fill="#115e59">③ 接收响应</text>
+
+    <!-- Footer legend -->
+    <rect x="24" y="460" width="712" height="36" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="1" data-role="note"/>
+    <text x="380" y="483" text-anchor="middle" font-size="12" font-weight="400" fill="#1f2937">黄色带 * 为阻塞调用；虚线框可选；WinSock 下两端首尾各调用一次 WSAStartup / WSACleanup</text>
+  </g>
+</svg>
