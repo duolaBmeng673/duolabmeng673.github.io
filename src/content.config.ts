@@ -26,8 +26,8 @@ const blogRead = defineCollection({
   schema,
 });
 
-const blogHuaweiExamination = defineCollection({
-  loader: glob({ base: './src/content/blog_huawei_examination', pattern: '*.{md,mdx}' }),
+const blogCodingPractice = defineCollection({
+  loader: glob({ base: './src/content/blog_coding_practice', pattern: '*.{md,mdx}' }),
   schema,
 });
 
@@ -64,6 +64,6 @@ const studyNotes = defineCollection({
 
 export const collections = {
   blog_read: blogRead,
-  blog_huawei_examination: blogHuaweiExamination,
+  blog_coding_practice: blogCodingPractice,
   study_notes: studyNotes,
 };

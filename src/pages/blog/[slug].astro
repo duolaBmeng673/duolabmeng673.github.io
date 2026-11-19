@@ -5,7 +5,7 @@ import { getCollection } from 'astro:content';
 import { getBlogPosts } from '../../lib/blog';
 export async function getStaticPaths() {
   const posts = await getBlogPosts();
-  const held = await getCollection('blog_huawei_examination', ({ data }) => Boolean(data.publicationHoldReason));
+  const held = await getCollection('blog_coding_practice', ({ data }) => Boolean(data.publicationHoldReason));
   return [...posts, ...held].map((post) => ({ params: { slug: post.id }, props: { post } }));
 }
 const { post } = Astro.props;

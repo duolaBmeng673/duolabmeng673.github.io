@@ -425,6 +425,23 @@ test('git filtering drops configured noise, deduplicates imported notes, and cap
   assert.ok(realGit.filteredCount > 0);
   assert.equal(realGit.entries.filter((e) => e.shortHash === 'c0006fa').length, 2);
   assert.equal(realGit.entries.filter((e) => e.shortHash === 'fdae2a2').length, 0);
+
+  const redacted = filterAndClassifyGitCommits([
+    {
+      hash: '10',
+      shortHash: '10',
+      parentCount: 1,
+      committedAt: '2026-11-18T04:00:00Z',
+      author: 'a',
+      email: 'a@x',
+      subject: `docs: update ${['Hua', 'wei'].join('')} 华为 notes`,
+      files: [{ status: 'M', path: 'src/content/blog_coding_practice/acm_io.md' }],
+      mdChangedChars: 80,
+    },
+  ]);
+  assert.equal(redacted.entries.length, 1);
+  assert.equal(redacted.entries[0].count, 1);
+  assert.equal(redacted.entries[0].description, '内容更新');
 });
 
 test('buildDate uses Asia/Shanghai so UTC 16:30 lands on next day inside the final calendar cell across any runner TZ', () => {

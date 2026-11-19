@@ -32,14 +32,14 @@
 
 作者本次明确要求恢复展示。逐篇复核未发现明确禁止公开的声明，原有 hold 为上一轮来源未知时的保守状态，本轮按要求移除；没有据此宣称原题许可已经获得独立核实。
 
-- `acm_io.md`：继续公开，文件逐字节不变，原始 tags 保留。
+- `acm_io.md`：继续公开，后按作者要求移除原来源标签，其余 tags 保留。
 - `ci-cd-pipeline-jobs.md`：恢复公开，移除来源标签。
 - `photovoltaic-optimizer-greedy.md`：恢复公开，移除来源标签。
 - `推理设备覆盖.md`：恢复公开，移除来源标签。
 - `two-team-greedy-partition.md`：恢复公开，此前已无该来源标签。
 - `maze-shortest-rescue-bfs.md`：恢复公开，此前已无该来源标签。
 
-五篇题解的 `draft`、`publicationHoldReason` 已移除，且均不再含 `Huawei Examination` 标签。合理的分类、ACM/OJ 系列及算法标签保留。没有改写核心思路、证明、实现、题面或样例，没有机械删除正文中的技术背景。
+六篇算法／I/O 笔记的 `draft`、`publicationHoldReason` 及来源标签均已移除，合理分类、ACM/OJ 系列及算法标签保留（集合目录已更名为中性名 `blog_coding_practice`）。没有改写核心思路、证明、实现、题面或样例，没有机械删除正文中的技术背景。
 
 六篇均使用原 URL 展示完整正文，进入技术归档、搜索、RSS 和 sitemap；首页近期技术文章按原始 pubDate 自然选取，全部可从分类入口访问。通用草稿／hold 过滤机制继续保留，没有为了恢复五篇而绕过所有内容的公开规则。
 

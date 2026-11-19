@@ -9,7 +9,7 @@
 | 集合 | 加载范围 | 用途 |
 |---|---|---|
 | `blog_read` | `src/content/blog_read/*.{md,mdx}`，仅直属文件 | 当前论文笔记 |
-| `blog_huawei_examination` | `src/content/blog_huawei_examination/*.{md,mdx}`，仅直属文件 | 当前算法与 Python I/O 技术笔记；集合名是历史内部名称 |
+| `blog_coding_practice` | `src/content/blog_coding_practice/*.{md,mdx}`，仅直属文件 | 当前算法与 Python I/O 技术笔记 |
 | `study_notes` | `src/content/837考研/**/*.md`，排除根部 `笔记设计规范.md` | HIT 837 学习笔记 |
 
 【已核实】三个学习模块的实际源目录分别是 [信息安全导论考点问题总结](../src/content/837考研/信息安全导论/信息安全导论考点问题总结/)、[网络安全基础考点笔记总结](../src/content/837考研/网络安全基础考点笔记总结/) 与 [计算机网络](../src/content/837考研/计算机网络/)；模块归属最终由 `subject` 元数据决定。代码依据：[src/lib/study.ts](../src/lib/study.ts)。
@@ -28,9 +28,9 @@
 
 ## 技术笔记
 
-- 【已核实】两个技术集合共用 schema：`category` 为 `Research / Computer Science`，`subcategory` 为 `Paper Notes / Algorithms`，`series` 为 `NLP / Multimodal / Computer Vision / LLM & Tables / ACM / OJ`。当前论文采用 `Research → Paper Notes`，算法／I/O 采用 `Computer Science → Algorithms → ACM / OJ`。schema 只分别校验枚举，未实现三字段组合的交叉校验。依据：[src/content.config.ts](../src/content.config.ts)、[现有论文](../src/content/blog_read/)、[现有算法笔记](../src/content/blog_huawei_examination/)。
+- 【已核实】两个技术集合共用 schema：`category` 为 `Research / Computer Science`，`subcategory` 为 `Paper Notes / Algorithms`，`series` 为 `NLP / Multimodal / Computer Vision / LLM & Tables / ACM / OJ`。当前论文采用 `Research → Paper Notes`，算法／I/O 采用 `Computer Science → Algorithms → ACM / OJ`。schema 只分别校验枚举，未实现三字段组合的交叉校验。依据：[src/content.config.ts](../src/content.config.ts)、[现有论文](../src/content/blog_read/)、[现有算法笔记](../src/content/blog_coding_practice/)。
 - 【已核实】公开条件为 `!draft && !publicationHoldReason`，没有学习集合的 `published` 开关。文章 URL 为 `/blog/${post.id}/`；此处使用 loader 生成的 ID，不是按标题生成。依据：[src/lib/blog.ts](../src/lib/blog.ts)、[blog/[slug].astro](../src/pages/blog/[slug].astro)。
-- 【用户决定】维护原文件名／ID 和已发布 URL；未经授权不改发布日期或恢复已移除的考试来源标签。完整 `title` 用于检索与元数据，`shortTitle`／`subtitle` 只在有值时辅助展示，不用缩写覆盖完整标题。
+- 【用户决定】维护原文件名／ID 和已发布 URL；未经授权不改发布日期或恢复已移除的来源标签（**规则例外**：按用户 2026-11-19 决定，全部技术笔记已移除原考试来源标签，其余 tags 保留；集合目录改名为 `blog_coding_practice`）。完整 `title` 用于检索与元数据，`shortTitle`／`subtitle` 只在有值时辅助展示，不用缩写覆盖完整标题。
 - 【已核实】技术归档底层读取 `getAllPosts()`，默认用 `regularPosts` 及行的 `hidden` 状态只展示论文和算法；全局搜索与显式分类／标签／系列筛选仍可访问学习笔记，不能将其从底层公开数据移除。首页及时间线也复用统一公开数据。依据：[src/pages/blog/index.astro](../src/pages/blog/index.astro)、[src/scripts/notes.ts](../src/scripts/notes.ts)、[src/lib/blog.ts](../src/lib/blog.ts)。
 
 ## 学习笔记

@@ -6,7 +6,7 @@
 
 ## 公开风险核查
 
-逐篇检查了 `src/content/blog_huawei_examination/` 的 6 篇文章，并检索其他内容中的考试名称、原题描述、输入输出及来源线索。没有仅凭目录名或标签判定违规，也没有得出法律结论。
+逐篇检查了 `src/content/blog_coding_practice/`（原算法与编程练习集合）的 6 篇文章，并检索其他内容中的来源名称、原题描述、输入输出及线索。没有仅凭目录名或标签判定违规，也没有得出法律结论。
 
 - `acm_io.md`，Python ACM / OJ 模式：输入与输出：通用 Python I/O 技术教程，保持公开，原始 tags 不变。
 - `ci-cd-pipeline-jobs.md`，从三维 DP 到单调队列：CI/CD Pipeline Jobs 最小成本问题：具体题目，公开来源及许可无法从仓库确认，暂缓公开。

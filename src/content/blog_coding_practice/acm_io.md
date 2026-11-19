@@ -6,7 +6,6 @@ category: "Computer Science"
 subcategory: "Algorithms"
 series: "ACM / OJ"
 tags:
-  - "Huawei Examination"
   - "ACM/OJ"
   - "Python"
   - "Input/Output"

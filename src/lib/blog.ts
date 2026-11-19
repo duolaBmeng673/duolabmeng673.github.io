@@ -3,7 +3,7 @@ import type { CollectionEntry } from 'astro:content';
 import { getPublicStudyNotes, getStudyHref, type StudyPost } from './study';
 import { getKnowledgeTags } from './knowledge-tags';
 
-export type BlogPost = CollectionEntry<'blog_read'> | CollectionEntry<'blog_huawei_examination'> | StudyPost;
+export type BlogPost = CollectionEntry<'blog_read'> | CollectionEntry<'blog_coding_practice'> | StudyPost;
 
 export const categories = ['Research', 'Computer Science', 'Study Notes'] as const;
 
@@ -99,12 +99,12 @@ export function toSearchRecord(post: BlogPost, includeBody = true) {
 }
 
 export async function getBlogPosts() {
-  const [readingNotes, examinationNotes] = await Promise.all([
+  const [readingNotes, codingPracticeNotes] = await Promise.all([
     getCollection('blog_read', ({ data }) => !data.draft && !data.publicationHoldReason),
-    getCollection('blog_huawei_examination', ({ data }) => !data.draft && !data.publicationHoldReason),
+    getCollection('blog_coding_practice', ({ data }) => !data.draft && !data.publicationHoldReason),
   ]);
 
-  return [...readingNotes, ...examinationNotes].sort(
+  return [...readingNotes, ...codingPracticeNotes].sort(
     (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
   );
 }

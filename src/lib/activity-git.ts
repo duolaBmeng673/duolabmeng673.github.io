@@ -51,6 +51,11 @@ export interface GitActivityExtractionResult {
   entries: GitActivityEntry[];
 }
 
+export function redactHeatmapSubject(subject: string): string {
+  const { patterns, replacement } = HEATMAP_FILTER_CONFIG.subjectRedaction;
+  return patterns.some((pattern) => pattern.test(subject)) ? replacement : subject;
+}
+
 export interface NoteTargetInfo {
   href: string;
   title: string;
@@ -261,6 +266,7 @@ export function filterAndClassifyGitCommits(
     }
 
     const date = toShanghaiDateKey(commit.committedAt);
+    const displaySubject = redactHeatmapSubject(commit.subject);
 
     if (hasRevision) {
       entries.push({
@@ -269,7 +275,7 @@ export function filterAndClassifyGitCommits(
         category: 'revision',
         label: '修订',
         count: 1,
-        description: commit.subject,
+        description: displaySubject,
         href: inferRevisionHref(commit.files, options.noteHrefByPath),
         shortHash: commit.shortHash,
       });
@@ -282,7 +288,7 @@ export function filterAndClassifyGitCommits(
         category: 'site',
         label: '功能更新',
         count: 1,
-        description: commit.subject,
+        description: displaySubject,
         href: inferSiteHref(commit.files),
         shortHash: commit.shortHash,
       });

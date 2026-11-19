@@ -33,6 +33,12 @@
 
 ---
 
-## 3. 如何调整规则或阈值
+## 3. 展示脱敏规则（不改计数）
+
+为避免内部来源字样通过 Git 提交标题进入公开热力图明细，`HEATMAP_FILTER_CONFIG.subjectRedaction` 会在构建期对展示标题执行脱敏替换：匹配 `/huawei|华为/i` 的提交标题统一展示为 **`"内容更新"`**。该规则只作用于展示用 `description`，不影响提交过滤、活动分类或活跃次数统计。
+
+---
+
+## 4. 如何调整规则或阈值
 
 如需微调过滤粒度（例如将极短 Markdown 勘误阈值 `40` 调大或增减忽略前缀），**只需修改 [src/config/heatmap-filter.ts](../src/config/heatmap-filter.ts)**，再运行 `npm run build && npm test` 即可生效并同步更新首页、`/about/` 与页面上的过滤统计数。

@@ -1,9 +1,10 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
+import { FORBIDDEN_PUBLIC_TERMS, findForbiddenMatches } from '../src/config/forbidden-terms.ts';
 const read = (path) => readFileSync(new URL('../' + path, import.meta.url), 'utf8');
 const index = JSON.parse(read('dist/search-index.json'));
-test('six algorithm and I/O notes are public with their original URLs and appropriate tags', () => {
+test('six algorithm and I/O notes are public with their original URLs and without exam-origin tags', () => {
   const slugs = ['acm_io', 'ci-cd-pipeline-jobs', 'photovoltaic-optimizer-greedy', '推理设备覆盖', 'two-team-greedy-partition', 'maze-shortest-rescue-bfs'];
   for (const slug of slugs) {
     const route = `/blog/${slug}/`;
@@ -11,7 +12,7 @@ test('six algorithm and I/O notes are public with their original URLs and approp
     assert.ok(post, route);
     assert.equal(post.series, 'ACM / OJ');
     assert.equal(post.category, 'Computer Science');
-    if (slug !== 'acm_io') assert.ok(!post.tags.includes('Huawei Examination'), slug);
+    assert.equal(findForbiddenMatches(post.tags.join(' ')).length, 0, `${route} tags clean`);
     const html = read('dist' + route + 'index.html');
     assert.ok(html.includes('class="article-body"'));
     assert.ok(!html.includes('noindex, nofollow'));
@@ -20,10 +21,10 @@ test('six algorithm and I/O notes are public with their original URLs and approp
     assert.ok(read('dist/sitemap.xml').includes(url));
     assert.ok(read('dist/blog/index.html').includes(route));
   }
-  assert.ok(index.find((post) => post.href === '/blog/acm_io/').tags.includes('Huawei Examination'), 'I/O tags remain unchanged');
+  assert.deepEqual(index.find((post) => post.href === '/blog/acm_io/').tags, ['ACM/OJ', 'Python', 'Input/Output']);
 });
 test('any future publication holds stay out of public discovery and retain safe old routes', () => {
-  const directory = new URL('../src/content/blog_huawei_examination/', import.meta.url);
+  const directory = new URL('../src/content/blog_coding_practice/', import.meta.url);
   for (const file of readdirSync(directory).filter((name) => name.endsWith('.md'))) {
     const source = readFileSync(new URL(file, directory), 'utf8');
     if (!/^publicationHoldReason:/m.test(source.split('\n---\n')[0])) continue;
@@ -223,7 +224,7 @@ test('homepage, blog archive and about stats match public collection counts', ()
     return out;
   };
   const researchCount = countMarkdown(new URL('../src/content/blog_read/', import.meta.url)).length;
-  const csCount = countMarkdown(new URL('../src/content/blog_huawei_examination/', import.meta.url), { excludeHeld: true }).length;
+  const csCount = countMarkdown(new URL('../src/content/blog_coding_practice/', import.meta.url), { excludeHeld: true }).length;
   const infoSecCount = countMarkdown(new URL('../src/content/837考研/信息安全导论/', import.meta.url), { recursive: true }).length;
   const netSecCount = countMarkdown(new URL('../src/content/837考研/网络安全基础考点笔记总结/', import.meta.url), { recursive: true }).length;
   const cnCount = countMarkdown(new URL('../src/content/837考研/计算机网络/', import.meta.url), { recursive: true }).length;
@@ -444,4 +445,28 @@ test('SVG diagrams carry data-svg-diagram dynamically and dark filter targets el
   const css = read('src/styles/global.css');
   assert.match(css, /:root\[data-theme="dark"\]\s+\.article-body\s+\[data-svg-diagram="true"\]\s*\{[^}]*filter:\s*invert\(/);
   assert.doesNotMatch(css, /\.article-svg-link[^}]*filter:/);
+});
+
+test('built site HTML, search index, RSS, and sitemap contain no forbidden terms from config', () => {
+  function walkTargets(dir) {
+    const out = [];
+    for (const entry of readdirSync(dir, { withFileTypes: true })) {
+      const p = `${dir}/${entry.name}`;
+      if (entry.isDirectory()) out.push(...walkTargets(p));
+      else if (/\.(html|xml|json)$/i.test(entry.name)) out.push(p);
+    }
+    return out;
+  }
+
+  assert.ok(FORBIDDEN_PUBLIC_TERMS.length > 0);
+  const files = walkTargets('dist');
+  assert.ok(files.some((f) => f === 'dist/search-index.json'));
+  assert.ok(files.some((f) => f === 'dist/rss.xml'));
+  assert.ok(files.some((f) => f === 'dist/sitemap.xml'));
+
+  for (const file of files) {
+    const content = readFileSync(file, 'utf8');
+    const hits = findForbiddenMatches(content);
+    assert.deepEqual(hits, [], `Forbidden term found in built artifact ${file}: ${JSON.stringify(hits)}`);
+  }
 });

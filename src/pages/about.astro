@@ -9,7 +9,7 @@ import { getAllPosts } from '../lib/blog';
 const posts = await getAllPosts();
 const activityDataset = buildActivityDataset(posts);
 const researchCount = posts.filter((post) => post.collection === 'blog_read').length;
-const csCount = posts.filter((post) => post.collection === 'blog_huawei_examination').length;
+const csCount = posts.filter((post) => post.collection === 'blog_coding_practice').length;
 const infoSecCount = posts.filter((post) => post.collection === 'study_notes' && post.data.subject === '信息安全导论').length;
 const netSecCount = posts.filter((post) => post.collection === 'study_notes' && post.data.subject === '网络安全基础').length;
 const cnCount = posts.filter((post) => post.collection === 'study_notes' && post.data.subject === '计算机网络').length;

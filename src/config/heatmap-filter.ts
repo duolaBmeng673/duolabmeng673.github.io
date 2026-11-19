@@ -51,4 +51,10 @@ export const HEATMAP_FILTER_CONFIG = {
     /^docs\//,
     /(?:^|\/)\.DS_Store$/,
   ],
+
+  /** Redact display titles in heatmap entries without changing commit filtering or counts. */
+  subjectRedaction: {
+    patterns: [/huawei|华为/i],
+    replacement: '内容更新',
+  },
 } as const;
