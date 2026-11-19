@@ -1,20 +1,26 @@
 #!/usr/bin/env node
 import { execFileSync } from 'node:child_process';
-import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 
-const DEFAULT_FILES = [
-  'src/content/837考研/计算机网络/6 链路层/b WIFI/csma-cd-collision-window.svg',
-  'src/content/837考研/计算机网络/6 链路层/a ARP/arp-broadcast-unicast.svg',
-  'src/content/837考研/计算机网络/6 链路层/b WIFI/wifi-rts-cts-nav.svg',
-];
+function findSvgs(dirPath) {
+  const out = [];
+  for (const entry of readdirSync(dirPath, { withFileTypes: true })) {
+    const full = join(dirPath, entry.name);
+    if (entry.isDirectory()) out.push(...findSvgs(full));
+    else if (entry.name.endsWith('.svg')) out.push(full);
+  }
+  return out.sort();
+}
+
+const DEFAULT_ROOT = 'src/content/837考研/计算机网络';
 
 const CHROME_PATH =
   process.env.CHROME_PATH ||
   '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 
-const files = process.argv.slice(2).length > 0 ? process.argv.slice(2) : DEFAULT_FILES;
+const files = process.argv.slice(2).length > 0 ? process.argv.slice(2) : findSvgs(DEFAULT_ROOT);
 
 const dir = mkdtempSync(join(tmpdir(), 'svg-lint-'));
 try {
