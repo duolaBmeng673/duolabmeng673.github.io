@@ -92,6 +92,8 @@
 /* Stage: Container-Query 12-Col Interlocking Composition */
 .stage {
   --preset-accent: var(--preset-all);
+  --ac: var(--preset-accent);
+  --ac-soft: color-mix(in srgb, var(--preset-accent) 15%, transparent);
   --stage-gap-x: clamp(1rem, 1.4cqw, 1.5rem);
   --stage-gap-y: clamp(1rem, 1.45cqw, 1.55rem);
   --overlap-y: 1.45rem;
@@ -114,27 +116,27 @@
   --preset-accent: var(--preset-all-hi);
 }
 
-:root[data-preset="research"] .stage {
+.stage[data-preset="research"] {
   --preset-accent: var(--preset-research);
 }
 
-:root[data-theme="dark"][data-preset="research"] .stage {
+:root[data-theme="dark"] .stage[data-preset="research"] {
   --preset-accent: var(--preset-research-hi);
 }
 
-:root[data-preset="cs"] .stage {
+.stage[data-preset="cs"] {
   --preset-accent: var(--preset-cs);
 }
 
-:root[data-theme="dark"][data-preset="cs"] .stage {
+:root[data-theme="dark"] .stage[data-preset="cs"] {
   --preset-accent: var(--preset-cs-hi);
 }
 
-:root[data-preset="837"] .stage {
+.stage[data-preset="837"] {
   --preset-accent: var(--preset-837);
 }
 
-:root[data-theme="dark"][data-preset="837"] .stage {
+:root[data-theme="dark"] .stage[data-preset="837"] {
   --preset-accent: var(--preset-837-hi);
 }
 
@@ -151,21 +153,21 @@
     linear-gradient(150deg, color-mix(in srgb, var(--bg-elev) 90%, var(--preset-all-hi) 10%), var(--bg-elev));
 }
 
-:root[data-preset="research"] .stage-wave-wrap {
+.stage[data-preset="research"] .stage-wave-wrap {
   background:
     radial-gradient(82% 72% at 24% 26%, color-mix(in srgb, var(--preset-research-hi) 24%, transparent), transparent 68%),
     radial-gradient(70% 65% at 78% 76%, color-mix(in srgb, var(--preset-research) 20%, transparent), transparent 72%),
     linear-gradient(150deg, color-mix(in srgb, var(--bg-elev) 90%, var(--preset-research-hi) 10%), var(--bg-elev));
 }
 
-:root[data-preset="cs"] .stage-wave-wrap {
+.stage[data-preset="cs"] .stage-wave-wrap {
   background:
     radial-gradient(82% 72% at 24% 26%, color-mix(in srgb, var(--preset-cs-hi) 24%, transparent), transparent 68%),
     radial-gradient(70% 65% at 78% 76%, color-mix(in srgb, var(--preset-cs) 20%, transparent), transparent 72%),
     linear-gradient(150deg, color-mix(in srgb, var(--bg-elev) 90%, var(--preset-cs-hi) 10%), var(--bg-elev));
 }
 
-:root[data-preset="837"] .stage-wave-wrap {
+.stage[data-preset="837"] .stage-wave-wrap {
   background:
     radial-gradient(82% 72% at 24% 26%, color-mix(in srgb, var(--preset-837-hi) 24%, transparent), transparent 68%),
     radial-gradient(70% 65% at 78% 76%, color-mix(in srgb, var(--preset-837) 20%, transparent), transparent 72%),

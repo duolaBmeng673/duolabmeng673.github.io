@@ -85,7 +85,7 @@
 
 ## 6. 体积预算与隔离红线
 
-- **首页 JS 预算（提醒线）**：首页全部客户端脚本（Astro 脚本 + React 岛及其按需运行时）**总计 gzip 预估不超过 `100 KB`**（按用户 2026-11-17 批准原版 ReactBits `CardSwap` 及其图标依赖从 `90 KB` 放宽至 `100 KB`，若实测加载压力不合格则回退）。若构建后超出该提醒线，必须停止并逐文件列出原始大小与 gzip 大小向用户汇报，由用户决定取舍。
+- **首页 JS 预算（提醒线）**：首页全部客户端脚本（Astro 脚本 + React 岛及其按需运行时）**总计 gzip 预估不超过 `120 KB`**（2026-11-20 经用户批准从 `100 KB` 放宽至 `120 KB`，用于承载高密度四态点阵、波浪面纱与舞台同步动效）。若构建后超出该提醒线，必须停止并逐文件列出原始大小与 gzip 大小向用户汇报，由用户决定取舍。
 - **非首页白名单隔离（硬红线）**：`GradientWaves`、`ActivityHeatmap`、`CardSwap` 只能出现在首页（`dist/index.html`）；非首页中仅 `/about/`、`/blog/`、`/study-notes/` 获批搭载轻量 `CountUp` 岛（`client:visible`）。文章页、837 模块与章节目录页、工具页与 404 页等其余全部页面**不得引入任何 React 运行时或岛脚本**，每次构建须通过自动化静态检查验证。
 
 > 真机 CPU／GPU 实测方法与 Chrome CDP 采集脚本见 [performance-benchmark.md](performance-benchmark.md)。

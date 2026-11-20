@@ -30,7 +30,7 @@ const applyTheme = () => {
   const resolved = mode === 'system' ? (media.matches ? 'dark' : 'light') : mode;
   root.dataset.theme = resolved;
   root.dataset.themeMode = mode;
-  if (themeMeta) themeMeta.content = resolved === 'dark' ? '#08070c' : '#f7f6f2';
+  if (themeMeta) themeMeta.content = resolved === 'dark' ? '#050505' : '#f7f6f2';
 };
 sizes.forEach((button) => button.addEventListener('click', () => {
   settings.size = button.dataset.fontSize as FontSize;

@@ -3,6 +3,7 @@ import { buildActivityDataset } from './activity-data';
 import { type ActivityRecord } from './activity';
 import { getAllPosts, getPostHref, getPostTitle, type BlogPost } from './blog';
 import { getKnowledgeTags } from './knowledge-tags';
+import { PALETTE } from './palette';
 import { getStudyModuleHref, studyModules } from './study';
 
 export interface PresetNoteItem {
@@ -86,13 +87,13 @@ export async function getHomePageData() {
     {
       slug: 'all',
       name: '全部笔记',
-      presetName: 'Ocean',
+      presetName: PALETTE.channels.all.presetName,
       count: posts.length,
       moreHref: '/blog/',
       moreLabel: '查看全部笔记 ↗',
-      horizonColor: '#2563EB',
-      waveColor: '#38BDF8',
-      crestColor: '#E0F2FE',
+      horizonColor: PALETTE.channels.all.wave.horizon,
+      waveColor: PALETTE.channels.all.wave.wave,
+      crestColor: PALETTE.channels.all.wave.crest,
       amplitude: 2.2,
       swell: 28,
       turbulence: 18,
@@ -104,13 +105,13 @@ export async function getHomePageData() {
     {
       slug: 'research',
       name: '论文笔记',
-      presetName: 'Dusk',
+      presetName: PALETTE.channels.research.presetName,
       count: researchPosts.length,
       moreHref: '/blog/?category=Research',
       moreLabel: '查看全部论文笔记 ↗',
-      horizonColor: '#5227FF',
-      waveColor: '#C084FC',
-      crestColor: '#F3E8FF',
+      horizonColor: PALETTE.channels.research.wave.horizon,
+      waveColor: PALETTE.channels.research.wave.wave,
+      crestColor: PALETTE.channels.research.wave.crest,
       amplitude: 2.7,
       swell: 35,
       turbulence: 22,
@@ -122,13 +123,13 @@ export async function getHomePageData() {
     {
       slug: 'cs',
       name: '技术笔记',
-      presetName: 'Dune',
+      presetName: PALETTE.channels.cs.presetName,
       count: csPosts.length,
       moreHref: '/blog/?category=Computer+Science',
       moreLabel: '查看全部技术笔记 ↗',
-      horizonColor: '#C2416B',
-      waveColor: '#FB7185',
-      crestColor: '#FFE4E6',
+      horizonColor: PALETTE.channels.cs.wave.horizon,
+      waveColor: PALETTE.channels.cs.wave.wave,
+      crestColor: PALETTE.channels.cs.wave.crest,
       amplitude: 3.0,
       swell: 38,
       turbulence: 25,
@@ -140,13 +141,13 @@ export async function getHomePageData() {
     {
       slug: '837',
       name: '学习笔记',
-      presetName: 'Aurora',
+      presetName: PALETTE.channels['837'].presetName,
       count: studyPosts.length,
       moreHref: '/study-notes/837/',
       moreLabel: '查看全部学习笔记 ↗',
-      horizonColor: '#0D9488',
-      waveColor: '#34D399',
-      crestColor: '#D1FAE5',
+      horizonColor: PALETTE.channels['837'].wave.horizon,
+      waveColor: PALETTE.channels['837'].wave.wave,
+      crestColor: PALETTE.channels['837'].wave.crest,
       amplitude: 2.5,
       swell: 33,
       turbulence: 20,
@@ -226,7 +227,7 @@ export async function getHomePageData() {
       cat: '论文',
       fallbackTitle: 'Table Survey',
       desc: '大模型表格理解综述',
-      accent: '#7aa2ff',
+      accent: PALETTE.channels.research.dark,
       icon: 'book',
     },
     {
@@ -234,7 +235,7 @@ export async function getHomePageData() {
       cat: '论文',
       fallbackTitle: 'CLIP 精读',
       desc: '图文对比预训练核心机制',
-      accent: '#a78bfa',
+      accent: PALETTE.channels.research.darkHi,
       icon: 'sparkles',
     },
     {
@@ -242,7 +243,7 @@ export async function getHomePageData() {
       cat: '837 算法',
       fallbackTitle: 'KMP 交互演示',
       desc: 'next 数组与无回溯步进',
-      accent: '#5fd6b8',
+      accent: PALETTE.channels['837'].dark,
       icon: 'cpu',
     },
     {
@@ -250,7 +251,7 @@ export async function getHomePageData() {
       cat: '837 算法',
       fallbackTitle: '朴素贝叶斯',
       desc: '条件独立与 m 估计平滑',
-      accent: '#ff8aa8',
+      accent: PALETTE.channels.cs.dark,
       icon: 'sigma',
     },
     {
@@ -258,7 +259,7 @@ export async function getHomePageData() {
       cat: '技术',
       fallbackTitle: 'Python ACM/OJ',
       desc: '算法竞赛快读与模板实践',
-      accent: '#e6b450',
+      accent: PALETTE.gold.dark,
       icon: 'code',
     },
   ];

@@ -17,16 +17,19 @@
 
 ## 已核实的令牌入口
 
-- 【已核实】[src/styles/tokens.css](../src/styles/tokens.css) 与 [src/styles/global.css](../src/styles/global.css) 定义全站 React Bits 浅／深色基底、正文、交互、辅色、统一无衬线字体角色（`--serif: var(--sans)`，消除跨平台衬线回退差异）、7 级字号阶梯（`--fs-xs: max(12px, 0.75rem)`、`--fs-sm: max(12px, 0.8125rem)`、`--fs-base: 0.9375rem`、`--fs-md: 1.0625rem`、`--fs-lg: 1.25rem`、`--fs-xl: 1.6rem`、`--fs-display: clamp(2.2rem, 4vw, 3.4rem)`）、3 档动效时长与缓动（`--dur-1: 120ms`、`--dur-2: 220ms`、`--dur-3: 400ms`、`--ease-out: cubic-bezier(.22, 1, .36, 1)`）、圆角（`--r-nav` 到 `--r-vis`）、首页舞台窗口字号 `--win-fs: clamp(12px, calc(10.85px + 0.302vw), 16px)`、学习笔记正文与目录字号阶梯（`--fs-article-body: 1.02rem`、`--fs-study-h2: 1.46rem`、`--fs-study-h3: 1.22rem`、`--fs-study-label: 1.09rem`、`--fs-toc-2: max(12px, 0.84rem)`、`--fs-toc-3: max(12px, 0.76rem)`）、浅色 SVG 底色 `--svg-bg: var(--bg-elev)`（配 `1px solid var(--bd)` 边框）与版心变量（`--gutter: clamp(20px, 3vw, 56px)`、`--maxw: 1760px`）；`BaseLayout.astro` 在 `body` 写入 `data-channel`，`/study-notes/**` 频道（`data-channel="study"`）将 `--ac` / `--ac-strong` / `--ac-soft` 映射为学习笔记深绿安全对比度变体（浅色 `#0b6e61` / `#08544a`、深色 `#5fd6b8` / `#86e6cc`），`.site-header` 固定保留全站品牌紫（`--brand-ac`），暗色下学习笔记文章页局部将 `--cat-study` 降明度／降饱和度为 `#46ab91`（不影响浅色 `#0f8a7a` 与热力图色阶）；[BaseLayout](../src/layouts/BaseLayout.astro) 负责首屏主题／字号恢复与共享样式，[typography.ts](../src/scripts/typography.ts) 负责主题／字体设置。没有第二套独立知识点主题状态。
+- 【已核实】配色单一事实来源位于 [src/lib/palette.ts](../src/lib/palette.ts)，由 [src/styles/tokens.css](../src/styles/tokens.css) 完整镜像并由 [palette-sync.test.mjs](../tests/palette-sync.test.mjs) 与 [lint-palette.mjs](../scripts/lint-palette.mjs) 自动守卫（全站全局强调色、页头、子页、热力图与 SVG 禁止残留紫色，仅首页舞台 `all` 预设白名单保留原版柔和淡紫 Dusk）。[tokens.css](../src/styles/tokens.css) 与 [global.css](../src/styles/global.css) 定义全站暖纸浅色／中性碳黑深色基底（`#050505` / `#0e0e10`）、页头中性强调色（浅色墨黑 `#18181b`／深色近白 `#e4e4e7`）与各频道独立主题色（`home`/`blog`/`tools`/`site` 及论文文章 `.article[data-category="Research"]` 呈靛蓝 `--c1`；技术文章 `.article[data-category="Computer Science"]` 含右侧目录滑块呈玫红 `--c2`；`study` 学习笔记频道采用熔岩暖橘／铁锈橙 `Ember` 体系：浅色 `#b84214`/`#c2410c`、深色 `#f08050`/`#fb923c`，暗色学习文章局部 `--cat-study` 为 `#d97348`；首页 `.stage` 内部随当前预设动态映射 `--ac: var(--preset-accent)`）；同时统一无衬线字体角色（`--serif: var(--sans)`）、7 级字号阶梯、3 档动效时长与圆角令牌；[BaseLayout](../src/layouts/BaseLayout.astro) 负责首屏主题／字号恢复与共享样式，[typography.ts](../src/scripts/typography.ts) 负责主题／字体设置。没有第二套独立知识点主题状态。
+- 【已核实】全站四态高密度点阵与文章页空间过渡由 [ambient-grid.ts](../src/scripts/ambient-grid.ts) 与共享时序模块 [wave-timing.ts](../src/lib/wave-timing.ts) 驱动：全局 `.dotgrid-hero-backdrop` 以 `position: absolute; top: 0; height: clamp(36rem, 86vh, 50rem)` 仅覆盖页面上半区，过中线后经 `mask-image` 平滑渐隐至既定页面背景（`var(--bg)`），滚动离开上半区时由 `IntersectionObserver` 自动暂停零开销；文章页则保持 `30rem` 上半区点阵并平滑过渡至 `.article-tile-backdrop` 稀疏呼吸暗格（`~11 fps`）。统一网格 `CELL = 15px`（`13×13` 元素配 `2px` 间隙），从 CSS `--ch-*-rgb` 为每种预设预烘焙 4 档不同饱和度与明度的主题色离屏图元（由独立区域噪声场赋予不同屏幕区域明暗／饱和度层次：`all` 淡紫实心像素块、`research` 靛蓝 6 档中大占比实心半色调圆点、`cs` 玫红稀疏 `0/1` 字符流、`837` 熔岩暖橘实心镂空 `0/1` 方块）；**全面移除鼠标移动跟随光晕**，仅在鼠标点击时触发紧凑羽化波浪（最大半径 `210px`，超阈值后边缘半径与透明度平滑归于背景）与预设切换 3 段有机波浪（首页舞台点击后立即丝滑响应，无舞台波浪面纱）。性能优化采用 DPR=1 整数画布、1/4 粗网格双线性噪声、预计算逐格静态 LUT、单格单次 `drawImage`、`14 fps` 缓动 / `45 fps` 交互节流，全部完整尊重 `prefers-reduced-motion` 与首页 `data-motion="paused"`。
 - 【已核实】[src/styles/knowledge-tags.css](../src/styles/knowledge-tags.css) 定义七类 `--knowledge-*`、中性标签与图例样式；条目、文章、搜索候选共用同一组色块变量。
 
 【已核实】以下色值逐项来自上述两个 CSS 文件，十六进制大小写不影响颜色：
 
 | 角色／变量 | 浅色 | 深色 |
 |---|---|---|
-| `--bg` | `#F7F6F2` | `#08070C` |
-| `--text` | `#121217` | `#F3F2F7` |
-| `--accent` | `#6D28D9` | `#A78BFA` |
+| `--bg` | `#F7F6F2` | `#050505` |
+| `--bg-elev` | `#FFFFFF` | `#0E0E10` |
+| `--text` | `#121217` | `#F4F4F5` |
+| `--accent` (`--brand-ac`) | `#18181B` | `#E4E4E7` |
+| `--study-ac` | `#B84214` | `#F08050` |
 | `--warm` | `#52525B` | `#A1A1AA` |
 | `--knowledge-concept` | `#E3E1D9` | `#77756E` |
 | `--knowledge-algorithm` | `#D1E3F4` | `#4B83BF` |
@@ -45,7 +48,7 @@
 - 标签 `--r: 6px`，内边距 `5px 10px 5px 7px`；标签间距 6px；色块 11px、圆角 `calc(var(--r) * .6)`、内描边 `rgba(18, 18, 24, .08)`。
 - 标签文字／底／边框：`--ts`／`--bg-elev`／`--bd`。
 - 粗指针设备标签 13px、最小高度 32px、内边距 `8px 10px`。图例文字 13px／400、色块与标签相同、条目间距 4px、每项最小高 32px。
-- 标签与图例选择态均跟随 `/study-notes/**` 频道强调色 `--ac` / `--ac-strong`（浅色深绿 `#08544a`/`#0b6e61`、深色 `#5fd6b8`/`#86e6cc`）；类别识别色仍只在小方块。图例选择态用描边与柔绿背景，不把整项涂成类别色。
+- 标签与图例选择态均跟随 `/study-notes/**` 频道强调色 `--ac` / `--ac-strong`（浅色 `#9a3412`/`#b84214`、深色 `#f08050`/`#fb923c`）；类别识别色仍只在小方块。图例选择态用描边与柔橘背景，不把整项涂成类别色。
 
 【已核实】文章 H1、正文容器阅读主栏文本约 `44rem` 舒适中文行长（开启 `text-autospace: normal`），宽表格、代码块与 SVG 图表不受限于文本窄栏；文章 TOC 仅在启用 JS 时按当前 H2 章节展开 H3 子项，并与章节目录共用 `220ms cubic-bezier(.22, 1, .36, 1)` 共享滑动指示块与 `scrollend` + 超时兜底锁定。
 

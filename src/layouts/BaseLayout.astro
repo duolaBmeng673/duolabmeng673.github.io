@@ -39,6 +39,7 @@ const channel = path === '/'
         ? 'tools'
         : 'site';
 const isNotFound = path === '/404' || path === '/404/' || path === '/404.html';
+const isArticlePage = bodyClass.split(/\s+/).includes('article-page');
 const image = new URL('/og-default.png', Astro.site);
 
 const navItems = [
@@ -101,7 +102,7 @@ const navItems = [
         root.dataset.themeMode = mode;
         root.dataset.theme = mode === 'system' ? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : mode;
         const themeMeta = document.querySelector('meta[name="theme-color"]');
-        if (themeMeta) themeMeta.setAttribute('content', root.dataset.theme === 'dark' ? '#08070c' : '#f7f6f2');
+        if (themeMeta) themeMeta.setAttribute('content', root.dataset.theme === 'dark' ? '#050505' : '#f7f6f2');
       })();
     </script>
   </head>
@@ -109,6 +110,11 @@ const navItems = [
     <div class="dotgrid-hero-backdrop" aria-hidden="true">
       <canvas data-ambient-grid></canvas>
     </div>
+    {isArticlePage && (
+      <div class="article-tile-backdrop" aria-hidden="true">
+        <canvas data-article-tile-grid></canvas>
+      </div>
+    )}
 
     <a class="skip-link" href="#main-content">跳到正文</a>
 

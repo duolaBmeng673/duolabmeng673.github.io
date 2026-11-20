@@ -101,7 +101,13 @@ function initHeroStage() {
     step();
   };
 
-  const activatePreset = (slug: string, persist: boolean, animate: boolean) => {
+  const activatePreset = (
+    slug: string,
+    persist: boolean,
+    animate: boolean,
+    triggerEl?: HTMLElement,
+    clickOrigin?: { x: number; y: number },
+  ) => {
     const matched = buttons.find((btn) => btn.dataset.presetSlug === slug) ?? buttons[0];
     if (!matched) return;
     const activeSlug = matched.dataset.presetSlug ?? 'all';
@@ -127,24 +133,53 @@ function initHeroStage() {
         /* Storage is optional. */
       }
     }
-    const PRESET_TRAIL_RGB: Record<string, string> = {
-      all: '37 99 235',
-      research: '139 92 246',
-      cs: '225 65 107',
-      '837': '13 148 136',
-    };
     document.documentElement.dataset.preset = activeSlug;
-    document.documentElement.style.setProperty('--trail-rgb', PRESET_TRAIL_RGB[activeSlug] ?? PRESET_TRAIL_RGB.all);
-    window.dispatchEvent(new CustomEvent('duolabmeng673:preset-change', { detail: { slug: activeSlug } }));
+    document.documentElement.style.removeProperty('--trail-rgb');
+    const originRect = triggerEl?.getBoundingClientRect();
+    const fallbackRect = stage.getBoundingClientRect();
+    const originX = clickOrigin
+      ? clickOrigin.x
+      : originRect
+        ? originRect.left + originRect.width / 2
+        : fallbackRect.width > 0
+          ? fallbackRect.left + fallbackRect.width / 2
+          : window.innerWidth / 2;
+    const originY = clickOrigin
+      ? clickOrigin.y
+      : originRect
+        ? originRect.top + originRect.height / 2
+        : fallbackRect.height > 0
+          ? fallbackRect.top + fallbackRect.height / 2
+          : window.innerHeight / 2;
+
+    const homeRoot = document.querySelector<HTMLElement>('[data-home-root]');
+    const motionPaused = reducedMotion() || homeRoot?.dataset.motion === 'paused';
+    const startTime = performance.now();
+    // Stage responds immediately on click without waiting for the backdrop wave
+    stage.dataset.preset = activeSlug;
+
+    window.dispatchEvent(
+      new CustomEvent('duolabmeng673:preset-change', {
+        detail: { slug: activeSlug, originX, originY, startTime, delayMs: 0, animate: animate && !motionPaused },
+      }),
+    );
   };
 
   const initial = document.documentElement.dataset.preset || 'all';
   activatePreset(initial, false, false);
 
   for (const btn of buttons) {
-    btn.addEventListener('click', () => {
+    btn.addEventListener('click', (event: MouseEvent) => {
       const slug = btn.dataset.presetSlug;
-      if (slug) activatePreset(slug, true, true);
+      if (!slug) return;
+      const hasPointerCoords = event.clientX > 0 || event.clientY > 0;
+      activatePreset(
+        slug,
+        true,
+        true,
+        btn,
+        hasPointerCoords ? { x: event.clientX, y: event.clientY } : undefined,
+      );
     });
   }
 

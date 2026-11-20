@@ -517,3 +517,36 @@ test('study articles include header quick jump bar, chapter switcher, TOC jump f
   assert.ok(hasCrossPrev, 'Expected at least one study note at module boundary with previous cross-module link');
   assert.ok(hasCrossNext, 'Expected at least one study note at module boundary with next cross-module link');
 });
+
+test('article pages mount lower breathing tile grid while non-article pages keep upper global grid only', () => {
+  for (const articlePage of ['dist/study-notes/837/decision-tree-c45/index.html', 'dist/blog/bert/index.html']) {
+    const html = read(articlePage);
+    assert.match(html, /class="article-tile-backdrop"/);
+    assert.match(html, /data-article-tile-grid/);
+    assert.match(html, /class="dotgrid-hero-backdrop"/);
+  }
+  for (const nonArticlePage of [
+    'dist/index.html',
+    'dist/about/index.html',
+    'dist/blog/index.html',
+    'dist/study-notes/837/information-security/index.html',
+  ]) {
+    const html = read(nonArticlePage);
+    assert.ok(!html.includes('article-tile-backdrop'), `${nonArticlePage} must not include article-tile-backdrop`);
+    assert.ok(!html.includes('data-article-tile-grid'), `${nonArticlePage} must not include data-article-tile-grid`);
+  }
+});
+
+test('carbon dark palette, ember study tokens, and preset ripple coordinates stay wired', () => {
+  const tokensCss = read('src/styles/tokens.css');
+  assert.match(tokensCss, /--bg:\s*#050505;/);
+  assert.match(tokensCss, /--bg-elev:\s*#0e0e10;/);
+  assert.match(tokensCss, /:root\[data-preset="837"\]\s*\{\s*--trail-rgb:\s*var\(--ch-837-rgb\);/);
+  assert.match(tokensCss, /--ch-837-rgb:\s*240 128 80;/);
+  assert.ok(!read('src/layouts/BaseLayout.astro').includes('#08070c'));
+  assert.ok(!read('src/scripts/typography.ts').includes('#08070c'));
+
+  const homeTs = read('src/scripts/home.ts');
+  assert.ok(!homeTs.includes('PRESET_TRAIL_RGB'), 'home.ts must not duplicate CSS --trail-rgb table');
+  assert.match(homeTs, /duolabmeng673:preset-change[\s\S]*originX[\s\S]*originY[\s\S]*delayMs/);
+});

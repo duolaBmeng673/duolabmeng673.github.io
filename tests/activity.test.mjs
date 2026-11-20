@@ -73,10 +73,24 @@ test('local calendar boundaries and labels survive year boundaries and daylight-
 });
 
 test('heat tokens use the site palette with monotonic, distinguishable adjacent levels in both themes', () => {
+  const tokensCss = read('src/styles/tokens.css');
   const css = read('src/styles/global.css');
-  const tokens = (source) => Object.fromEntries([...source.matchAll(/(--[\w-]+):\s*([^;]+);/g)].map(([, key, value]) => [key, value]));
-  const light = tokens(css.match(/:root\s*{([^]*?)\n}/)[1]);
-  const dark = { ...light, ...tokens(css.match(/:root\[data-theme="dark"\]\s*{([^]*?)\n}/)[1]) };
+  const parseVars = (source) => Object.fromEntries([...source.matchAll(/(--[\w-]+):\s*([^;]+);/g)].map(([, key, value]) => [key, value.trim()]));
+  const light = {
+    ...parseVars(tokensCss.match(/:root\s*\{([^]*?)\n\}/)[1]),
+    ...parseVars(css.match(/:root\s*{([^]*?)\n}/)[1]),
+  };
+  const dark = {
+    ...light,
+    ...parseVars(tokensCss.match(/:root\[data-theme="dark"\]\s*\{([^]*?)\n\}/)[1]),
+    ...parseVars(css.match(/:root\[data-theme="dark"\]\s*{([^]*?)\n}/)[1]),
+  };
+  const resolveHex = (palette, key, depth = 0) => {
+    assert.ok(depth < 8, `cyclic CSS var ${key}`);
+    const val = palette[key];
+    const ref = val?.match(/^var\((--[\w-]+)(?:,\s*[^)]+)?\)$/);
+    return ref ? resolveHex(palette, ref[1], depth + 1) : val;
+  };
   const rgb = (hex) => [1, 3, 5].map((index) => parseInt(hex.slice(index, index + 2), 16));
   const luminance = (channels) => channels.map((channel) => channel / 255).map((v) => v <= .04045 ? v / 12.92 : ((v + .055) / 1.055) ** 2.4).reduce((sum, v, i) => sum + v * [.2126, .7152, .0722][i], 0);
   for (const [theme, palette] of [['light', light], ['dark', dark]]) {
@@ -84,16 +98,20 @@ test('heat tokens use the site palette with monotonic, distinguishable adjacent 
       const mix = palette[`--heat-${level}`].match(/^color-mix\(in srgb, var\((--text|--accent)\) (\d+)%, var\(--bg\)\)$/);
       assert.ok(mix, `${theme} level ${level} derives from shared tokens`);
       const weight = Number(mix[2]) / 100;
-      return rgb(palette[mix[1]]).map((channel, i) => channel * weight + rgb(palette['--bg'])[i] * (1 - weight));
+      const fgRgb = rgb(resolveHex(palette, mix[1]));
+      const bgRgb = rgb(resolveHex(palette, '--bg'));
+      return fgRgb.map((channel, i) => channel * weight + bgRgb[i] * (1 - weight));
     }).map(luminance);
     levels.slice(1).forEach((value, index) => {
       assert.ok(theme === 'light' ? value < levels[index] : value > levels[index], `${theme} intensity is monotonic`);
       assert.ok((Math.max(value, levels[index]) + .05) / (Math.min(value, levels[index]) + .05) >= 1.25, `${theme} adjacent levels differ by at least 1.25:1`);
     });
-    const site = palette['--heat-site'].match(/^color-mix\(in srgb, var\(--warm\) (\d+)%, var\(--bg\)\)$/);
+    const site = palette['--heat-site'].match(/^color-mix\(in srgb, var\((--warm)\) (\d+)%, var\(--bg\)\)$/);
     assert.ok(site, 'blog feature color derives from the shared warm accent');
-    const weight = Number(site[1]) / 100;
-    const feature = luminance(rgb(palette['--warm']).map((channel, index) => channel * weight + rgb(palette['--bg'])[index] * (1 - weight)));
+    const weight = Number(site[2]) / 100;
+    const warmRgb = rgb(resolveHex(palette, '--warm'));
+    const bgRgb = rgb(resolveHex(palette, '--bg'));
+    const feature = luminance(warmRgb.map((channel, index) => channel * weight + bgRgb[index] * (1 - weight)));
     assert.ok((Math.max(feature, levels[0]) + .05) / (Math.min(feature, levels[0]) + .05) >= 1.5, `${theme} blog features are distinguishable from empty cells`);
   }
 });
@@ -614,7 +632,11 @@ test('/about/ renders pure square cells with fixed category priority and graysca
     'Legend filter pills sit inside grid column directly below scrollable heatmap grid',
   );
   const globalCss = read('src/styles/global.css');
-  assert.match(globalCss, /:root\[data-theme="dark"\]\s+\.article\[data-category="Study Notes"\]\s*\{[^}]*--cat-study:\s*#46ab91;/);
+  assert.match(globalCss, /:root\[data-theme="dark"\]\s+\.article\[data-category="Study Notes"\]\s*\{[^}]*--cat-study:\s*#d97348;/);
+
+  const aboutHeatmapTs = read('src/scripts/about-heatmap.ts');
+  assert.match(aboutHeatmapTs, /cellBtnMap\.get\(/, 'about heatmap hover selection must update in O(1) without looping over all cells');
+  assert.match(aboutHeatmapTs, /scheduleDetail\(/, 'rapid pointerover detail updates must coalesce per animation frame');
 
   const tokensCss = read('src/styles/tokens.css');
   const hexToRgb = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
@@ -623,17 +645,48 @@ test('/about/ renders pure square cells with fixed category priority and graysca
     .map((v) => (v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4))
     .reduce((sum, v, i) => sum + v * [0.2126, 0.7152, 0.0722][i], 0);
   const labL = (y) => (y > 0.008856 ? 116 * Math.cbrt(y) - 16 : 903.3 * y);
+  const contrastRatio = (a, b) => {
+    const la = relLum(hexToRgb(a));
+    const lb = relLum(hexToRgb(b));
+    return (Math.max(la, lb) + 0.05) / (Math.min(la, lb) + 0.05);
+  };
+  const hueOf = (h) => {
+    const [r, g, b] = hexToRgb(h).map((v) => v / 255);
+    const mx = Math.max(r, g, b);
+    const mn = Math.min(r, g, b);
+    const d = mx - mn;
+    if (!d) return 0;
+    const deg = mx === r ? ((g - b) / d) % 6 : mx === g ? (b - r) / d + 2 : (r - g) / d + 4;
+    return (deg * 60 + 360) % 360;
+  };
+  const hueDist = (a, b) => {
+    const d = Math.abs(a - b) % 360;
+    return d > 180 ? 360 - d : d;
+  };
   const parseThemeBlock = (block) => Object.fromEntries(
     [...block.matchAll(/(--heat-cat-\w+):\s*(#[0-9a-fA-F]{6});/g)].map(([, k, v]) => [k, v]),
   );
   const lightBlock = tokensCss.match(/:root\s*\{([^]*?)\n\}/)[1];
   const darkBlock = tokensCss.match(/:root\[data-theme="dark"\]\s*\{([^]*?)\n\}/)[1];
-  for (const [themeName, block] of [['light', lightBlock], ['dark', darkBlock]]) {
+  for (const [themeName, block, bgHex] of [['light', lightBlock, '#f7f6f2'], ['dark', darkBlock, '#050505']]) {
     const palette = parseThemeBlock(block);
     const lValues = Object.values(palette).map((hex) => labL(relLum(hexToRgb(hex)))).sort((a, b) => a - b);
     assert.equal(lValues.length, 5, `${themeName} has all 5 --heat-cat-* colors`);
     for (let i = 1; i < lValues.length; i++) {
-      assert.ok(lValues[i] - lValues[i - 1] >= 11, `${themeName} grayscale L* gap >= 11 (${lValues[i - 1].toFixed(1)} -> ${lValues[i].toFixed(1)})`);
+      assert.ok(lValues[i] - lValues[i - 1] >= 12, `${themeName} grayscale L* gap >= 12 (${lValues[i - 1].toFixed(1)} -> ${lValues[i].toFixed(1)})`);
+    }
+    if (themeName === 'dark') {
+      assert.ok(contrastRatio(palette['--heat-cat-site'], bgHex) >= 2.05, `dark site contrast >= 2.05 (${palette['--heat-cat-site']})`);
+      for (const key of ['--heat-cat-paper', '--heat-cat-tech', '--heat-cat-study', '--heat-cat-revision']) {
+        assert.ok(contrastRatio(palette[key], bgHex) >= 3.0, `dark ${key} contrast >= 3.0 (${palette[key]})`);
+      }
+    }
+    const chromHues = ['--heat-cat-paper', '--heat-cat-tech', '--heat-cat-study', '--heat-cat-revision'].map((k) => [k, hueOf(palette[k])]);
+    for (let i = 0; i < chromHues.length; i++) {
+      for (let j = i + 1; j < chromHues.length; j++) {
+        const gap = hueDist(chromHues[i][1], chromHues[j][1]);
+        assert.ok(gap >= 30, `${themeName} hue distance ${chromHues[i][0]} vs ${chromHues[j][0]} >= 30° (got ${gap.toFixed(1)}°)`);
+      }
     }
   }
 });

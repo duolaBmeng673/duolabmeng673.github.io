@@ -89,9 +89,16 @@ function initAboutHeatmap(root: HTMLElement) {
   let pinnedDate = root.dataset.pinnedDate || payload.buildDate;
   let previewDate: string | null = null;
   let cellMap = new Map<string, AboutHeatmapCell>();
+  let cellBtnMap = new Map<string, HTMLButtonElement>();
   let orderedCells: HTMLButtonElement[] = [];
+  let selectedBtn: HTMLButtonElement | null = null;
+  let lastDetailKey = '';
+  let detailRafId = 0;
+  let overflowRafId = 0;
+  let pendingDetail: { date: string | null; modeLabel: string } | null = null;
 
   const syncDetailOverflow = () => {
+    overflowRafId = 0;
     const overflowing = detailBodyEl.scrollHeight > detailBodyEl.clientHeight + 2
       && detailBodyEl.scrollTop + detailBodyEl.clientHeight < detailBodyEl.scrollHeight - 2;
     detailBodyEl.classList.toggle('has-overflow', overflowing);
@@ -99,12 +106,21 @@ function initAboutHeatmap(root: HTMLElement) {
   detailBodyEl.addEventListener('scroll', syncDetailOverflow, { passive: true });
 
   const renderDetail = (date: string | null, modeLabel: string) => {
+    const detailKey = `${date ?? ''}|${modeLabel}`;
+    if (detailKey === lastDetailKey) return;
+    lastDetailKey = detailKey;
+
     const cell = date ? cellMap.get(date) ?? null : null;
     detailDateEl.textContent = formatWeekdayDateLabel(cell?.date ?? date);
     detailModeEl.textContent = modeLabel;
     const rawTotal = cell?.rawTotal ?? 0;
     detailTotalEl.dataset.rawTotal = String(rawTotal);
     detailTotalEl.textContent = `${rawTotal} 条`;
+
+    if (overflowRafId) {
+      cancelAnimationFrame(overflowRafId);
+      overflowRafId = 0;
+    }
 
     if (!cell || cell.entries.length === 0) {
       const p = document.createElement('p');
@@ -156,17 +172,43 @@ function initAboutHeatmap(root: HTMLElement) {
 
     detailBodyEl.replaceChildren(ul);
     detailBodyEl.scrollTop = 0;
-    requestAnimationFrame(syncDetailOverflow);
+    overflowRafId = requestAnimationFrame(syncDetailOverflow);
+  };
+
+  const renderDetailImmediate = (date: string | null, modeLabel: string) => {
+    if (detailRafId) {
+      cancelAnimationFrame(detailRafId);
+      detailRafId = 0;
+    }
+    pendingDetail = null;
+    renderDetail(date, modeLabel);
+  };
+
+  const scheduleDetail = (date: string | null, modeLabel: string) => {
+    pendingDetail = { date, modeLabel };
+    if (!detailRafId) {
+      detailRafId = requestAnimationFrame(() => {
+        detailRafId = 0;
+        const next = pendingDetail;
+        pendingDetail = null;
+        if (next) renderDetail(next.date, next.modeLabel);
+      });
+    }
   };
 
   const updateSelectionStates = () => {
     const focusTargetDate = previewDate || pinnedDate;
-    for (const btn of orderedCells) {
-      const date = btn.dataset.date || '';
-      const selected = date === focusTargetDate;
-      btn.setAttribute('aria-selected', selected ? 'true' : 'false');
-      btn.tabIndex = selected ? 0 : -1;
+    const nextBtn = focusTargetDate ? cellBtnMap.get(focusTargetDate) ?? null : null;
+    if (selectedBtn === nextBtn) return;
+    if (selectedBtn) {
+      selectedBtn.setAttribute('aria-selected', 'false');
+      selectedBtn.tabIndex = -1;
     }
+    if (nextBtn) {
+      nextBtn.setAttribute('aria-selected', 'true');
+      nextBtn.tabIndex = 0;
+    }
+    selectedBtn = nextBtn;
   };
 
   const renderAll = () => {
@@ -234,7 +276,10 @@ function initAboutHeatmap(root: HTMLElement) {
     else monthsEl.replaceChildren(document.createElement('span'), ...monthNodes);
 
     cellMap = new Map();
+    cellBtnMap = new Map();
     orderedCells = [];
+    selectedBtn = null;
+    lastDetailKey = '';
     const weekNodes: HTMLElement[] = [];
 
     if (!model.columns.flat().some((c) => c && c.date === pinnedDate)) {
@@ -261,11 +306,14 @@ function initAboutHeatmap(root: HTMLElement) {
           btn.disabled = true;
         } else {
           cellMap.set(cell.date, cell);
+          cellBtnMap.set(cell.date, btn);
           orderedCells.push(btn);
           btn.className = 'about-heat-cell';
           btn.setAttribute('aria-label', cell.ariaLabel);
+          btn.setAttribute('aria-selected', 'false');
           btn.setAttribute('aria-controls', 'about-heatmap-detail');
           btn.setAttribute('title', cell.ariaLabel);
+          btn.tabIndex = -1;
           btn.dataset.date = cell.date;
           btn.dataset.total = String(cell.total);
           btn.dataset.rawTotal = String(cell.rawTotal);
@@ -281,7 +329,7 @@ function initAboutHeatmap(root: HTMLElement) {
 
     weeksEl.replaceChildren(...weekNodes);
     updateSelectionStates();
-    renderDetail(previewDate || pinnedDate, previewDate ? '预览' : '已固定');
+    renderDetailImmediate(previewDate || pinnedDate, previewDate ? '预览' : '已固定');
     syncGridMetrics();
   };
 
@@ -296,13 +344,16 @@ function initAboutHeatmap(root: HTMLElement) {
   }
 
   weeksEl.addEventListener('pointerover', (ev) => {
-    const target = (ev.target as HTMLElement | null)?.closest<HTMLButtonElement>('button[data-date]');
+    const rawTarget = ev.target as HTMLElement | null;
+    const target = rawTarget?.tagName === 'BUTTON'
+      ? (rawTarget as HTMLButtonElement)
+      : rawTarget?.closest<HTMLButtonElement>('button[data-date]');
     if (!target || target.disabled) return;
     const date = target.dataset.date || null;
     if (date && date !== previewDate) {
       previewDate = date;
       updateSelectionStates();
-      renderDetail(date, date === pinnedDate ? '已固定' : '预览');
+      scheduleDetail(date, date === pinnedDate ? '已固定' : '预览');
     }
   });
 
@@ -310,7 +361,7 @@ function initAboutHeatmap(root: HTMLElement) {
     if (previewDate !== null) {
       previewDate = null;
       updateSelectionStates();
-      renderDetail(pinnedDate, '已固定');
+      renderDetailImmediate(pinnedDate, '已固定');
     }
   });
 
@@ -323,7 +374,7 @@ function initAboutHeatmap(root: HTMLElement) {
     previewDate = null;
     root.dataset.pinnedDate = pinnedDate;
     updateSelectionStates();
-    renderDetail(pinnedDate, '已固定');
+    renderDetailImmediate(pinnedDate, '已固定');
   });
 
   weeksEl.addEventListener('focusin', (ev) => {
@@ -333,7 +384,7 @@ function initAboutHeatmap(root: HTMLElement) {
     if (date) {
       previewDate = date;
       updateSelectionStates();
-      renderDetail(date, date === pinnedDate ? '已固定' : '预览');
+      renderDetailImmediate(date, date === pinnedDate ? '已固定' : '预览');
     }
   });
 
@@ -343,7 +394,7 @@ function initAboutHeatmap(root: HTMLElement) {
     if (previewDate !== null) {
       previewDate = null;
       updateSelectionStates();
-      renderDetail(pinnedDate, '已固定');
+      renderDetailImmediate(pinnedDate, '已固定');
     }
   });
 
@@ -361,7 +412,7 @@ function initAboutHeatmap(root: HTMLElement) {
         previewDate = null;
         root.dataset.pinnedDate = pinnedDate;
         updateSelectionStates();
-        renderDetail(pinnedDate, '已固定');
+        renderDetailImmediate(pinnedDate, '已固定');
       }
       return;
     }
@@ -369,7 +420,7 @@ function initAboutHeatmap(root: HTMLElement) {
     if (ev.key === 'Escape') {
       previewDate = null;
       updateSelectionStates();
-      renderDetail(pinnedDate, '已固定');
+      renderDetailImmediate(pinnedDate, '已固定');
       return;
     }
 

@@ -170,14 +170,14 @@ interface SwapApi {
 
 const THEMES: Record<'dark' | 'light', Record<string, string>> = {
   dark: {
-    '--swap-tile': 'linear-gradient(180deg, #3a3644 0%, #27242f 100%)',
+    '--swap-tile': 'linear-gradient(180deg, #27272a 0%, #18181b 100%)',
     '--swap-tile-edge': 'rgba(255, 255, 255, 0.07)',
     '--swap-tile-highlight': 'rgba(255, 255, 255, 0.12)',
     '--swap-shadow': '0 30px 60px -24px rgba(0, 0, 0, 0.8), 0 10px 24px -12px rgba(0, 0, 0, 0.55)',
     '--swap-media-edge': 'rgba(255, 255, 255, 0.06)',
     '--swap-ink': '#f4f4f5',
     '--swap-badge': 'rgba(255, 255, 255, 0.08)',
-    '--swap-shade': '#100e15'
+    '--swap-shade': '#0a0a0c'
   },
   light: {
     '--swap-tile': 'linear-gradient(180deg, #ffffff 0%, #f6f6f8 100%)',

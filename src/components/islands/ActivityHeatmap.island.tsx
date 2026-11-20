@@ -187,17 +187,23 @@ export default function ActivityHeatmapIsland({
 
   useEffect(() => {
     setHydrated(true);
+    const stageEl = sidebarBodyRef.current?.closest<HTMLElement>('[data-hero-stage]') ?? null;
     const syncVisualAttrs = () => {
       setThemeAttr(document.documentElement.dataset.theme || 'light');
-      setPresetAttr(document.documentElement.dataset.preset || 'all');
+      setPresetAttr(stageEl?.dataset.preset || document.documentElement.dataset.preset || 'all');
     };
     syncVisualAttrs();
     const mo = new MutationObserver(syncVisualAttrs);
     mo.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme', 'data-preset'] });
+    const stageMo = stageEl ? new MutationObserver(syncVisualAttrs) : null;
+    if (stageEl && stageMo) {
+      stageMo.observe(stageEl, { attributes: true, attributeFilter: ['data-preset'] });
+    }
     const onPresetEvent = () => syncVisualAttrs();
     window.addEventListener('duolabmeng673:preset-change', onPresetEvent);
     return () => {
       mo.disconnect();
+      stageMo?.disconnect();
       window.removeEventListener('duolabmeng673:preset-change', onPresetEvent);
     };
   }, []);

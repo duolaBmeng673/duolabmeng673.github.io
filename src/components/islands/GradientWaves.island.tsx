@@ -277,11 +277,10 @@ export default function GradientWavesIsland({ presets, defaultSlug = 'all', clas
     return false;
   });
 
-  // Read-only observers syncing document theme & preset changes without mutating global attributes
+  // Read-only observers syncing document theme & immediate preset changes without mutating global attributes
   useEffect(() => {
     const syncFromDom = () => {
-      const nextTheme = document.documentElement.dataset.theme === 'dark';
-      setIsDark(nextTheme);
+      setIsDark(document.documentElement.dataset.theme === 'dark');
       const nextSlug = document.documentElement.dataset.preset;
       if (nextSlug) setActiveSlug(nextSlug);
     };
@@ -307,15 +306,15 @@ export default function GradientWavesIsland({ presets, defaultSlug = 'all', clas
   );
 
   const horizon = useMemo(
-    () => parseColor(activePreset?.horizonColor ?? '#2563EB', [0.15, 0.39, 0.92]),
+    () => parseColor(activePreset?.horizonColor ?? '#5227ff', [0.32, 0.15, 1.0]),
     [activePreset?.horizonColor],
   );
   const wave = useMemo(
-    () => parseColor(activePreset?.waveColor ?? '#38BDF8', [0.22, 0.74, 0.97]),
+    () => parseColor(activePreset?.waveColor ?? '#c084fc', [0.75, 0.52, 0.99]),
     [activePreset?.waveColor],
   );
   const crest = useMemo(
-    () => parseColor(isDark ? (activePreset?.crestColor ?? '#E0F2FE') : '#FFFFFF', [1, 1, 1]),
+    () => parseColor(isDark ? (activePreset?.crestColor ?? '#f3e8ff') : '#FFFFFF', [1, 1, 1]),
     [isDark, activePreset?.crestColor],
   );
 

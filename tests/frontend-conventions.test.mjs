@@ -130,7 +130,7 @@ test('duolabmeng673 localStorage key strings appear only in src/lib/storage-keys
   }
 });
 
-test('homepage total shipped JS stays within 100 KB gzip budget', async () => {
+test('homepage total shipped JS stays within 120 KB gzip budget', async () => {
   const { gzipSync } = await import('node:zlib');
   const distDir = join(ROOT, 'dist');
   const homeHtml = readFileSync(join(distDir, 'index.html'), 'utf8');
@@ -159,19 +159,19 @@ test('homepage total shipped JS stays within 100 KB gzip budget', async () => {
   for (const asset of visited) {
     totalGzipBytes += gzipSync(readFileSync(join(distDir, asset))).length;
   }
-  const budgetBytes = 100 * 1024;
+  const budgetBytes = 120 * 1024;
   assert.ok(
     totalGzipBytes <= budgetBytes,
-    `Homepage JS gzip total ${(totalGzipBytes / 1024).toFixed(2)} KB exceeds 100 KB budget`,
+    `Homepage JS gzip total ${(totalGzipBytes / 1024).toFixed(2)} KB exceeds 120 KB budget`,
   );
 });
 
-test('ambient-grid uses (hover: none) / (pointer: coarse) media query for non-home static mode and keeps desktop pointer listeners', () => {
+test('ambient-grid uses (hover: none) / (pointer: coarse) media query for non-home static mode and click-only desktop waves', () => {
   const layoutSource = readFileSync(join(ROOT, 'src/layouts/BaseLayout.astro'), 'utf8');
   assert.ok(!layoutSource.includes('data-ambient-static'), 'BaseLayout must not hardcode data-ambient-static for non-homepage routes');
 
   const gridSource = readFileSync(join(ROOT, 'src/scripts/ambient-grid.ts'), 'utf8');
   assert.match(gridSource, /hover:\s*none|pointer:\s*coarse/, 'ambient-grid must gate non-home static mode via (hover: none) / (pointer: coarse)');
-  assert.ok(gridSource.includes("'pointermove'"), 'ambient-grid must register pointermove listener for desktop');
-  assert.ok(gridSource.includes("'pointerdown'"), 'ambient-grid must register pointerdown listener for desktop');
+  assert.ok(!gridSource.includes("'pointermove'"), 'ambient-grid must not run mouse-follow hover glow on pointermove');
+  assert.ok(gridSource.includes("'pointerdown'"), 'ambient-grid must register pointerdown listener for desktop click waves');
 });

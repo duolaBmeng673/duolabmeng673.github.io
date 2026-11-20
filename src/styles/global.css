@@ -17,9 +17,9 @@
   --cat-research: var(--c1);
   --cat-tech: var(--c2);
   --cat-study: var(--c3);
-  --accent: #6d28d9;
-  --accent-strong: #5b21b6;
-  --accent-soft: rgba(109, 40, 217, 0.09);
+  --accent: var(--ac);
+  --accent-strong: var(--ac-strong);
+  --accent-soft: var(--ac-soft);
   --heat-0: color-mix(in srgb, var(--text) 7%, var(--bg));
   --heat-1: color-mix(in srgb, var(--accent) 25%, var(--bg));
   --heat-2: color-mix(in srgb, var(--accent) 46%, var(--bg));
@@ -56,24 +56,24 @@
 
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --bg: #08070c;
-  --surface: #111019;
-  --surface-raised: #171522;
+  --bg: #050505;
+  --surface: #0e0e10;
+  --surface-raised: #161619;
   --surface-soft: rgba(255, 255, 255, 0.045);
-  --text: #f3f2f7;
-  --text-soft: #c9c7d6;
-  --text-muted: #9390a6;
-  --border: rgba(255, 255, 255, 0.115);
-  --border-strong: rgba(255, 255, 255, 0.27);
-  --border-control: rgba(255, 255, 255, 0.2);
+  --text: #f4f4f5;
+  --text-soft: #c8c8cd;
+  --text-muted: #8a8a93;
+  --border: rgba(255, 255, 255, 0.105);
+  --border-strong: rgba(255, 255, 255, 0.24);
+  --border-control: rgba(255, 255, 255, 0.18);
   --nav-active: rgba(255, 255, 255, 0.1);
   --row-hover: rgba(255, 255, 255, 0.045);
   --cat-research: var(--c1);
   --cat-tech: var(--c2);
   --cat-study: var(--c3);
-  --accent: #a78bfa;
-  --accent-strong: #c4b5fd;
-  --accent-soft: rgba(167, 139, 250, 0.15);
+  --accent: var(--ac);
+  --accent-strong: var(--ac-strong);
+  --accent-soft: var(--ac-soft);
   --heat-0: color-mix(in srgb, var(--text) 7%, var(--bg));
   --heat-1: color-mix(in srgb, var(--accent) 26%, var(--bg));
   --heat-2: color-mix(in srgb, var(--accent) 46%, var(--bg));
@@ -83,7 +83,7 @@
   --warm: #a1a1aa;
   --warm-text: #d4d4d8;
   --warm-soft: rgba(161, 161, 170, 0.16);
-  --button-text: #100921;
+  --button-text: #09090b;
   --shadow: 0 1.25rem 3rem rgba(0, 0, 0, 0.55);
 }
 
@@ -97,27 +97,64 @@
   }
 }
 
+body[data-channel="home"],
+body[data-channel="blog"],
+body[data-channel="tools"],
+body[data-channel="site"] {
+  --ac: var(--c1);
+  --ac-strong: var(--ch-research-hi);
+  --ac-soft: color-mix(in srgb, var(--c1) 13%, transparent);
+  --accent: var(--ac);
+  --accent-strong: var(--ac-strong);
+  --accent-soft: var(--ac-soft);
+  --link: var(--ac);
+  --focus: var(--ac);
+  --timeline-node: var(--ac);
+}
+
 body[data-channel="study"] {
   --ac: var(--study-ac);
   --ac-strong: var(--study-ac-strong);
   --ac-soft: var(--study-ac-soft);
-  --accent: var(--study-ac);
-  --accent-strong: var(--study-ac-strong);
-  --accent-soft: var(--study-ac-soft);
-  --link: var(--study-ac);
-  --focus: var(--study-ac);
-  --timeline-node: var(--study-ac);
+  --accent: var(--ac);
+  --accent-strong: var(--ac-strong);
+  --accent-soft: var(--ac-soft);
+  --link: var(--ac);
+  --focus: var(--ac);
+  --timeline-node: var(--ac);
+}
+
+.article[data-category="Research"] {
+  --ac: var(--c1);
+  --ac-strong: var(--ch-research-hi);
+  --ac-soft: color-mix(in srgb, var(--c1) 14%, transparent);
+  --accent: var(--ac);
+  --accent-strong: var(--ac-strong);
+  --accent-soft: var(--ac-soft);
+  --link: var(--ac);
+  --focus: var(--ac);
+}
+
+.article[data-category="Computer Science"] {
+  --ac: var(--c2);
+  --ac-strong: var(--ch-cs-hi);
+  --ac-soft: color-mix(in srgb, var(--c2) 14%, transparent);
+  --accent: var(--ac);
+  --accent-strong: var(--ac-strong);
+  --accent-soft: var(--ac-soft);
+  --link: var(--ac);
+  --focus: var(--ac);
 }
 
 .site-header {
   --ac: var(--brand-ac);
   --ac-strong: var(--brand-ac-strong);
   --ac-soft: var(--brand-ac-soft);
-  --accent: var(--brand-ac);
-  --accent-strong: var(--brand-ac-strong);
-  --accent-soft: var(--brand-ac-soft);
-  --link: var(--brand-ac);
-  --focus: var(--brand-ac);
+  --accent: var(--ac);
+  --accent-strong: var(--ac-strong);
+  --accent-soft: var(--ac-soft);
+  --link: var(--ac);
+  --focus: var(--ac);
 }
 
 @keyframes countup-fade {
@@ -200,20 +237,45 @@ button, input, select { font: inherit; color: inherit; }
   clip-path: inset(50%) !important;
 }
 
-/* Top Interactive Dot-Grid Backdrop */
+/* Upper-Half Interactive Dot-Grid Backdrop (fades cleanly into page background past hero/stage mid-line) */
 .dotgrid-hero-backdrop {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  height: 58rem;
+  height: clamp(36rem, 86vh, 50rem);
   z-index: 0;
   pointer-events: none;
   overflow: hidden;
-  mask-image: linear-gradient(180deg, #000 54%, transparent 100%);
-  -webkit-mask-image: linear-gradient(180deg, #000 54%, transparent 100%);
+  mask-image: linear-gradient(180deg, #000 0%, #000 72%, rgba(0, 0, 0, 0.42) 86%, transparent 100%);
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 72%, rgba(0, 0, 0, 0.42) 86%, transparent 100%);
 }
 .dotgrid-hero-backdrop canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+body.article-page .dotgrid-hero-backdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: auto;
+  height: 30rem;
+  mask-image: linear-gradient(180deg, #000 42%, transparent 100%);
+  -webkit-mask-image: linear-gradient(180deg, #000 42%, transparent 100%);
+}
+.article-tile-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  mask-image: linear-gradient(180deg, transparent 0%, transparent 16rem, #000 30rem, #000 100%);
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, transparent 16rem, #000 30rem, #000 100%);
+}
+.article-tile-backdrop canvas {
   display: block;
   width: 100%;
   height: 100%;
@@ -605,7 +667,8 @@ h1, h2, h3 {
   color: var(--bg);
 }
 .button.primary:hover { filter: brightness(.94); color: var(--bg); }
-.text-link, .section-link { color: var(--link); font-size: 0.84rem; font-weight: var(--fw-m); }
+.text-link, .section-link { color: var(--link); font-size: 0.84rem; font-weight: var(--fw-m); text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--link) 38%, transparent); text-underline-offset: 4px; transition: color var(--transition), text-decoration-color var(--transition); }
+.text-link:hover, .section-link:hover { text-decoration-color: var(--link); }
 .text-link:hover, .section-link:hover { text-decoration: underline; text-underline-offset: 3px; }
 
 /* Homepage Identity, Index, Bento Cards & Lists */
@@ -699,8 +762,8 @@ h1, h2, h3 {
 [data-category="Computer Science"] { --category-color: var(--cat-tech); }
 [data-category="Study Notes"] { --category-color: var(--cat-study); }
 :root[data-theme="dark"] .article[data-category="Study Notes"] {
-  /* Calmer muted teal for dark-theme study article bars & active TOC without altering homepage/heatmap tokens */
-  --cat-study: #46ab91;
+  /* Muted ember (#d97348) for dark-theme study article bars & active TOC */
+  --cat-study: #d97348;
   --category-color: var(--cat-study);
 }
 .category-dot, .editorial-row .note-taxonomy::before, .timeline-row small::before,

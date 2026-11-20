@@ -5,7 +5,6 @@
   --bg-elev: #ffffff;
   --tx: #121217;
   --fg: var(--tx);
-  --trail-rgb: 37 99 235;
   --ts: #3d3d48;
   --tm: #656573;
   --bd: rgba(18, 18, 24, 0.105);
@@ -25,45 +24,57 @@
   --cardg: rgba(255, 255, 255, 0.84);
   --hi: rgba(255, 255, 255, 0.94);
   --sh: rgba(18, 18, 24, 0.065);
-  --brand-ac: #6d28d9;
-  --brand-ac-strong: #5b21b6;
-  --brand-ac-soft: rgba(109, 40, 217, 0.09);
-  --study-ac: #0b6e61;
-  --study-ac-strong: #08544a;
-  --study-ac-soft: rgba(15, 138, 122, 0.11);
+  --brand-ac: #18181b;
+  --brand-ac-strong: #09090b;
+  --brand-ac-soft: rgba(24, 24, 27, 0.08);
+  --study-ac: #b84214;
+  --study-ac-strong: #9a3412;
+  --study-ac-soft: rgba(184, 66, 20, 0.14);
   --ac: var(--brand-ac);
   --ac-strong: var(--brand-ac-strong);
   --ac-soft: var(--brand-ac-soft);
   --btn: var(--brand-ac);
   --btnt: #ffffff;
 
+  --ch-all: #7c68b8;
+  --ch-all-hi: #9480cf;
+  --ch-all-rgb: 124 104 184;
+  --ch-research: #3b5fd0;
+  --ch-research-hi: #5b7ef0;
+  --ch-research-rgb: 59 95 208;
+  --ch-cs: #c2416b;
+  --ch-cs-hi: #e05582;
+  --ch-cs-rgb: 194 65 107;
+  --ch-837: #c2410c;
+  --ch-837-hi: #ea580c;
+  --ch-837-rgb: 194 65 12;
+  --trail-rgb: var(--ch-all-rgb);
+
   --gold: #b87c0c;
-  --c1: #3b5fd0;
-  --c2: #c2416b;
-  --c3: #0f8a7a;
+  --c1: var(--ch-research);
+  --c2: var(--ch-cs);
+  --c3: var(--ch-837);
   --cat-paper: var(--c1);
   --cat-tech: var(--c2);
   --cat-study: var(--c3);
   --cat-revision: var(--gold);
   --cat-site: #52525b;
-  --heat-cat-paper: #2044b8;
-  --heat-cat-study: #16a38f;
-  --heat-cat-tech: #cc3568;
-  --heat-cat-revision: #eab02a;
-  --heat-cat-site: #2d2f36;
-  --dot: 109, 40, 217;
-  --spot: 109, 40, 217;
+  --heat-cat-paper: #19399a;
+  --heat-cat-study: #d95a26;
+  --heat-cat-tech: #b92758;
+  --heat-cat-revision: #d6b818;
+  --heat-cat-site: #222428;
   --vbg: #efede6;
   --code-bg: #f4f3ef;
   --svg-bg: var(--bg-elev);
-  --preset-all: #2563eb;
-  --preset-all-hi: #38bdf8;
-  --preset-research: #5227ff;
-  --preset-research-hi: #c084fc;
-  --preset-cs: #c2416b;
-  --preset-cs-hi: #fb7185;
-  --preset-837: #0d9488;
-  --preset-837-hi: #34d399;
+  --preset-all: var(--ch-all);
+  --preset-all-hi: var(--ch-all-hi);
+  --preset-research: var(--ch-research);
+  --preset-research-hi: var(--ch-research-hi);
+  --preset-cs: var(--ch-cs);
+  --preset-cs-hi: var(--ch-cs-hi);
+  --preset-837: var(--ch-837);
+  --preset-837-hi: var(--ch-837-hi);
 
   --syntax-background: #f8fafc;
   --syntax-foreground: #24292e;
@@ -73,7 +84,7 @@
   --syntax-token-comment: #6a737d;
   --syntax-token-keyword: #d73a49;
   --syntax-token-parameter: #24292e;
-  --syntax-token-function: #6f42c1;
+  --syntax-token-function: #0550ae;
   --syntax-token-punctuation: #24292e;
   --syntax-token-link: #005cc5;
   --syntax-token-inserted: #22863a;
@@ -122,34 +133,47 @@
 
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --bg: #08070c;
-  --bg-elev: #111019;
-  --tx: #f3f2f7;
-  --ts: #c9c7d6;
-  --tm: #9390a6;
-  --bd: rgba(255, 255, 255, 0.115);
-  --bd-strong: rgba(255, 255, 255, 0.27);
-  --bd-ctl: rgba(255, 255, 255, 0.2);
-  --box-hover-border: rgba(243, 242, 247, 0.85);
+  --bg: #050505;
+  --bg-elev: #0e0e10;
+  --tx: #f4f4f5;
+  --ts: #c8c8cd;
+  --tm: #8a8a93;
+  --bd: rgba(255, 255, 255, 0.105);
+  --bd-strong: rgba(255, 255, 255, 0.24);
+  --bd-ctl: rgba(255, 255, 255, 0.18);
+  --box-hover-border: rgba(244, 244, 245, 0.85);
   --glass: rgba(255, 255, 255, 0.045);
-  --navg: rgba(14, 12, 22, 0.8);
-  --cardg: rgba(17, 16, 25, 0.76);
+  --navg: rgba(10, 10, 12, 0.84);
+  --cardg: rgba(14, 14, 16, 0.82);
   --hi: rgba(255, 255, 255, 0.11);
   --sh: rgba(0, 0, 0, 0.55);
-  --brand-ac: #a78bfa;
-  --brand-ac-strong: #c4b5fd;
-  --brand-ac-soft: rgba(167, 139, 250, 0.15);
-  --study-ac: #5fd6b8;
-  --study-ac-strong: #86e6cc;
-  --study-ac-soft: rgba(95, 214, 184, 0.14);
+  --brand-ac: #e4e4e7;
+  --brand-ac-strong: #fafafa;
+  --brand-ac-soft: rgba(228, 228, 231, 0.12);
+  --study-ac: #f08050;
+  --study-ac-strong: #fb923c;
+  --study-ac-soft: rgba(240, 128, 80, 0.18);
   --ac: var(--brand-ac);
   --ac-strong: var(--brand-ac-strong);
   --ac-soft: var(--brand-ac-soft);
   --btn: var(--brand-ac);
-  --btnt: #100921;
+  --btnt: #09090b;
   --svg-bg: #f8fafc;
 
-  --syntax-background: #0d1117;
+  --ch-all: #9c88d8;
+  --ch-all-hi: #b8a6eb;
+  --ch-all-rgb: 156 136 216;
+  --ch-research: #7aa2ff;
+  --ch-research-hi: #93b4ff;
+  --ch-research-rgb: 122 162 255;
+  --ch-cs: #f26b94;
+  --ch-cs-hi: #ff8aa8;
+  --ch-cs-rgb: 242 107 148;
+  --ch-837: #f08050;
+  --ch-837-hi: #fb923c;
+  --ch-837-rgb: 240 128 80;
+
+  --syntax-background: #0a0a0c;
   --syntax-foreground: #e6edf3;
   --syntax-token-constant: #79c0ff;
   --syntax-token-string: #a5d6ff;
@@ -157,7 +181,7 @@
   --syntax-token-comment: #8b949e;
   --syntax-token-keyword: #ff7b72;
   --syntax-token-parameter: #e6edf3;
-  --syntax-token-function: #d2a8ff;
+  --syntax-token-function: #7dd3fc;
   --syntax-token-punctuation: #e6edf3;
   --syntax-token-link: #79c0ff;
   --syntax-token-inserted: #7ee787;
@@ -165,22 +189,20 @@
   --syntax-token-changed: #ffa657;
 
   --gold: #e6b450;
-  --c1: #7aa2ff;
-  --c2: #ff8aa8;
-  --c3: #5fd6b8;
+  --c1: var(--ch-research);
+  --c2: var(--ch-cs);
+  --c3: var(--ch-837);
   --cat-site: #a1a1aa;
-  --heat-cat-paper: #3f6ef7;
-  --heat-cat-study: #80f2d2;
-  --heat-cat-tech: #ff6296;
-  --heat-cat-revision: #ebb038;
-  --heat-cat-site: #4d505c;
-  --dot: 167, 139, 250;
-  --spot: 167, 139, 250;
+  --heat-cat-paper: #2958d9;
+  --heat-cat-study: #f58b5b;
+  --heat-cat-tech: #e24d7f;
+  --heat-cat-revision: #f0d024;
+  --heat-cat-site: #414450;
   --vbg: rgba(255, 255, 255, 0.045);
-  --code-bg: #0c0716;
+  --code-bg: #0a0a0c;
 }
 
-:root[data-preset="all"] { --trail-rgb: 37 99 235; }
-:root[data-preset="research"] { --trail-rgb: 139 92 246; }
-:root[data-preset="cs"] { --trail-rgb: 225 65 107; }
-:root[data-preset="837"] { --trail-rgb: 13 148 136; }
+:root[data-preset="all"] { --trail-rgb: var(--ch-all-rgb); }
+:root[data-preset="research"] { --trail-rgb: var(--ch-research-rgb); }
+:root[data-preset="cs"] { --trail-rgb: var(--ch-cs-rgb); }
+:root[data-preset="837"] { --trail-rgb: var(--ch-837-rgb); }
