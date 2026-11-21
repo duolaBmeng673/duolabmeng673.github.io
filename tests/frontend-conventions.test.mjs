@@ -90,13 +90,13 @@ test('non-homepage built HTML files do not reference any React runtime or island
 test('homepage positively mounts expected React islands without client:load', () => {
   const homeHtml = readFileSync(join(ROOT, 'dist', 'index.html'), 'utf8');
   const islands = [...homeHtml.matchAll(/<astro-island\b[^>]*>/gi)].map(([tag]) => tag);
-  assert.ok(islands.length >= 3, 'Expected at least 3 <astro-island> elements on homepage');
+  assert.ok(islands.length >= 2, 'Expected at least 2 <astro-island> elements on homepage');
   const waves = islands.find((tag) => tag.includes('GradientWaves'));
   const heatmap = islands.find((tag) => tag.includes('ActivityHeatmap'));
-  const cardSwap = islands.find((tag) => tag.includes('CardSwap'));
   assert.ok(waves && waves.includes('client="idle"'), 'GradientWaves island must use client:idle');
   assert.ok(heatmap && heatmap.includes('client="visible"'), 'ActivityHeatmap island must use client:visible');
-  assert.ok(cardSwap && cardSwap.includes('client="visible"'), 'CardSwap island must use client:visible');
+  assert.ok(!homeHtml.includes('CardSwap'), 'Removed CardSwap island must not appear on homepage');
+  assert.ok(!homeHtml.includes('DotGrid'), 'Removed DotGrid island must not appear on homepage');
   for (const tag of islands) {
     assert.ok(!tag.includes('client="load"'), `Homepage island must not use client:load: ${tag}`);
   }
@@ -166,12 +166,19 @@ test('homepage total shipped JS stays within 120 KB gzip budget', async () => {
   );
 });
 
-test('ambient-grid uses (hover: none) / (pointer: coarse) media query for non-home static mode and click-only desktop waves', () => {
+test('legacy heavy background scripts are deleted and kinetic-crosshair pauses cleanly when idle/offscreen', () => {
   const layoutSource = readFileSync(join(ROOT, 'src/layouts/BaseLayout.astro'), 'utf8');
-  assert.ok(!layoutSource.includes('data-ambient-static'), 'BaseLayout must not hardcode data-ambient-static for non-homepage routes');
+  assert.ok(!layoutSource.includes('ambient-grid'), 'BaseLayout must not import deleted ambient-grid');
+  assert.ok(!layoutSource.includes('gradient-ascii'), 'BaseLayout must not import deleted gradient-ascii');
+  assert.ok(!layoutSource.includes('data-ambient-static'), 'BaseLayout must not hardcode data-ambient-static');
+  assert.ok(!layoutSource.includes('dotgrid-hero-backdrop'), 'BaseLayout must not mount legacy dotgrid-hero-backdrop');
+  assert.ok(!layoutSource.includes('article-tile-backdrop'), 'BaseLayout must not mount legacy article-tile-backdrop');
+  assert.match(layoutSource, /data-kinetic-crosshair/, 'BaseLayout must mount Kinetic Crosshair backdrop on approved hub pages');
 
-  const gridSource = readFileSync(join(ROOT, 'src/scripts/ambient-grid.ts'), 'utf8');
-  assert.match(gridSource, /hover:\s*none|pointer:\s*coarse/, 'ambient-grid must gate non-home static mode via (hover: none) / (pointer: coarse)');
-  assert.ok(!gridSource.includes("'pointermove'"), 'ambient-grid must not run mouse-follow hover glow on pointermove');
-  assert.ok(gridSource.includes("'pointerdown'"), 'ambient-grid must register pointerdown listener for desktop click waves');
+  const crosshairSource = readFileSync(join(ROOT, 'src/scripts/kinetic-crosshair.ts'), 'utf8');
+  assert.ok(!crosshairSource.includes('webgl'), 'kinetic-crosshair must stay pure Canvas2D with zero WebGL');
+  assert.match(crosshairSource, /IntersectionObserver/, 'kinetic-crosshair must pause offscreen via IntersectionObserver');
+  assert.match(crosshairSource, /visibilitychange/, 'kinetic-crosshair must stop loop when tab is hidden');
+  assert.match(crosshairSource, /prefers-reduced-motion:\s*reduce/, 'kinetic-crosshair must respect prefers-reduced-motion');
+  assert.match(crosshairSource, /cancelAnimationFrame/, 'kinetic-crosshair must cancel animation frames when hidden/paused');
 });

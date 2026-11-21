@@ -518,22 +518,32 @@ test('study articles include header quick jump bar, chapter switcher, TOC jump f
   assert.ok(hasCrossNext, 'Expected at least one study note at module boundary with next cross-module link');
 });
 
-test('article pages mount lower breathing tile grid while non-article pages keep upper global grid only', () => {
-  for (const articlePage of ['dist/study-notes/837/decision-tree-c45/index.html', 'dist/blog/bert/index.html']) {
-    const html = read(articlePage);
-    assert.match(html, /class="article-tile-backdrop"/);
-    assert.match(html, /data-article-tile-grid/);
-    assert.match(html, /class="dotgrid-hero-backdrop"/);
-  }
-  for (const nonArticlePage of [
+test('hub pages mount Kinetic Crosshair backdrop while articles and directories stay purely static', () => {
+  for (const hubPage of [
     'dist/index.html',
-    'dist/about/index.html',
     'dist/blog/index.html',
+    'dist/study-notes/index.html',
+    'dist/study-notes/837/index.html',
+    'dist/tools/index.html',
+    'dist/about/index.html',
+  ]) {
+    const html = read(hubPage);
+    assert.match(html, /class="kinetic-crosshair-backdrop"/, `${hubPage} must mount Kinetic Crosshair backdrop`);
+    assert.ok(!html.includes('gradient-ascii-backdrop'), `${hubPage} must not include removed GradientASCII backdrop`);
+    assert.ok(!html.includes('home-dotgrid-backdrop'), `${hubPage} must not include removed DotGrid backdrop`);
+  }
+
+  for (const quietPage of [
+    'dist/study-notes/837/decision-tree-c45/index.html',
+    'dist/blog/bert/index.html',
     'dist/study-notes/837/information-security/index.html',
   ]) {
-    const html = read(nonArticlePage);
-    assert.ok(!html.includes('article-tile-backdrop'), `${nonArticlePage} must not include article-tile-backdrop`);
-    assert.ok(!html.includes('data-article-tile-grid'), `${nonArticlePage} must not include data-article-tile-grid`);
+    const html = read(quietPage);
+    assert.ok(!html.includes('kinetic-crosshair-backdrop'), `${quietPage} must keep reading/directory pages free of canvas backdrop`);
+    assert.ok(!html.includes('gradient-ascii-backdrop'), `${quietPage} must not include removed GradientASCII backdrop`);
+    assert.ok(!html.includes('article-tile-backdrop'), `${quietPage} must not include legacy article-tile-backdrop`);
+    assert.ok(!html.includes('dotgrid-hero-backdrop'), `${quietPage} must not include legacy dotgrid-hero-backdrop`);
+    assert.ok(!html.includes('data-article-tile-grid'), `${quietPage} must not include legacy data-article-tile-grid`);
   }
 });
 

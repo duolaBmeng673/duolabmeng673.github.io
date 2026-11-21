@@ -39,7 +39,18 @@ const channel = path === '/'
         ? 'tools'
         : 'site';
 const isNotFound = path === '/404' || path === '/404/' || path === '/404.html';
-const isArticlePage = bodyClass.split(/\s+/).includes('article-page');
+const hasCrosshairBg =
+  path === '/' ||
+  path === '/blog/' ||
+  path === '/blog' ||
+  path === '/study-notes/' ||
+  path === '/study-notes' ||
+  path === '/study-notes/837/' ||
+  path === '/study-notes/837' ||
+  path === '/tools/' ||
+  path === '/tools' ||
+  path === '/about/' ||
+  path === '/about';
 const image = new URL('/og-default.png', Astro.site);
 
 const navItems = [
@@ -84,6 +95,7 @@ const navItems = [
         themeLegacyKey: STORAGE_KEYS.themeLegacy,
         typographyKey: STORAGE_KEYS.typography,
         presetKey: STORAGE_KEYS.preset,
+        bgStyleKey: STORAGE_KEYS.bgStyle,
       }}
     >
       (() => {
@@ -98,6 +110,8 @@ const navItems = [
           if (typo.bold === true) root.setAttribute('data-font-bold', '');
           const savedPreset = localStorage.getItem(presetKey);
           if (savedPreset && /^[a-z0-9-]+$/i.test(savedPreset)) root.dataset.preset = savedPreset;
+          const savedBg = localStorage.getItem(bgStyleKey);
+          if (savedBg === 'crosshair' || savedBg === 'mesh') root.dataset.bgStyle = savedBg;
         } catch {}
         root.dataset.themeMode = mode;
         root.dataset.theme = mode === 'system' ? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : mode;
@@ -107,16 +121,12 @@ const navItems = [
     </script>
   </head>
   <body class={bodyClass} data-channel={channel}>
-    <div class="dotgrid-hero-backdrop" aria-hidden="true">
-      <canvas data-ambient-grid></canvas>
-    </div>
-    {isArticlePage && (
-      <div class="article-tile-backdrop" aria-hidden="true">
-        <canvas data-article-tile-grid></canvas>
+    <a class="skip-link" href="#main-content">跳到正文</a>
+    {hasCrosshairBg && (
+      <div class="kinetic-crosshair-backdrop" data-kinetic-crosshair aria-hidden="true">
+        <canvas class="kinetic-crosshair-canvas"></canvas>
       </div>
     )}
-
-    <a class="skip-link" href="#main-content">跳到正文</a>
 
     <header class="site-header" data-page={path === '/' ? 'home' : 'subpage'}>
       <div class="header-inner">
@@ -173,11 +183,11 @@ const navItems = [
                 <span>加粗文字</span>
                 <input class="settings-switch" type="checkbox" role="switch" data-font-bold />
               </label>
-              <div class="settings-divider" aria-hidden="true"></div>
-              <label class="type-bold-toggle">
-                <span>点阵调参面板</span>
-                <input class="settings-switch" type="checkbox" role="switch" data-ambient-tuner-toggle />
-              </label>
+              <span class="panel-label">背景风格</span>
+              <div class="type-size-options" role="group" aria-label="背景风格">
+                <button type="button" data-bg-style="crosshair" aria-pressed="true">精密十字</button>
+                <button type="button" data-bg-style="mesh" aria-pressed="false">拓扑星轨</button>
+              </div>
             </div>
           </details>
 
@@ -285,7 +295,7 @@ const navItems = [
       import '../scripts/site-header';
       import '../scripts/typography';
       import '../scripts/site-search';
-      import '../scripts/ambient-grid';
+      import '../scripts/kinetic-crosshair';
     </script>
   </body>
 </html>

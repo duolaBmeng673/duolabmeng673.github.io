@@ -46,15 +46,6 @@ export interface KnowledgeQuickTag {
   tooltip: string;
 }
 
-export interface SwapCardItem {
-  cat: string;
-  title: string;
-  desc: string;
-  href: string;
-  accent: string;
-  icon: 'book' | 'sparkles' | 'cpu' | 'sigma' | 'code';
-}
-
 function formatSlashDate(date: Date) {
   return date.toISOString().slice(0, 10).replace(/-/g, '/');
 }
@@ -213,72 +204,6 @@ export async function getHomePageData() {
         : `共 ${item.posts.length} 篇相关笔记（${studyModules[item.subject as keyof typeof studyModules]?.title ?? item.subject}）`,
   }));
 
-  // Curated CardSwap portal cards backed by real routes
-  const swapCandidates: Array<{
-    id: string;
-    cat: string;
-    fallbackTitle: string;
-    desc: string;
-    accent: string;
-    icon: SwapCardItem['icon'];
-  }> = [
-    {
-      id: 'llm-table-processing-survey',
-      cat: '论文',
-      fallbackTitle: 'Table Survey',
-      desc: '大模型表格理解综述',
-      accent: PALETTE.channels.research.dark,
-      icon: 'book',
-    },
-    {
-      id: 'clip',
-      cat: '论文',
-      fallbackTitle: 'CLIP 精读',
-      desc: '图文对比预训练核心机制',
-      accent: PALETTE.channels.research.darkHi,
-      icon: 'sparkles',
-    },
-    {
-      id: 'kmp-algorithm',
-      cat: '837 算法',
-      fallbackTitle: 'KMP 交互演示',
-      desc: 'next 数组与无回溯步进',
-      accent: PALETTE.channels['837'].dark,
-      icon: 'cpu',
-    },
-    {
-      id: 'naive-bayes-classification',
-      cat: '837 算法',
-      fallbackTitle: '朴素贝叶斯',
-      desc: '条件独立与 m 估计平滑',
-      accent: PALETTE.channels.cs.dark,
-      icon: 'sigma',
-    },
-    {
-      id: 'acm_io',
-      cat: '技术',
-      fallbackTitle: 'Python ACM/OJ',
-      desc: '算法竞赛快读与模板实践',
-      accent: PALETTE.gold.dark,
-      icon: 'code',
-    },
-  ];
-
-  const swapCards: SwapCardItem[] = swapCandidates
-    .map((spec) => {
-      const found = posts.find((post) => post.id === spec.id);
-      if (!found) return null;
-      return {
-        cat: spec.cat,
-        title: spec.fallbackTitle,
-        desc: spec.desc,
-        href: getPostHref(found),
-        accent: spec.accent,
-        icon: spec.icon,
-      };
-    })
-    .filter((item): item is SwapCardItem => item !== null);
-
   return {
     site: siteConfig,
     totalCount: posts.length,
@@ -308,7 +233,6 @@ export async function getHomePageData() {
       },
     },
     allKnowledgeTags,
-    swapCards,
     heatmap: {
       buildDate,
       windowLabel: visibleSummary.windowLabel,

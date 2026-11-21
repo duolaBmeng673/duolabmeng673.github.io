@@ -222,7 +222,8 @@ function initDanmaku(motionCtrl: MotionController) {
 
   root.classList.add('is-danmaku-live');
 
-  const MAX_ONSCREEN = 14;
+  const initialStageW = Math.max(260, stage.clientWidth || root.clientWidth || 960);
+  const MAX_ONSCREEN = Math.max(14, Math.min(24, Math.round(initialStageW / 54)));
   const MIN_SPEED = 42;
   const MAX_SPEED = 64; // 64 / 42 = 1.524x <= 1.6x
   const MIN_GAP_PX = 24;
@@ -389,11 +390,16 @@ function initDanmaku(motionCtrl: MotionController) {
     }, Math.max(40, delayMs));
   }
 
-  // Seed initial tags staggered across the 6 lanes (2 per lane = 12 <= 14 MAX_ONSCREEN)
-  const leadOffsets = [0.58, 0.72, 0.50, 0.66, 0.54, 0.76];
-  const trailOffsets = [0.10, 0.22, 0.06, 0.18, 0.12, 0.26];
+  // Seed initial tags staggered across the 6 lanes (3 per lane on wide full-row stage, 2 on compact)
+  const leadOffsets = [0.68, 0.80, 0.62, 0.74, 0.66, 0.84];
+  const midOffsets = [0.36, 0.48, 0.30, 0.42, 0.34, 0.50];
+  const trailOffsets = [0.08, 0.20, 0.04, 0.16, 0.10, 0.22];
+  const wideStage = initialStageW >= 880;
   for (let i = 0; i < laneCount; i += 1) {
     spawnOne(leadOffsets[i % leadOffsets.length], i);
+    if (wideStage) {
+      spawnOne(midOffsets[i % midOffsets.length], i);
+    }
     spawnOne(trailOffsets[i % trailOffsets.length], i);
   }
 

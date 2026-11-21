@@ -2,7 +2,6 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import GradientWavesIsland from '../components/islands/GradientWaves.island';
 import ActivityHeatmapIsland from '../components/islands/ActivityHeatmap.island';
-import CardSwapIsland from '../components/islands/CardSwap.island';
 import { getHomePageData } from '../lib/home-data';
 import '../styles/home.css';
 
@@ -268,10 +267,10 @@ const activityPayloadJson = JSON.stringify({
     <div class="sec-head">
       <div>
         <span class="sec-kicker">QUICK INDEX</span>
-        <h2 id="explore-heading">知识点快查与专题直达</h2>
+        <h2 id="explore-heading">知识点快查</h2>
       </div>
       <div class="sec-head-actions">
-        <span class="sec-sub">悬停弹幕暂停或滑动浏览，右侧卡片可切换专题直达</span>
+        <span class="sec-sub">悬停弹幕暂停或滑动浏览，点击直达对应笔记或考纲筛选</span>
         <button
           type="button"
           class="motion-toggle"
@@ -293,7 +292,7 @@ const activityPayloadJson = JSON.stringify({
     </div>
 
     <div class="bento">
-      <div class="card rb-panel s7">
+      <div class="card rb-panel s12">
         <div class="vis ktag-vis ktag-danmaku" data-danmaku aria-label="837 知识点标签快查弹幕">
           <div class="ktag-stage" data-danmaku-stage>
             {Array.from({ length: DANMAKU_LANE_COUNT }, (_, laneIdx) => (
@@ -321,17 +320,6 @@ const activityPayloadJson = JSON.stringify({
             <p>悬停暂停、支持横向滑动；点击直达对应笔记或相关集合。</p>
           </div>
           <a class="card-link" href="/study-notes/837/information-security/">完整考纲 →</a>
-        </div>
-      </div>
-
-      <div class="card rb-panel s5">
-        <CardSwapIsland client:visible cards={data.swapCards} />
-        <div class="card-foot">
-          <div>
-            <h3>专题传送门</h3>
-            <p>精选专题卡片；点击直达或左右切换。</p>
-          </div>
-          <a class="card-link" href="/blog/">笔记归档 ↗</a>
         </div>
       </div>
     </div>

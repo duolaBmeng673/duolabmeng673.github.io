@@ -6,9 +6,9 @@
 
 ## 1. 分工边界
 
-- **React 岛适用范围**：只用于「有内部状态、需要持续重绘」的局部交互岛，包括首页的 **`GradientWaves`**（WebGL2 着色器画布）、**`ActivityHeatmap`**（交互式活动热力图画布与当日明细）与原版 ReactBits **`CardSwap`**（专题传送门立体叠卡交互，按用户 2026-11-17 批准引入 `@hugeicons/react` 与 `@hugeicons/core-free-icons` 依赖，不引入 `gsap`），以及第 3 轮用户批准用于 `/about/`、`/blog/`、`/study-notes/` 统计卡的 **`CountUp`**（计数器跃动数字，SSR 保留原值）。
-- **零 JS / 原生 TS 默认原则**：页面骨架、静态展示、文章、目录、导航与工具入口一律使用 `.astro` 组件（零 JS）或原生 TypeScript 模块（`src/scripts/*.ts`）。
-- **图标与动效**：业务界面图标优先内联 SVG；除用户明确批准的原版 ReactBits `CardSwap` 依赖（`@hugeicons/react` / `@hugeicons/core-free-icons`）外，**不得擅自安装** `gsap`、`motion` 等第三方动效库。
+- **React 岛适用范围**：只用于「有内部状态、需要持续重绘」的局部交互岛，包括首页的 **`GradientWaves`**（WebGL2 着色器画布）与 **`ActivityHeatmap`**（交互式活动热力图画布与当日明细），以及第 3 轮用户批准用于 `/about/`、`/blog/`、`/study-notes/` 统计卡的 **`CountUp`**（计数器跃动数字，SSR 保留原值）。
+- **零 JS / 原生 TS 默认原则**：页面骨架、静态展示、全站固定方格壁纸（纯 CSS `body::before`，零 CPU）、核心聚合页顶部「磁感精密十字」背景（原生 Canvas2D [kinetic-crosshair.ts](../src/scripts/kinetic-crosshair.ts)，静止 0% CPU 休眠）、文章、目录、导航与工具入口一律使用 `.astro` 组件或原生 TypeScript 模块（`src/scripts/*.ts`）；全站背景严禁使用 React 组件或常驻 60fps 全屏 WebGL 着色器。
+- **图标与动效**：业务界面图标优先内联 SVG；**不得擅自安装** `gsap`、`motion` 等第三方动效库。
 - **新增 React 组件审批门槛**：新增交互默认采用原生 TS。若确需使用 React 实现新组件，必须在 PR / 提交说明中明确写出不得不引入 React 的理由，经用户确认后方可实施。
 
 ---
@@ -48,8 +48,8 @@
 
 1. **目录与命名**：全部 React 岛文件只允许存放在 `src/components/islands/` 目录下，文件名强制采用 `*.island.tsx`（辅以同目录局部样式或工具模块，严禁把无关 React 代码散落到其他目录）。
 2. **水合指令**：
-   - `ActivityHeatmap`（首屏舞台核心交互）、`CardSwap`（底部专题叠卡交互）与 `CountUp`（统计卡计数器跃动）使用 `client:visible`；
-   - `GradientWaves`（顶部装饰着色器背景，且已配备同等尺寸静态渐变占位）允许使用 `client:idle` 推迟 React 运行时加载，避免阻塞首屏；
+   - `ActivityHeatmap`（首屏舞台核心交互）与 `CountUp`（统计卡计数器跃动）使用 `client:visible`；
+   - `GradientWaves`（舞台装饰着色器背景，配备同等尺寸静态渐变占位）使用 `client:idle` 推迟 React 运行时加载，避免阻塞首屏；
    - **禁止使用 `client:load`**（除非事前报告理由并获得用户明确批准）。
 3. **数据流**：全部业务数据（活动记录、写作日期、预设色板等）只能在 `.astro` 页面于构建期准备好，并通过**可序列化的 `props`** 传入岛内；**严禁**在岛内 `fetch` 站内数据、导入大型内容集合或硬编码快照。
 4. **副作用与资源清理**：岛内每个 `useEffect` / `useLayoutEffect` **必须返回清理函数**，确保卸载或重跑时完整清理：
@@ -61,7 +61,7 @@
    - 必须响应 `prefers-reduced-motion: reduce`（停止连续动画并回落到静态首帧）；
    - 必须响应页面可见性变化（`document.visibilityState === 'hidden'` / `visibilitychange` 事件）以及组件不可见状态（`IntersectionObserver`），在隐藏或滚出视口时立即停止 `requestAnimationFrame` 循环；
    - `GradientWaves` 须限制内部画布 `dpr <= 1.5` 与渲染帧率上限 `30 fps`；
-   - 收敛 `backdrop-filter`：只保留在悬浮于波浪或正文之上的半透明层（顶栏胶囊、舞台 4 窗口、热力图悬停浮层、CardSwap 控制栏），普通静止卡片不再使用 `backdrop-filter`。
+   - 收敛 `backdrop-filter`：只保留在悬浮于波浪或正文之上的半透明层（顶栏胶囊、舞台 4 窗口、热力图悬停浮层），普通静止卡片不再使用 `backdrop-filter`。
 6. **无 JS 与水合前占位（零布局跳动）**：
    - 每个 React 岛在未水合或用户禁用 JS 时，必须有由 Astro 服务端同步渲染出的静态占位内容（如 `GradientWaves` 的固定高度静态渐变背景、`ActivityHeatmap` 的活动汇总与近期真实活动列表）。
    - 静态占位与岛水合完成后的外框尺寸（高度、宽高比、边距与流式断点）必须保持一致，**不得发生任何可见布局跳动（CLS）**；水合后不得改变服务端已渲染的外框尺寸。
@@ -86,6 +86,6 @@
 ## 6. 体积预算与隔离红线
 
 - **首页 JS 预算（提醒线）**：首页全部客户端脚本（Astro 脚本 + React 岛及其按需运行时）**总计 gzip 预估不超过 `120 KB`**（2026-11-20 经用户批准从 `100 KB` 放宽至 `120 KB`，用于承载高密度四态点阵、波浪面纱与舞台同步动效）。若构建后超出该提醒线，必须停止并逐文件列出原始大小与 gzip 大小向用户汇报，由用户决定取舍。
-- **非首页白名单隔离（硬红线）**：`GradientWaves`、`ActivityHeatmap`、`CardSwap` 只能出现在首页（`dist/index.html`）；非首页中仅 `/about/`、`/blog/`、`/study-notes/` 获批搭载轻量 `CountUp` 岛（`client:visible`）。文章页、837 模块与章节目录页、工具页与 404 页等其余全部页面**不得引入任何 React 运行时或岛脚本**，每次构建须通过自动化静态检查验证。
+- **非首页白名单隔离（硬红线）**：`GradientWaves`、`ActivityHeatmap` 只能出现在首页（`dist/index.html`）；非首页中仅 `/about/`、`/blog/`、`/study-notes/` 获批搭载轻量 `CountUp` 岛（`client:visible`）。文章页、837 模块与章节目录页、工具页与 404 页等其余全部页面**不得引入任何 React 运行时或岛脚本**，每次构建须通过自动化静态检查验证。
 
 > 真机 CPU／GPU 实测方法与 Chrome CDP 采集脚本见 [performance-benchmark.md](performance-benchmark.md)。
