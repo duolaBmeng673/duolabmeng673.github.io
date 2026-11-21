@@ -3,11 +3,11 @@
  * the stage wave veil, and delayed stage/WebGL color synchronization.
  */
 
-export const WAVE_SPEED = 420; // px/s near-constant wave propagation speed
+export const WAVE_SPEED = 450; // px/s user-tuned wave propagation speed
 export const PULSE_SPEED = 520; // px/s click impact disc expansion speed
-export const WAVE_LEAD = 90; // px leading edge ahead of flip zone
-export const WAVE_DITHER = 140; // px organic per-cell flip band
-export const WAVE_WAKE = 260; // px trailing colored wake behind flip zone
+export const WAVE_LEAD = 130; // px leading edge ahead of flip zone
+export const WAVE_DITHER = 230; // px organic per-cell flip band
+export const WAVE_WAKE = 330; // px trailing colored wake behind flip zone
 export const WAVE_STRUCT_SPAN = WAVE_LEAD + WAVE_DITHER + WAVE_WAKE;
 
 export const clamp = (v: number, lo: number, hi: number): number =>
@@ -23,7 +23,7 @@ export const smoothstep = (t: number): number => {
  */
 export function computeWaveDuration(maxReach: number): number {
   const totalDist = Math.max(0, maxReach) + WAVE_STRUCT_SPAN;
-  return Math.round(clamp((totalDist / WAVE_SPEED) * 1000, 2600, 5500));
+  return Math.round(clamp((totalDist / WAVE_SPEED) * 1000, 2200, 6000));
 }
 
 /**
