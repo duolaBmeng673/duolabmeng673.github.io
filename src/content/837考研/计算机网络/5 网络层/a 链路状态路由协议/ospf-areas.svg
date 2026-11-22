@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 1 760 479" width="760" height="479" role="img">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 504" width="720" height="504" role="img">
   <title>OSPF 自治系统层次区域划分示意图</title>
   <desc>展示 OSPF 自治系统 AS 内主干区域 0.0.0.0 与三个普通区域（0.0.0.1、0.0.0.2、0.0.0.3）的层次划分，以及主干路由器、区域边界路由器 ABR（R₃、R₄、R₇）与自治系统边界路由器 ASBR（R₆）。</desc>
   <defs>
@@ -7,107 +7,101 @@
     </marker>
   </defs>
   <g font-family="'PingFang SC','Noto Sans SC','Microsoft YaHei',system-ui,sans-serif">
-    <text x="380" y="44" text-anchor="middle" font-size="18" font-weight="600" fill="#1f2937">OSPF 自治系统（AS）层次区域划分</text>
-
-    <!-- External AS arrow above outer AS box (from ASBR R6 at x=504) -->
-    <line x1="504" y1="148" x2="504" y2="72" stroke="#ef4444" stroke-width="2"/>
-    <line x1="504" y1="72" x2="556" y2="72" stroke="#ef4444" stroke-width="2" marker-end="url(#ospf-arrow)"/>
-    <text x="568" y="76" text-anchor="start" font-size="12" font-weight="600" fill="#991b1b">至其他自治系统（AS）</text>
+    <!-- External AS arrow above outer AS box -->
+    <line x1="484" y1="114" x2="484" y2="16" stroke="#ef4444" stroke-width="2"/>
+    <line x1="484" y1="16" x2="532" y2="16" stroke="#ef4444" stroke-width="2" marker-end="url(#ospf-arrow)"/>
+    <text x="542" y="22" text-anchor="start" font-size="15" font-weight="600" fill="#991b1b" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">至其他自治系统（AS）</text>
 
     <!-- Outer AS group -->
-    <rect x="24" y="88" width="712" height="324" rx="12" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="6 4" data-role="group"/>
-    <text x="40" y="116" text-anchor="start" font-size="14" font-weight="600" fill="#1f2937">自治系统 AS</text>
+    <rect x="8" y="44" width="704" height="360" rx="12" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="6 4" data-role="group"/>
+    <text x="24" y="72" text-anchor="start" font-size="15" font-weight="600" fill="#1f2937">自治系统 AS</text>
 
     <!-- Backbone area 0.0.0.0 -->
-    <rect x="176" y="100" width="408" height="104" rx="12" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5" data-role="group"/>
-    <text x="192" y="124" text-anchor="start" font-size="14" font-weight="600" fill="#1e40af">主干区域 0.0.0.0（Backbone Area）</text>
+    <rect x="148" y="56" width="424" height="114" rx="12" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5" data-role="group"/>
+    <text x="164" y="82" text-anchor="start" font-size="15" font-weight="600" fill="#1e40af">主干区域 0.0.0.0（Backbone Area）</text>
 
-    <!-- Sub-areas (neutral containers, role="group") -->
-    <rect x="40" y="220" width="212" height="176" rx="12" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5" data-role="group"/>
-    <text x="146" y="384" text-anchor="middle" font-size="12" font-weight="600" fill="#1f2937">区域 0.0.0.1</text>
+    <!-- Sub-areas -->
+    <rect x="20" y="190" width="216" height="202" rx="12" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5" data-role="group"/>
+    <text x="128" y="378" text-anchor="middle" font-size="15" font-weight="600" fill="#1f2937">区域 0.0.0.1</text>
 
-    <rect x="276" y="220" width="208" height="176" rx="12" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5" data-role="group"/>
-    <text x="380" y="384" text-anchor="middle" font-size="12" font-weight="600" fill="#1f2937">区域 0.0.0.2</text>
+    <rect x="252" y="190" width="216" height="202" rx="12" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5" data-role="group"/>
+    <text x="360" y="378" text-anchor="middle" font-size="15" font-weight="600" fill="#1f2937">区域 0.0.0.2</text>
 
-    <rect x="508" y="220" width="212" height="176" rx="12" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5" data-role="group"/>
-    <text x="614" y="384" text-anchor="middle" font-size="12" font-weight="600" fill="#1f2937">区域 0.0.0.3</text>
+    <rect x="484" y="190" width="216" height="202" rx="12" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5" data-role="group"/>
+    <text x="592" y="378" text-anchor="middle" font-size="15" font-weight="600" fill="#1f2937">区域 0.0.0.3</text>
 
-    <!-- Strictly orthogonal router & network links -->
+    <!-- Orthogonal router & network links -->
     <g stroke="#4b5563" stroke-width="1.5" fill="none">
-      <!-- Backbone spine: R5(256,164) -- R6(380,164) -- R11(504,164) -->
-      <line x1="256" y1="164" x2="504" y2="164"/>
-      <!-- Backbone to ABRs R3(204,220), R4(380,220), R7(556,220) -->
-      <path d="M256 164 V188 H204 V220"/>
-      <line x1="380" y1="164" x2="380" y2="220"/>
-      <path d="M504 164 V188 H556 V220"/>
+      <line x1="236" y1="130" x2="484" y2="130"/>
+      <path d="M236 130 V156 H184 V190"/>
+      <line x1="360" y1="130" x2="360" y2="190"/>
+      <path d="M484 130 V156 H536 V190"/>
 
-      <!-- Area 1: R3(204,220) -> 网2(180,276) -> R2(180,336) -> R1(88,336) -> 网1(88,276) -> H180 -->
-      <path d="M204 220 V248 H180 V336 H88 V276 H180"/>
-
-      <!-- Area 2: R4(380,220) -> 网4(380,276) -> R8(324,336) -- R9(436,336) -->
-      <line x1="380" y1="220" x2="380" y2="336"/>
-      <line x1="324" y1="336" x2="436" y2="336"/>
-
-      <!-- Area 3: R7(556,220) -> 网6(568,276) -- R10(668,276) -- 网8(668,336) -- H568 -->
-      <path d="M556 220 V276 H668 V336 H568 V276"/>
+      <!-- Area 1 -->
+      <path d="M184 190 V222 H172 V328 H68 V256 H172"/>
+      <!-- Area 2 -->
+      <line x1="360" y1="190" x2="360" y2="328"/>
+      <line x1="300" y1="328" x2="420" y2="328"/>
+      <!-- Area 3 -->
+      <path d="M536 190 V256 H652 V328 H544 V256"/>
     </g>
 
-    <!-- Network pills (w=64, h=36 gives L/R>=16, T/B>=8) -->
+    <!-- Network pills (w=72, h=40) -->
     <g fill="#f8fafc" stroke="#94a3b8" stroke-width="1">
-      <rect x="56" y="258" width="64" height="36" rx="8"/>
-      <rect x="148" y="258" width="64" height="36" rx="8"/>
-      <rect x="348" y="258" width="64" height="36" rx="8"/>
-      <rect x="536" y="258" width="64" height="36" rx="8"/>
-      <rect x="536" y="318" width="64" height="36" rx="8"/>
+      <rect x="32" y="236" width="72" height="40" rx="8"/>
+      <rect x="136" y="236" width="72" height="40" rx="8"/>
+      <rect x="324" y="236" width="72" height="40" rx="8"/>
+      <rect x="508" y="236" width="72" height="40" rx="8"/>
+      <rect x="508" y="308" width="72" height="40" rx="8"/>
     </g>
-    <g text-anchor="middle" font-size="12" font-weight="600" fill="#1f2937">
-      <text x="88" y="281">网 1</text>
-      <text x="180" y="281">网 2</text>
-      <text x="380" y="281">网 4</text>
-      <text x="568" y="281">网 6</text>
-      <text x="568" y="341">网 8</text>
+    <g text-anchor="middle" font-size="15" font-weight="600" fill="#1f2937">
+      <text x="68" y="262">网 1</text>
+      <text x="172" y="262">网 2</text>
+      <text x="360" y="262">网 4</text>
+      <text x="544" y="262">网 6</text>
+      <text x="544" y="334">网 8</text>
     </g>
 
-    <!-- Internal Routers (neutral) & Backbone Routers (blue) -->
+    <!-- Internal & Backbone Routers (r=18) -->
     <g fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5">
-      <circle cx="88" cy="336" r="16"/>
-      <circle cx="180" cy="336" r="16"/>
-      <circle cx="324" cy="336" r="16"/>
-      <circle cx="436" cy="336" r="16"/>
-      <circle cx="668" cy="276" r="16"/>
+      <circle cx="68" cy="328" r="18"/>
+      <circle cx="172" cy="328" r="18"/>
+      <circle cx="300" cy="328" r="18"/>
+      <circle cx="420" cy="328" r="18"/>
+      <circle cx="652" cy="256" r="18"/>
     </g>
     <g fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5">
-      <circle cx="256" cy="164" r="16"/>
-      <circle cx="380" cy="164" r="16"/>
+      <circle cx="236" cy="130" r="18"/>
+      <circle cx="360" cy="130" r="18"/>
     </g>
-    <g text-anchor="middle" font-size="12" font-weight="600" fill="#1f2937">
-      <text x="88" y="341">R₁</text>
-      <text x="180" y="341">R₂</text>
-      <text x="324" y="341">R₈</text>
-      <text x="436" y="341">R₉</text>
-      <text x="668" y="281">R₁₀</text>
-      <text x="256" y="169" fill="#1e40af">R₅</text>
-      <text x="380" y="169" fill="#1e40af">R₁₁</text>
+    <g text-anchor="middle" font-size="15" font-weight="600" fill="#1f2937">
+      <text x="68" y="334">R₁</text>
+      <text x="172" y="334">R₂</text>
+      <text x="300" y="334">R₈</text>
+      <text x="420" y="334">R₉</text>
+      <text x="652" y="262">R₁₀</text>
+      <text x="236" y="136" fill="#1e40af">R₅</text>
+      <text x="360" y="136" fill="#1e40af">R₁₁</text>
     </g>
 
     <!-- ABRs (R3, R4, R7) amber -->
     <g fill="#fffbeb" stroke="#f59e0b" stroke-width="2">
-      <circle cx="204" cy="220" r="16"/>
-      <circle cx="380" cy="220" r="16"/>
-      <circle cx="556" cy="220" r="16"/>
+      <circle cx="184" cy="190" r="18"/>
+      <circle cx="360" cy="190" r="18"/>
+      <circle cx="536" cy="190" r="18"/>
     </g>
-    <g text-anchor="middle" font-size="12" font-weight="600" fill="#92400e">
-      <text x="204" y="225">R₃</text>
-      <text x="380" y="225">R₄</text>
-      <text x="556" y="225">R₇</text>
+    <g text-anchor="middle" font-size="15" font-weight="600" fill="#92400e">
+      <text x="184" y="196">R₃</text>
+      <text x="360" y="196">R₄</text>
+      <text x="536" y="196">R₇</text>
     </g>
 
     <!-- ASBR (R6) red -->
-    <circle cx="504" cy="164" r="16" fill="#fef2f2" stroke="#ef4444" stroke-width="2"/>
-    <text x="504" y="169" text-anchor="middle" font-size="12" font-weight="600" fill="#991b1b">R₆</text>
+    <circle cx="484" cy="130" r="18" fill="#fef2f2" stroke="#ef4444" stroke-width="2"/>
+    <text x="484" y="136" text-anchor="middle" font-size="15" font-weight="600" fill="#991b1b">R₆</text>
 
-    <!-- Bottom legend/note block -->
-    <rect x="24" y="424" width="712" height="32" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="1" data-role="note"/>
-    <text x="380" y="445" text-anchor="middle" font-size="12" font-weight="400" fill="#1f2937">蓝：主干路由器（含 R₅、R₆ 及各 ABR）　｜　黄：区域边界路由器 ABR（R₃、R₄、R₇）　｜　红：自治系统边界路由器 ASBR（R₆）</text>
+    <rect x="8" y="424" width="704" height="72" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="1" data-role="note"/>
+    <text x="360" y="452" text-anchor="middle" font-size="15" font-weight="400" fill="#1f2937">蓝：主干路由器（含 R₅、R₁₁ 及各 ABR） ｜ 黄：区域边界路由器 ABR（R₃、R₄、R₇）</text>
+    <text x="360" y="478" text-anchor="middle" font-size="15" font-weight="400" fill="#991b1b">红：自治系统边界路由器 ASBR（R₆）</text>
   </g>
 </svg>

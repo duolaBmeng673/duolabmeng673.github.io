@@ -52,22 +52,6 @@ export const LEGACY_837_SVGS = new Set([
   'src/content/837考研/网络安全基础考点笔记总结/5 典型模式匹配算法/b 多模式匹配算法/5.b.2 WM 算法/wm_3_hash.svg',
   'src/content/837考研/网络安全基础考点笔记总结/5 典型模式匹配算法/b 多模式匹配算法/5.b.2 WM 算法/wm_4_prefix_patptr.svg',
   'src/content/837考研/网络安全基础考点笔记总结/5 典型模式匹配算法/b 多模式匹配算法/5.b.2 WM 算法/wm_5_relations.svg',
-  'src/content/837考研/计算机网络/3 传输层/a UDP/udp-header-format.svg',
-  'src/content/837考研/计算机网络/3 传输层/b TCP/tcp-flow-control.svg',
-  'src/content/837考研/计算机网络/3 传输层/b TCP/tcp-handshake-teardown.svg',
-  'src/content/837考研/计算机网络/3 传输层/b TCP/tcp-header-format.svg',
-  'src/content/837考研/计算机网络/3 传输层/c 拥塞控制/tcp-congestion-control.svg',
-  'src/content/837考研/计算机网络/4 Socket 编程/a UDP 编程/socket-udp-flow.svg',
-  'src/content/837考研/计算机网络/4 Socket 编程/b TCP 编程/socket-tcp-flow.svg',
-  'src/content/837考研/计算机网络/4 Socket 编程/c 原始套接字编程/socket-raw-stack.svg',
-  'src/content/837考研/计算机网络/5 网络层/a 链路状态路由协议/ospf-areas.svg',
-  'src/content/837考研/计算机网络/5 网络层/b 距离向量路由协议/rip-update-flow.svg',
-  'src/content/837考研/计算机网络/5 网络层/c BGP/bgp-as-speakers.svg',
-  'src/content/837考研/计算机网络/6 链路层/a ARP/arp-broadcast-unicast.svg',
-  'src/content/837考研/计算机网络/6 链路层/a ARP/arp-mac-hop-changes.svg',
-  'src/content/837考研/计算机网络/6 链路层/b WIFI/csma-cd-collision-window.svg',
-  'src/content/837考研/计算机网络/6 链路层/b WIFI/wifi-rts-cts-nav.svg',
-  'src/content/837考研/计算机网络/6 链路层/c CDMA/cdma-orthogonality-decoding.svg',
 ]);
 
 export const CHROME_PATH =
