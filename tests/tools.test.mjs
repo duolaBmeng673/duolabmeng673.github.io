@@ -84,4 +84,7 @@ test('removed classroom code is not built and external tools stay out of the sit
   assert.ok(!locations.some((url) => url.pathname.startsWith('/tools/classrooms/')));
   assert.ok(!JSON.parse(read('dist/search-index.json')).some((post) => post.href.startsWith('/tools/')));
   assert.doesNotMatch(read('dist/tools/index.html'), /hit-classroom|room-app\.js|classroom|<iframe/);
+  assert.doesNotMatch(read('dist/tools/index.html'), /常用的在线工具与资源，点击后在新窗口打开。/);
+  assert.match(read('dist/tools/index.html'), /收录工具/);
+  assert.match(read('dist/tools/index.html'), /工具分组/);
 });
