@@ -8,7 +8,8 @@ if (body && tools) {
   let mode = 'read';
   const showAllBtn = tools.querySelector<HTMLButtonElement>('[data-recall-all="show"]');
   const hideAllBtn = tools.querySelector<HTMLButtonElement>('[data-recall-all="hide"]');
-  const notify = () => document.dispatchEvent(new Event('study-mode-change'));
+  const notify = (reason: 'mode' | 'toggle' = 'toggle') =>
+    document.dispatchEvent(new CustomEvent('study-mode-change', { detail: { reason } }));
   const syncActions = () => {
     const active = mode === 'recall';
     const allOpen = active && entries.length > 0 && entries.every((entry) => entry.open);
@@ -71,7 +72,7 @@ if (body && tools) {
       }
     });
     syncActions();
-    notify();
+    notify('mode');
   };
   buttons.forEach((button) => button.addEventListener('click', () => changeMode(button.dataset.studyMode ?? 'read')));
   tools.querySelectorAll<HTMLButtonElement>('[data-recall-all]').forEach((button) => button.addEventListener('click', () => {
@@ -85,20 +86,29 @@ if (body && tools) {
     }
     notify();
   }));
-  const revealTarget = (hash: string) => {
+  const revealTarget = (hash: string, shouldScroll = true) => {
     let id: string;
     try { id = decodeURIComponent(hash.slice(1)); } catch { return; }
     const target = document.getElementById(id);
     if (!target || !body.contains(target)) return;
+    let changed = false;
     let ancestor = target.parentElement;
     while (ancestor && ancestor !== body) {
-      if (ancestor instanceof HTMLDetailsElement) ancestor.open = true;
+      if (ancestor instanceof HTMLDetailsElement && !ancestor.open) {
+        ancestor.open = true;
+        changed = true;
+      }
       ancestor = ancestor.parentElement;
     }
-    syncActions();
-    requestAnimationFrame(() => { target.scrollIntoView({ block: 'start' }); notify(); });
+    if (changed) syncActions();
+    if (!shouldScroll) return;
+    const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
+    requestAnimationFrame(() => {
+      target.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+      if (changed) notify('toggle');
+    });
   };
-  document.querySelectorAll<HTMLAnchorElement>('.article-toc a, .article-toc-mobile a').forEach((link) => link.addEventListener('click', () => revealTarget(link.hash)));
+  document.querySelectorAll<HTMLAnchorElement>('.article-toc a, .article-toc-mobile a').forEach((link) => link.addEventListener('click', () => revealTarget(link.hash, false)));
   window.addEventListener('hashchange', () => revealTarget(location.hash));
   // Read mode is complete and expanded. The fold controls are only active in recall mode.
   entries.forEach((entry) => entry.querySelector('summary')?.addEventListener('click', (event) => {
