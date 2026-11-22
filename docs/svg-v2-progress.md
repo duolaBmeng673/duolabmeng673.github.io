@@ -1,7 +1,7 @@
 # 837 考研 SVG v2 重排进度清单
 
 - 总数：**81** 张（规范见 [笔记设计规范 §5](../src/content/837考研/笔记设计规范.md#5-图表风格规范v2--无框直叠方格背景)，严格校验清单以 [scripts/lint-svg.mjs](../scripts/lint-svg.mjs) `LEGACY_837_SVGS` 为准）。
-- 当前进度：已做 **69** 张 / 待做 **12** 张（目标：全部 `81` 张改为 `已做` 且 `LEGACY_837_SVGS` 清空）。
+- 当前进度：已做 **81** 张 / 待做 **0** 张（目标：全部 `81` 张改为 `已做` 且 `LEGACY_837_SVGS` 清空）。
 
 ## 试点（已完成，3 张）
 
@@ -96,15 +96,15 @@
 
 | 状态 | 文件路径 | 批次 |
 | --- | --- | --- |
-| 待做 | `src/content/837考研/网络安全基础考点笔记总结/1 网络攻击/c 格式化攻击、缓冲区溢出攻击/buffer_overflow_stack_normal_vs_attack.svg` | 网安与算法 |
-| 待做 | `src/content/837考研/网络安全基础考点笔记总结/1 网络攻击/c 格式化攻击、缓冲区溢出攻击/format_string_attack_stack_compare.svg` | 网安与算法 |
-| 待做 | `src/content/837考研/网络安全基础考点笔记总结/2 网络数据获取/c WinPcap 或 Libpcap 编程/libpcap_call_order.svg` | 网安与算法 |
-| 待做 | `src/content/837考研/网络安全基础考点笔记总结/5 典型模式匹配算法/a 单模式匹配算法/5.a.1 KMP算法/kmp_shift.svg` | 网安与算法 |
-| 待做 | `src/content/837考研/网络安全基础考点笔记总结/5 典型模式匹配算法/a 单模式匹配算法/5.a.1 KMP算法/kmp_vs_bf.svg` | 网安与算法 |
-| 待做 | `src/content/837考研/网络安全基础考点笔记总结/5 典型模式匹配算法/a 单模式匹配算法/5.a.2 BM算法/bm-06-flow.svg` | 网安与算法 |
-| 待做 | `src/content/837考研/网络安全基础考点笔记总结/5 典型模式匹配算法/b 多模式匹配算法/5.b.1 AC 算法/ac_automaton.svg` | 网安与算法 |
-| 待做 | `src/content/837考研/网络安全基础考点笔记总结/5 典型模式匹配算法/b 多模式匹配算法/5.b.2 WM 算法/wm_1_blocks.svg` | 网安与算法 |
-| 待做 | `src/content/837考研/网络安全基础考点笔记总结/5 典型模式匹配算法/b 多模式匹配算法/5.b.2 WM 算法/wm_2_shift.svg` | 网安与算法 |
-| 待做 | `src/content/837考研/网络安全基础考点笔记总结/5 典型模式匹配算法/b 多模式匹配算法/5.b.2 WM 算法/wm_3_hash.svg` | 网安与算法 |
-| 待做 | `src/content/837考研/网络安全基础考点笔记总结/5 典型模式匹配算法/b 多模式匹配算法/5.b.2 WM 算法/wm_4_prefix_patptr.svg` | 网安与算法 |
-| 待做 | `src/content/837考研/网络安全基础考点笔记总结/5 典型模式匹配算法/b 多模式匹配算法/5.b.2 WM 算法/wm_5_relations.svg` | 网安与算法 |
+| 已做 | `src/content/837考研/网络安全基础考点笔记总结/1 网络攻击/c 格式化攻击、缓冲区溢出攻击/buffer_overflow_stack_normal_vs_attack.svg` | 网安与算法 |
+| 已做 | `src/content/837考研/网络安全基础考点笔记总结/1 网络攻击/c 格式化攻击、缓冲区溢出攻击/format_string_attack_stack_compare.svg` | 网安与算法 |
+| 已做 | `src/content/837考研/网络安全基础考点笔记总结/2 网络数据获取/c WinPcap 或 Libpcap 编程/libpcap_call_order.svg` | 网安与算法 |
+| 已做 | `src/content/837考研/网络安全基础考点笔记总结/5 典型模式匹配算法/a 单模式匹配算法/5.a.1 KMP算法/kmp_shift.svg` | 网安与算法 |
+| 已做 | `src/content/837考研/网络安全基础考点笔记总结/5 典型模式匹配算法/a 单模式匹配算法/5.a.1 KMP算法/kmp_vs_bf.svg` | 网安与算法 |
+| 已做 | `src/content/837考研/网络安全基础考点笔记总结/5 典型模式匹配算法/a 单模式匹配算法/5.a.2 BM算法/bm-06-flow.svg` | 网安与算法 |
+| 已做 | `src/content/837考研/网络安全基础考点笔记总结/5 典型模式匹配算法/b 多模式匹配算法/5.b.1 AC 算法/ac_automaton.svg` | 网安与算法 |
+| 已做 | `src/content/837考研/网络安全基础考点笔记总结/5 典型模式匹配算法/b 多模式匹配算法/5.b.2 WM 算法/wm_1_blocks.svg` | 网安与算法 |
+| 已做 | `src/content/837考研/网络安全基础考点笔记总结/5 典型模式匹配算法/b 多模式匹配算法/5.b.2 WM 算法/wm_2_shift.svg` | 网安与算法 |
+| 已做 | `src/content/837考研/网络安全基础考点笔记总结/5 典型模式匹配算法/b 多模式匹配算法/5.b.2 WM 算法/wm_3_hash.svg` | 网安与算法 |
+| 已做 | `src/content/837考研/网络安全基础考点笔记总结/5 典型模式匹配算法/b 多模式匹配算法/5.b.2 WM 算法/wm_4_prefix_patptr.svg` | 网安与算法 |
+| 已做 | `src/content/837考研/网络安全基础考点笔记总结/5 典型模式匹配算法/b 多模式匹配算法/5.b.2 WM 算法/wm_5_relations.svg` | 网安与算法 |

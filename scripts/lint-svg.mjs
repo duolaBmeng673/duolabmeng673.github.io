@@ -18,20 +18,7 @@ export function findSvgs(dirPath) {
 export const ALL_837_ROOT = 'src/content/837考研';
 export const NETWORK_ROOT = 'src/content/837考研/计算机网络';
 
-export const LEGACY_837_SVGS = new Set([
-  'src/content/837考研/网络安全基础考点笔记总结/1 网络攻击/c 格式化攻击、缓冲区溢出攻击/buffer_overflow_stack_normal_vs_attack.svg',
-  'src/content/837考研/网络安全基础考点笔记总结/1 网络攻击/c 格式化攻击、缓冲区溢出攻击/format_string_attack_stack_compare.svg',
-  'src/content/837考研/网络安全基础考点笔记总结/2 网络数据获取/c WinPcap 或 Libpcap 编程/libpcap_call_order.svg',
-  'src/content/837考研/网络安全基础考点笔记总结/5 典型模式匹配算法/a 单模式匹配算法/5.a.1 KMP算法/kmp_shift.svg',
-  'src/content/837考研/网络安全基础考点笔记总结/5 典型模式匹配算法/a 单模式匹配算法/5.a.1 KMP算法/kmp_vs_bf.svg',
-  'src/content/837考研/网络安全基础考点笔记总结/5 典型模式匹配算法/a 单模式匹配算法/5.a.2 BM算法/bm-06-flow.svg',
-  'src/content/837考研/网络安全基础考点笔记总结/5 典型模式匹配算法/b 多模式匹配算法/5.b.1 AC 算法/ac_automaton.svg',
-  'src/content/837考研/网络安全基础考点笔记总结/5 典型模式匹配算法/b 多模式匹配算法/5.b.2 WM 算法/wm_1_blocks.svg',
-  'src/content/837考研/网络安全基础考点笔记总结/5 典型模式匹配算法/b 多模式匹配算法/5.b.2 WM 算法/wm_2_shift.svg',
-  'src/content/837考研/网络安全基础考点笔记总结/5 典型模式匹配算法/b 多模式匹配算法/5.b.2 WM 算法/wm_3_hash.svg',
-  'src/content/837考研/网络安全基础考点笔记总结/5 典型模式匹配算法/b 多模式匹配算法/5.b.2 WM 算法/wm_4_prefix_patptr.svg',
-  'src/content/837考研/网络安全基础考点笔记总结/5 典型模式匹配算法/b 多模式匹配算法/5.b.2 WM 算法/wm_5_relations.svg',
-]);
+export const LEGACY_837_SVGS = new Set([]);
 
 export const CHROME_PATH =
   process.env.CHROME_PATH ||

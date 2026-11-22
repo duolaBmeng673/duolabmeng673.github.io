@@ -1,47 +1,108 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="-4 -10 547 367" width="547" height="367" font-family="monospace, 'Microsoft YaHei', 'PingFang SC', 'Noto Sans CJK SC', sans-serif" font-size="16" xmlns:c2pa="http://c2pa.org/manifest"><metadata><c2pa:manifest>AAAWgmp1bWIAAAAeanVtZGMycGEAEQAQgAAAqgA4m3EDYzJwYQAAABZcanVtYgAAAEdqdW1kYzJtYQARABCAAACqADibcQN1cm46YzJwYTo3ZDQzZjVhOC00OTExLTRjMTgtODU1MS05Y2Y4MDM4MDQyNDAAAAADl2p1bWIAAAApanVtZGMyYXMAEQAQgAAAqgA4m3EDYzJwYS5hc3NlcnRpb25zAAAAALxqdW1iAAAARGp1bWRjYm9yABEAEIAAAKoAOJtxE2MycGEuaW5ncmVkaWVudC52MwAAAAAYYzJzaAnMfVMiZbB1q2gl6j8uP5YAAABwY2JvcqNpZGM6Zm9ybWF0bWltYWdlL3N2Zyt4bWxqaW5zdGFuY2VJRHgseG1wOmlpZDo2YWIxODQ2Mi05NWExLTQwMDItOTI4My1kYmZhYWQ3NWUzYTZscmVsYXRpb25zaGlwaHBhcmVudE9mAAAB4mp1bWIAAABBanVtZGNib3IAEQAQgAAAqgA4m3ETYzJwYS5hY3Rpb25zLnYyAAAAABhjMnNoxRCzYLGAPMGqlS3/Qa/MLgAAAZljYm9yomdhY3Rpb25zgqJmYWN0aW9ua2MycGEub3BlbmVkanBhcmFtZXRlcnOha2luZ3JlZGllbnRzgaJjdXJseC1zZWxmI2p1bWJmPWMycGEuYXNzZXJ0aW9ucy9jMnBhLmluZ3JlZGllbnQudjNkaGFzaFggDWbKY+jirCipw96BRf8uXz2ZnMZ39jqUvVnsTH135pukZmFjdGlvbngdY29tLmFudGhyb3BpYy5jbGF1ZGUucHJvdmlkZWRqcGFyYW1ldGVyc6F4H2NvbS5hbnRocm9waWMub3JpZ2luLWNvbmZpZGVuY2VndW5rbm93bmtkZXNjcmlwdGlvbnhmQ2xhdWRlIHByb3ZpZGVkIHRoaXMgZmlsZSBhdCB0aGUgcmVxdWVzdCBvZiBhIHVzZXIgYW5kIG1heSBoYXZlIGNyZWF0ZWQgb3IgbW9kaWZpZWQgdGhlIGZpbGUgY29udGVudHMubXNvZnR3YXJlQWdlbnShZG5hbWVmQ2xhdWRlcmFsbEFjdGlvbnNJbmNsdWRlZPUAAADIanVtYgAAAEBqdW1kY2JvcgARABCAAACqADibcRNjMnBhLmhhc2guZGF0YQAAAAAYYzJzaGvXKZ08k9U7hVBSavZkg/wAAACAY2JvcqVjYWxnZnNoYTI1NmNwYWRNAAAAAAAAAAAAAAAAAGRoYXNoWCAqE0r3CJo4Md/NRL+nLC1fZZCt/gT0m9c8FXH0LwxpAWRuYW1lbmp1bWJmIG1hbmlmZXN0amV4Y2x1c2lvbnOBomVzdGFydBj/Zmxlbmd0aBkeBAAAAj5qdW1iAAAAJ2p1bWRjMmNsABEAEIAAAKoAOJtxA2MycGEuY2xhaW0udjIAAAACD2Nib3KlY2FsZ2ZzaGEyNTZpc2lnbmF0dXJleE1zZWxmI2p1bWJmPS9jMnBhL3VybjpjMnBhOjdkNDNmNWE4LTQ5MTEtNGMxOC04NTUxLTljZjgwMzgwNDI0MC9jMnBhLnNpZ25hdHVyZWppbnN0YW5jZUlEeCx4bXA6aWlkOjQ1ZmJhNTNmLTk4ZTEtNDk4My1iNjBmLTFlNGJlYmUwNjk4OHJjcmVhdGVkX2Fzc2VydGlvbnODomN1cmx4LXNlbGYjanVtYmY9YzJwYS5hc3NlcnRpb25zL2MycGEuaW5ncmVkaWVudC52M2RoYXNoWCANZspj6OKsKKnD3oFF/y5fPZmcxnf2OpS9WexMfXfmm6JjdXJseCpzZWxmI2p1bWJmPWMycGEuYXNzZXJ0aW9ucy9jMnBhLmFjdGlvbnMudjJkaGFzaFggc46mgsTXqtaFc4NIhobHYDsfo4G+cRInbUi252BX/byiY3VybHgpc2VsZiNqdW1iZj1jMnBhLmFzc2VydGlvbnMvYzJwYS5oYXNoLmRhdGFkaGFzaFggSPfNbbcBSuOPugF8K3SbVQrgZxF8OivF1l8h0banc190Y2xhaW1fZ2VuZXJhdG9yX2luZm+jZG5hbWVvQW50aHJvcGljIEZpbGVzZ3ZlcnNpb25lMS4wLjBrc3BlY1ZlcnNpb25lMi40LjAAABA4anVtYgAAAChqdW1kYzJjcwARABCAAACqADibcQNjMnBhLnNpZ25hdHVyZQAAABAIY2JvctKEWQISogEmGCFZAgowggIGMIIBjaADAgECAhRA5aAK7sI50L64g/oGQgU9Z1UTADAKBggqhkjOPQQDAzBJMRcwFQYDVQQKEw5BbnRocm9waWMsIFBCQzEuMCwGA1UEAxMlQW50aHJvcGljIENvbnRlbnQgQ3JlZGVudGlhbHMgUm9vdCBDQTAeFw0yNjA4MDcxODQzNTZaFw0yODA4MDYxOTQzNTZaMEQxFzAVBgNVBAoTDkFudGhyb3BpYywgUEJDMSkwJwYDVQQDEyBBbnRocm9waWMgQ2xhdWRlIENvbnRlbnQgU2lnbmluZzBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABJh6CmvLUBgFFNU0vUKlOVtE6djd17L5SuwX0LemFisBM3dkd/3cyjxFA3Qo5S46fX0/ihY0VZ7mfb9KF703t5OjWDBWMA4GA1UdDwEB/wQEAwIHgDAVBgNVHSUEDjAMBgorBgEEAYPoXgIBMAwGA1UdEwEB/wQCMAAwHwYDVR0jBBgwFoAUzlHiBIFOZFsj+OPEz5o+nMHXXMIwCgYIKoZIzj0EAwMDZwAwZAIwMXMdFJ4BetLLVY7ORuE9noqbbAZOZn/aArXyTwFAZfKrPzxF2vPoJNf1+UCdg1XGAjBwX1zd9WGqYkqmL5SFqw1QySjr1zJfpJM9+1rdDwSPLMOPOjKuiXjoU/pUUeG9RwmhY3BhZFkNngAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPZYQLbuKLX/ShjNTuPSyR1/aDXQwjttl49A4gOlTpHYmVGw+6Rbg4Y9y9B7lK9ecn1dsa2JH1Cgnx2EirKmVgHhSig=</c2pa:manifest></metadata>
-<defs><marker id="ar" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="#c01c28"/></marker><marker id="ab" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="#1a5fb4"/></marker></defs>
-<text x="20" y="22" font-size="14" fill="#333" text-anchor="start" dominant-baseline="central">失配：S[5]='a' ≠ T[5]='c'；前 5 个字符已匹配，T[0..4]=&quot;abaab&quot;</text>
-<text x="70" y="68" font-size="16" fill="#333" text-anchor="end" dominant-baseline="central">S</text>
-<rect x="80" y="50" width="44" height="36" fill="#d5f0d5" stroke="#444" stroke-width="1.5"/><text x="102.0" y="68.0" fill="#000" text-anchor="middle" dominant-baseline="central">a</text>
-<rect x="124" y="50" width="44" height="36" fill="#d5f0d5" stroke="#444" stroke-width="1.5"/><text x="146.0" y="68.0" fill="#000" text-anchor="middle" dominant-baseline="central">b</text>
-<rect x="168" y="50" width="44" height="36" fill="#d5f0d5" stroke="#444" stroke-width="1.5"/><text x="190.0" y="68.0" fill="#000" text-anchor="middle" dominant-baseline="central">a</text>
-<rect x="212" y="50" width="44" height="36" fill="#ffe3b8" stroke="#444" stroke-width="1.5"/><text x="234.0" y="68.0" fill="#000" text-anchor="middle" dominant-baseline="central">a</text>
-<rect x="256" y="50" width="44" height="36" fill="#ffe3b8" stroke="#444" stroke-width="1.5"/><text x="278.0" y="68.0" fill="#000" text-anchor="middle" dominant-baseline="central">b</text>
-<rect x="300" y="50" width="44" height="36" fill="#f8c8c8" stroke="#444" stroke-width="1.5"/><text x="322.0" y="68.0" fill="#c01c28" text-anchor="middle" dominant-baseline="central">a</text>
-<rect x="344" y="50" width="44" height="36" fill="#ffffff" stroke="#444" stroke-width="1.5"/><text x="366.0" y="68.0" fill="#000" text-anchor="middle" dominant-baseline="central">a</text>
-<rect x="388" y="50" width="44" height="36" fill="#ffffff" stroke="#444" stroke-width="1.5"/><text x="410.0" y="68.0" fill="#000" text-anchor="middle" dominant-baseline="central">b</text>
-<rect x="432" y="50" width="44" height="36" fill="#ffffff" stroke="#444" stroke-width="1.5"/><text x="454.0" y="68.0" fill="#000" text-anchor="middle" dominant-baseline="central">c</text>
-<text x="102.0" y="102" font-size="11" fill="#888" text-anchor="middle" dominant-baseline="central">0</text>
-<text x="146.0" y="102" font-size="11" fill="#888" text-anchor="middle" dominant-baseline="central">1</text>
-<text x="190.0" y="102" font-size="11" fill="#888" text-anchor="middle" dominant-baseline="central">2</text>
-<text x="234.0" y="102" font-size="11" fill="#888" text-anchor="middle" dominant-baseline="central">3</text>
-<text x="278.0" y="102" font-size="11" fill="#888" text-anchor="middle" dominant-baseline="central">4</text>
-<text x="322.0" y="102" font-size="11" fill="#888" text-anchor="middle" dominant-baseline="central">5</text>
-<text x="366.0" y="102" font-size="11" fill="#888" text-anchor="middle" dominant-baseline="central">6</text>
-<text x="410.0" y="102" font-size="11" fill="#888" text-anchor="middle" dominant-baseline="central">7</text>
-<text x="454.0" y="102" font-size="11" fill="#888" text-anchor="middle" dominant-baseline="central">8</text>
-<text x="70" y="148" font-size="16" fill="#333" text-anchor="end" dominant-baseline="central">T(旧)</text>
-<rect x="80" y="130" width="44" height="36" fill="#cfe3ff" stroke="#444" stroke-width="1.5"/><text x="102.0" y="148.0" fill="#000" text-anchor="middle" dominant-baseline="central">a</text>
-<rect x="124" y="130" width="44" height="36" fill="#cfe3ff" stroke="#444" stroke-width="1.5"/><text x="146.0" y="148.0" fill="#000" text-anchor="middle" dominant-baseline="central">b</text>
-<rect x="168" y="130" width="44" height="36" fill="#d5f0d5" stroke="#444" stroke-width="1.5"/><text x="190.0" y="148.0" fill="#000" text-anchor="middle" dominant-baseline="central">a</text>
-<rect x="212" y="130" width="44" height="36" fill="#ffe3b8" stroke="#444" stroke-width="1.5"/><text x="234.0" y="148.0" fill="#000" text-anchor="middle" dominant-baseline="central">a</text>
-<rect x="256" y="130" width="44" height="36" fill="#ffe3b8" stroke="#444" stroke-width="1.5"/><text x="278.0" y="148.0" fill="#000" text-anchor="middle" dominant-baseline="central">b</text>
-<rect x="300" y="130" width="44" height="36" fill="#f8c8c8" stroke="#444" stroke-width="1.5"/><text x="322.0" y="148.0" fill="#c01c28" text-anchor="middle" dominant-baseline="central">c</text>
-<path d="M83 171V176H165V171" fill="none" stroke="#1a5fb4" stroke-width="1.5"/>
-<text x="124" y="192" font-size="12" fill="#1a5fb4" text-anchor="middle" dominant-baseline="central">前缀 ab</text>
-<path d="M215 171V176H297V171" fill="none" stroke="#b35c00" stroke-width="1.5"/>
-<text x="256" y="192" font-size="12" fill="#b35c00" text-anchor="middle" dominant-baseline="central">后缀 ab</text>
-<text x="322.0" y="192" font-size="12" fill="#c01c28" text-anchor="middle" dominant-baseline="central">失配 j=5</text>
-<path d="M256 202V240" stroke="#1a5fb4" stroke-width="1.8" marker-end="url(#ab)"/>
-<text x="272" y="222" font-size="12" fill="#333" text-anchor="start" dominant-baseline="central">next[5]=2：右滑 j−k=5−2=3 位</text>
-<text x="70" y="268" font-size="16" fill="#333" text-anchor="end" dominant-baseline="central">T(新)</text>
-<rect x="212" y="250" width="44" height="36" fill="#cfe3ff" stroke="#444" stroke-width="1.5"/><text x="234.0" y="268.0" fill="#000" text-anchor="middle" dominant-baseline="central">a</text>
-<rect x="256" y="250" width="44" height="36" fill="#cfe3ff" stroke="#444" stroke-width="1.5"/><text x="278.0" y="268.0" fill="#000" text-anchor="middle" dominant-baseline="central">b</text>
-<rect x="300" y="250" width="44" height="36" fill="#fff6b0" stroke="#444" stroke-width="1.5"/><text x="322.0" y="268.0" fill="#000" text-anchor="middle" dominant-baseline="central">a</text>
-<rect x="344" y="250" width="44" height="36" fill="#ffffff" stroke="#444" stroke-width="1.5" stroke-dasharray="3 3"/><text x="366.0" y="268.0" fill="#000" text-anchor="middle" dominant-baseline="central">a</text>
-<rect x="388" y="250" width="44" height="36" fill="#ffffff" stroke="#444" stroke-width="1.5" stroke-dasharray="3 3"/><text x="410.0" y="268.0" fill="#000" text-anchor="middle" dominant-baseline="central">b</text>
-<rect x="432" y="250" width="44" height="36" fill="#ffffff" stroke="#444" stroke-width="1.5" stroke-dasharray="3 3"/><text x="454.0" y="268.0" fill="#000" text-anchor="middle" dominant-baseline="central">c</text>
-<text x="256" y="306" font-size="12" fill="#1a5fb4" text-anchor="middle" dominant-baseline="central">已对齐，无需再比</text>
-<text x="392" y="306" font-size="12" fill="#8a6d00" text-anchor="start" dominant-baseline="central">从 T[2] 继续比 S[5]</text>
-<text x="20" y="326" font-size="12" fill="#555" text-anchor="start" dominant-baseline="central">指针 i 始终停在 5，没有回退；只有 j 从 5 变成 2</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 472" width="720" height="472" role="img">
+  <title>KMP 算法失配右滑过程示例</title>
+  <desc>展示主串 S="abaabaabc" 与模式串 T="abaabc" 在 j=5 处失配后，利用 next[5]=2 右滑 3 位并保持主串指针 i=5 不回退的匹配过程。</desc>
+  <defs>
+    <marker id="kmps-a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#3b82f6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+  <g font-family="'PingFang SC','Noto Sans SC','Microsoft YaHei',system-ui,sans-serif">
+    <text x="360" y="24" text-anchor="middle" font-size="15" font-weight="600" fill="#991b1b" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">失配：S[5]='a' ≠ T[5]='c'；前 5 个字符已匹配，T[0..4]="abaab"</text>
+
+    <text x="130" y="54" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">0</text>
+    <text x="198" y="54" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">1</text>
+    <text x="266" y="54" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">2</text>
+    <text x="334" y="54" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">3</text>
+    <text x="402" y="54" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">4</text>
+    <text x="470" y="54" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">5</text>
+    <text x="538" y="54" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">6</text>
+    <text x="606" y="54" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">7</text>
+    <text x="674" y="54" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">8</text>
+
+    <text x="48" y="96" text-anchor="middle" font-size="15" font-weight="600" fill="#1f2937" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">主串 S</text>
+    <rect x="96" y="70" width="612" height="42" rx="6" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5" data-role="group"/>
+    <path d="M97 71 H163 V111 H97 Z" fill="#f0fdfa"/>
+    <text x="130" y="96" text-anchor="middle" font-size="15" font-weight="600" fill="#115e59">a</text>
+    <path d="M165 71 H231 V111 H165 Z" fill="#f0fdfa"/>
+    <line x1="164" y1="70" x2="164" y2="112" stroke="#94a3b8" stroke-width="1"/>
+    <text x="198" y="96" text-anchor="middle" font-size="15" font-weight="600" fill="#115e59">b</text>
+    <path d="M233 71 H299 V111 H233 Z" fill="#f0fdfa"/>
+    <line x1="232" y1="70" x2="232" y2="112" stroke="#94a3b8" stroke-width="1"/>
+    <text x="266" y="96" text-anchor="middle" font-size="15" font-weight="600" fill="#115e59">a</text>
+    <path d="M301 71 H367 V111 H301 Z" fill="#f0fdfa"/>
+    <line x1="300" y1="70" x2="300" y2="112" stroke="#94a3b8" stroke-width="1"/>
+    <text x="334" y="96" text-anchor="middle" font-size="15" font-weight="600" fill="#115e59">a</text>
+    <path d="M369 71 H435 V111 H369 Z" fill="#f0fdfa"/>
+    <line x1="368" y1="70" x2="368" y2="112" stroke="#94a3b8" stroke-width="1"/>
+    <text x="402" y="96" text-anchor="middle" font-size="15" font-weight="600" fill="#115e59">b</text>
+    <path d="M437 71 H503 V111 H437 Z" fill="#fef2f2"/>
+    <line x1="436" y1="70" x2="436" y2="112" stroke="#94a3b8" stroke-width="1"/>
+    <text x="470" y="96" text-anchor="middle" font-size="15" font-weight="600" fill="#991b1b">a</text>
+    <path d="M505 71 H571 V111 H505 Z" fill="#f8fafc"/>
+    <line x1="504" y1="70" x2="504" y2="112" stroke="#94a3b8" stroke-width="1"/>
+    <text x="538" y="96" text-anchor="middle" font-size="15" font-weight="600" fill="#1f2937">a</text>
+    <path d="M573 71 H639 V111 H573 Z" fill="#f8fafc"/>
+    <line x1="572" y1="70" x2="572" y2="112" stroke="#94a3b8" stroke-width="1"/>
+    <text x="606" y="96" text-anchor="middle" font-size="15" font-weight="600" fill="#1f2937">b</text>
+    <path d="M641 71 H707 V111 H641 Z" fill="#f8fafc"/>
+    <line x1="640" y1="70" x2="640" y2="112" stroke="#94a3b8" stroke-width="1"/>
+    <text x="674" y="96" text-anchor="middle" font-size="15" font-weight="600" fill="#1f2937">c</text>
+
+    <text x="48" y="146" text-anchor="middle" font-size="15" font-weight="600" fill="#1e40af" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">T(旧)</text>
+    <rect x="96" y="120" width="408" height="42" rx="6" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5" data-role="group"/>
+    <path d="M97 121 H163 V161 H97 Z" fill="#eff6ff"/>
+    <text x="130" y="146" text-anchor="middle" font-size="15" font-weight="600" fill="#1e40af">a</text>
+    <path d="M165 121 H231 V161 H165 Z" fill="#eff6ff"/>
+    <line x1="164" y1="120" x2="164" y2="162" stroke="#94a3b8" stroke-width="1"/>
+    <text x="198" y="146" text-anchor="middle" font-size="15" font-weight="600" fill="#1e40af">b</text>
+    <path d="M233 121 H299 V161 H233 Z" fill="#f8fafc"/>
+    <line x1="232" y1="120" x2="232" y2="162" stroke="#94a3b8" stroke-width="1"/>
+    <text x="266" y="146" text-anchor="middle" font-size="15" font-weight="600" fill="#1f2937">a</text>
+    <path d="M301 121 H367 V161 H301 Z" fill="#f0fdfa"/>
+    <line x1="300" y1="120" x2="300" y2="162" stroke="#94a3b8" stroke-width="1"/>
+    <text x="334" y="146" text-anchor="middle" font-size="15" font-weight="600" fill="#115e59">a</text>
+    <path d="M369 121 H435 V161 H369 Z" fill="#f0fdfa"/>
+    <line x1="368" y1="120" x2="368" y2="162" stroke="#94a3b8" stroke-width="1"/>
+    <text x="402" y="146" text-anchor="middle" font-size="15" font-weight="600" fill="#115e59">b</text>
+    <path d="M437 121 H503 V161 H437 Z" fill="#fef2f2"/>
+    <line x1="436" y1="120" x2="436" y2="162" stroke="#94a3b8" stroke-width="1"/>
+    <text x="470" y="146" text-anchor="middle" font-size="15" font-weight="600" fill="#991b1b">c</text>
+
+    <path d="M104 170 V178 H224 V170" fill="none" stroke="#3b82f6" stroke-width="1.5"/>
+    <text x="164" y="202" text-anchor="middle" font-size="15" font-weight="600" fill="#1e40af" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">前缀 ab</text>
+    <path d="M308 170 V178 H428 V170" fill="none" stroke="#14b8a6" stroke-width="1.5"/>
+    <text x="368" y="202" text-anchor="middle" font-size="15" font-weight="600" fill="#115e59" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">后缀 ab</text>
+    <text x="470" y="202" text-anchor="middle" font-size="15" font-weight="600" fill="#991b1b" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">失配 j=5</text>
+
+    <path d="M164 214 V246 H368 V284" fill="none" stroke="#3b82f6" stroke-width="2" marker-end="url(#kmps-a)"/>
+    <text x="384" y="264" text-anchor="start" font-size="15" font-weight="600" fill="#1e40af" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">next[5] = 2：右滑 j − k = 5 − 2 = 3 位</text>
+
+    <text x="48" y="318" text-anchor="middle" font-size="15" font-weight="600" fill="#115e59" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">T(新)</text>
+    <rect x="300" y="292" width="408" height="42" rx="6" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5" data-role="group"/>
+    <path d="M301 293 H367 V333 H301 Z" fill="#f0fdfa"/>
+    <text x="334" y="318" text-anchor="middle" font-size="15" font-weight="600" fill="#115e59">a</text>
+    <path d="M369 293 H435 V333 H369 Z" fill="#f0fdfa"/>
+    <line x1="368" y1="292" x2="368" y2="334" stroke="#94a3b8" stroke-width="1"/>
+    <text x="402" y="318" text-anchor="middle" font-size="15" font-weight="600" fill="#115e59">b</text>
+    <path d="M437 293 H503 V333 H437 Z" fill="#eff6ff"/>
+    <line x1="436" y1="292" x2="436" y2="334" stroke="#94a3b8" stroke-width="1"/>
+    <text x="470" y="318" text-anchor="middle" font-size="15" font-weight="600" fill="#1e40af">a</text>
+    <path d="M505 293 H571 V333 H505 Z" fill="#f8fafc"/>
+    <line x1="504" y1="292" x2="504" y2="334" stroke="#94a3b8" stroke-width="1"/>
+    <text x="538" y="318" text-anchor="middle" font-size="15" font-weight="600" fill="#1f2937">a</text>
+    <path d="M573 293 H639 V333 H573 Z" fill="#f8fafc"/>
+    <line x1="572" y1="292" x2="572" y2="334" stroke="#94a3b8" stroke-width="1"/>
+    <text x="606" y="318" text-anchor="middle" font-size="15" font-weight="600" fill="#1f2937">b</text>
+    <path d="M641 293 H707 V333 H641 Z" fill="#f8fafc"/>
+    <line x1="640" y1="292" x2="640" y2="334" stroke="#94a3b8" stroke-width="1"/>
+    <text x="674" y="318" text-anchor="middle" font-size="15" font-weight="600" fill="#1f2937">c</text>
+
+    <path d="M308 342 V350 H428 V342" fill="none" stroke="#14b8a6" stroke-width="1.5"/>
+    <text x="368" y="376" text-anchor="middle" font-size="15" font-weight="400" fill="#115e59" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">已对齐，无需再比</text>
+    <line x1="470" y1="364" x2="470" y2="340" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#kmps-a)"/>
+    <text x="540" y="388" text-anchor="middle" font-size="15" font-weight="600" fill="#1e40af" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">从 T[2] 继续比 S[5]</text>
+
+    <rect x="8" y="414" width="704" height="48" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="1" data-role="note"/>
+    <text x="360" y="444" text-anchor="middle" font-size="15" font-weight="600" fill="#1f2937">指针 i 始终停在 5，没有回退；只有 j 从 5 变成 2</text>
+  </g>
 </svg>
