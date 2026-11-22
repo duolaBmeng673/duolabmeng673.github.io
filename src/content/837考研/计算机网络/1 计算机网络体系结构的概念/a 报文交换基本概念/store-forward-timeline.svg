@@ -1,68 +1,67 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 1 760 363" width="760" height="363" role="img">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 324" width="720" height="324" role="img">
   <title>分组存储转发 + 路由器处理时延时间轴（题 18）</title>
   <desc>展示两个 1000 B 分组 P1 与 P2 经过发送、路由器单分组串行处理与转发的时间轴，总耗时 36 ms。</desc>
   <g font-family="'PingFang SC','Noto Sans SC','Microsoft YaHei',system-ui,sans-serif">
-    <text x="380" y="44" text-anchor="middle" font-size="18" font-weight="600" fill="#1f2937">分组存储转发 + 路由器处理时延时间轴（题 18）</text>
+    <!-- Row labels (x=8..108) -->
+    <text x="8" y="34" text-anchor="start" font-size="15" font-weight="600" fill="#1e40af" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">A 发送</text>
+    <text x="8" y="94" text-anchor="start" font-size="15" font-weight="600" fill="#92400e" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">路由器处理</text>
+    <text x="8" y="144" text-anchor="start" font-size="15" font-weight="600" fill="#115e59" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">路由器转发</text>
+    <text x="8" y="166" text-anchor="start" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">(= B 接收)</text>
 
-    <!-- Row labels (left column x=24..144) -->
-    <text x="24" y="92" text-anchor="start" font-size="14" font-weight="600" fill="#1e40af">A 发送</text>
-    <text x="24" y="148" text-anchor="start" font-size="14" font-weight="600" fill="#92400e">路由器处理</text>
-    <text x="24" y="196" text-anchor="start" font-size="14" font-weight="600" fill="#115e59">路由器转发</text>
-    <text x="24" y="216" text-anchor="start" font-size="12" font-weight="400" fill="#4b5563">(= B 接收)</text>
-
-    <!-- Scale: x0=152, 1ms=12px (0->152, 8->248, 16->344, 18->368, 26->464, 28->488, 36->584) -->
+    <!-- Scale: x0=116, 1ms=15px (0->116, 8->236, 16->356, 18->386, 26->506, 28->536, 36->656) -->
     <g stroke="#94a3b8" stroke-width="1" stroke-dasharray="4 4">
-      <line x1="152" y1="64" x2="152" y2="244"/>
-      <line x1="248" y1="64" x2="248" y2="244"/>
-      <line x1="344" y1="64" x2="344" y2="244"/>
-      <line x1="368" y1="64" x2="368" y2="244"/>
-      <line x1="464" y1="64" x2="464" y2="244"/>
-      <line x1="488" y1="64" x2="488" y2="244"/>
-      <line x1="584" y1="64" x2="584" y2="244"/>
+      <line x1="116" y1="8" x2="116" y2="196"/>
+      <line x1="236" y1="8" x2="236" y2="196"/>
+      <line x1="356" y1="8" x2="356" y2="196"/>
+      <line x1="386" y1="8" x2="386" y2="196"/>
+      <line x1="506" y1="8" x2="506" y2="196"/>
+      <line x1="536" y1="8" x2="536" y2="196"/>
+      <line x1="656" y1="8" x2="656" y2="196"/>
     </g>
 
-    <!-- Row 1: A sends P1 (0-8ms), P2 (8-16ms) -->
-    <rect x="152" y="68" width="96" height="40" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
-    <text x="200" y="93" text-anchor="middle" font-size="14" font-weight="400" fill="#1e40af">P1 (8 ms)</text>
-    <rect x="248" y="68" width="96" height="40" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
-    <text x="296" y="93" text-anchor="middle" font-size="14" font-weight="400" fill="#1e40af">P2 (8 ms)</text>
+    <!-- Row 1: P1 (0-8ms), P2 (8-16ms) -->
+    <rect x="116" y="8" width="120" height="42" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+    <text x="176" y="35" text-anchor="middle" font-size="15" font-weight="400" fill="#1e40af">P1 (8 ms)</text>
+    <rect x="236" y="8" width="120" height="42" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+    <text x="296" y="35" text-anchor="middle" font-size="15" font-weight="400" fill="#1e40af">P2 (8 ms)</text>
 
-    <!-- Row 2: Router processes P1 (8-18ms), P2 (18-28ms) -->
-    <rect x="248" y="124" width="120" height="40" rx="8" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5"/>
-    <text x="308" y="149" text-anchor="middle" font-size="14" font-weight="400" fill="#92400e">P1 处理 10ms</text>
-    <rect x="368" y="124" width="120" height="40" rx="8" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5"/>
-    <text x="428" y="149" text-anchor="middle" font-size="14" font-weight="400" fill="#92400e">P2 处理 10ms</text>
+    <!-- Row 2: P1 proc (8-18ms, w=150), P2 proc (18-28ms, w=150) -->
+    <rect x="236" y="68" width="150" height="42" rx="8" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5"/>
+    <text x="311" y="95" text-anchor="middle" font-size="15" font-weight="400" fill="#92400e">P1 处理 10ms</text>
+    <rect x="386" y="68" width="150" height="42" rx="8" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5"/>
+    <text x="461" y="95" text-anchor="middle" font-size="15" font-weight="400" fill="#92400e">P2 处理 10ms</text>
 
     <!-- Row 3: Router forwards P1 (18-26ms), P2 (28-36ms) -->
-    <rect x="368" y="180" width="96" height="40" rx="8" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
-    <text x="416" y="205" text-anchor="middle" font-size="14" font-weight="400" fill="#115e59">P1 (8 ms)</text>
-    <rect x="488" y="180" width="96" height="40" rx="8" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
-    <text x="536" y="205" text-anchor="middle" font-size="14" font-weight="400" fill="#115e59">P2 (8 ms)</text>
+    <rect x="386" y="128" width="120" height="42" rx="8" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
+    <text x="446" y="155" text-anchor="middle" font-size="15" font-weight="400" fill="#115e59">P1 (8 ms)</text>
+    <rect x="536" y="128" width="120" height="42" rx="8" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
+    <text x="596" y="155" text-anchor="middle" font-size="15" font-weight="400" fill="#115e59">P2 (8 ms)</text>
 
     <!-- Timeline axis -->
-    <line x1="152" y1="244" x2="624" y2="244" stroke="#1f2937" stroke-width="1.5"/>
+    <line x1="116" y1="196" x2="676" y2="196" stroke="#1f2937" stroke-width="1.5"/>
     <g stroke="#1f2937" stroke-width="1">
-      <line x1="152" y1="240" x2="152" y2="248"/>
-      <line x1="248" y1="240" x2="248" y2="248"/>
-      <line x1="344" y1="240" x2="344" y2="248"/>
-      <line x1="368" y1="240" x2="368" y2="248"/>
-      <line x1="464" y1="240" x2="464" y2="248"/>
-      <line x1="488" y1="240" x2="488" y2="248"/>
-      <line x1="584" y1="240" x2="584" y2="248"/>
+      <line x1="116" y1="192" x2="116" y2="200"/>
+      <line x1="236" y1="192" x2="236" y2="200"/>
+      <line x1="356" y1="192" x2="356" y2="200"/>
+      <line x1="386" y1="192" x2="386" y2="200"/>
+      <line x1="506" y1="192" x2="506" y2="200"/>
+      <line x1="536" y1="192" x2="536" y2="200"/>
+      <line x1="656" y1="192" x2="656" y2="200"/>
     </g>
-    <g font-size="12" font-weight="400" fill="#4b5563" text-anchor="middle">
-      <text x="152" y="268">0</text>
-      <text x="248" y="268">8</text>
-      <text x="344" y="268">16</text>
-      <text x="368" y="268">18</text>
-      <text x="464" y="268">26</text>
-      <text x="488" y="268">28</text>
-      <text x="584" y="268">36</text>
+    <g font-size="15" font-weight="400" fill="#4b5563" text-anchor="middle">
+      <text x="116" y="224" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">0</text>
+      <text x="236" y="224" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">8</text>
+      <text x="352" y="224" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">16</text>
+      <text x="390" y="224" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">18</text>
+      <text x="502" y="224" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">26</text>
+      <text x="540" y="224" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">28</text>
+      <text x="656" y="224" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">36</text>
     </g>
-    <text x="640" y="248" text-anchor="start" font-size="12" font-weight="400" fill="#4b5563">ms</text>
+    <text x="688" y="201" text-anchor="start" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">ms</text>
 
-    <!-- Bottom note block -->
-    <rect x="24" y="292" width="712" height="48" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="1" data-role="note"/>
-    <text x="380" y="320" text-anchor="middle" font-size="12" font-weight="400" fill="#1f2937">P2 在 16 ms 到达路由器，但路由器 18 ms 才处理完 P1，P2 排队等待 2 ms → 总计 36 ms</text>
+    <!-- Bottom note block (wrapped 2 lines inside 704w) -->
+    <rect x="8" y="248" width="704" height="68" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="1" data-role="note"/>
+    <text x="360" y="276" text-anchor="middle" font-size="15" font-weight="400" fill="#1f2937">题 18：P2 在 16 ms 到达路由器，但路由器 18 ms 才处理完 P1，</text>
+    <text x="360" y="300" text-anchor="middle" font-size="15" font-weight="400" fill="#1f2937">P2 排队等待 2 ms 后串行处理转发 → 总计 36 ms</text>
   </g>
 </svg>

@@ -1,7 +1,7 @@
 # 837 考研 SVG v2 重排进度清单
 
 - 总数：**81** 张（规范见 [笔记设计规范 §5](../src/content/837考研/笔记设计规范.md#5-图表风格规范v2--无框直叠方格背景)，严格校验清单以 [scripts/lint-svg.mjs](../scripts/lint-svg.mjs) `LEGACY_837_SVGS` 为准）。
-- 当前进度：已做 **15** 张 / 待做 **66** 张（目标：全部 `81` 张改为 `已做` 且 `LEGACY_837_SVGS` 清空）。
+- 当前进度：已做 **32** 张 / 待做 **49** 张（目标：全部 `81` 张改为 `已做` 且 `LEGACY_837_SVGS` 清空）。
 
 ## 试点（已完成，3 张）
 
@@ -32,23 +32,23 @@
 
 | 状态 | 文件路径 | 批次 |
 | --- | --- | --- |
-| 待做 | `src/content/837考研/计算机网络/1 计算机网络体系结构的概念/a 报文交换基本概念/delay-bandwidth-product.svg` | 计网第 1–2 章 |
-| 待做 | `src/content/837考研/计算机网络/1 计算机网络体系结构的概念/a 报文交换基本概念/store-forward-timeline.svg` | 计网第 1–2 章 |
-| 待做 | `src/content/837考研/计算机网络/1 计算机网络体系结构的概念/b TCP-IP 体系结构/osi-tcpip-layers.svg` | 计网第 1–2 章 |
-| 待做 | `src/content/837考研/计算机网络/1 计算机网络体系结构的概念/b TCP-IP 体系结构/router-forwarding-layers.svg` | 计网第 1–2 章 |
-| 待做 | `src/content/837考研/计算机网络/1 计算机网络体系结构的概念/b TCP-IP 体系结构/tcpip-hourglass.svg` | 计网第 1–2 章 |
-| 待做 | `src/content/837考研/计算机网络/1 计算机网络体系结构的概念/c IP 地址与子网/cidr-prefix.svg` | 计网第 1–2 章 |
-| 待做 | `src/content/837考研/计算机网络/1 计算机网络体系结构的概念/c IP 地址与子网/ip-address-topology.svg` | 计网第 1–2 章 |
-| 待做 | `src/content/837考研/计算机网络/1 计算机网络体系结构的概念/c IP 地址与子网/ipv4-classful-address.svg` | 计网第 1–2 章 |
-| 待做 | `src/content/837考研/计算机网络/1 计算机网络体系结构的概念/c IP 地址与子网/route-aggregation.svg` | 计网第 1–2 章 |
-| 待做 | `src/content/837考研/计算机网络/2 应用层/a Web 与 HTTP/http-message-format.svg` | 计网第 1–2 章 |
-| 待做 | `src/content/837考研/计算机网络/2 应用层/a Web 与 HTTP/http-persistent-vs-nonpersistent.svg` | 计网第 1–2 章 |
-| 待做 | `src/content/837考研/计算机网络/2 应用层/b DNS/dns-2020-timeline.svg` | 计网第 1–2 章 |
-| 待做 | `src/content/837考研/计算机网络/2 应用层/b DNS/dns-domain-tree.svg` | 计网第 1–2 章 |
-| 待做 | `src/content/837考研/计算机网络/2 应用层/b DNS/dns-resolution-modes.svg` | 计网第 1–2 章 |
-| 待做 | `src/content/837考研/计算机网络/2 应用层/b DNS/dns-server-hierarchy.svg` | 计网第 1–2 章 |
-| 待做 | `src/content/837考研/计算机网络/2 应用层/c SMTP/email-system-components.svg` | 计网第 1–2 章 |
-| 待做 | `src/content/837考研/计算机网络/2 应用层/c SMTP/mime-smtp-relation.svg` | 计网第 1–2 章 |
+| 已做 | `src/content/837考研/计算机网络/1 计算机网络体系结构的概念/a 报文交换基本概念/delay-bandwidth-product.svg` | 计网第 1–2 章 |
+| 已做 | `src/content/837考研/计算机网络/1 计算机网络体系结构的概念/a 报文交换基本概念/store-forward-timeline.svg` | 计网第 1–2 章 |
+| 已做 | `src/content/837考研/计算机网络/1 计算机网络体系结构的概念/b TCP-IP 体系结构/osi-tcpip-layers.svg` | 计网第 1–2 章 |
+| 已做 | `src/content/837考研/计算机网络/1 计算机网络体系结构的概念/b TCP-IP 体系结构/router-forwarding-layers.svg` | 计网第 1–2 章 |
+| 已做 | `src/content/837考研/计算机网络/1 计算机网络体系结构的概念/b TCP-IP 体系结构/tcpip-hourglass.svg` | 计网第 1–2 章 |
+| 已做 | `src/content/837考研/计算机网络/1 计算机网络体系结构的概念/c IP 地址与子网/cidr-prefix.svg` | 计网第 1–2 章 |
+| 已做 | `src/content/837考研/计算机网络/1 计算机网络体系结构的概念/c IP 地址与子网/ip-address-topology.svg` | 计网第 1–2 章 |
+| 已做 | `src/content/837考研/计算机网络/1 计算机网络体系结构的概念/c IP 地址与子网/ipv4-classful-address.svg` | 计网第 1–2 章 |
+| 已做 | `src/content/837考研/计算机网络/1 计算机网络体系结构的概念/c IP 地址与子网/route-aggregation.svg` | 计网第 1–2 章 |
+| 已做 | `src/content/837考研/计算机网络/2 应用层/a Web 与 HTTP/http-message-format.svg` | 计网第 1–2 章 |
+| 已做 | `src/content/837考研/计算机网络/2 应用层/a Web 与 HTTP/http-persistent-vs-nonpersistent.svg` | 计网第 1–2 章 |
+| 已做 | `src/content/837考研/计算机网络/2 应用层/b DNS/dns-2020-timeline.svg` | 计网第 1–2 章 |
+| 已做 | `src/content/837考研/计算机网络/2 应用层/b DNS/dns-domain-tree.svg` | 计网第 1–2 章 |
+| 已做 | `src/content/837考研/计算机网络/2 应用层/b DNS/dns-resolution-modes.svg` | 计网第 1–2 章 |
+| 已做 | `src/content/837考研/计算机网络/2 应用层/b DNS/dns-server-hierarchy.svg` | 计网第 1–2 章 |
+| 已做 | `src/content/837考研/计算机网络/2 应用层/c SMTP/email-system-components.svg` | 计网第 1–2 章 |
+| 已做 | `src/content/837考研/计算机网络/2 应用层/c SMTP/mime-smtp-relation.svg` | 计网第 1–2 章 |
 | 待做 | `src/content/837考研/计算机网络/3 传输层/a UDP/udp-header-format.svg` | 计网第 3–6 章 |
 | 待做 | `src/content/837考研/计算机网络/3 传输层/b TCP/tcp-flow-control.svg` | 计网第 3–6 章 |
 | 待做 | `src/content/837考研/计算机网络/3 传输层/b TCP/tcp-handshake-teardown.svg` | 计网第 3–6 章 |

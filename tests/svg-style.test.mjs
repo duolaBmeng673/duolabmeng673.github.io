@@ -46,6 +46,7 @@ const ACCENT_GROUPS = [
 ];
 
 const ALLOWED_FONT_SIZES = new Set(['12', '14', '16', '18']);
+const ALLOWED_V2_FONT_SIZES = new Set(['15', '16', '18']);
 const ALLOWED_FONT_WEIGHTS = new Set(['400', '600']);
 const ALLOWED_STROKE_WIDTHS = new Set(['1', '1.5', '2']);
 
@@ -94,12 +95,17 @@ test('all 计算机网络 SVGs strictly satisfy v1 static style specification', 
 
   for (const { path, prefixPrefix } of NETWORK_SVGS) {
     const svg = readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
+    const isV2 = !LEGACY_837_SVGS.has(path);
 
-    // 1. viewBox X Y W H with W <= 760, height <= 520
+    // 1. viewBox X Y W H: v1 uses W <= 760, height <= 520; v2 requires W === 720
     const vbMatch = svg.match(/viewBox="(-?\d+(?:\.\d+)?)\s+(-?\d+(?:\.\d+)?)\s+(\d+(?:\.\d+)?)\s+(\d+(?:\.\d+)?)"/);
     assert.ok(vbMatch, `${path}: missing viewBox="X Y W H"`);
-    assert.ok(Number(vbMatch[3]) <= 760, `${path}: viewBox width ${vbMatch[3]} exceeds 760`);
-    assert.ok(Number(vbMatch[4]) <= 520, `${path}: viewBox height ${vbMatch[4]} exceeds 520`);
+    if (isV2) {
+      assert.equal(Number(vbMatch[3]), 720, `${path}: v2 viewBox width ${vbMatch[3]} must equal 720`);
+    } else {
+      assert.ok(Number(vbMatch[3]) <= 760, `${path}: viewBox width ${vbMatch[3]} exceeds 760`);
+      assert.ok(Number(vbMatch[4]) <= 520, `${path}: viewBox height ${vbMatch[4]} exceeds 520`);
+    }
 
     // 2. Accessibility & structure
     assert.match(svg, /role="img"/, `${path}: missing role="img"`);
@@ -119,19 +125,21 @@ test('all 计算机网络 SVGs strictly satisfy v1 static style specification', 
       globalMarkerIds.add(mid);
     }
 
-    // 4. Colors strictly from v1 palette & max 3 accent roles
+    // 4. Colors strictly from v1/v2 palette (#f7f6f2 background halo allowed for v2) & max 3 accent roles
     const colors = [...svg.matchAll(/#[0-9a-fA-F]{3,8}\b/g)].map((m) => m[0].toLowerCase());
     for (const hex of colors) {
-      assert.ok(ALLOWED_COLORS.has(hex), `${path}: disallowed color ${hex}`);
+      const ok = ALLOWED_COLORS.has(hex) || (isV2 && hex === '#f7f6f2');
+      assert.ok(ok, `${path}: disallowed color ${hex}`);
     }
     const usedColors = new Set(colors);
     const usedAccentCount = ACCENT_GROUPS.filter((group) => group.some((c) => usedColors.has(c))).length;
     const maxAccents = path.endsWith('wifi-rts-cts-nav.svg') ? 4 : 3;
     assert.ok(usedAccentCount <= maxAccents, `${path}: uses ${usedAccentCount} accent roles (max ${maxAccents} allowed)`);
 
-    // 5. Font sizes only in 12 / 14 / 16 / 18
+    // 5. Font sizes: v1 in 12 / 14 / 16 / 18; v2 strictly in 15 / 16 / 18
+    const fsSet = isV2 ? ALLOWED_V2_FONT_SIZES : ALLOWED_FONT_SIZES;
     for (const [, size] of svg.matchAll(/font-size="([^"]+)"/g)) {
-      assert.ok(ALLOWED_FONT_SIZES.has(size), `${path}: disallowed font-size="${size}"`);
+      assert.ok(fsSet.has(size), `${path}: disallowed font-size="${size}"`);
     }
 
     // 6. Font weights only in 400 / 600

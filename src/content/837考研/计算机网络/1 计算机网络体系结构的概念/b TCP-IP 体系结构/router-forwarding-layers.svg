@@ -1,68 +1,66 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 1 760 447" width="760" height="447" role="img">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 404" width="720" height="404" role="img">
   <title>TCP/IP 通信路径：路由器只处理到网际层</title>
   <desc>展示主机 A 与主机 B 在应用层和运输层进行端到端逻辑通信，而中间路由器只处理到网际层和网络接口层。</desc>
   <g font-family="'PingFang SC','Noto Sans SC','Microsoft YaHei',system-ui,sans-serif">
-    <text x="380" y="44" text-anchor="middle" font-size="18" font-weight="600" fill="#1f2937">TCP/IP 通信路径：路由器只处理到网际层</text>
+    <text x="96" y="26" text-anchor="middle" font-size="16" font-weight="600" fill="#1e40af" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">主机 A</text>
+    <text x="360" y="122" text-anchor="middle" font-size="16" font-weight="600" fill="#115e59" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">路由器</text>
+    <text x="624" y="26" text-anchor="middle" font-size="16" font-weight="600" fill="#1e40af" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">主机 B</text>
 
-    <!-- Column headers -->
-    <text x="120" y="76" text-anchor="middle" font-size="16" font-weight="600" fill="#1e40af">主机 A</text>
-    <text x="380" y="172" text-anchor="middle" font-size="16" font-weight="600" fill="#115e59">路由器</text>
-    <text x="640" y="76" text-anchor="middle" font-size="16" font-weight="600" fill="#1e40af">主机 B</text>
-
-    <!-- Host A stack -->
-    <rect x="32" y="88" width="176" height="40" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
-    <rect x="32" y="136" width="176" height="40" rx="8" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5"/>
-    <rect x="32" y="184" width="176" height="40" rx="8" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
-    <rect x="32" y="232" width="176" height="40" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
-    <g text-anchor="middle" font-size="14" font-weight="400">
-      <text x="120" y="113" fill="#1e40af">应用层</text>
-      <text x="120" y="161" fill="#92400e">运输层</text>
-      <text x="120" y="209" fill="#115e59">网际层</text>
-      <text x="120" y="257" fill="#1f2937">网络接口层</text>
+    <!-- Host A stack (x=8..184) -->
+    <rect x="8" y="40" width="176" height="42" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+    <rect x="8" y="90" width="176" height="42" rx="8" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5"/>
+    <rect x="8" y="140" width="176" height="42" rx="8" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
+    <rect x="8" y="190" width="176" height="42" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
+    <g text-anchor="middle" font-size="15" font-weight="400">
+      <text x="96" y="67" fill="#1e40af">应用层</text>
+      <text x="96" y="117" fill="#92400e">运输层</text>
+      <text x="96" y="167" fill="#115e59">网际层</text>
+      <text x="96" y="217" fill="#1f2937">网络接口层</text>
     </g>
 
-    <!-- Router stack -->
-    <rect x="292" y="184" width="176" height="40" rx="8" fill="#f0fdfa" stroke="#14b8a6" stroke-width="2"/>
-    <rect x="292" y="232" width="176" height="40" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
-    <g text-anchor="middle" font-size="14" font-weight="400">
-      <text x="380" y="209" fill="#115e59">网际层</text>
-      <text x="380" y="257" fill="#1f2937">网络接口层</text>
+    <!-- Router stack (x=272..448) -->
+    <rect x="272" y="140" width="176" height="42" rx="8" fill="#f0fdfa" stroke="#14b8a6" stroke-width="2"/>
+    <rect x="272" y="190" width="176" height="42" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
+    <g text-anchor="middle" font-size="15" font-weight="400">
+      <text x="360" y="167" fill="#115e59">网际层</text>
+      <text x="360" y="217" fill="#1f2937">网络接口层</text>
     </g>
 
-    <!-- Host B stack -->
-    <rect x="552" y="88" width="176" height="40" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
-    <rect x="552" y="136" width="176" height="40" rx="8" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5"/>
-    <rect x="552" y="184" width="176" height="40" rx="8" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
-    <rect x="552" y="232" width="176" height="40" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
-    <g text-anchor="middle" font-size="14" font-weight="400">
-      <text x="640" y="113" fill="#1e40af">应用层</text>
-      <text x="640" y="161" fill="#92400e">运输层</text>
-      <text x="640" y="209" fill="#115e59">网际层</text>
-      <text x="640" y="257" fill="#1f2937">网络接口层</text>
+    <!-- Host B stack (x=536..712) -->
+    <rect x="536" y="40" width="176" height="42" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+    <rect x="536" y="90" width="176" height="42" rx="8" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5"/>
+    <rect x="536" y="140" width="176" height="42" rx="8" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
+    <rect x="536" y="190" width="176" height="42" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
+    <g text-anchor="middle" font-size="15" font-weight="400">
+      <text x="624" y="67" fill="#1e40af">应用层</text>
+      <text x="624" y="117" fill="#92400e">运输层</text>
+      <text x="624" y="167" fill="#115e59">网际层</text>
+      <text x="624" y="217" fill="#1f2937">网络接口层</text>
     </g>
 
-    <!-- Network 1 and Network 2 nodes -->
-    <rect x="192" y="304" width="120" height="40" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
-    <text x="252" y="329" text-anchor="middle" font-size="14" font-weight="400" fill="#1f2937">网络 1</text>
+    <!-- Network 1 and Network 2 -->
+    <rect x="168" y="264" width="120" height="42" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
+    <text x="228" y="291" text-anchor="middle" font-size="15" font-weight="400" fill="#1f2937">网络 1</text>
 
-    <rect x="448" y="304" width="120" height="40" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
-    <text x="508" y="329" text-anchor="middle" font-size="14" font-weight="400" fill="#1f2937">网络 2</text>
+    <rect x="432" y="264" width="120" height="42" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
+    <text x="492" y="291" text-anchor="middle" font-size="15" font-weight="400" fill="#1f2937">网络 2</text>
 
-    <!-- Orthogonal physical data flow paths -->
-    <path d="M120 272 V324 H192" fill="none" stroke="#3b82f6" stroke-width="1.5"/>
-    <path d="M312 324 H360 V272" fill="none" stroke="#3b82f6" stroke-width="1.5"/>
-    <path d="M400 272 V324 H448" fill="none" stroke="#3b82f6" stroke-width="1.5"/>
-    <path d="M568 324 H640 V272" fill="none" stroke="#3b82f6" stroke-width="1.5"/>
+    <!-- Orthogonal physical paths -->
+    <path d="M96 232 V285 H168" fill="none" stroke="#3b82f6" stroke-width="1.5"/>
+    <path d="M288 285 H340 V232" fill="none" stroke="#3b82f6" stroke-width="1.5"/>
+    <path d="M380 232 V285 H432" fill="none" stroke="#3b82f6" stroke-width="1.5"/>
+    <path d="M552 285 H624 V232" fill="none" stroke="#3b82f6" stroke-width="1.5"/>
 
     <!-- Peer dashed lines -->
     <g stroke="#94a3b8" stroke-width="1" stroke-dasharray="6 4">
-      <line x1="208" y1="108" x2="552" y2="108"/>
-      <line x1="208" y1="156" x2="552" y2="156"/>
-      <line x1="208" y1="204" x2="292" y2="204"/>
-      <line x1="468" y1="204" x2="552" y2="204"/>
+      <line x1="184" y1="61" x2="536" y2="61"/>
+      <line x1="184" y1="111" x2="536" y2="111"/>
+      <line x1="184" y1="161" x2="272" y2="161"/>
+      <line x1="448" y1="161" x2="536" y2="161"/>
     </g>
 
-    <rect x="24" y="380" width="712" height="44" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="1" data-role="note"/>
-    <text x="380" y="406" text-anchor="middle" font-size="12" font-weight="400" fill="#1f2937">图例：水平虚线表示对等层之间的逻辑通信，实线表示分组实际经过的物理传输路径</text>
+    <rect x="8" y="332" width="704" height="64" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="1" data-role="note"/>
+    <text x="360" y="358" text-anchor="middle" font-size="15" font-weight="400" fill="#1f2937">图例：水平虚线表示对等层之间的逻辑通信，</text>
+    <text x="360" y="382" text-anchor="middle" font-size="15" font-weight="400" fill="#1f2937">实线表示分组实际经过的物理传输路径</text>
   </g>
 </svg>

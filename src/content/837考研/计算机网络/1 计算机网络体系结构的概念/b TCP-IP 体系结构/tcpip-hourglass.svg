@@ -1,80 +1,69 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 1 760 383" width="760" height="383" role="img">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 324" width="720" height="324" role="img">
   <title>TCP/IP 协议族（沙漏形：IP 是核心细腰）</title>
   <desc>展示 TCP/IP 协议族的沙漏形结构：上层应用协议与运输层汇聚于网际层 IP，下层适配多种物理网络接口。</desc>
   <g font-family="'PingFang SC','Noto Sans SC','Microsoft YaHei',system-ui,sans-serif">
-    <text x="380" y="44" text-anchor="middle" font-size="18" font-weight="600" fill="#1f2937">TCP/IP 协议族（沙漏形：IP 是核心细腰）</text>
+    <text x="8" y="36" text-anchor="start" font-size="15" font-weight="600" fill="#1e40af" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">应用层</text>
+    <text x="8" y="124" text-anchor="start" font-size="15" font-weight="600" fill="#92400e" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">运输层</text>
+    <text x="8" y="212" text-anchor="start" font-size="15" font-weight="600" fill="#115e59" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">网际层</text>
+    <text x="8" y="300" text-anchor="start" font-size="15" font-weight="600" fill="#1f2937" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">网络接口层</text>
 
-    <!-- Left layer labels -->
-    <text x="24" y="96" text-anchor="start" font-size="14" font-weight="600" fill="#1e40af">应用层</text>
-    <text x="24" y="180" text-anchor="start" font-size="14" font-weight="600" fill="#92400e">运输层</text>
-    <text x="24" y="264" text-anchor="start" font-size="14" font-weight="600" fill="#115e59">网际层</text>
-    <text x="24" y="348" text-anchor="start" font-size="14" font-weight="600" fill="#1f2937">网络接口层</text>
-
-    <!-- Horizontal dashed layer separators -->
     <g stroke="#94a3b8" stroke-width="1" stroke-dasharray="6 4">
-      <line x1="112" y1="132" x2="736" y2="132"/>
-      <line x1="112" y1="216" x2="736" y2="216"/>
-      <line x1="112" y1="300" x2="736" y2="300"/>
+      <line x1="104" y1="74" x2="712" y2="74"/>
+      <line x1="104" y1="162" x2="712" y2="162"/>
+      <line x1="104" y1="250" x2="712" y2="250"/>
     </g>
 
-    <!-- Orthogonal bus connectors -->
     <g stroke="#94a3b8" stroke-width="1.5" fill="none">
-      <!-- App to TCP/UDP -->
-      <path d="M180 112 V124 H292 V152"/>
-      <path d="M292 112 V152"/>
-      <path d="M404 112 V124 H484 V152"/>
-      <path d="M516 112 V124 H484"/>
-      <!-- TCP/UDP to IP -->
-      <path d="M292 192 V208 H368 V236"/>
-      <path d="M484 192 V208 H408 V236"/>
-      <!-- IP to Networks -->
-      <path d="M368 276 V292 H200 V320"/>
-      <path d="M388 276 V320"/>
-      <path d="M408 276 V292 H576 V320"/>
+      <path d="M164 52 V64 H276 V96"/>
+      <path d="M276 52 V96"/>
+      <path d="M388 52 V64 H468 V96"/>
+      <path d="M500 52 V64 H468"/>
+      <path d="M276 140 V154 H352 V184"/>
+      <path d="M468 140 V154 H392 V184"/>
+      <path d="M352 228 V242 H172 V272"/>
+      <path d="M372 228 H360 V272"/>
+      <path d="M392 228 V242 H548 V272"/>
     </g>
 
-    <!-- Application layer boxes -->
+    <!-- App boxes (w=92 -> L/R >= 16 for HTTP/SMTP) -->
     <g fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5">
-      <rect x="136" y="72" width="88" height="40" rx="8"/>
-      <rect x="248" y="72" width="88" height="40" rx="8"/>
-      <rect x="360" y="72" width="88" height="40" rx="8"/>
-      <rect x="472" y="72" width="88" height="40" rx="8"/>
+      <rect x="118" y="10" width="92" height="42" rx="8"/>
+      <rect x="230" y="10" width="92" height="42" rx="8"/>
+      <rect x="342" y="10" width="92" height="42" rx="8"/>
+      <rect x="454" y="10" width="92" height="42" rx="8"/>
     </g>
-    <g text-anchor="middle" font-size="14" font-weight="600" fill="#1e40af">
-      <text x="180" y="97">HTTP</text>
-      <text x="292" y="97">SMTP</text>
-      <text x="404" y="97">DNS</text>
-      <text x="516" y="97">RTP</text>
+    <g text-anchor="middle" font-size="15" font-weight="600" fill="#1e40af">
+      <text x="164" y="37">HTTP</text>
+      <text x="276" y="37">SMTP</text>
+      <text x="388" y="37">DNS</text>
+      <text x="500" y="37">RTP</text>
     </g>
-    <text x="580" y="88" text-anchor="start" font-size="12" font-weight="400" fill="#4b5563">…（Everything</text>
-    <text x="588" y="106" text-anchor="start" font-size="12" font-weight="400" fill="#4b5563">over IP）</text>
+    <text x="564" y="26" text-anchor="start" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">…（Everything</text>
+    <text x="572" y="48" text-anchor="start" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">over IP）</text>
 
-    <!-- Transport layer boxes -->
     <g fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5">
-      <rect x="244" y="152" width="96" height="40" rx="8"/>
-      <rect x="436" y="152" width="96" height="40" rx="8"/>
+      <rect x="228" y="96" width="96" height="44" rx="8"/>
+      <rect x="420" y="96" width="96" height="44" rx="8"/>
     </g>
-    <g text-anchor="middle" font-size="14" font-weight="600" fill="#92400e">
-      <text x="292" y="177">TCP</text>
-      <text x="484" y="177">UDP</text>
+    <g text-anchor="middle" font-size="15" font-weight="600" fill="#92400e">
+      <text x="276" y="124">TCP</text>
+      <text x="468" y="124">UDP</text>
     </g>
 
-    <!-- IP hourglass waist -->
-    <rect x="324" y="236" width="128" height="40" rx="8" fill="#f0fdfa" stroke="#14b8a6" stroke-width="2"/>
-    <text x="388" y="261" text-anchor="middle" font-size="16" font-weight="600" fill="#115e59">IP</text>
+    <rect x="308" y="184" width="128" height="44" rx="8" fill="#f0fdfa" stroke="#14b8a6" stroke-width="2"/>
+    <text x="372" y="212" text-anchor="middle" font-size="16" font-weight="600" fill="#115e59">IP</text>
 
-    <!-- Network interface layer boxes -->
     <g fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5">
-      <rect x="148" y="320" width="104" height="40" rx="8"/>
-      <rect x="336" y="320" width="104" height="40" rx="8"/>
-      <rect x="524" y="320" width="104" height="40" rx="8"/>
+      <rect x="120" y="272" width="104" height="44" rx="8"/>
+      <rect x="308" y="272" width="104" height="44" rx="8"/>
+      <rect x="496" y="272" width="104" height="44" rx="8"/>
     </g>
-    <g text-anchor="middle" font-size="14" font-weight="400" fill="#1f2937">
-      <text x="200" y="345">网络 1</text>
-      <text x="388" y="345">网络 2</text>
-      <text x="576" y="345">网络 3</text>
+    <g text-anchor="middle" font-size="15" font-weight="400" fill="#1f2937">
+      <text x="172" y="300">网络 1</text>
+      <text x="360" y="300">网络 2</text>
+      <text x="548" y="300">网络 3</text>
     </g>
-    <text x="644" y="336" text-anchor="start" font-size="12" font-weight="400" fill="#4b5563">…（IP over</text>
-    <text x="652" y="354" text-anchor="start" font-size="12" font-weight="400" fill="#4b5563">Everything）</text>
+    <text x="612" y="288" text-anchor="start" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">…（IP over</text>
+    <text x="620" y="310" text-anchor="start" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">Everything）</text>
   </g>
 </svg>

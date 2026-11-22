@@ -1,92 +1,77 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 1 728 391" width="728" height="391" role="img">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 352" width="720" height="352" role="img">
   <title>DNS 层次域名空间树状结构</title>
   <desc>展示互联网域名空间的树状层级划分：根域以下依次为顶级域名、二级域名、三级域名和四级域名。</desc>
   <g font-family="'PingFang SC','Noto Sans SC','Microsoft YaHei',system-ui,sans-serif">
-    <text x="380" y="44" text-anchor="middle" font-size="18" font-weight="600" fill="#1f2937">DNS 层次域名空间树状结构</text>
-
-    <!-- Level labels (left column) -->
-    <g font-size="12" font-weight="600" fill="#4b5563" text-anchor="start">
-      <text x="24" y="149">顶级域名</text>
-      <text x="24" y="217">二级域名</text>
-      <text x="24" y="285">三级域名</text>
-      <text x="24" y="353">四级域名</text>
+    <g font-size="15" font-weight="600" fill="#4b5563" text-anchor="start">
+      <text x="8" y="106" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">顶级域名</text>
+      <text x="8" y="180" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">二级域名</text>
+      <text x="8" y="254" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">三级域名</text>
+      <text x="8" y="328" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">四级域名</text>
     </g>
 
-    <!-- Orthogonal tree connectors -->
     <g stroke="#94a3b8" stroke-width="1.5" fill="none">
-      <!-- Root to TLDs -->
-      <path d="M408 100 V112 H192 V124"/>
-      <path d="M408 112 H304 V124"/>
-      <path d="M408 112 H528 V124"/>
-      <path d="M408 112 H664 V124"/>
-      <!-- com to 2nd level -->
-      <path d="M192 164 V178 H144 V192"/>
-      <path d="M192 178 H256 V192"/>
-      <!-- cn to 2nd level -->
-      <path d="M528 164 V178 H480 V192"/>
-      <path d="M528 178 H600 V192"/>
-      <!-- cskaoyan to 3rd level -->
-      <path d="M144 232 V246 H104 V260"/>
-      <path d="M144 246 H200 V260"/>
-      <!-- edu to hust -->
-      <path d="M480 232 V260"/>
-      <!-- hust to 4th level -->
-      <path d="M480 300 V314 H432 V328"/>
-      <path d="M480 314 H536 V328"/>
+      <path d="M404 50 V64 H184 V80"/>
+      <path d="M404 64 H304 V80"/>
+      <path d="M404 64 H532 V80"/>
+      <path d="M404 64 H670 V80"/>
+      <path d="M184 122 V138 H136 V154"/>
+      <path d="M184 138 H256 V154"/>
+      <path d="M532 122 V138 H476 V154"/>
+      <path d="M532 138 H604 V154"/>
+      <path d="M136 196 V212 H96 V228"/>
+      <path d="M136 212 H196 V228"/>
+      <path d="M476 196 V228"/>
+      <path d="M476 270 V286 H424 V302"/>
+      <path d="M476 286 H532 V302"/>
     </g>
 
-    <!-- Root -->
-    <rect x="372" y="64" width="72" height="36" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
-    <text x="408" y="87" text-anchor="middle" font-size="14" font-weight="600" fill="#1f2937">根</text>
+    <rect x="368" y="8" width="72" height="42" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
+    <text x="404" y="35" text-anchor="middle" font-size="16" font-weight="600" fill="#1f2937">根</text>
 
-    <!-- TLDs -->
     <g fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5">
-      <rect x="152" y="124" width="80" height="40" rx="8"/>
-      <rect x="264" y="124" width="80" height="40" rx="8"/>
-      <rect x="488" y="124" width="80" height="40" rx="8"/>
-      <rect x="624" y="124" width="80" height="40" rx="8"/>
+      <rect x="142" y="80" width="84" height="42" rx="8"/>
+      <rect x="262" y="80" width="84" height="42" rx="8"/>
+      <rect x="490" y="80" width="84" height="42" rx="8"/>
+      <rect x="628" y="80" width="84" height="42" rx="8"/>
     </g>
-    <g text-anchor="middle" font-size="14" font-weight="600" fill="#1e40af">
-      <text x="192" y="149">com</text>
-      <text x="304" y="149">org</text>
-      <text x="528" y="149">cn</text>
-      <text x="664" y="149">uk</text>
+    <g text-anchor="middle" font-size="15" font-weight="600" fill="#1e40af">
+      <text x="184" y="107">com</text>
+      <text x="304" y="107">org</text>
+      <text x="532" y="107">cn</text>
+      <text x="670" y="107">uk</text>
     </g>
 
-    <!-- 2nd level -->
     <g fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5">
-      <rect x="96" y="192" width="96" height="40" rx="8"/>
-      <rect x="208" y="192" width="96" height="40" rx="8"/>
-      <rect x="440" y="192" width="80" height="40" rx="8"/>
-      <rect x="560" y="192" width="80" height="40" rx="8"/>
+      <rect x="82" y="154" width="108" height="42" rx="8"/>
+      <rect x="206" y="154" width="100" height="42" rx="8"/>
+      <rect x="434" y="154" width="84" height="42" rx="8"/>
+      <rect x="562" y="154" width="84" height="42" rx="8"/>
     </g>
-    <g text-anchor="middle" font-size="14" font-weight="400" fill="#92400e">
-      <text x="144" y="217">cskaoyan</text>
-      <text x="256" y="217">google</text>
-      <text x="480" y="217">edu</text>
-      <text x="600" y="217">com</text>
+    <g text-anchor="middle" font-size="15" font-weight="400" fill="#92400e">
+      <text x="136" y="181">cskaoyan</text>
+      <text x="256" y="181">google</text>
+      <text x="476" y="181">edu</text>
+      <text x="604" y="181">com</text>
     </g>
 
-    <!-- 3rd level -->
     <g fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5">
-      <rect x="64" y="260" width="80" height="40" rx="8"/>
-      <rect x="160" y="260" width="80" height="40" rx="8"/>
-      <rect x="440" y="260" width="80" height="40" rx="8"/>
+      <rect x="54" y="228" width="84" height="42" rx="8"/>
+      <rect x="154" y="228" width="84" height="42" rx="8"/>
+      <rect x="434" y="228" width="84" height="42" rx="8"/>
     </g>
-    <g text-anchor="middle" font-size="14" font-weight="400" fill="#115e59">
-      <text x="104" y="285">www</text>
-      <text x="200" y="285">mail</text>
-      <text x="480" y="285">hust</text>
+    <g text-anchor="middle" font-size="15" font-weight="400" fill="#115e59">
+      <text x="96" y="255">www</text>
+      <text x="196" y="255">mail</text>
+      <text x="476" y="255">hust</text>
     </g>
 
-    <!-- 4th level -->
     <g fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5">
-      <rect x="392" y="328" width="80" height="40" rx="8"/>
-      <rect x="496" y="328" width="80" height="40" rx="8"/>
+      <rect x="382" y="302" width="84" height="42" rx="8"/>
+      <rect x="490" y="302" width="84" height="42" rx="8"/>
     </g>
-    <g text-anchor="middle" font-size="14" font-weight="400" fill="#1f2937">
-      <text x="432" y="353">www</text>
-      <text x="536" y="353">mail</text>
+    <g text-anchor="middle" font-size="15" font-weight="400" fill="#1f2937">
+      <text x="424" y="329">www</text>
+      <text x="532" y="329">mail</text>
     </g>
   </g>
 </svg>

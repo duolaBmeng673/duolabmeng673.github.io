@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 1 760 471" width="760" height="471" role="img">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 444" width="720" height="444" role="img">
   <title>DNS 迭代查询与递归查询工作原理</title>
   <desc>左侧对比本地域名服务器向根、顶级、权限服务器发起迭代查询的 8 个步骤，右侧对比全部采用递归查询的 8 个步骤。</desc>
   <defs>
@@ -7,85 +7,79 @@
     </marker>
   </defs>
   <g font-family="'PingFang SC','Noto Sans SC','Microsoft YaHei',system-ui,sans-serif">
-    <text x="380" y="44" text-anchor="middle" font-size="18" font-weight="600" fill="#1f2937">DNS 域名解析：迭代查询 vs 递归查询</text>
+    <!-- Left Group: Iterative (x=8..352, w=344) -->
+    <rect x="8" y="8" width="344" height="428" rx="12" fill="#f8fafc" stroke="#94a3b8" stroke-width="1" data-role="group"/>
+    <text x="24" y="36" text-anchor="start" font-size="16" font-weight="600" fill="#1f2937">(a) 本地服务器采用迭代查询</text>
 
-    <!-- Left Group: Iterative -->
-    <rect x="24" y="64" width="348" height="384" rx="12" fill="#f8fafc" stroke="#94a3b8" stroke-width="1" stroke-dasharray="6 4" data-role="group"/>
-    <text x="40" y="92" text-anchor="start" font-size="16" font-weight="600" fill="#1f2937">(a) 本地服务器采用迭代查询</text>
+    <rect x="24" y="148" width="100" height="68" rx="8" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5"/>
+    <text x="74" y="176" text-anchor="middle" font-size="15" font-weight="600" fill="#92400e">本地域名</text>
+    <text x="74" y="200" text-anchor="middle" font-size="15" font-weight="600" fill="#92400e">服务器</text>
 
-    <!-- Left Nodes -->
-    <rect x="40" y="196" width="112" height="64" rx="8" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5"/>
-    <text x="96" y="224" text-anchor="middle" font-size="14" font-weight="600" fill="#92400e">本地域名</text>
-    <text x="96" y="244" text-anchor="middle" font-size="14" font-weight="600" fill="#92400e">服务器</text>
+    <rect x="24" y="280" width="100" height="44" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
+    <text x="74" y="308" text-anchor="middle" font-size="16" font-weight="600" fill="#1f2937">主机</text>
 
-    <rect x="40" y="320" width="112" height="40" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
-    <text x="96" y="345" text-anchor="middle" font-size="14" font-weight="600" fill="#1f2937">主机</text>
+    <rect x="208" y="56" width="128" height="48" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+    <text x="272" y="86" text-anchor="middle" font-size="15" font-weight="600" fill="#1e40af">根域名服务器</text>
 
-    <rect x="240" y="112" width="116" height="44" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
-    <text x="298" y="139" text-anchor="middle" font-size="14" font-weight="600" fill="#1e40af">根域名服务器</text>
+    <rect x="208" y="148" width="128" height="68" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+    <text x="272" y="176" text-anchor="middle" font-size="15" font-weight="600" fill="#1e40af">顶级域名</text>
+    <text x="272" y="200" text-anchor="middle" font-size="15" font-weight="600" fill="#1e40af">服务器</text>
 
-    <rect x="240" y="196" width="116" height="64" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
-    <text x="298" y="224" text-anchor="middle" font-size="14" font-weight="600" fill="#1e40af">顶级域名</text>
-    <text x="298" y="244" text-anchor="middle" font-size="14" font-weight="600" fill="#1e40af">服务器</text>
+    <rect x="208" y="260" width="128" height="68" rx="8" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
+    <text x="272" y="288" text-anchor="middle" font-size="15" font-weight="600" fill="#115e59">权限域名</text>
+    <text x="272" y="312" text-anchor="middle" font-size="15" font-weight="600" fill="#115e59">服务器</text>
 
-    <rect x="240" y="300" width="116" height="64" rx="8" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
-    <text x="298" y="328" text-anchor="middle" font-size="14" font-weight="600" fill="#115e59">权限域名</text>
-    <text x="298" y="348" text-anchor="middle" font-size="14" font-weight="600" fill="#115e59">服务器</text>
+    <line x1="74" y1="276" x2="74" y2="220" stroke="#1f2937" stroke-width="1.5" marker-start="url(#dns-res-arrow)" marker-end="url(#dns-res-arrow)"/>
+    <text x="64" y="254" text-anchor="end" font-size="15" font-weight="600" fill="#92400e">① ⑧</text>
+    <text x="86" y="254" text-anchor="start" font-size="15" font-weight="400" fill="#4b5563">递归</text>
 
-    <!-- Orthogonal paths (a) -->
-    <line x1="96" y1="316" x2="96" y2="264" stroke="#1f2937" stroke-width="1.5" marker-start="url(#dns-res-arrow)" marker-end="url(#dns-res-arrow)"/>
-    <text x="84" y="294" text-anchor="end" font-size="12" font-weight="600" fill="#92400e">① ⑧</text>
-    <text x="108" y="294" text-anchor="start" font-size="12" font-weight="400" fill="#4b5563">递归</text>
+    <path d="M128 162 H142 V80 H204" fill="none" stroke="#3b82f6" stroke-width="1.5" marker-start="url(#dns-res-arrow)" marker-end="url(#dns-res-arrow)"/>
+    <text x="176" y="68" text-anchor="middle" font-size="15" font-weight="600" fill="#1e40af">② ③</text>
 
-    <path d="M156 208 H176 V134 H236" fill="none" stroke="#3b82f6" stroke-width="1.5" marker-start="url(#dns-res-arrow)" marker-end="url(#dns-res-arrow)"/>
-    <text x="208" y="124" text-anchor="middle" font-size="12" font-weight="600" fill="#1e40af">② ③</text>
+    <line x1="128" y1="182" x2="204" y2="182" stroke="#3b82f6" stroke-width="1.5" marker-start="url(#dns-res-arrow)" marker-end="url(#dns-res-arrow)"/>
+    <text x="176" y="170" text-anchor="middle" font-size="15" font-weight="600" fill="#1e40af">④ ⑤</text>
 
-    <line x1="156" y1="228" x2="236" y2="228" stroke="#3b82f6" stroke-width="1.5" marker-start="url(#dns-res-arrow)" marker-end="url(#dns-res-arrow)"/>
-    <text x="208" y="218" text-anchor="middle" font-size="12" font-weight="600" fill="#1e40af">④ ⑤</text>
+    <path d="M128 202 H142 V294 H204" fill="none" stroke="#14b8a6" stroke-width="1.5" marker-start="url(#dns-res-arrow)" marker-end="url(#dns-res-arrow)"/>
+    <text x="176" y="318" text-anchor="middle" font-size="15" font-weight="600" fill="#115e59">⑥ ⑦</text>
 
-    <path d="M156 248 H176 V332 H236" fill="none" stroke="#14b8a6" stroke-width="1.5" marker-start="url(#dns-res-arrow)" marker-end="url(#dns-res-arrow)"/>
-    <text x="208" y="352" text-anchor="middle" font-size="12" font-weight="600" fill="#115e59">⑥ ⑦</text>
+    <text x="180" y="382" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563">本地服务器依次去问，</text>
+    <text x="180" y="406" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563">根/顶级只回答“下一步该问谁”</text>
 
-    <text x="198" y="404" text-anchor="middle" font-size="12" font-weight="400" fill="#4b5563">本地服务器依次去问，</text>
-    <text x="198" y="424" text-anchor="middle" font-size="12" font-weight="400" fill="#4b5563">根/顶级只回答“下一步该问谁”</text>
+    <!-- Right Group: Recursive (x=368..712, w=344) -->
+    <rect x="368" y="8" width="344" height="428" rx="12" fill="#f8fafc" stroke="#94a3b8" stroke-width="1" data-role="group"/>
+    <text x="384" y="36" text-anchor="start" font-size="16" font-weight="600" fill="#1f2937">(b) 本地服务器采用递归查询</text>
 
-    <!-- Right Group: Recursive -->
-    <rect x="388" y="64" width="348" height="384" rx="12" fill="#f8fafc" stroke="#94a3b8" stroke-width="1" stroke-dasharray="6 4" data-role="group"/>
-    <text x="404" y="92" text-anchor="start" font-size="16" font-weight="600" fill="#1f2937">(b) 本地服务器采用递归查询</text>
+    <rect x="384" y="148" width="100" height="68" rx="8" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5"/>
+    <text x="434" y="176" text-anchor="middle" font-size="15" font-weight="600" fill="#92400e">本地域名</text>
+    <text x="434" y="200" text-anchor="middle" font-size="15" font-weight="600" fill="#92400e">服务器</text>
 
-    <!-- Right Nodes -->
-    <rect x="404" y="196" width="112" height="64" rx="8" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5"/>
-    <text x="460" y="224" text-anchor="middle" font-size="14" font-weight="600" fill="#92400e">本地域名</text>
-    <text x="460" y="244" text-anchor="middle" font-size="14" font-weight="600" fill="#92400e">服务器</text>
+    <rect x="384" y="280" width="100" height="44" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
+    <text x="434" y="308" text-anchor="middle" font-size="16" font-weight="600" fill="#1f2937">主机</text>
 
-    <rect x="404" y="320" width="112" height="40" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
-    <text x="460" y="345" text-anchor="middle" font-size="14" font-weight="600" fill="#1f2937">主机</text>
+    <rect x="568" y="56" width="128" height="48" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+    <text x="632" y="86" text-anchor="middle" font-size="15" font-weight="600" fill="#1e40af">根域名服务器</text>
 
-    <rect x="604" y="112" width="116" height="44" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
-    <text x="662" y="139" text-anchor="middle" font-size="14" font-weight="600" fill="#1e40af">根域名服务器</text>
+    <rect x="568" y="148" width="128" height="68" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+    <text x="632" y="176" text-anchor="middle" font-size="15" font-weight="600" fill="#1e40af">顶级域名</text>
+    <text x="632" y="200" text-anchor="middle" font-size="15" font-weight="600" fill="#1e40af">服务器</text>
 
-    <rect x="604" y="196" width="116" height="64" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
-    <text x="662" y="224" text-anchor="middle" font-size="14" font-weight="600" fill="#1e40af">顶级域名</text>
-    <text x="662" y="244" text-anchor="middle" font-size="14" font-weight="600" fill="#1e40af">服务器</text>
+    <rect x="568" y="260" width="128" height="68" rx="8" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
+    <text x="632" y="288" text-anchor="middle" font-size="15" font-weight="600" fill="#115e59">权限域名</text>
+    <text x="632" y="312" text-anchor="middle" font-size="15" font-weight="600" fill="#115e59">服务器</text>
 
-    <rect x="604" y="300" width="116" height="64" rx="8" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
-    <text x="662" y="328" text-anchor="middle" font-size="14" font-weight="600" fill="#115e59">权限域名</text>
-    <text x="662" y="348" text-anchor="middle" font-size="14" font-weight="600" fill="#115e59">服务器</text>
+    <line x1="434" y1="276" x2="434" y2="220" stroke="#1f2937" stroke-width="1.5" marker-start="url(#dns-res-arrow)" marker-end="url(#dns-res-arrow)"/>
+    <text x="424" y="254" text-anchor="end" font-size="15" font-weight="600" fill="#92400e">① ⑧</text>
 
-    <!-- Orthogonal paths (b) -->
-    <line x1="460" y1="316" x2="460" y2="264" stroke="#1f2937" stroke-width="1.5" marker-start="url(#dns-res-arrow)" marker-end="url(#dns-res-arrow)"/>
-    <text x="448" y="294" text-anchor="end" font-size="12" font-weight="600" fill="#92400e">① ⑧</text>
+    <path d="M488 182 H524 V80 H564" fill="none" stroke="#3b82f6" stroke-width="1.5" marker-start="url(#dns-res-arrow)" marker-end="url(#dns-res-arrow)"/>
+    <text x="536" y="68" text-anchor="middle" font-size="15" font-weight="600" fill="#1e40af">② ⑦</text>
 
-    <path d="M520 228 H560 V134 H600" fill="none" stroke="#3b82f6" stroke-width="1.5" marker-start="url(#dns-res-arrow)" marker-end="url(#dns-res-arrow)"/>
-    <text x="576" y="124" text-anchor="middle" font-size="12" font-weight="600" fill="#1e40af">② ⑦</text>
+    <line x1="632" y1="108" x2="632" y2="144" stroke="#3b82f6" stroke-width="1.5" marker-start="url(#dns-res-arrow)" marker-end="url(#dns-res-arrow)"/>
+    <text x="614" y="132" text-anchor="end" font-size="15" font-weight="600" fill="#1e40af">③ ⑥</text>
 
-    <line x1="662" y1="160" x2="662" y2="192" stroke="#3b82f6" stroke-width="1.5" marker-start="url(#dns-res-arrow)" marker-end="url(#dns-res-arrow)"/>
-    <text x="644" y="180" text-anchor="end" font-size="12" font-weight="600" fill="#1e40af">③ ⑥</text>
+    <line x1="632" y1="220" x2="632" y2="256" stroke="#14b8a6" stroke-width="1.5" marker-start="url(#dns-res-arrow)" marker-end="url(#dns-res-arrow)"/>
+    <text x="614" y="244" text-anchor="end" font-size="15" font-weight="600" fill="#115e59">④ ⑤</text>
 
-    <line x1="662" y1="264" x2="662" y2="296" stroke="#14b8a6" stroke-width="1.5" marker-start="url(#dns-res-arrow)" marker-end="url(#dns-res-arrow)"/>
-    <text x="644" y="284" text-anchor="end" font-size="12" font-weight="600" fill="#115e59">④ ⑤</text>
-
-    <text x="562" y="404" text-anchor="middle" font-size="12" font-weight="400" fill="#4b5563">根服务器代为往下查</text>
-    <text x="562" y="424" text-anchor="middle" font-size="12" font-weight="400" fill="#4b5563">（根负载过高，实际几乎不用）</text>
+    <text x="540" y="382" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563">根服务器代为往下查</text>
+    <text x="540" y="406" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563">（根负载过高，实际几乎不用）</text>
   </g>
 </svg>

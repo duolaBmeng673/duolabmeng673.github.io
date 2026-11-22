@@ -1,22 +1,24 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 1 760 227" width="760" height="227" role="img">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 212" width="720" height="212" role="img">
   <title>【2020 统考】最短与最长时间拆解</title>
   <desc>对比本地缓存命中（仅 TCP 建连加 HTTP 共 2 RTT = 20 ms）与无缓存时经根、com、abc.com 迭代查询 DNS（3 RTT = 30 ms）后再建立 TCP 获取页面（合计 5 RTT = 50 ms）。</desc>
   <g font-family="'PingFang SC','Noto Sans SC','Microsoft YaHei',system-ui,sans-serif">
-    <text x="380" y="44" text-anchor="middle" font-size="18" font-weight="600" fill="#1f2937">【2020 统考】最短与最长时间拆解（每次 Internet 往返 = 10 ms）</text>
+    <text x="8" y="24" text-anchor="start" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">2020 统考 · 每次 Internet 往返 = 10 ms</text>
 
-    <!-- Shortest -->
-    <rect x="24" y="72" width="272" height="60" rx="8" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
-    <text x="160" y="107" text-anchor="middle" font-size="14" font-weight="600" fill="#115e59">最短：本地缓存已有记录</text>
+    <!-- Shortest (x=8..312, w=304) -->
+    <rect x="8" y="40" width="304" height="68" rx="8" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
+    <text x="160" y="80" text-anchor="middle" font-size="16" font-weight="600" fill="#115e59">最短：本地缓存已有记录</text>
 
-    <rect x="24" y="144" width="272" height="60" rx="8" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
-    <text x="160" y="179" text-anchor="middle" font-size="14" font-weight="400" fill="#115e59">TCP 建连 + HTTP = 2 RTT (20 ms)</text>
+    <rect x="8" y="124" width="304" height="80" rx="8" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
+    <text x="160" y="158" text-anchor="middle" font-size="15" font-weight="400" fill="#115e59">TCP 建连 + HTTP</text>
+    <text x="160" y="182" text-anchor="middle" font-size="15" font-weight="600" fill="#115e59">= 2 RTT (20 ms)</text>
 
-    <!-- Longest -->
-    <rect x="312" y="72" width="424" height="60" rx="8" fill="#fef2f2" stroke="#ef4444" stroke-width="1.5"/>
-    <text x="524" y="96" text-anchor="middle" font-size="14" font-weight="600" fill="#991b1b">最长：先迭代查 DNS</text>
-    <text x="524" y="116" text-anchor="middle" font-size="14" font-weight="400" fill="#991b1b">根 → com → abc.com = 3 RTT = 30 ms</text>
+    <!-- Longest (x=328..712, w=384) -->
+    <rect x="328" y="40" width="384" height="68" rx="8" fill="#fef2f2" stroke="#ef4444" stroke-width="1.5"/>
+    <text x="520" y="68" text-anchor="middle" font-size="16" font-weight="600" fill="#991b1b">最长：先迭代查 DNS</text>
+    <text x="520" y="92" text-anchor="middle" font-size="15" font-weight="400" fill="#991b1b">根 → com → abc.com = 3 RTT = 30 ms</text>
 
-    <rect x="312" y="144" width="424" height="60" rx="8" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5"/>
-    <text x="524" y="179" text-anchor="middle" font-size="14" font-weight="400" fill="#92400e">再 TCP 建连 + HTTP = 2 RTT → 合计 5 RTT = 50 ms</text>
+    <rect x="328" y="124" width="384" height="80" rx="8" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5"/>
+    <text x="520" y="158" text-anchor="middle" font-size="15" font-weight="400" fill="#92400e">再 TCP 建连 + HTTP = 2 RTT</text>
+    <text x="520" y="182" text-anchor="middle" font-size="15" font-weight="600" fill="#92400e">→ 合计 5 RTT = 50 ms</text>
   </g>
 </svg>
