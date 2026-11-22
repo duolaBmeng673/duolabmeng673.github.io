@@ -26,9 +26,6 @@ export const LEGACY_837_SVGS = new Set([
   'src/content/837考研/信息安全导论/信息安全导论考点问题总结/2 密码学基础/b 对称密钥密码与 DES/mode_ctr.svg',
   'src/content/837考研/信息安全导论/信息安全导论考点问题总结/2 密码学基础/b 对称密钥密码与 DES/mode_ecb.svg',
   'src/content/837考研/信息安全导论/信息安全导论考点问题总结/2 密码学基础/b 对称密钥密码与 DES/mode_ofb.svg',
-  'src/content/837考研/信息安全导论/信息安全导论考点问题总结/3 身份认证与访问控制/a 基于对称密钥的认证设计与 Kerberos 协议/3a-challenge-response.svg',
-  'src/content/837考研/信息安全导论/信息安全导论考点问题总结/3 身份认证与访问控制/a 基于对称密钥的认证设计与 Kerberos 协议/3a-kerberos.svg',
-  'src/content/837考研/信息安全导论/信息安全导论考点问题总结/3 身份认证与访问控制/a 基于对称密钥的认证设计与 Kerberos 协议/3a-needham-schroeder.svg',
   'src/content/837考研/信息安全导论/信息安全导论考点问题总结/3 身份认证与访问控制/b 基于公开密钥的认证设计与 PKI 理论/ca-auth-process.svg',
   'src/content/837考研/信息安全导论/信息安全导论考点问题总结/3 身份认证与访问控制/b 基于公开密钥的认证设计与 PKI 理论/ca-cert-structure.svg',
   'src/content/837考研/信息安全导论/信息安全导论考点问题总结/3 身份认证与访问控制/b 基于公开密钥的认证设计与 PKI 理论/needham-schroeder.svg',
@@ -115,7 +112,7 @@ export function lintSvgs(files, { quiet = false } = {}) {
     for (const relPath of files) {
       const absPath = resolve(relPath);
       const isLegacy = LEGACY_837_SVGS.has(relPath);
-      const isNetworkV1 = relPath.includes('计算机网络');
+      const isNetworkV1 = relPath.includes('计算机网络') || !isLegacy;
       const svgContent = readFileSync(absPath, 'utf8');
       const html = `<!doctype html>
 <html>
@@ -367,10 +364,11 @@ ${svgContent}
       const htmlPath = join(dir, 'check.html');
       writeFileSync(htmlPath, html, 'utf8');
 
+      const profileDir = join(dir, 'profile');
       const dom = execFileSync(
         CHROME_PATH,
-        ['--headless=new', '--disable-gpu', '--no-sandbox', '--dump-dom', `file://${htmlPath}`],
-        { encoding: 'utf8', maxBuffer: 10 * 1024 * 1024, stdio: ['ignore', 'pipe', 'ignore'] },
+        ['--headless=new', '--disable-gpu', '--no-sandbox', `--user-data-dir=${profileDir}`, '--dump-dom', `file://${htmlPath}`],
+        { encoding: 'utf8', maxBuffer: 10 * 1024 * 1024, timeout: 15000, stdio: ['ignore', 'pipe', 'ignore'] },
       );
 
       const match = dom.match(/<pre id="lint-output">([\s\S]*?)<\/pre>/);
