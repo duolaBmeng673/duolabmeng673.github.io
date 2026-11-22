@@ -446,6 +446,10 @@ test('SVG diagrams carry data-svg-diagram dynamically and dark filter targets el
   const css = read('src/styles/global.css');
   assert.match(css, /:root\[data-theme="dark"\]\s+\.article-body\s+\[data-svg-diagram="true"\]\s*\{[^}]*filter:\s*invert\(/);
   assert.doesNotMatch(css, /\.article-svg-link[^}]*filter:/);
+  assert.match(css, /\.article-svg-card:not\(\.article-svg-link > \.article-svg-card\)\s*\{[^}]*margin:\s*1\.6em 0;/);
+  const kmpHtml = read('dist/study-notes/837/kmp-algorithm/index.html');
+  const kmpTables = kmpHtml.match(/<table\b[\s\S]*?<\/table>/gi) ?? [];
+  assert.ok(kmpTables.length > 0 && kmpTables.every((table) => !table.includes('kmp_vs_bf')), 'KMP diagram must render outside the comparison table');
 });
 
 test('built site HTML, search index, RSS, and sitemap contain no forbidden terms from config', () => {

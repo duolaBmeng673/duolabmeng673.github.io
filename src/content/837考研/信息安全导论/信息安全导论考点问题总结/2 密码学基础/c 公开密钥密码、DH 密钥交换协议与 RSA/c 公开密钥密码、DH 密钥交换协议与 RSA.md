@@ -25,27 +25,32 @@ tags: ["信息安全", "密码学", "公开密钥", "Diffie-Hellman", "RSA"]
 - 给定 $y$，计算 $x$ 使 $y = f(x)$：**困难**（计算上几乎不可行）
 - 存在**陷门** $\delta$：若知道 $\delta$，则求 $x = f^{-1}(y)$ **相对容易**
 
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 190" width="640" role="img" aria-label="单向陷门函数：正向简单，无陷门时反向困难，有陷门时反向容易">
-<style>
-text{font-family:'PingFang SC','Microsoft YaHei','Noto Sans CJK SC',sans-serif;fill:#222;text-anchor:middle;font-size:14px}
-.s{font-size:13px}
-.bx{fill:#fff;stroke:#444;stroke-width:1.5}
-.y{fill:#fff3bf}.bl{fill:#d0ebff}
-</style>
-<defs>
-<marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#444"/></marker>
-<marker id="r" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#c92a2a"/></marker>
-<marker id="g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#2b8a3e"/></marker>
-</defs>
-<rect width="640" height="190" fill="#fff"/>
-<rect class="bx y" x="40" y="70" width="80" height="80"/><text x="80" y="116" style="font-size:20px">x</text>
-<rect class="bx bl" x="520" y="70" width="80" height="80"/><text x="560" y="116" style="font-size:20px">y</text>
-<path d="M120 90H520" fill="none" stroke="#444" stroke-width="1.5" marker-end="url(#a)"/>
-<text class="s" x="320" y="82">y = f(x)：简单</text>
-<path d="M520 118H120" fill="none" stroke="#c92a2a" stroke-width="1.5" stroke-dasharray="6 4" marker-end="url(#r)"/>
-<text class="s" x="320" y="136" style="fill:#c92a2a">无陷门：已知 y 求 x 困难</text>
-<path d="M520 148H120" fill="none" stroke="#2b8a3e" stroke-width="1.5" marker-end="url(#g)"/>
-<text class="s" x="320" y="166" style="fill:#2b8a3e">有陷门 δ：x = f⁻¹(y) 相对容易</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 170" width="720" height="170" role="img" aria-label="单向陷门函数：正向简单，无陷门时反向困难，有陷门时反向容易">
+  <title>单向陷门函数正向与逆向计算难度对比</title>
+  <desc>从 x 计算 y=f(x) 正向简单；已知 y 无陷门求 x 困难；掌握陷门 δ 时求逆 x=f⁻¹(y) 相对容易。</desc>
+  <defs>
+    <marker id="td-k" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#1f2937" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="td-r" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#ef4444" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="td-t" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#14b8a6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+  <g font-family="'PingFang SC','Noto Sans SC','Microsoft YaHei',system-ui,sans-serif">
+    <rect x="8" y="20" width="112" height="128" rx="8" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5"/>
+    <text x="64" y="90" text-anchor="middle" font-size="18" font-weight="600" fill="#92400e">x</text>
+    <rect x="600" y="20" width="112" height="128" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+    <text x="656" y="90" text-anchor="middle" font-size="18" font-weight="600" fill="#1e40af">y</text>
+    <path d="M120 38 H592" fill="none" stroke="#1f2937" stroke-width="1.5" marker-end="url(#td-k)"/>
+    <text x="360" y="24" text-anchor="middle" font-size="15" font-weight="600" fill="#1f2937" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">y = f(x)：简单</text>
+    <path d="M600 84 H128" fill="none" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="6 4" marker-end="url(#td-r)"/>
+    <text x="360" y="108" text-anchor="middle" font-size="15" font-weight="600" fill="#991b1b" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">无陷门：已知 y 求 x 困难</text>
+    <path d="M600 130 H128" fill="none" stroke="#14b8a6" stroke-width="1.5" marker-end="url(#td-t)"/>
+    <text x="360" y="156" text-anchor="middle" font-size="15" font-weight="600" fill="#115e59" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">有陷门 δ：x = f⁻¹(y) 相对容易</text>
+  </g>
 </svg>
 
 ---
@@ -98,39 +103,43 @@ $$
 (Z)^x = (Y)^m = g^{mx} \bmod p
 $$
 
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 310" width="700" role="img" aria-label="Diffie-Hellman 密钥交换：双方交换 Y 与 Z 后得到相同的共享密钥">
-<style>
-text{font-family:'PingFang SC','Microsoft YaHei','Noto Sans CJK SC',sans-serif;fill:#222;text-anchor:middle;font-size:14px}
-.b{font-size:16px;font-weight:bold}
-.s{font-size:12px}
-.bx{fill:#fff;stroke:#444;stroke-width:1.5}
-.y{fill:#fff3bf}.bl{fill:#d0ebff}.g{fill:#d3f9d8}.o{fill:#ffd8a8}
-</style>
-<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#444"/></marker></defs>
-<rect width="700" height="310" fill="#fff"/>
-<rect class="bx y" x="50" y="12" width="600" height="34"/>
-<text x="350" y="34" style="font-size:13px">公开协商：大素数 p、大整数 g（1 &lt; g &lt; p，g 是 p 的原根），p 与 g 无需保密</text>
-<text class="b" x="150" y="70">Alice</text><text class="b" x="550" y="70">Bob</text>
-<rect class="bx o" x="50" y="80" width="200" height="30"/><text x="150" y="100">选择秘密整数 x</text>
-<rect class="bx o" x="450" y="80" width="200" height="30"/><text x="550" y="100">选择秘密整数 m</text>
-<rect class="bx g" x="50" y="130" width="200" height="36"/>
-<text x="150" y="153">Y = g<tspan dy="-6" font-size="10">x</tspan><tspan dy="6"> mod p</tspan></text>
-<rect class="bx g" x="450" y="130" width="200" height="36"/>
-<text x="550" y="153">Z = g<tspan dy="-6" font-size="10">m</tspan><tspan dy="6"> mod p</tspan></text>
-<g fill="none" stroke="#444" stroke-width="1.5" marker-end="url(#a)">
-<path d="M150 110V130"/><path d="M550 110V130"/>
-<path d="M200 166L500 250"/><path d="M500 166L200 250"/>
-</g>
-<text class="s" x="266" y="176" style="font-weight:bold">发送 Y</text>
-<text class="s" x="434" y="176" style="font-weight:bold">发送 Z</text>
-<rect class="bx bl" x="50" y="250" width="200" height="38"/>
-<text x="150" y="274">(Z)<tspan dy="-6" font-size="10">x</tspan><tspan dy="6"> mod p</tspan></text>
-<rect class="bx bl" x="450" y="250" width="200" height="38"/>
-<text x="550" y="274">(Y)<tspan dy="-6" font-size="10">m</tspan><tspan dy="6"> mod p</tspan></text>
-<rect class="bx y" x="280" y="250" width="140" height="38"/>
-<text x="350" y="268">g<tspan dy="-6" font-size="10">mx</tspan><tspan dy="6"> mod p</tspan></text>
-<text class="s" x="350" y="283">共享密钥 K</text>
-<text x="265" y="276" style="font-size:20px">=</text><text x="435" y="276" style="font-size:20px">=</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 416" width="720" height="416" role="img" aria-label="Diffie-Hellman 密钥交换：双方交换 Y 与 Z 后得到相同的共享密钥">
+  <title>Diffie-Hellman 密钥交换流程</title>
+  <desc>Alice 与 Bob 公开协商大素数 p 与原根 g，各自选取秘密整数 x 与 m 计算 Y=g^x mod p 和 Z=g^m mod p 并交换，双方独立算得相同共享密钥 K=g^(mx) mod p。</desc>
+  <defs>
+    <marker id="dh-k" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#1f2937" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+  <g font-family="'PingFang SC','Noto Sans SC','Microsoft YaHei',system-ui,sans-serif">
+    <rect x="8" y="8" width="704" height="48" rx="8" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5"/>
+    <text x="360" y="38" text-anchor="middle" font-size="15" font-weight="600" fill="#92400e">公开协商：大素数 p、原根 g（1 &lt; g &lt; p，p 与 g 无需保密）</text>
+    <text x="118" y="84" text-anchor="middle" font-size="16" font-weight="600" fill="#1e40af" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">Alice</text>
+    <text x="602" y="84" text-anchor="middle" font-size="16" font-weight="600" fill="#115e59" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">Bob</text>
+    <rect x="8" y="98" width="220" height="44" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+    <text x="118" y="126" text-anchor="middle" font-size="15" font-weight="400" fill="#1e40af">选择秘密整数 x</text>
+    <rect x="492" y="98" width="220" height="44" rx="8" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
+    <text x="602" y="126" text-anchor="middle" font-size="15" font-weight="400" fill="#115e59">选择秘密整数 m</text>
+    <line x1="118" y1="142" x2="118" y2="164" stroke="#1f2937" stroke-width="1.5" marker-end="url(#dh-k)"/>
+    <line x1="602" y1="142" x2="602" y2="164" stroke="#1f2937" stroke-width="1.5" marker-end="url(#dh-k)"/>
+    <rect x="8" y="170" width="220" height="46" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+    <text x="118" y="199" text-anchor="middle" font-size="15" font-weight="600" fill="#1e40af">Y = g^x mod p</text>
+    <rect x="492" y="170" width="220" height="46" rx="8" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
+    <text x="602" y="199" text-anchor="middle" font-size="15" font-weight="600" fill="#115e59">Z = g^m mod p</text>
+    <path d="M188 216 L532 328" fill="none" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#dh-k)"/>
+    <text x="208" y="256" text-anchor="middle" font-size="15" font-weight="600" fill="#1e40af" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">发送 Y</text>
+    <path d="M532 216 L188 328" fill="none" stroke="#14b8a6" stroke-width="1.5" marker-end="url(#dh-k)"/>
+    <text x="512" y="256" text-anchor="middle" font-size="15" font-weight="600" fill="#115e59" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">发送 Z</text>
+    <rect x="8" y="334" width="204" height="74" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+    <text x="110" y="377" text-anchor="middle" font-size="15" font-weight="600" fill="#1e40af">(Z)^x mod p</text>
+    <text x="234" y="378" text-anchor="middle" font-size="18" font-weight="600" fill="#1f2937" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">=</text>
+    <rect x="256" y="334" width="208" height="74" rx="8" fill="#fffbeb" stroke="#f59e0b" stroke-width="2"/>
+    <text x="360" y="362" text-anchor="middle" font-size="15" font-weight="600" fill="#92400e">g^(mx) mod p</text>
+    <text x="360" y="389" text-anchor="middle" font-size="15" font-weight="600" fill="#92400e">共享密钥 K</text>
+    <text x="486" y="378" text-anchor="middle" font-size="18" font-weight="600" fill="#1f2937" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">=</text>
+    <rect x="508" y="334" width="204" height="74" rx="8" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
+    <text x="610" y="377" text-anchor="middle" font-size="15" font-weight="600" fill="#115e59">(Y)^m mod p</text>
+  </g>
 </svg>
 
 ---

@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 328" width="720" height="328" role="img">
+  <title>天气决策树最终分类模型</title>
+  <desc>以天气为根节点，阴分支直接进行，晴分支按湿度高/正常分取消/进行，雨分支按风速弱/强分进行/取消的完整 C4.5 决策树。</desc>
+  <g font-family="'PingFang SC','Noto Sans SC','Microsoft YaHei',system-ui,sans-serif">
+    <line x1="360" y1="54" x2="170" y2="136" stroke="#4b5563" stroke-width="1.5"/>
+    <line x1="360" y1="54" x2="360" y2="136" stroke="#4b5563" stroke-width="1.5"/>
+    <line x1="360" y1="54" x2="550" y2="136" stroke="#4b5563" stroke-width="1.5"/>
+    <line x1="170" y1="182" x2="68" y2="274" stroke="#4b5563" stroke-width="1.5"/>
+    <line x1="170" y1="182" x2="272" y2="274" stroke="#4b5563" stroke-width="1.5"/>
+    <line x1="550" y1="182" x2="448" y2="274" stroke="#4b5563" stroke-width="1.5"/>
+    <line x1="550" y1="182" x2="652" y2="274" stroke="#4b5563" stroke-width="1.5"/>
+
+    <text x="234" y="84" text-anchor="middle" font-size="15" font-weight="600" fill="#1e40af" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">晴</text>
+    <text x="380" y="98" text-anchor="start" font-size="15" font-weight="600" fill="#1e40af" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">阴</text>
+    <text x="486" y="84" text-anchor="middle" font-size="15" font-weight="600" fill="#1e40af" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">雨</text>
+    <text x="94" y="218" text-anchor="middle" font-size="15" font-weight="600" fill="#1e40af" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">高</text>
+    <text x="252" y="218" text-anchor="middle" font-size="15" font-weight="600" fill="#1e40af" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">正常</text>
+    <text x="474" y="218" text-anchor="middle" font-size="15" font-weight="600" fill="#1e40af" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">弱</text>
+    <text x="626" y="218" text-anchor="middle" font-size="15" font-weight="600" fill="#1e40af" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">强</text>
+
+    <rect x="296" y="8" width="128" height="46" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+    <text x="360" y="37" text-anchor="middle" font-size="16" font-weight="600" fill="#1e40af">天气</text>
+
+    <rect x="106" y="136" width="128" height="46" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+    <text x="170" y="165" text-anchor="middle" font-size="16" font-weight="600" fill="#1e40af">湿度</text>
+
+    <rect x="486" y="136" width="128" height="46" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+    <text x="550" y="165" text-anchor="middle" font-size="16" font-weight="600" fill="#1e40af">风速</text>
+
+    <rect x="300" y="136" width="120" height="46" rx="23" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
+    <text x="360" y="165" text-anchor="middle" font-size="15" font-weight="600" fill="#115e59">进行</text>
+
+    <rect x="8" y="274" width="120" height="46" rx="23" fill="#fef2f2" stroke="#ef4444" stroke-width="1.5"/>
+    <text x="68" y="303" text-anchor="middle" font-size="15" font-weight="600" fill="#991b1b">取消</text>
+
+    <rect x="212" y="274" width="120" height="46" rx="23" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
+    <text x="272" y="303" text-anchor="middle" font-size="15" font-weight="600" fill="#115e59">进行</text>
+
+    <rect x="388" y="274" width="120" height="46" rx="23" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
+    <text x="448" y="303" text-anchor="middle" font-size="15" font-weight="600" fill="#115e59">进行</text>
+
+    <rect x="592" y="274" width="120" height="46" rx="23" fill="#fef2f2" stroke="#ef4444" stroke-width="1.5"/>
+    <text x="652" y="303" text-anchor="middle" font-size="15" font-weight="600" fill="#991b1b">取消</text>
+  </g>
+</svg>

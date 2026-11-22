@@ -99,53 +99,71 @@ $$
 
 将明文 `attackbeginsatfour` 按行写入，每行 6 个字符；再按密钥顺序 1 → 6 依次**按列**读出。
 
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 456 300" width="456" role="img" aria-label="置换密码加密：按密钥顺序逐列读出明文">
-<style>
-text{font-family:ui-monospace,Menlo,Consolas,'PingFang SC','Microsoft YaHei',monospace;fill:#222;text-anchor:middle}
-.m{font-size:18px}
-.l{font-size:14px;font-family:'PingFang SC','Microsoft YaHei',sans-serif}
-.b{font-size:16px;font-weight:bold}
-</style>
-<rect x="20" y="20" width="80" height="216" fill="#f1f3f5"/>
-<rect x="100" y="20" width="56" height="216" fill="#fff3bf"/>
-<rect x="156" y="20" width="56" height="216" fill="#d3f9d8"/>
-<rect x="212" y="20" width="56" height="216" fill="#d0ebff"/>
-<rect x="268" y="20" width="56" height="216" fill="#ffe3e3"/>
-<rect x="324" y="20" width="56" height="216" fill="#e5dbff"/>
-<rect x="380" y="20" width="56" height="216" fill="#c5f6fa"/>
-<g stroke="#555" stroke-width="1">
-<line x1="20" y1="20" x2="436" y2="20"/>
-<line x1="20" y1="56" x2="436" y2="56"/>
-<line x1="20" y1="128" x2="436" y2="128" stroke-opacity=".35"/>
-<line x1="20" y1="164" x2="436" y2="164" stroke-opacity=".35"/>
-<line x1="20" y1="236" x2="436" y2="236"/>
-<line x1="20" y1="20" x2="20" y2="236"/>
-<line x1="100" y1="20" x2="100" y2="236"/>
-<line x1="156" y1="20" x2="156" y2="236"/>
-<line x1="212" y1="20" x2="212" y2="236"/>
-<line x1="268" y1="20" x2="268" y2="236"/>
-<line x1="324" y1="20" x2="324" y2="236"/>
-<line x1="380" y1="20" x2="380" y2="236"/>
-<line x1="436" y1="20" x2="436" y2="236"/>
-</g>
-<g stroke="#555" stroke-width="2">
-<line x1="20" y1="92" x2="436" y2="92"/>
-<line x1="20" y1="200" x2="436" y2="200"/>
-</g>
-<text class="l" x="60" y="43">密钥</text>
-<text class="l" x="60" y="79">顺序</text>
-<text class="l" x="60" y="155">明文</text>
-<text class="l" x="60" y="223">读取结果</text>
-<g class="m">
-<text x="128" y="44">C</text><text x="184" y="44">I</text><text x="240" y="44">P</text><text x="296" y="44">H</text><text x="352" y="44">E</text><text x="408" y="44">R</text>
-<text x="128" y="80">1</text><text x="184" y="80">4</text><text x="240" y="80">5</text><text x="296" y="80">3</text><text x="352" y="80">2</text><text x="408" y="80">6</text>
-<text x="128" y="116">a</text><text x="184" y="116">t</text><text x="240" y="116">t</text><text x="296" y="116">a</text><text x="352" y="116">c</text><text x="408" y="116">k</text>
-<text x="128" y="152">b</text><text x="184" y="152">e</text><text x="240" y="152">g</text><text x="296" y="152">i</text><text x="352" y="152">n</text><text x="408" y="152">s</text>
-<text x="128" y="188">a</text><text x="184" y="188">t</text><text x="240" y="188">f</text><text x="296" y="188">o</text><text x="352" y="188">u</text><text x="408" y="188">r</text>
-<text x="128" y="224" font-weight="bold">aba</text><text x="184" y="224" font-weight="bold">tet</text><text x="240" y="224" font-weight="bold">tgf</text><text x="296" y="224" font-weight="bold">aio</text><text x="352" y="224" font-weight="bold">cnu</text><text x="408" y="224" font-weight="bold">ksr</text>
-</g>
-<text class="l" x="228" y="262">按顺序号 1→6 依次读各列：aba ｜ cnu ｜ aio ｜ tet ｜ tgf ｜ ksr</text>
-<text class="b" x="228" y="288">密文 = abacnuaiotettgfksr</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 305" width="720" height="305" role="img" aria-label="置换密码加密：按密钥顺序逐列读出明文">
+  <title>置换密码加密过程示例</title>
+  <desc>以密钥 CIPHER（排序 145326）按行写入明文 attackbeginsatfour，再按顺序号 1 至 6 逐列读出密文 abacnuaiotettgfksr。</desc>
+  <g font-family="'PingFang SC','Noto Sans SC','Microsoft YaHei',system-ui,sans-serif">
+    <rect x="8" y="8" width="704" height="228" rx="6" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5" data-role="group"/>
+    <path d="M136 9 H232 V235 H136 Z" fill="#fffbeb"/>
+    <path d="M232 9 H328 V235 H232 Z" fill="#f0fdfa"/>
+    <path d="M328 9 H424 V235 H328 Z" fill="#eff6ff"/>
+    <path d="M424 9 H520 V235 H424 Z" fill="#fef2f2"/>
+    <path d="M520 9 H616 V235 H520 Z" fill="#f8fafc"/>
+    <path d="M616 9 H711 V235 H616 Z" fill="#f0fdfa"/>
+    <line x1="136" y1="8" x2="136" y2="236" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="232" y1="8" x2="232" y2="236" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="328" y1="8" x2="328" y2="236" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="424" y1="8" x2="424" y2="236" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="520" y1="8" x2="520" y2="236" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="616" y1="8" x2="616" y2="236" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="8" y1="46" x2="712" y2="46" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="8" y1="84" x2="712" y2="84" stroke="#1f2937" stroke-width="1.5"/>
+    <line x1="8" y1="122" x2="712" y2="122" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="8" y1="160" x2="712" y2="160" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="8" y1="198" x2="712" y2="198" stroke="#1f2937" stroke-width="1.5"/>
+    <text x="72" y="33" text-anchor="middle" font-size="15" font-weight="600" fill="#1f2937">密钥</text>
+    <text x="72" y="71" text-anchor="middle" font-size="15" font-weight="600" fill="#1f2937">顺序</text>
+    <text x="72" y="147" text-anchor="middle" font-size="15" font-weight="600" fill="#4b5563">明文</text>
+    <text x="72" y="223" text-anchor="middle" font-size="15" font-weight="600" fill="#1f2937">读取结果</text>
+    <text x="184" y="33" text-anchor="middle" font-size="16" font-weight="600" fill="#92400e">C</text>
+    <text x="280" y="33" text-anchor="middle" font-size="16" font-weight="600" fill="#115e59">I</text>
+    <text x="376" y="33" text-anchor="middle" font-size="16" font-weight="600" fill="#1e40af">P</text>
+    <text x="472" y="33" text-anchor="middle" font-size="16" font-weight="600" fill="#991b1b">H</text>
+    <text x="568" y="33" text-anchor="middle" font-size="16" font-weight="600" fill="#1f2937">E</text>
+    <text x="664" y="33" text-anchor="middle" font-size="16" font-weight="600" fill="#115e59">R</text>
+    <text x="184" y="71" text-anchor="middle" font-size="15" font-weight="600" fill="#92400e">1</text>
+    <text x="280" y="71" text-anchor="middle" font-size="15" font-weight="600" fill="#115e59">4</text>
+    <text x="376" y="71" text-anchor="middle" font-size="15" font-weight="600" fill="#1e40af">5</text>
+    <text x="472" y="71" text-anchor="middle" font-size="15" font-weight="600" fill="#991b1b">3</text>
+    <text x="568" y="71" text-anchor="middle" font-size="15" font-weight="600" fill="#1f2937">2</text>
+    <text x="664" y="71" text-anchor="middle" font-size="15" font-weight="600" fill="#115e59">6</text>
+    <text x="184" y="109" text-anchor="middle" font-size="15" font-weight="400" fill="#92400e">a</text>
+    <text x="280" y="109" text-anchor="middle" font-size="15" font-weight="400" fill="#115e59">t</text>
+    <text x="376" y="109" text-anchor="middle" font-size="15" font-weight="400" fill="#1e40af">t</text>
+    <text x="472" y="109" text-anchor="middle" font-size="15" font-weight="400" fill="#991b1b">a</text>
+    <text x="568" y="109" text-anchor="middle" font-size="15" font-weight="400" fill="#1f2937">c</text>
+    <text x="664" y="109" text-anchor="middle" font-size="15" font-weight="400" fill="#115e59">k</text>
+    <text x="184" y="147" text-anchor="middle" font-size="15" font-weight="400" fill="#92400e">b</text>
+    <text x="280" y="147" text-anchor="middle" font-size="15" font-weight="400" fill="#115e59">e</text>
+    <text x="376" y="147" text-anchor="middle" font-size="15" font-weight="400" fill="#1e40af">g</text>
+    <text x="472" y="147" text-anchor="middle" font-size="15" font-weight="400" fill="#991b1b">i</text>
+    <text x="568" y="147" text-anchor="middle" font-size="15" font-weight="400" fill="#1f2937">n</text>
+    <text x="664" y="147" text-anchor="middle" font-size="15" font-weight="400" fill="#115e59">s</text>
+    <text x="184" y="185" text-anchor="middle" font-size="15" font-weight="400" fill="#92400e">a</text>
+    <text x="280" y="185" text-anchor="middle" font-size="15" font-weight="400" fill="#115e59">t</text>
+    <text x="376" y="185" text-anchor="middle" font-size="15" font-weight="400" fill="#1e40af">f</text>
+    <text x="472" y="185" text-anchor="middle" font-size="15" font-weight="400" fill="#991b1b">o</text>
+    <text x="568" y="185" text-anchor="middle" font-size="15" font-weight="400" fill="#1f2937">u</text>
+    <text x="664" y="185" text-anchor="middle" font-size="15" font-weight="400" fill="#115e59">r</text>
+    <text x="184" y="223" text-anchor="middle" font-size="16" font-weight="600" fill="#92400e">aba</text>
+    <text x="280" y="223" text-anchor="middle" font-size="16" font-weight="600" fill="#115e59">tet</text>
+    <text x="376" y="223" text-anchor="middle" font-size="16" font-weight="600" fill="#1e40af">tgf</text>
+    <text x="472" y="223" text-anchor="middle" font-size="16" font-weight="600" fill="#991b1b">aio</text>
+    <text x="568" y="223" text-anchor="middle" font-size="16" font-weight="600" fill="#1f2937">cnu</text>
+    <text x="664" y="223" text-anchor="middle" font-size="16" font-weight="600" fill="#115e59">ksr</text>
+    <text x="360" y="264" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">按顺序号 1→6 依次读各列：aba ｜ cnu ｜ aio ｜ tet ｜ tgf ｜ ksr</text>
+    <text x="360" y="292" text-anchor="middle" font-size="16" font-weight="600" fill="#1f2937" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">密文 = abacnuaiotettgfksr</text>
+  </g>
 </svg>
 
 读取步骤：
@@ -166,59 +184,75 @@ text{font-family:ui-monospace,Menlo,Consolas,'PingFang SC','Microsoft YaHei',mon
 收到密文 `abacnuaiotettgfksr` 后，按顺序号 1 → 6 依次把各段密文**写入对应的列**，写完后**按行读出**明文。
 
 
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 320" width="540" role="img" aria-label="置换密码解密：按顺序把密文段写入各列，再按行读出明文">
-<style>
-text{font-family:ui-monospace,Menlo,Consolas,'PingFang SC','Microsoft YaHei',monospace;fill:#222;text-anchor:middle}
-.m{font-size:18px}
-.l{font-size:14px;font-family:'PingFang SC','Microsoft YaHei',sans-serif}
-.s{font-size:13px;font-family:'PingFang SC','Microsoft YaHei',sans-serif}
-.r{font-size:16px;text-anchor:start}
-.b{font-size:14px;font-weight:bold;font-family:'PingFang SC','Microsoft YaHei',sans-serif}
-</style>
-<rect x="20" y="20" width="80" height="216" fill="#f1f3f5"/>
-<rect x="100" y="20" width="56" height="216" fill="#fff3bf"/>
-<rect x="156" y="20" width="56" height="216" fill="#d3f9d8"/>
-<rect x="212" y="20" width="56" height="216" fill="#d0ebff"/>
-<rect x="268" y="20" width="56" height="216" fill="#ffe3e3"/>
-<rect x="324" y="20" width="56" height="216" fill="#e5dbff"/>
-<rect x="380" y="20" width="56" height="216" fill="#c5f6fa"/>
-<g stroke="#555" stroke-width="1">
-<line x1="20" y1="20" x2="436" y2="20"/>
-<line x1="20" y1="56" x2="436" y2="56"/>
-<line x1="20" y1="128" x2="436" y2="128" stroke-opacity=".35"/>
-<line x1="20" y1="164" x2="436" y2="164" stroke-opacity=".35"/>
-<line x1="20" y1="236" x2="436" y2="236"/>
-<line x1="20" y1="20" x2="20" y2="236"/>
-<line x1="100" y1="20" x2="100" y2="236"/>
-<line x1="156" y1="20" x2="156" y2="236"/>
-<line x1="212" y1="20" x2="212" y2="236"/>
-<line x1="268" y1="20" x2="268" y2="236"/>
-<line x1="324" y1="20" x2="324" y2="236"/>
-<line x1="380" y1="20" x2="380" y2="236"/>
-<line x1="436" y1="20" x2="436" y2="236"/>
-</g>
-<g stroke="#555" stroke-width="2">
-<line x1="20" y1="92" x2="436" y2="92"/>
-<line x1="20" y1="200" x2="436" y2="200"/>
-</g>
-<text class="l" x="60" y="43">密钥</text>
-<text class="l" x="60" y="79">顺序</text>
-<text class="l" x="60" y="155">明文</text>
-<text class="l" x="60" y="223">密文段</text>
-<g class="m">
-<text x="128" y="44">C</text><text x="184" y="44">I</text><text x="240" y="44">P</text><text x="296" y="44">H</text><text x="352" y="44">E</text><text x="408" y="44">R</text>
-<text x="128" y="80">1</text><text x="184" y="80">4</text><text x="240" y="80">5</text><text x="296" y="80">3</text><text x="352" y="80">2</text><text x="408" y="80">6</text>
-<text x="128" y="116">a</text><text x="184" y="116">t</text><text x="240" y="116">t</text><text x="296" y="116">a</text><text x="352" y="116">c</text><text x="408" y="116">k</text>
-<text x="128" y="152">b</text><text x="184" y="152">e</text><text x="240" y="152">g</text><text x="296" y="152">i</text><text x="352" y="152">n</text><text x="408" y="152">s</text>
-<text x="128" y="188">a</text><text x="184" y="188">t</text><text x="240" y="188">f</text><text x="296" y="188">o</text><text x="352" y="188">u</text><text x="408" y="188">r</text>
-<text x="128" y="224" font-weight="bold">aba</text><text x="184" y="224" font-weight="bold">tet</text><text x="240" y="224" font-weight="bold">tgf</text><text x="296" y="224" font-weight="bold">aio</text><text x="352" y="224" font-weight="bold">cnu</text><text x="408" y="224" font-weight="bold">ksr</text>
-</g>
-<text class="r" x="450" y="116">→ attack</text>
-<text class="r" x="450" y="152">→ begins</text>
-<text class="r" x="450" y="188">→ atfour</text>
-<text class="s" x="228" y="262">密文每 3 个字母一段：aba ｜ cnu ｜ aio ｜ tet ｜ tgf ｜ ksr</text>
-<text class="s" x="228" y="282">按顺序号 1→6 依次将各段填入对应的列</text>
-<text class="b" x="228" y="308">最后按行读出明文：attackbeginsatfour</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 332" width="720" height="332" role="img" aria-label="置换密码解密：按顺序把密文段写入各列，再按行读出明文">
+  <title>置换密码解密过程示例</title>
+  <desc>收到密文 abacnuaiotettgfksr 后按每 3 字母一段、依顺序号 1 至 6 填入对应列，最后按行读出明文 attackbeginsatfour。</desc>
+  <g font-family="'PingFang SC','Noto Sans SC','Microsoft YaHei',system-ui,sans-serif">
+    <rect x="8" y="8" width="614" height="228" rx="6" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5" data-role="group"/>
+    <path d="M130 9 H212 V235 H130 Z" fill="#fffbeb"/>
+    <path d="M212 9 H294 V235 H212 Z" fill="#f0fdfa"/>
+    <path d="M294 9 H376 V235 H294 Z" fill="#eff6ff"/>
+    <path d="M376 9 H458 V235 H376 Z" fill="#fef2f2"/>
+    <path d="M458 9 H540 V235 H458 Z" fill="#f8fafc"/>
+    <path d="M540 9 H621 V235 H540 Z" fill="#f0fdfa"/>
+    <line x1="130" y1="8" x2="130" y2="236" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="212" y1="8" x2="212" y2="236" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="294" y1="8" x2="294" y2="236" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="376" y1="8" x2="376" y2="236" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="458" y1="8" x2="458" y2="236" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="540" y1="8" x2="540" y2="236" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="8" y1="46" x2="622" y2="46" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="8" y1="84" x2="622" y2="84" stroke="#1f2937" stroke-width="1.5"/>
+    <line x1="8" y1="122" x2="622" y2="122" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="8" y1="160" x2="622" y2="160" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="8" y1="198" x2="622" y2="198" stroke="#1f2937" stroke-width="1.5"/>
+    <text x="69" y="33" text-anchor="middle" font-size="15" font-weight="600" fill="#1f2937">密钥</text>
+    <text x="69" y="71" text-anchor="middle" font-size="15" font-weight="600" fill="#1f2937">顺序</text>
+    <text x="69" y="147" text-anchor="middle" font-size="15" font-weight="600" fill="#4b5563">明文</text>
+    <text x="69" y="223" text-anchor="middle" font-size="15" font-weight="600" fill="#1f2937">密文段</text>
+    <text x="171" y="33" text-anchor="middle" font-size="16" font-weight="600" fill="#92400e">C</text>
+    <text x="253" y="33" text-anchor="middle" font-size="16" font-weight="600" fill="#115e59">I</text>
+    <text x="335" y="33" text-anchor="middle" font-size="16" font-weight="600" fill="#1e40af">P</text>
+    <text x="417" y="33" text-anchor="middle" font-size="16" font-weight="600" fill="#991b1b">H</text>
+    <text x="499" y="33" text-anchor="middle" font-size="16" font-weight="600" fill="#1f2937">E</text>
+    <text x="581" y="33" text-anchor="middle" font-size="16" font-weight="600" fill="#115e59">R</text>
+    <text x="171" y="71" text-anchor="middle" font-size="15" font-weight="600" fill="#92400e">1</text>
+    <text x="253" y="71" text-anchor="middle" font-size="15" font-weight="600" fill="#115e59">4</text>
+    <text x="335" y="71" text-anchor="middle" font-size="15" font-weight="600" fill="#1e40af">5</text>
+    <text x="417" y="71" text-anchor="middle" font-size="15" font-weight="600" fill="#991b1b">3</text>
+    <text x="499" y="71" text-anchor="middle" font-size="15" font-weight="600" fill="#1f2937">2</text>
+    <text x="581" y="71" text-anchor="middle" font-size="15" font-weight="600" fill="#115e59">6</text>
+    <text x="171" y="109" text-anchor="middle" font-size="15" font-weight="400" fill="#92400e">a</text>
+    <text x="253" y="109" text-anchor="middle" font-size="15" font-weight="400" fill="#115e59">t</text>
+    <text x="335" y="109" text-anchor="middle" font-size="15" font-weight="400" fill="#1e40af">t</text>
+    <text x="417" y="109" text-anchor="middle" font-size="15" font-weight="400" fill="#991b1b">a</text>
+    <text x="499" y="109" text-anchor="middle" font-size="15" font-weight="400" fill="#1f2937">c</text>
+    <text x="581" y="109" text-anchor="middle" font-size="15" font-weight="400" fill="#115e59">k</text>
+    <text x="171" y="147" text-anchor="middle" font-size="15" font-weight="400" fill="#92400e">b</text>
+    <text x="253" y="147" text-anchor="middle" font-size="15" font-weight="400" fill="#115e59">e</text>
+    <text x="335" y="147" text-anchor="middle" font-size="15" font-weight="400" fill="#1e40af">g</text>
+    <text x="417" y="147" text-anchor="middle" font-size="15" font-weight="400" fill="#991b1b">i</text>
+    <text x="499" y="147" text-anchor="middle" font-size="15" font-weight="400" fill="#1f2937">n</text>
+    <text x="581" y="147" text-anchor="middle" font-size="15" font-weight="400" fill="#115e59">s</text>
+    <text x="171" y="185" text-anchor="middle" font-size="15" font-weight="400" fill="#92400e">a</text>
+    <text x="253" y="185" text-anchor="middle" font-size="15" font-weight="400" fill="#115e59">t</text>
+    <text x="335" y="185" text-anchor="middle" font-size="15" font-weight="400" fill="#1e40af">f</text>
+    <text x="417" y="185" text-anchor="middle" font-size="15" font-weight="400" fill="#991b1b">o</text>
+    <text x="499" y="185" text-anchor="middle" font-size="15" font-weight="400" fill="#1f2937">u</text>
+    <text x="581" y="185" text-anchor="middle" font-size="15" font-weight="400" fill="#115e59">r</text>
+    <text x="171" y="223" text-anchor="middle" font-size="16" font-weight="600" fill="#92400e">aba</text>
+    <text x="253" y="223" text-anchor="middle" font-size="16" font-weight="600" fill="#115e59">tet</text>
+    <text x="335" y="223" text-anchor="middle" font-size="16" font-weight="600" fill="#1e40af">tgf</text>
+    <text x="417" y="223" text-anchor="middle" font-size="16" font-weight="600" fill="#991b1b">aio</text>
+    <text x="499" y="223" text-anchor="middle" font-size="16" font-weight="600" fill="#1f2937">cnu</text>
+    <text x="581" y="223" text-anchor="middle" font-size="16" font-weight="600" fill="#115e59">ksr</text>
+    <text x="644" y="109" text-anchor="start" font-size="15" font-weight="600" fill="#1e40af" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">→ attack</text>
+    <text x="644" y="147" text-anchor="start" font-size="15" font-weight="600" fill="#1e40af" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">→ begins</text>
+    <text x="644" y="185" text-anchor="start" font-size="15" font-weight="600" fill="#1e40af" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">→ atfour</text>
+    <text x="360" y="264" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">密文每 3 个字母一段：aba ｜ cnu ｜ aio ｜ tet ｜ tgf ｜ ksr</text>
+    <text x="360" y="290" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">按顺序号 1→6 依次将各段填入对应的列</text>
+    <text x="360" y="318" text-anchor="middle" font-size="16" font-weight="600" fill="#1f2937" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">最后按行读出明文：attackbeginsatfour</text>
+  </g>
 </svg>
 
 

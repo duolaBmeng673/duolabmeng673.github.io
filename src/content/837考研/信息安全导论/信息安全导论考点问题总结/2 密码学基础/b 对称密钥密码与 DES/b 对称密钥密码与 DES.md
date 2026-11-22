@@ -23,51 +23,60 @@ tags: ["信息安全", "密码学", "对称密钥", "DES"]
 
 把明文划分成若干个 $L$ bit 的**明文分组**，每个分组在同一个密钥 `key` 下用加密算法 $E$ 单独加密，得到 $m$ bit 的**密文分组**；解密时用解密算法 $D$ 逐组还原为 $L$ bit 的明文分组。
 
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 390" width="600" role="img" aria-label="分组密码：明文分组经加密得到密文分组，再经解密还原">
-<style>
-text{font-family:'PingFang SC','Microsoft YaHei','Noto Sans CJK SC',sans-serif;fill:#222;text-anchor:middle;font-size:14px}
-.t{font-size:12px}
-.bx{fill:#fff;stroke:#444;stroke-width:1.5}
-.y{fill:#fff3bf}.g{fill:#d3f9d8}.bl{fill:#d0ebff}.p{fill:#ffe3e3}
-</style>
-<defs><marker id="a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#444"/></marker></defs>
-<rect width="600" height="390" fill="#fff"/>
-<text x="50" y="49">明文分组</text>
-<text x="50" y="199">密文分组</text>
-<text x="50" y="349">明文分组</text>
-<rect class="bx y" x="150" y="20" width="120" height="48"/>
-<text x="210" y="42">BLOCK 1</text><text class="t" x="210" y="60">L bit</text>
-<rect class="bx y" x="380" y="20" width="120" height="48"/>
-<text x="440" y="42">BLOCK 2</text><text class="t" x="440" y="60">L bit</text>
-<rect class="bx g" x="150" y="102" width="120" height="34"/>
-<text x="210" y="124">加密 E</text>
-<rect class="bx g" x="380" y="102" width="120" height="34"/>
-<text x="440" y="124">加密 E</text>
-<rect class="bx bl" x="150" y="170" width="120" height="48"/>
-<text x="210" y="192">密文 1</text><text class="t" x="210" y="210">m bit</text>
-<rect class="bx bl" x="380" y="170" width="120" height="48"/>
-<text x="440" y="192">密文 2</text><text class="t" x="440" y="210">m bit</text>
-<rect class="bx p" x="150" y="252" width="120" height="34"/>
-<text x="210" y="274">解密 D</text>
-<rect class="bx p" x="380" y="252" width="120" height="34"/>
-<text x="440" y="274">解密 D</text>
-<rect class="bx y" x="150" y="320" width="120" height="48"/>
-<text x="210" y="342">BLOCK 1</text><text class="t" x="210" y="360">L bit</text>
-<rect class="bx y" x="380" y="320" width="120" height="48"/>
-<text x="440" y="342">BLOCK 2</text><text class="t" x="440" y="360">L bit</text>
-<text x="110" y="124">key</text><text x="345" y="124">key</text>
-<text x="110" y="274">key</text><text x="345" y="274">key</text>
-<text x="550" y="50" style="font-size:20px">···</text>
-<text x="550" y="200" style="font-size:20px">···</text>
-<text x="550" y="350" style="font-size:20px">···</text>
-<g fill="none" stroke="#444" stroke-width="1.5" marker-end="url(#a1)">
-<path d="M210 68V102"/><path d="M440 68V102"/>
-<path d="M210 136V170"/><path d="M440 136V170"/>
-<path d="M210 218V252"/><path d="M440 218V252"/>
-<path d="M210 286V320"/><path d="M440 286V320"/>
-<path d="M126 119H150"/><path d="M362 119H380"/>
-<path d="M126 269H150"/><path d="M362 269H380"/>
-</g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 454" width="720" height="454" role="img" aria-label="分组密码：明文分组经加密得到密文分组，再经解密还原">
+  <title>分组密码加密与解密结构</title>
+  <desc>明文按每组 L bit 划分为独立分组，各自用同一个密钥 key 经加密算法 E 得到 m bit 密文分组，再经解密算法 D 逐组还原。</desc>
+  <defs>
+    <marker id="bc-k" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#1f2937" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+  <g font-family="'PingFang SC','Noto Sans SC','Microsoft YaHei',system-ui,sans-serif">
+    <text x="8" y="45" text-anchor="start" font-size="15" font-weight="600" fill="#1e40af" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">明文分组</text>
+    <text x="8" y="232" text-anchor="start" font-size="15" font-weight="600" fill="#1f2937" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">密文分组</text>
+    <text x="8" y="419" text-anchor="start" font-size="15" font-weight="600" fill="#1e40af" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">明文分组</text>
+    <rect x="200" y="8" width="160" height="64" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+    <text x="280" y="33" text-anchor="middle" font-size="15" font-weight="600" fill="#1e40af">BLOCK 1</text>
+    <text x="280" y="57" text-anchor="middle" font-size="15" font-weight="400" fill="#1e40af">L bit</text>
+    <rect x="480" y="8" width="160" height="64" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+    <text x="560" y="33" text-anchor="middle" font-size="15" font-weight="600" fill="#1e40af">BLOCK 2</text>
+    <text x="560" y="57" text-anchor="middle" font-size="15" font-weight="400" fill="#1e40af">L bit</text>
+    <rect x="200" y="106" width="160" height="44" rx="8" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
+    <text x="280" y="134" text-anchor="middle" font-size="15" font-weight="600" fill="#115e59">加密 E</text>
+    <text x="142" y="134" text-anchor="middle" font-size="15" font-weight="600" fill="#92400e" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">key</text>
+    <rect x="480" y="106" width="160" height="44" rx="8" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
+    <text x="560" y="134" text-anchor="middle" font-size="15" font-weight="600" fill="#115e59">加密 E</text>
+    <text x="422" y="134" text-anchor="middle" font-size="15" font-weight="600" fill="#92400e" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">key</text>
+    <rect x="200" y="194" width="160" height="64" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
+    <text x="280" y="219" text-anchor="middle" font-size="15" font-weight="600" fill="#1f2937">密文 1</text>
+    <text x="280" y="243" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563">m bit</text>
+    <rect x="480" y="194" width="160" height="64" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
+    <text x="560" y="219" text-anchor="middle" font-size="15" font-weight="600" fill="#1f2937">密文 2</text>
+    <text x="560" y="243" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563">m bit</text>
+    <rect x="200" y="292" width="160" height="44" rx="8" fill="#fef2f2" stroke="#ef4444" stroke-width="1.5"/>
+    <text x="280" y="320" text-anchor="middle" font-size="15" font-weight="600" fill="#991b1b">解密 D</text>
+    <text x="142" y="320" text-anchor="middle" font-size="15" font-weight="600" fill="#92400e" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">key</text>
+    <rect x="480" y="292" width="160" height="44" rx="8" fill="#fef2f2" stroke="#ef4444" stroke-width="1.5"/>
+    <text x="560" y="320" text-anchor="middle" font-size="15" font-weight="600" fill="#991b1b">解密 D</text>
+    <text x="422" y="320" text-anchor="middle" font-size="15" font-weight="600" fill="#92400e" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">key</text>
+    <rect x="200" y="382" width="160" height="64" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+    <text x="280" y="407" text-anchor="middle" font-size="15" font-weight="600" fill="#1e40af">BLOCK 1</text>
+    <text x="280" y="431" text-anchor="middle" font-size="15" font-weight="400" fill="#1e40af">L bit</text>
+    <rect x="480" y="382" width="160" height="64" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+    <text x="560" y="407" text-anchor="middle" font-size="15" font-weight="600" fill="#1e40af">BLOCK 2</text>
+    <text x="560" y="431" text-anchor="middle" font-size="15" font-weight="400" fill="#1e40af">L bit</text>
+    <text x="712" y="45" text-anchor="end" font-size="18" font-weight="600" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">…</text>
+    <text x="712" y="232" text-anchor="end" font-size="18" font-weight="600" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">…</text>
+    <text x="712" y="419" text-anchor="end" font-size="18" font-weight="600" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">…</text>
+    <g fill="none" stroke="#1f2937" stroke-width="1.5" marker-end="url(#bc-k)">
+      <path d="M280 72 V100"/><path d="M560 72 V100"/>
+      <path d="M280 150 V188"/><path d="M560 150 V188"/>
+      <path d="M280 258 V286"/><path d="M560 258 V286"/>
+      <path d="M280 336 V376"/><path d="M560 336 V376"/>
+      <path d="M162 128 H194"/><path d="M442 128 H474"/>
+      <path d="M162 314 H194"/><path d="M442 314 H474"/>
+    </g>
+  </g>
 </svg>
 
 #### 分组密码的工作模式
@@ -137,50 +146,50 @@ $$
 c_i = m_i \oplus k_i,\qquad m_i = c_i \oplus k_i
 $$
 
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 300" width="760" role="img" aria-label="序列密码：密钥经伪随机字节发生器产生密钥流，与明文字节流异或加密，再异或解密">
-<style>
-text{font-family:'PingFang SC','Microsoft YaHei','Noto Sans CJK SC',sans-serif;fill:#222;text-anchor:middle;font-size:14px}
-.m{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px}
-.bx{fill:#fff;stroke:#444;stroke-width:1.5}
-.y{fill:#fff3bf}.g{fill:#d3f9d8}.bl{fill:#d0ebff}
-</style>
-<defs><marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#444"/></marker></defs>
-<rect width="760" height="300" fill="#fff"/>
-<text x="85" y="140">明文字节流</text>
-<rect class="bx y" x="30" y="150" width="110" height="100"/>
-<text class="m" x="85" y="174">10000110</text>
-<text class="m" x="85" y="198">00011000</text>
-<text class="m" x="85" y="222">01011100</text>
-<text class="m" x="85" y="244">···</text>
-<text x="240" y="20">密钥 key</text>
-<rect class="bx g" x="170" y="44" width="140" height="34"/>
-<text x="240" y="66">伪随机字节发生器</text>
-<text x="240" y="124">伪随机字节 K</text>
-<circle cx="240" cy="215" r="14" class="bx"/>
-<path d="M226 215H254M240 201V229" stroke="#444" stroke-width="1.5" fill="none"/>
-<text x="240" y="252">加密</text>
-<text x="370" y="220">密文字节流 C</text>
-<text x="520" y="20">密钥 key</text>
-<rect class="bx g" x="450" y="44" width="140" height="34"/>
-<text x="520" y="66">伪随机字节发生器</text>
-<text x="520" y="124">伪随机字节 K</text>
-<circle cx="520" cy="215" r="14" class="bx"/>
-<path d="M506 215H534M520 201V229" stroke="#444" stroke-width="1.5" fill="none"/>
-<text x="520" y="252">解密</text>
-<text x="675" y="140">明文字节流</text>
-<rect class="bx y" x="620" y="150" width="110" height="100"/>
-<text class="m" x="675" y="174">10000110</text>
-<text class="m" x="675" y="198">00011000</text>
-<text class="m" x="675" y="222">01011100</text>
-<text class="m" x="675" y="244">···</text>
-<g fill="none" stroke="#444" stroke-width="1.5" marker-end="url(#a2)">
-<path d="M14 150V250"/><path d="M746 150V250"/>
-<path d="M140 215H224"/>
-<path d="M240 26V44"/><path d="M240 78V106"/><path d="M240 132V200"/>
-<path d="M254 215H312"/><path d="M428 215H506"/>
-<path d="M520 26V44"/><path d="M520 78V106"/><path d="M520 132V200"/>
-<path d="M534 215H620"/>
-</g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 282" width="720" height="282" role="img" aria-label="序列密码：密钥经伪随机字节发生器产生密钥流，与明文字节流异或加密，再异或解密">
+  <title>序列密码加密与解密原理</title>
+  <desc>密钥经伪随机字节发生器生成伪随机密钥流 K，加密端与明文字节流逐字节异或得到密文，解密端再用相同密钥流异或还原明文。</desc>
+  <defs>
+    <marker id="sc-k" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#1f2937" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+  <g font-family="'PingFang SC','Noto Sans SC','Microsoft YaHei',system-ui,sans-serif">
+    <text x="68" y="146" text-anchor="middle" font-size="15" font-weight="600" fill="#1e40af" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">明文字节流</text>
+    <rect x="8" y="160" width="120" height="114" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+    <text x="68" y="184" text-anchor="middle" font-size="15" font-weight="400" fill="#1e40af">10000110</text>
+    <text x="68" y="208" text-anchor="middle" font-size="15" font-weight="400" fill="#1e40af">00011000</text>
+    <text x="68" y="232" text-anchor="middle" font-size="15" font-weight="400" fill="#1e40af">01011100</text>
+    <text x="68" y="256" text-anchor="middle" font-size="15" font-weight="600" fill="#1e40af">…</text>
+    <text x="234" y="24" text-anchor="middle" font-size="15" font-weight="600" fill="#92400e" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">密钥 key</text>
+    <rect x="148" y="54" width="172" height="46" rx="8" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
+    <text x="234" y="83" text-anchor="middle" font-size="15" font-weight="600" fill="#115e59">伪随机字节发生器</text>
+    <text x="234" y="144" text-anchor="middle" font-size="15" font-weight="400" fill="#115e59" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">伪随机字节 K</text>
+    <circle cx="234" cy="217" r="14" fill="#f8fafc" stroke="#1f2937" stroke-width="1.5"/>
+    <path d="M220 217 H248 M234 203 V231" fill="none" stroke="#1f2937" stroke-width="1.5"/>
+    <text x="234" y="262" text-anchor="middle" font-size="15" font-weight="600" fill="#1f2937" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">加密</text>
+    <text x="360" y="222" text-anchor="middle" font-size="15" font-weight="600" fill="#991b1b" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">密文字节流 C</text>
+    <text x="486" y="24" text-anchor="middle" font-size="15" font-weight="600" fill="#92400e" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">密钥 key</text>
+    <rect x="400" y="54" width="172" height="46" rx="8" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
+    <text x="486" y="83" text-anchor="middle" font-size="15" font-weight="600" fill="#115e59">伪随机字节发生器</text>
+    <text x="486" y="144" text-anchor="middle" font-size="15" font-weight="400" fill="#115e59" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">伪随机字节 K</text>
+    <circle cx="486" cy="217" r="14" fill="#f8fafc" stroke="#1f2937" stroke-width="1.5"/>
+    <path d="M472 217 H500 M486 203 V231" fill="none" stroke="#1f2937" stroke-width="1.5"/>
+    <text x="486" y="262" text-anchor="middle" font-size="15" font-weight="600" fill="#1f2937" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">解密</text>
+    <text x="652" y="146" text-anchor="middle" font-size="15" font-weight="600" fill="#1e40af" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">明文字节流</text>
+    <rect x="592" y="160" width="120" height="114" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+    <text x="652" y="184" text-anchor="middle" font-size="15" font-weight="400" fill="#1e40af">10000110</text>
+    <text x="652" y="208" text-anchor="middle" font-size="15" font-weight="400" fill="#1e40af">00011000</text>
+    <text x="652" y="232" text-anchor="middle" font-size="15" font-weight="400" fill="#1e40af">01011100</text>
+    <text x="652" y="256" text-anchor="middle" font-size="15" font-weight="600" fill="#1e40af">…</text>
+    <g fill="none" stroke="#1f2937" stroke-width="1.5" marker-end="url(#sc-k)">
+      <path d="M128 217 H214"/>
+      <path d="M234 32 V48"/><path d="M234 100 V124"/><path d="M234 156 V197"/>
+      <path d="M248 217 H304"/><path d="M416 217 H466"/>
+      <path d="M486 32 V48"/><path d="M486 100 V124"/><path d="M486 156 V197"/>
+      <path d="M500 217 H586"/>
+    </g>
+  </g>
 </svg>
 
 ---
@@ -191,31 +200,33 @@ text{font-family:'PingFang SC','Microsoft YaHei','Noto Sans CJK SC',sans-serif;f
 
 输入 64 bit 明文数据 → 初始置换 IP → 密钥控制下的 16 轮迭代 → 交换左右 32 bit → 初始逆置换 $IP^{-1}$ → 输出 64 bit 数据。
 
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 750 180" width="750" role="img" aria-label="DES 加密总体流程">
-<style>
-text{font-family:'PingFang SC','Microsoft YaHei','Noto Sans CJK SC',sans-serif;fill:#222;text-anchor:middle;font-size:14px}
-.bx{fill:#fff;stroke:#444;stroke-width:1.5}
-.y{fill:#fff3bf}.g{fill:#d3f9d8}.bl{fill:#d0ebff}.p{fill:#ffe3e3}
-</style>
-<defs><marker id="a3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#444"/></marker></defs>
-<rect width="750" height="180" fill="#fff"/>
-<rect class="bx y" x="20" y="20" width="190" height="44"/>
-<text x="115" y="47">输入 64 bit 明文数据</text>
-<rect class="bx g" x="280" y="20" width="190" height="44"/>
-<text x="375" y="47">初始置换 IP</text>
-<rect class="bx bl" x="540" y="20" width="190" height="44"/>
-<text x="635" y="47">密钥控制下 16 轮迭代</text>
-<rect class="bx p" x="540" y="116" width="190" height="44"/>
-<text x="635" y="143">交换左右 32 bit</text>
-<rect class="bx g" x="280" y="116" width="190" height="44"/>
-<text x="375" y="143">初始逆置换 IP⁻¹</text>
-<rect class="bx y" x="20" y="116" width="190" height="44"/>
-<text x="115" y="143">输出 64 bit 数据</text>
-<g fill="none" stroke="#444" stroke-width="1.5" marker-end="url(#a3)">
-<path d="M210 42H280"/><path d="M470 42H540"/>
-<path d="M635 64V116"/>
-<path d="M540 138H470"/><path d="M280 138H210"/>
-</g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 172" width="720" height="172" role="img" aria-label="DES 加密总体流程">
+  <title>DES 加密总体流程</title>
+  <desc>展示 64 bit 明文数据经过初始置换 IP、16 轮迭代、左右 32 bit 交换及初始逆置换输出 64 bit 密文数据的总体流程。</desc>
+  <defs>
+    <marker id="deso-k" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#1f2937" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+  <g font-family="'PingFang SC','Noto Sans SC','Microsoft YaHei',system-ui,sans-serif">
+    <rect x="8" y="8" width="212" height="52" rx="8" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5"/>
+    <text x="114" y="40" text-anchor="middle" font-size="15" font-weight="600" fill="#92400e">输入 64 bit 明文数据</text>
+    <rect x="254" y="8" width="212" height="52" rx="8" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
+    <text x="360" y="40" text-anchor="middle" font-size="15" font-weight="600" fill="#115e59">初始置换 IP</text>
+    <rect x="500" y="8" width="212" height="52" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+    <text x="606" y="40" text-anchor="middle" font-size="15" font-weight="600" fill="#1e40af">密钥控制下 16 轮迭代</text>
+    <rect x="500" y="112" width="212" height="52" rx="8" fill="#fef2f2" stroke="#ef4444" stroke-width="1.5"/>
+    <text x="606" y="144" text-anchor="middle" font-size="15" font-weight="600" fill="#991b1b">交换左右 32 bit</text>
+    <rect x="254" y="112" width="212" height="52" rx="8" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
+    <text x="360" y="144" text-anchor="middle" font-size="15" font-weight="600" fill="#115e59">初始逆置换 IP⁻¹</text>
+    <rect x="8" y="112" width="212" height="52" rx="8" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5"/>
+    <text x="114" y="144" text-anchor="middle" font-size="15" font-weight="600" fill="#92400e">输出 64 bit 数据</text>
+    <g fill="none" stroke="#1f2937" stroke-width="1.5" marker-end="url(#deso-k)">
+      <path d="M220 34 H248"/><path d="M466 34 H494"/>
+      <path d="M606 60 V106"/>
+      <path d="M500 138 H472"/><path d="M254 138 H226"/>
+    </g>
+  </g>
 </svg>
 
 ### 2.2 DES 加密算法：初始置换与 Feistel 网络结构
@@ -228,49 +239,79 @@ $$
 
 DES 共进行 $n = 16$ 轮；最后交换左右两半，再做 $IP^{-1}$。
 
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 620" width="680" role="img" aria-label="Feistel 网络结构：每轮 R 经过 f 与子密钥后与 L 异或，左右交叉">
-<style>
-text{font-family:'PingFang SC','Microsoft YaHei','Noto Sans CJK SC',sans-serif;fill:#222;text-anchor:middle;font-size:14px}
-.t{font-size:12px}
-.s{text-anchor:start;font-size:16px}
-.bx{fill:#fff;stroke:#444;stroke-width:1.5}
-.y{fill:#fff3bf}.g{fill:#d3f9d8}.bl{fill:#d0ebff}.p{fill:#ffe3e3}
-</style>
-<defs><marker id="a4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#444"/></marker></defs>
-<rect width="680" height="620" fill="#fff"/>
-<text class="t" x="285" y="14">64 bits</text>
-<rect class="bx g" x="185" y="30" width="200" height="32"/>
-<text x="285" y="51">初始置换 (IP 置换)</text>
-<rect class="bx y" x="95" y="98" width="150" height="32"/><text x="170" y="119">L₀ (32 位)</text>
-<rect class="bx bl" x="325" y="98" width="150" height="32"/><text x="400" y="119">R₀ (32 位)</text>
-<rect class="bx g" x="275" y="174" width="50" height="28"/><text x="300" y="193">f</text>
-<text x="300" y="154">K₁</text>
-<circle cx="170" cy="188" r="11" class="bx"/><path d="M159 188H181M170 177V199" stroke="#444" stroke-width="1.5" fill="none"/>
-<rect class="bx y" x="95" y="242" width="150" height="32"/><text x="170" y="263">L₁ (32 位)</text>
-<rect class="bx bl" x="325" y="242" width="150" height="32"/><text x="400" y="263">R₁ (32 位)</text>
-<rect class="bx g" x="275" y="318" width="50" height="28"/><text x="300" y="337">f</text>
-<text x="300" y="298">K₂</text>
-<circle cx="170" cy="332" r="11" class="bx"/><path d="M159 332H181M170 321V343" stroke="#444" stroke-width="1.5" fill="none"/>
-<rect class="bx y" x="95" y="386" width="150" height="32"/><text x="170" y="407">L₂ (32 位)</text>
-<rect class="bx bl" x="325" y="386" width="150" height="32"/><text x="400" y="407">R₂ (32 位)</text>
-<rect class="bx g" x="275" y="502" width="50" height="28"/><text x="300" y="521">f</text>
-<text x="300" y="482">Kₙ</text>
-<circle cx="170" cy="516" r="11" class="bx"/><path d="M159 516H181M170 505V527" stroke="#444" stroke-width="1.5" fill="none"/>
-<rect class="bx y" x="95" y="570" width="150" height="32"/><text x="170" y="591">Lₙ (32 位)</text>
-<rect class="bx bl" x="325" y="570" width="150" height="32"/><text x="400" y="591">Rₙ (32 位)</text>
-<path d="M170 418V458M400 418V458" stroke="#444" stroke-width="1.5" stroke-dasharray="4 4" fill="none"/>
-<path d="M516 114Q516 98 500 98M516 114V336Q516 350 530 350Q516 350 516 364V586Q516 602 500 602" stroke="#444" stroke-width="1.5" fill="none"/>
-<text class="s" x="542" y="356">Feistel 网络结构</text>
-<g fill="none" stroke="#444" stroke-width="1.5" marker-end="url(#a4)">
-<path d="M285 18V30"/>
-<path d="M285 62V80H170V98"/><path d="M285 80H400V98"/>
-<path d="M300 158V174"/><path d="M170 130V177"/><path d="M275 188H181"/><path d="M400 188H325"/>
-<path d="M400 130V212L170 228V242"/><path d="M170 199V212L400 228V242"/>
-<path d="M300 302V318"/><path d="M170 274V321"/><path d="M275 332H181"/><path d="M400 332H325"/>
-<path d="M400 274V356L170 372V386"/><path d="M170 343V356L400 372V386"/>
-<path d="M300 486V502"/><path d="M170 458V505"/><path d="M275 516H181"/><path d="M400 516H325"/>
-<path d="M400 458V540L170 556V570"/><path d="M170 527V540L400 556V570"/>
-</g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 726" width="720" height="726" role="img" aria-label="Feistel 网络结构：每轮 R 经过 f 与子密钥后与 L 异或，左右交叉">
+  <title>Feistel 网络多轮结构</title>
+  <desc>64 位明文经过初始置换拆分为左右 32 位，每轮由 R 经轮函数 f 和子密钥 K 后与 L 异或并左右交叉，共迭代 n 轮。</desc>
+  <defs>
+    <marker id="fst-k" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#1f2937" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+  <g font-family="'PingFang SC','Noto Sans SC','Microsoft YaHei',system-ui,sans-serif">
+    <text x="254" y="22" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">64 bits</text>
+    <line x1="254" y1="34" x2="254" y2="54" stroke="#1f2937" stroke-width="1.5" marker-end="url(#fst-k)"/>
+    <rect x="144" y="60" width="220" height="44" rx="8" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
+    <text x="254" y="88" text-anchor="middle" font-size="15" font-weight="600" fill="#115e59">初始置换 (IP 置换)</text>
+    <path d="M254 104 V120 H93 V132 M254 120 H415 V132" fill="none" stroke="#1f2937" stroke-width="1.5" marker-end="url(#fst-k)"/>
+    <rect x="8" y="138" width="170" height="44" rx="8" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5"/>
+    <text x="93" y="166" text-anchor="middle" font-size="15" font-weight="600" fill="#92400e">L₀ (32 位)</text>
+    <rect x="330" y="138" width="170" height="44" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+    <text x="415" y="166" text-anchor="middle" font-size="15" font-weight="600" fill="#1e40af">R₀ (32 位)</text>
+    <text x="272" y="182" text-anchor="middle" font-size="15" font-weight="600" fill="#115e59" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">K₁</text>
+    <line x1="272" y1="194" x2="272" y2="212" stroke="#1f2937" stroke-width="1.5" marker-end="url(#fst-k)"/>
+    <rect x="234" y="216" width="76" height="40" rx="8" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
+    <text x="272" y="242" text-anchor="middle" font-size="16" font-weight="600" fill="#115e59">f</text>
+    <circle cx="93" cy="236" r="14" fill="#f8fafc" stroke="#1f2937" stroke-width="1.5"/>
+    <path d="M79 236 H107 M93 222 V250" fill="none" stroke="#1f2937" stroke-width="1.5"/>
+    <g fill="none" stroke="#1f2937" stroke-width="1.5" marker-end="url(#fst-k)">
+      <path d="M93 182 V216"/>
+      <path d="M415 182 V236 H316"/>
+      <path d="M234 236 H113"/>
+      <path d="M415 182 V256 L93 276 V284"/>
+      <path d="M93 250 V256 L415 276 V284"/>
+    </g>
+    <rect x="8" y="288" width="170" height="44" rx="8" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5"/>
+    <text x="93" y="316" text-anchor="middle" font-size="15" font-weight="600" fill="#92400e">L₁ (32 位)</text>
+    <rect x="330" y="288" width="170" height="44" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+    <text x="415" y="316" text-anchor="middle" font-size="15" font-weight="600" fill="#1e40af">R₁ (32 位)</text>
+    <text x="272" y="332" text-anchor="middle" font-size="15" font-weight="600" fill="#115e59" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">K₂</text>
+    <line x1="272" y1="344" x2="272" y2="362" stroke="#1f2937" stroke-width="1.5" marker-end="url(#fst-k)"/>
+    <rect x="234" y="366" width="76" height="40" rx="8" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
+    <text x="272" y="392" text-anchor="middle" font-size="16" font-weight="600" fill="#115e59">f</text>
+    <circle cx="93" cy="386" r="14" fill="#f8fafc" stroke="#1f2937" stroke-width="1.5"/>
+    <path d="M79 386 H107 M93 372 V400" fill="none" stroke="#1f2937" stroke-width="1.5"/>
+    <g fill="none" stroke="#1f2937" stroke-width="1.5" marker-end="url(#fst-k)">
+      <path d="M93 332 V366"/>
+      <path d="M415 332 V386 H316"/>
+      <path d="M234 386 H113"/>
+      <path d="M415 332 V406 L93 426 V434"/>
+      <path d="M93 400 V406 L415 426 V434"/>
+    </g>
+    <rect x="8" y="438" width="170" height="44" rx="8" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5"/>
+    <text x="93" y="466" text-anchor="middle" font-size="15" font-weight="600" fill="#92400e">L₂ (32 位)</text>
+    <rect x="330" y="438" width="170" height="44" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+    <text x="415" y="466" text-anchor="middle" font-size="15" font-weight="600" fill="#1e40af">R₂ (32 位)</text>
+    <path d="M93 482 V520 M415 482 V520" fill="none" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="4 4"/>
+    <text x="272" y="568" text-anchor="middle" font-size="15" font-weight="600" fill="#115e59" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">Kₙ</text>
+    <line x1="272" y1="580" x2="272" y2="598" stroke="#1f2937" stroke-width="1.5" marker-end="url(#fst-k)"/>
+    <rect x="234" y="602" width="76" height="40" rx="8" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
+    <text x="272" y="628" text-anchor="middle" font-size="16" font-weight="600" fill="#115e59">f</text>
+    <circle cx="93" cy="622" r="14" fill="#f8fafc" stroke="#1f2937" stroke-width="1.5"/>
+    <path d="M79 622 H107 M93 608 V636" fill="none" stroke="#1f2937" stroke-width="1.5"/>
+    <g fill="none" stroke="#1f2937" stroke-width="1.5" marker-end="url(#fst-k)">
+      <path d="M93 568 V602"/>
+      <path d="M415 568 V622 H316"/>
+      <path d="M234 622 H113"/>
+      <path d="M415 568 V642 L93 662 V670"/>
+      <path d="M93 636 V642 L415 662 V670"/>
+    </g>
+    <rect x="8" y="674" width="170" height="44" rx="8" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5"/>
+    <text x="93" y="702" text-anchor="middle" font-size="15" font-weight="600" fill="#92400e">Lₙ (32 位)</text>
+    <rect x="330" y="674" width="170" height="44" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+    <text x="415" y="702" text-anchor="middle" font-size="15" font-weight="600" fill="#1e40af">Rₙ (32 位)</text>
+    <path d="M518 152 Q536 152 536 172 V412 Q536 428 552 428 Q536 428 536 444 V684 Q536 704 518 704" fill="none" stroke="#94a3b8" stroke-width="1.5"/>
+    <text x="712" y="434" text-anchor="end" font-size="16" font-weight="600" fill="#1f2937" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">Feistel 网络结构</text>
+  </g>
 </svg>
 
 **初始置换 IP 表**：将原位于第 58 个位置的数据放在第 1 个位置，第 50 个放在第 2 个位置，以此类推。
@@ -294,46 +335,71 @@ $$
 f(R, K) = P\big(S(E(R) \oplus K)\big)
 $$
 
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 480" width="700" role="img" aria-label="DES 轮函数：E 扩展、与子密钥异或、八个 S 盒、P 盒">
-<style>
-text{font-family:'PingFang SC','Microsoft YaHei','Noto Sans CJK SC',sans-serif;fill:#222;text-anchor:middle;font-size:14px}
-.t{font-size:13px}
-.s{text-anchor:start}
-.bx{fill:#fff;stroke:#444;stroke-width:1.5}
-.y{fill:#fff3bf}.g{fill:#d3f9d8}.bl{fill:#d0ebff}.p{fill:#ffe3e3}
-</style>
-<defs><marker id="a5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#444"/></marker></defs>
-<rect width="700" height="480" fill="#fff"/>
-<rect class="bx y" x="205" y="14" width="130" height="32"/><text x="270" y="35">R (32 比特)</text>
-<rect class="bx g" x="170" y="70" width="200" height="32"/><text x="270" y="91">E 扩展置换 (32→48)</text>
-<rect class="bx bl" x="195" y="126" width="150" height="32"/><text x="270" y="147">Input (48 比特)</text>
-<rect class="bx bl" x="425" y="126" width="150" height="32"/><text x="500" y="147">K (48 比特)</text>
-<circle cx="385" cy="200" r="12" class="bx"/><path d="M373 200H397M385 188V212" stroke="#444" stroke-width="1.5" fill="none"/>
-<path d="M385 212V242M100 242H604M352 330V358M100 330H604" stroke="#444" stroke-width="1.5" fill="none"/>
-<text class="t" x="40" y="286">6 → 4</text>
-<rect class="bx p" x="78" y="264" width="44" height="34"/><text x="100" y="286">S₁</text>
-<rect class="bx p" x="150" y="264" width="44" height="34"/><text x="172" y="286">S₂</text>
-<rect class="bx p" x="222" y="264" width="44" height="34"/><text x="244" y="286">S₃</text>
-<rect class="bx p" x="294" y="264" width="44" height="34"/><text x="316" y="286">S₄</text>
-<rect class="bx p" x="366" y="264" width="44" height="34"/><text x="388" y="286">S₅</text>
-<rect class="bx p" x="438" y="264" width="44" height="34"/><text x="460" y="286">S₆</text>
-<rect class="bx p" x="510" y="264" width="44" height="34"/><text x="532" y="286">S₇</text>
-<rect class="bx p" x="582" y="264" width="44" height="34"/><text x="604" y="286">S₈</text>
-<rect class="bx g" x="302" y="358" width="100" height="32"/><text x="352" y="379">P 盒</text>
-<text class="s" x="420" y="379">← 打乱其原有排列规律</text>
-<rect class="bx y" x="292" y="430" width="120" height="32"/><text x="352" y="451">32 比特</text>
-<g fill="none" stroke="#444" stroke-width="1.5" marker-end="url(#a5)">
-<path d="M270 46V70"/><path d="M270 102V126"/>
-<path d="M270 158V200H373"/><path d="M500 158V200H397"/>
-<path d="M100 242V264"/><path d="M172 242V264"/><path d="M244 242V264"/><path d="M316 242V264"/>
-<path d="M388 242V264"/><path d="M460 242V264"/><path d="M532 242V264"/><path d="M604 242V264"/>
-<path d="M352 358V358"/>
-<path d="M352 390V430"/>
-</g>
-<g fill="none" stroke="#444" stroke-width="1.5">
-<path d="M100 298V330"/><path d="M172 298V330"/><path d="M244 298V330"/><path d="M316 298V330"/>
-<path d="M388 298V330"/><path d="M460 298V330"/><path d="M532 298V330"/><path d="M604 298V330"/>
-</g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 504" width="720" height="504" role="img" aria-label="DES 轮函数：E 扩展、与子密钥异或、八个 S 盒、P 盒">
+  <title>DES 轮函数 f 内部结构</title>
+  <desc>展示 32 位 R 经 E 扩展置换为 48 位并与 48 位子密钥 K 异或，经过 8 个 6 进 4 出的 S 盒压缩及 P 盒置换输出 32 位。</desc>
+  <defs>
+    <marker id="fbox-k" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#1f2937" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+  <g font-family="'PingFang SC','Noto Sans SC','Microsoft YaHei',system-ui,sans-serif">
+    <rect x="200" y="8" width="160" height="44" rx="8" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5"/>
+    <text x="280" y="36" text-anchor="middle" font-size="15" font-weight="600" fill="#92400e">R (32 比特)</text>
+    <line x1="280" y1="52" x2="280" y2="68" stroke="#1f2937" stroke-width="1.5" marker-end="url(#fbox-k)"/>
+    <rect x="176" y="74" width="208" height="44" rx="8" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
+    <text x="280" y="102" text-anchor="middle" font-size="15" font-weight="600" fill="#115e59">E 扩展置换 (32→48)</text>
+    <line x1="280" y1="118" x2="280" y2="134" stroke="#1f2937" stroke-width="1.5" marker-end="url(#fbox-k)"/>
+    <rect x="196" y="140" width="168" height="44" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+    <text x="280" y="168" text-anchor="middle" font-size="15" font-weight="600" fill="#1e40af">Input (48 比特)</text>
+    <rect x="444" y="140" width="168" height="44" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+    <text x="528" y="168" text-anchor="middle" font-size="15" font-weight="600" fill="#1e40af">K (48 比特)</text>
+    <circle cx="404" cy="218" r="14" fill="#f8fafc" stroke="#1f2937" stroke-width="1.5"/>
+    <path d="M390 218 H418 M404 204 V232" fill="none" stroke="#1f2937" stroke-width="1.5"/>
+    <path d="M280 184 V218 H384 M528 184 V218 H424" fill="none" stroke="#1f2937" stroke-width="1.5" marker-end="url(#fbox-k)"/>
+    <path d="M404 232 V262 M103 262 H677" fill="none" stroke="#1f2937" stroke-width="1.5"/>
+    <text x="8" y="312" text-anchor="start" font-size="15" font-weight="600" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">6 → 4</text>
+    <rect x="68" y="284" width="70" height="44" rx="6" fill="#fef2f2" stroke="#ef4444" stroke-width="1.5"/>
+    <text x="103" y="312" text-anchor="middle" font-size="15" font-weight="600" fill="#991b1b">S₁</text>
+    <line x1="103" y1="262" x2="103" y2="278" stroke="#1f2937" stroke-width="1.5" marker-end="url(#fbox-k)"/>
+    <line x1="103" y1="328" x2="103" y2="354" stroke="#1f2937" stroke-width="1.5"/>
+    <rect x="150" y="284" width="70" height="44" rx="6" fill="#fef2f2" stroke="#ef4444" stroke-width="1.5"/>
+    <text x="185" y="312" text-anchor="middle" font-size="15" font-weight="600" fill="#991b1b">S₂</text>
+    <line x1="185" y1="262" x2="185" y2="278" stroke="#1f2937" stroke-width="1.5" marker-end="url(#fbox-k)"/>
+    <line x1="185" y1="328" x2="185" y2="354" stroke="#1f2937" stroke-width="1.5"/>
+    <rect x="232" y="284" width="70" height="44" rx="6" fill="#fef2f2" stroke="#ef4444" stroke-width="1.5"/>
+    <text x="267" y="312" text-anchor="middle" font-size="15" font-weight="600" fill="#991b1b">S₃</text>
+    <line x1="267" y1="262" x2="267" y2="278" stroke="#1f2937" stroke-width="1.5" marker-end="url(#fbox-k)"/>
+    <line x1="267" y1="328" x2="267" y2="354" stroke="#1f2937" stroke-width="1.5"/>
+    <rect x="314" y="284" width="70" height="44" rx="6" fill="#fef2f2" stroke="#ef4444" stroke-width="1.5"/>
+    <text x="349" y="312" text-anchor="middle" font-size="15" font-weight="600" fill="#991b1b">S₄</text>
+    <line x1="349" y1="262" x2="349" y2="278" stroke="#1f2937" stroke-width="1.5" marker-end="url(#fbox-k)"/>
+    <line x1="349" y1="328" x2="349" y2="354" stroke="#1f2937" stroke-width="1.5"/>
+    <rect x="396" y="284" width="70" height="44" rx="6" fill="#fef2f2" stroke="#ef4444" stroke-width="1.5"/>
+    <text x="431" y="312" text-anchor="middle" font-size="15" font-weight="600" fill="#991b1b">S₅</text>
+    <line x1="431" y1="262" x2="431" y2="278" stroke="#1f2937" stroke-width="1.5" marker-end="url(#fbox-k)"/>
+    <line x1="431" y1="328" x2="431" y2="354" stroke="#1f2937" stroke-width="1.5"/>
+    <rect x="478" y="284" width="70" height="44" rx="6" fill="#fef2f2" stroke="#ef4444" stroke-width="1.5"/>
+    <text x="513" y="312" text-anchor="middle" font-size="15" font-weight="600" fill="#991b1b">S₆</text>
+    <line x1="513" y1="262" x2="513" y2="278" stroke="#1f2937" stroke-width="1.5" marker-end="url(#fbox-k)"/>
+    <line x1="513" y1="328" x2="513" y2="354" stroke="#1f2937" stroke-width="1.5"/>
+    <rect x="560" y="284" width="70" height="44" rx="6" fill="#fef2f2" stroke="#ef4444" stroke-width="1.5"/>
+    <text x="595" y="312" text-anchor="middle" font-size="15" font-weight="600" fill="#991b1b">S₇</text>
+    <line x1="595" y1="262" x2="595" y2="278" stroke="#1f2937" stroke-width="1.5" marker-end="url(#fbox-k)"/>
+    <line x1="595" y1="328" x2="595" y2="354" stroke="#1f2937" stroke-width="1.5"/>
+    <rect x="642" y="284" width="70" height="44" rx="6" fill="#fef2f2" stroke="#ef4444" stroke-width="1.5"/>
+    <text x="677" y="312" text-anchor="middle" font-size="15" font-weight="600" fill="#991b1b">S₈</text>
+    <line x1="677" y1="262" x2="677" y2="278" stroke="#1f2937" stroke-width="1.5" marker-end="url(#fbox-k)"/>
+    <line x1="677" y1="328" x2="677" y2="354" stroke="#1f2937" stroke-width="1.5"/>
+    <path d="M103 354 H677 M390 354 V376" fill="none" stroke="#1f2937" stroke-width="1.5"/>
+    <line x1="390" y1="364" x2="390" y2="378" stroke="#1f2937" stroke-width="1.5" marker-end="url(#fbox-k)"/>
+    <rect x="310" y="384" width="160" height="44" rx="8" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
+    <text x="390" y="412" text-anchor="middle" font-size="15" font-weight="600" fill="#115e59">P 盒</text>
+    <text x="488" y="412" text-anchor="start" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">← 打乱其原有排列规律</text>
+    <line x1="390" y1="428" x2="390" y2="446" stroke="#1f2937" stroke-width="1.5" marker-end="url(#fbox-k)"/>
+    <rect x="310" y="452" width="160" height="44" rx="8" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5"/>
+    <text x="390" y="480" text-anchor="middle" font-size="15" font-weight="600" fill="#92400e">32 比特输出</text>
+  </g>
 </svg>
 
 **① 扩展置换 E（32 → 48 位）**：把 32 位按 4 位一组分成 8 组，每组前面补上前一组的最后一位、后面补上后一组的第一位（首尾循环相接），变成 8 组 × 6 位。
@@ -377,45 +443,62 @@ text{font-family:'PingFang SC','Microsoft YaHei','Noto Sans CJK SC',sans-serif;f
 
 64 位密钥先经**置换选择 1（PC-1）**，**舍弃掉每 8 位数据的最后一位**（校验位），得到 56 位并拆成 $C_0$、$D_0$（各 28 位）。之后每一轮对 $C$、$D$ 分别**循环左移**，再合并后经**置换选择 2（PC-2）**压缩成 48 位子密钥 $k_i$。
 
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 520" width="800" role="img" aria-label="DES 子密钥生成：PC-1、循环左移、PC-2">
-<style>
-text{font-family:'PingFang SC','Microsoft YaHei','Noto Sans CJK SC',sans-serif;fill:#222;text-anchor:middle;font-size:14px}
-.t{font-size:12px}
-.s{text-anchor:start}
-.bx{fill:#fff;stroke:#444;stroke-width:1.5}
-.y{fill:#fff3bf}.g{fill:#d3f9d8}.bl{fill:#d0ebff}.p{fill:#ffe3e3}
-</style>
-<defs><marker id="a6" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#444"/></marker></defs>
-<rect width="800" height="520" fill="#fff"/>
-<rect class="bx y" x="205" y="14" width="140" height="32"/><text x="275" y="35">64 位密钥</text>
-<rect class="bx g" x="185" y="70" width="180" height="32"/><text x="275" y="91">置换选择 1 (PC-1)</text>
-<rect class="bx bl" x="105" y="138" width="130" height="32"/><text x="170" y="159">C₀ (28 位)</text>
-<rect class="bx bl" x="315" y="138" width="130" height="32"/><text x="380" y="159">D₀ (28 位)</text>
-<rect class="bx p" x="105" y="194" width="130" height="32"/><text x="170" y="215">循环左移</text>
-<rect class="bx p" x="315" y="194" width="130" height="32"/><text x="380" y="215">循环左移</text>
-<rect class="bx bl" x="105" y="250" width="130" height="32"/><text x="170" y="271">C₁ (28 位)</text>
-<rect class="bx bl" x="315" y="250" width="130" height="32"/><text x="380" y="271">D₁ (28 位)</text>
-<text class="t" x="450" y="294">(56 位)</text>
-<rect class="bx g" x="520" y="286" width="130" height="32"/><text x="585" y="307">置换选择 2 (PC-2)</text>
-<text class="s" x="696" y="307">k₁ (48 位)</text>
-<rect class="bx p" x="105" y="370" width="130" height="32"/><text x="170" y="391">循环左移</text>
-<rect class="bx p" x="315" y="370" width="130" height="32"/><text x="380" y="391">循环左移</text>
-<rect class="bx bl" x="105" y="426" width="130" height="32"/><text x="170" y="447">Cᵢ (28 位)</text>
-<rect class="bx bl" x="315" y="426" width="130" height="32"/><text x="380" y="447">Dᵢ (28 位)</text>
-<text class="t" x="450" y="474">(56 位)</text>
-<rect class="bx g" x="520" y="466" width="130" height="32"/><text x="585" y="487">置换选择 2 (PC-2)</text>
-<text class="s" x="696" y="487">kᵢ (48 位)</text>
-<path d="M170 282V302M380 282V302M170 458V482M380 458V482" stroke="#444" stroke-width="1.5" fill="none"/>
-<g fill="none" stroke="#444" stroke-width="1.5" marker-end="url(#a6)">
-<path d="M275 46V70"/>
-<path d="M275 102V120H170V138"/><path d="M275 120H380V138"/>
-<path d="M170 170V194"/><path d="M380 170V194"/>
-<path d="M170 226V250"/><path d="M380 226V250"/>
-<path d="M170 302H520"/><path d="M650 302H690"/>
-<path d="M170 302V370" stroke-dasharray="4 4"/><path d="M380 302V370" stroke-dasharray="4 4"/>
-<path d="M170 402V426"/><path d="M380 402V426"/>
-<path d="M170 482H520"/><path d="M650 482H690"/>
-</g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 578" width="720" height="578" role="img" aria-label="DES 子密钥生成：PC-1、循环左移、PC-2">
+  <title>DES 子密钥 Ki 生成过程</title>
+  <desc>64 位密钥经 PC-1 置换选择去校验位得 56 位 C0/D0，每轮分别循环左移后合并经 PC-2 压缩输出 48 位轮子密钥 k1 到 ki。</desc>
+  <defs>
+    <marker id="sk-k" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#1f2937" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+  <g font-family="'PingFang SC','Noto Sans SC','Microsoft YaHei',system-ui,sans-serif">
+    <rect x="114" y="8" width="168" height="44" rx="8" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5"/>
+    <text x="198" y="36" text-anchor="middle" font-size="15" font-weight="600" fill="#92400e">64 位密钥</text>
+    <line x1="198" y1="52" x2="198" y2="68" stroke="#1f2937" stroke-width="1.5" marker-end="url(#sk-k)"/>
+    <rect x="92" y="74" width="212" height="44" rx="8" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
+    <text x="198" y="102" text-anchor="middle" font-size="15" font-weight="600" fill="#115e59">置换选择 1 (PC-1)</text>
+    <path d="M198 118 V136 H86 V148 M198 136 H310 V148" fill="none" stroke="#1f2937" stroke-width="1.5" marker-end="url(#sk-k)"/>
+    <rect x="8" y="154" width="156" height="44" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+    <text x="86" y="182" text-anchor="middle" font-size="15" font-weight="600" fill="#1e40af">C₀ (28 位)</text>
+    <rect x="232" y="154" width="156" height="44" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+    <text x="310" y="182" text-anchor="middle" font-size="15" font-weight="600" fill="#1e40af">D₀ (28 位)</text>
+    <line x1="86" y1="198" x2="86" y2="216" stroke="#1f2937" stroke-width="1.5" marker-end="url(#sk-k)"/>
+    <line x1="310" y1="198" x2="310" y2="216" stroke="#1f2937" stroke-width="1.5" marker-end="url(#sk-k)"/>
+    <rect x="8" y="222" width="156" height="44" rx="8" fill="#fef2f2" stroke="#ef4444" stroke-width="1.5"/>
+    <text x="86" y="250" text-anchor="middle" font-size="15" font-weight="600" fill="#991b1b">循环左移</text>
+    <rect x="232" y="222" width="156" height="44" rx="8" fill="#fef2f2" stroke="#ef4444" stroke-width="1.5"/>
+    <text x="310" y="250" text-anchor="middle" font-size="15" font-weight="600" fill="#991b1b">循环左移</text>
+    <line x1="86" y1="266" x2="86" y2="284" stroke="#1f2937" stroke-width="1.5" marker-end="url(#sk-k)"/>
+    <line x1="310" y1="266" x2="310" y2="284" stroke="#1f2937" stroke-width="1.5" marker-end="url(#sk-k)"/>
+    <rect x="8" y="290" width="156" height="44" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+    <text x="86" y="318" text-anchor="middle" font-size="15" font-weight="600" fill="#1e40af">C₁ (28 位)</text>
+    <rect x="232" y="290" width="156" height="44" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+    <text x="310" y="318" text-anchor="middle" font-size="15" font-weight="600" fill="#1e40af">D₁ (28 位)</text>
+    <path d="M86 334 V364 H456 M310 334 V364" fill="none" stroke="#1f2937" stroke-width="1.5" marker-end="url(#sk-k)"/>
+    <text x="424" y="346" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">56 位</text>
+    <rect x="462" y="342" width="160" height="44" rx="8" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
+    <text x="542" y="370" text-anchor="middle" font-size="15" font-weight="600" fill="#115e59">PC-2 压缩</text>
+    <line x1="622" y1="364" x2="640" y2="364" stroke="#1f2937" stroke-width="1.5" marker-end="url(#sk-k)"/>
+    <text x="648" y="370" text-anchor="start" font-size="15" font-weight="600" fill="#1f2937" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">k₁ (48位)</text>
+    <line x1="86" y1="364" x2="86" y2="408" stroke="#1f2937" stroke-width="1.5" stroke-dasharray="4 4" marker-end="url(#sk-k)"/>
+    <line x1="310" y1="364" x2="310" y2="408" stroke="#1f2937" stroke-width="1.5" stroke-dasharray="4 4" marker-end="url(#sk-k)"/>
+    <rect x="8" y="414" width="156" height="44" rx="8" fill="#fef2f2" stroke="#ef4444" stroke-width="1.5"/>
+    <text x="86" y="442" text-anchor="middle" font-size="15" font-weight="600" fill="#991b1b">循环左移</text>
+    <rect x="232" y="414" width="156" height="44" rx="8" fill="#fef2f2" stroke="#ef4444" stroke-width="1.5"/>
+    <text x="310" y="442" text-anchor="middle" font-size="15" font-weight="600" fill="#991b1b">循环左移</text>
+    <line x1="86" y1="458" x2="86" y2="476" stroke="#1f2937" stroke-width="1.5" marker-end="url(#sk-k)"/>
+    <line x1="310" y1="458" x2="310" y2="476" stroke="#1f2937" stroke-width="1.5" marker-end="url(#sk-k)"/>
+    <rect x="8" y="482" width="156" height="44" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+    <text x="86" y="510" text-anchor="middle" font-size="15" font-weight="600" fill="#1e40af">Cᵢ (28 位)</text>
+    <rect x="232" y="482" width="156" height="44" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+    <text x="310" y="510" text-anchor="middle" font-size="15" font-weight="600" fill="#1e40af">Dᵢ (28 位)</text>
+    <path d="M86 526 V548 H456 M310 526 V548" fill="none" stroke="#1f2937" stroke-width="1.5" marker-end="url(#sk-k)"/>
+    <text x="424" y="532" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">56 位</text>
+    <rect x="462" y="526" width="160" height="44" rx="8" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
+    <text x="542" y="554" text-anchor="middle" font-size="15" font-weight="600" fill="#115e59">PC-2 压缩</text>
+    <line x1="622" y1="548" x2="640" y2="548" stroke="#1f2937" stroke-width="1.5" marker-end="url(#sk-k)"/>
+    <text x="648" y="554" text-anchor="start" font-size="15" font-weight="600" fill="#1f2937" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">kᵢ (48位)</text>
+  </g>
 </svg>
 
 **置换选择 1（PC-1）**：第 57 位比特被放到第 1 位，以此类推；每 8 位数据的最后一位（第 8、16、…、64 位）被舍弃。
@@ -456,22 +539,29 @@ text{font-family:'PingFang SC','Microsoft YaHei','Noto Sans CJK SC',sans-serif;f
 
 使用 3 个不同的密钥对数据块进行三次加密，三个密钥相互独立。
 
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 710 96" width="710" role="img" aria-label="三重 DES：明文依次经三个独立密钥加密得到密文">
-<style>
-text{font-family:'PingFang SC','Microsoft YaHei','Noto Sans CJK SC',sans-serif;fill:#222;text-anchor:middle;font-size:14px}
-.t{font-size:12px}
-.bx{fill:#fff;stroke:#444;stroke-width:1.5}
-.y{fill:#fff3bf}.g{fill:#d3f9d8}.bl{fill:#d0ebff}
-</style>
-<defs><marker id="a7" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#444"/></marker></defs>
-<rect width="710" height="96" fill="#fff"/>
-<rect class="bx y" x="20" y="16" width="90" height="40"/><text x="65" y="41">明文 m</text>
-<rect class="bx g" x="150" y="16" width="110" height="40"/><text x="205" y="41">加密 (K₁)</text>
-<rect class="bx g" x="300" y="16" width="110" height="40"/><text x="355" y="41">加密 (K₂)</text>
-<rect class="bx g" x="450" y="16" width="110" height="40"/><text x="505" y="41">加密 (K₃)</text>
-<rect class="bx bl" x="600" y="16" width="90" height="40"/><text x="645" y="41">密文 C</text>
-<text class="t" x="355" y="84">三个密钥 K₁、K₂、K₃ 相互独立</text>
-<g fill="none" stroke="#444" stroke-width="1.5" marker-end="url(#a7)">
-<path d="M110 36H150"/><path d="M260 36H300"/><path d="M410 36H450"/><path d="M560 36H600"/>
-</g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 104" width="720" height="104" role="img" aria-label="三重 DES：明文依次经三个独立密钥加密得到密文">
+  <title>三重 DES 加密结构</title>
+  <desc>明文 m 依次经过三个相互独立密钥 K1、K2、K3 的加密运算输出密文 C。</desc>
+  <defs>
+    <marker id="tdes-k" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#1f2937" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+  <g font-family="'PingFang SC','Noto Sans SC','Microsoft YaHei',system-ui,sans-serif">
+    <rect x="8" y="8" width="112" height="52" rx="8" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5"/>
+    <text x="64" y="40" text-anchor="middle" font-size="15" font-weight="600" fill="#92400e">明文 m</text>
+    <line x1="120" y1="34" x2="138" y2="34" stroke="#1f2937" stroke-width="1.5" marker-end="url(#tdes-k)"/>
+    <rect x="144" y="8" width="128" height="52" rx="8" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
+    <text x="208" y="40" text-anchor="middle" font-size="15" font-weight="600" fill="#115e59">加密 (K₁)</text>
+    <line x1="272" y1="34" x2="290" y2="34" stroke="#1f2937" stroke-width="1.5" marker-end="url(#tdes-k)"/>
+    <rect x="296" y="8" width="128" height="52" rx="8" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
+    <text x="360" y="40" text-anchor="middle" font-size="15" font-weight="600" fill="#115e59">加密 (K₂)</text>
+    <line x1="424" y1="34" x2="442" y2="34" stroke="#1f2937" stroke-width="1.5" marker-end="url(#tdes-k)"/>
+    <rect x="448" y="8" width="128" height="52" rx="8" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
+    <text x="512" y="40" text-anchor="middle" font-size="15" font-weight="600" fill="#115e59">加密 (K₃)</text>
+    <line x1="576" y1="34" x2="594" y2="34" stroke="#1f2937" stroke-width="1.5" marker-end="url(#tdes-k)"/>
+    <rect x="600" y="8" width="112" height="52" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+    <text x="656" y="40" text-anchor="middle" font-size="15" font-weight="600" fill="#1e40af">密文 C</text>
+    <text x="360" y="92" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">三个密钥 K₁、K₂、K₃ 相互独立</text>
+  </g>
 </svg>

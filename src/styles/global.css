@@ -2248,8 +2248,9 @@ body.study-overview-page main { flex: 1 0 auto; min-height: 0; }
 }
 .article-svg-card:not(.article-svg-link > .article-svg-card) {
   position: relative;
-  left: 50%;
+  left: calc(min(100%, var(--article-text-max, 44rem)) / 2);
   transform: translateX(-50%);
+  margin: 1.6em 0;
 }
 .article-svg-link .article-svg-card { margin: 0 0 0.5em; }
 .svg-hint { display: block; text-align: right; color: var(--tm); font-size: 0.76rem; }

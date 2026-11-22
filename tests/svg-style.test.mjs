@@ -185,7 +185,7 @@ test('SVG v1 palette meets >= 4.5:1 contrast in both light and dark filter modes
 
 test('all 837 SVGs have no canvas background rect and maintain 24±2px viewBox margins', (t) => {
   const allSvgs = findSvgs(ALL_837_ROOT);
-  assert.equal(allSvgs.length, 81, `expected 81 SVGs under ${ALL_837_ROOT}, got ${allSvgs.length}`);
+  assert.equal(allSvgs.length, 82, `expected 82 SVGs under ${ALL_837_ROOT}, got ${allSvgs.length}`);
 
   for (const relPath of allSvgs) {
     const svg = readFileSync(new URL(`../${relPath}`, import.meta.url), 'utf8');
