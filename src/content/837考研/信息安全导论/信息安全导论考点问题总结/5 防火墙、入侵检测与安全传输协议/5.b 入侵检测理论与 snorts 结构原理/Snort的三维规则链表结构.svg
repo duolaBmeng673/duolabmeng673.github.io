@@ -1,134 +1,125 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -15 760 468" width="760" height="468" role="img" aria-label="Snort 的三维规则链表结构">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 540" width="720" height="540" role="img">
+  <title>Snort 的三维规则链表结构</title>
+  <desc>展示 Snort 规则库的第一维 RuleListNode（Alert/Log/Pass/Activate/Dynamic）、第二维 RuleListHead（Iplist/Tcplist/Udplist/Icmplist）以及第三维 RuleTreeNode 与 OptTreeNode 链表。</desc>
   <defs>
-    <marker id="m-arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
-      <path d="M2 1L8 5L2 9" fill="none" stroke="#898781" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <marker id="snort-3d-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#1f2937" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
     </marker>
   </defs>
-  <g font-family="system-ui,-apple-system,'PingFang SC','Microsoft YaHei',sans-serif">
-    <!-- Top label -->
-    <text x="90" y="22" text-anchor="middle" font-size="13" font-weight="600" fill="#3E3D3A">RuleLists</text>
-    <line x1="90" y1="27" x2="90" y2="52" stroke="#898781" stroke-width="1.5" marker-end="url(#m-arr)"/>
+  <g font-family="'PingFang SC','Noto Sans SC','Microsoft YaHei',system-ui,sans-serif">
+    <text x="76" y="22" text-anchor="middle" font-size="15" font-weight="600" fill="#1f2937" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">RuleLists</text>
+    <line x1="76" y1="34" x2="76" y2="62" stroke="#1f2937" stroke-width="1.5" marker-end="url(#snort-3d-arrow)"/>
 
     <!-- Dim 1: RuleListNode -->
-    <rect x="24" y="42" width="712" height="92" rx="8" fill="#EEEDFE" fill-opacity="0.45" stroke="#534AB7" stroke-width="0.7"/>
-    <text x="380" y="124" text-anchor="middle" font-size="13" font-weight="600" fill="#3C3489">RuleListNode（第一维：按规则动作分类）</text>
+    <rect x="8" y="50" width="704" height="122" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="1" data-role="group"/>
+    <text x="360" y="160" text-anchor="middle" font-size="15" font-weight="600" fill="#1e40af">RuleListNode（第一维：按规则动作分类）</text>
 
-    <g font-size="12" fill="#3C3489">
-      <rect x="42" y="56" width="96" height="46" rx="5" fill="#FFFFFF" stroke="#534AB7" stroke-width="0.8"/>
-      <line x1="42" y1="78" x2="138" y2="78" stroke="#534AB7" stroke-width="0.6"/>
-      <text x="90" y="71" text-anchor="middle">Next</text>
-      <text x="90" y="95" text-anchor="middle" font-weight="600">Alert</text>
-
-      <rect x="184" y="56" width="96" height="46" rx="5" fill="#FFFFFF" stroke="#534AB7" stroke-width="0.8"/>
-      <line x1="184" y1="78" x2="280" y2="78" stroke="#534AB7" stroke-width="0.6"/>
-      <text x="232" y="71" text-anchor="middle">Next</text>
-      <text x="232" y="95" text-anchor="middle" font-weight="600">Log</text>
-
-      <rect x="326" y="56" width="96" height="46" rx="5" fill="#FFFFFF" stroke="#534AB7" stroke-width="0.8"/>
-      <line x1="326" y1="78" x2="422" y2="78" stroke="#534AB7" stroke-width="0.6"/>
-      <text x="374" y="71" text-anchor="middle">Next</text>
-      <text x="374" y="95" text-anchor="middle" font-weight="600">Pass</text>
-
-      <rect x="468" y="56" width="96" height="46" rx="5" fill="#FFFFFF" stroke="#534AB7" stroke-width="0.8"/>
-      <line x1="468" y1="78" x2="564" y2="78" stroke="#534AB7" stroke-width="0.6"/>
-      <text x="516" y="71" text-anchor="middle">Next</text>
-      <text x="516" y="95" text-anchor="middle" font-weight="600">Activate</text>
-
-      <rect x="610" y="56" width="96" height="46" rx="5" fill="#FFFFFF" stroke="#534AB7" stroke-width="0.8"/>
-      <line x1="610" y1="78" x2="706" y2="78" stroke="#534AB7" stroke-width="0.6"/>
-      <text x="658" y="71" text-anchor="middle">Next</text>
-      <text x="658" y="95" text-anchor="middle" font-weight="600">Dynamic</text>
+    <g fill="#f8fafc" stroke="#3b82f6" stroke-width="1.5">
+      <rect x="20" y="64" width="112" height="76" rx="8"/>
+      <rect x="162" y="64" width="112" height="76" rx="8"/>
+      <rect x="304" y="64" width="112" height="76" rx="8"/>
+      <rect x="446" y="64" width="112" height="76" rx="8"/>
+      <rect x="588" y="64" width="112" height="76" rx="8"/>
+    </g>
+    <g stroke="#3b82f6" stroke-width="1">
+      <line x1="20" y1="102" x2="132" y2="102"/>
+      <line x1="162" y1="102" x2="274" y2="102"/>
+      <line x1="304" y1="102" x2="416" y2="102"/>
+      <line x1="446" y1="102" x2="558" y2="102"/>
+      <line x1="588" y1="102" x2="700" y2="102"/>
+    </g>
+    <g text-anchor="middle" font-size="15" fill="#1e40af">
+      <text x="76" y="89">Next</text><text x="76" y="127" font-weight="600">Alert</text>
+      <text x="218" y="89">Next</text><text x="218" y="127" font-weight="600">Log</text>
+      <text x="360" y="89">Next</text><text x="360" y="127" font-weight="600">Pass</text>
+      <text x="502" y="89">Next</text><text x="502" y="127" font-weight="600">Activate</text>
+      <text x="644" y="89">Next</text><text x="644" y="127" font-weight="600">Dynamic</text>
     </g>
 
-    <line x1="138" y1="67" x2="180" y2="67" stroke="#898781" stroke-width="1.4" marker-end="url(#m-arr)"/>
-    <line x1="280" y1="67" x2="322" y2="67" stroke="#898781" stroke-width="1.4" marker-end="url(#m-arr)"/>
-    <line x1="422" y1="67" x2="464" y2="67" stroke="#898781" stroke-width="1.4" marker-end="url(#m-arr)"/>
-    <line x1="564" y1="67" x2="606" y2="67" stroke="#898781" stroke-width="1.4" marker-end="url(#m-arr)"/>
+    <g fill="none" stroke="#1f2937" stroke-width="1.5" marker-end="url(#snort-3d-arrow)">
+      <line x1="132" y1="84" x2="158" y2="84"/>
+      <line x1="274" y1="84" x2="300" y2="84"/>
+      <line x1="416" y1="84" x2="442" y2="84"/>
+      <line x1="558" y1="84" x2="584" y2="84"/>
+    </g>
 
     <!-- Dim 2: RuleListHead -->
-    <rect x="24" y="150" width="152" height="154" rx="8" fill="#E1F5EE" fill-opacity="0.45" stroke="#0F6E56" stroke-width="0.7"/>
-    <text x="100" y="293" text-anchor="middle" font-size="12" font-weight="600" fill="#085041">RuleListHead（第二维）</text>
-    <rect x="42" y="166" width="116" height="104" rx="5" fill="#FFFFFF" stroke="#0F6E56" stroke-width="0.8"/>
-    <line x1="42" y1="192" x2="158" y2="192" stroke="#0F6E56" stroke-width="0.6"/>
-    <line x1="42" y1="218" x2="158" y2="218" stroke="#0F6E56" stroke-width="0.6"/>
-    <line x1="42" y1="244" x2="158" y2="244" stroke="#0F6E56" stroke-width="0.6"/>
-    <g font-size="12" font-weight="500" fill="#085041" text-anchor="middle">
-      <text x="100" y="183">Iplist</text>
-      <text x="100" y="209">Tcplist</text>
-      <text x="100" y="235">Udplist</text>
-      <text x="100" y="261">Icmplist</text>
+    <rect x="8" y="186" width="164" height="224" rx="10" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1" data-role="group"/>
+    <text x="90" y="376" text-anchor="middle" font-size="15" font-weight="600" fill="#115e59">RuleListHead</text>
+    <text x="90" y="398" text-anchor="middle" font-size="15" font-weight="400" fill="#115e59">（第二维）</text>
+
+    <rect x="24" y="200" width="132" height="152" rx="8" fill="#f8fafc" stroke="#14b8a6" stroke-width="1.5"/>
+    <g stroke="#14b8a6" stroke-width="1">
+      <line x1="24" y1="238" x2="156" y2="238"/>
+      <line x1="24" y1="276" x2="156" y2="276"/>
+      <line x1="24" y1="314" x2="156" y2="314"/>
+    </g>
+    <g text-anchor="middle" font-size="15" font-weight="600" fill="#115e59">
+      <text x="90" y="225">Iplist</text>
+      <text x="90" y="263">Tcplist</text>
+      <text x="90" y="301">Udplist</text>
+      <text x="90" y="339">Icmplist</text>
     </g>
 
-    <line x1="90" y1="102" x2="90" y2="162" stroke="#898781" stroke-width="1.5" marker-end="url(#m-arr)"/>
-    <line x1="158" y1="205" x2="190" y2="205" stroke="#898781" stroke-width="1.3" marker-end="url(#m-arr)"/>
-    <line x1="158" y1="231" x2="190" y2="231" stroke="#898781" stroke-width="1.3" marker-end="url(#m-arr)"/>
-    <line x1="158" y1="257" x2="190" y2="257" stroke="#898781" stroke-width="1.3" marker-end="url(#m-arr)"/>
+    <g fill="none" stroke="#1f2937" stroke-width="1.5" marker-end="url(#snort-3d-arrow)">
+      <line x1="76" y1="140" x2="76" y2="196"/>
+      <line x1="156" y1="219" x2="206" y2="219"/>
+      <line x1="156" y1="257" x2="184" y2="257"/>
+      <line x1="156" y1="295" x2="184" y2="295"/>
+      <line x1="156" y1="333" x2="184" y2="333"/>
+    </g>
 
     <!-- Dim 3 top: RuleTreeNode -->
-    <rect x="196" y="150" width="540" height="142" rx="8" fill="#FAEEDA" fill-opacity="0.45" stroke="#854F0B" stroke-width="0.7"/>
-    <text x="466" y="280" text-anchor="middle" font-size="13" font-weight="600" fill="#633806">RuleTreeNode（第三维：规则头链表）</text>
+    <rect x="188" y="186" width="524" height="202" rx="10" fill="#fffbeb" stroke="#f59e0b" stroke-width="1" data-role="group"/>
+    <text x="450" y="376" text-anchor="middle" font-size="15" font-weight="600" fill="#92400e">RuleTreeNode（第三维：规则头链表）</text>
 
-    <g font-size="12" fill="#633806" text-anchor="middle">
-      <rect x="218" y="164" width="114" height="92" rx="5" fill="#FFFFFF" stroke="#854F0B" stroke-width="0.8"/>
-      <line x1="218" y1="187" x2="332" y2="187" stroke="#854F0B" stroke-width="0.6"/>
-      <line x1="218" y1="210" x2="332" y2="210" stroke="#854F0B" stroke-width="0.6"/>
-      <line x1="218" y1="233" x2="332" y2="233" stroke="#854F0B" stroke-width="0.6"/>
-      <text x="275" y="180">right</text>
-      <text x="275" y="203">……</text>
-      <text x="275" y="226" font-weight="600">Rule_func</text>
-      <text x="275" y="249">down</text>
-
-      <rect x="382" y="164" width="114" height="92" rx="5" fill="#FFFFFF" stroke="#854F0B" stroke-width="0.8"/>
-      <line x1="382" y1="187" x2="496" y2="187" stroke="#854F0B" stroke-width="0.6"/>
-      <line x1="382" y1="210" x2="496" y2="210" stroke="#854F0B" stroke-width="0.6"/>
-      <line x1="382" y1="233" x2="496" y2="233" stroke="#854F0B" stroke-width="0.6"/>
-      <text x="439" y="180">right</text>
-      <text x="439" y="203">……</text>
-      <text x="439" y="226" font-weight="600">Rule_func</text>
-      <text x="439" y="249">down</text>
-
-      <rect x="546" y="164" width="114" height="92" rx="5" fill="#FFFFFF" stroke="#854F0B" stroke-width="0.8"/>
-      <line x1="546" y1="187" x2="660" y2="187" stroke="#854F0B" stroke-width="0.6"/>
-      <line x1="546" y1="210" x2="660" y2="210" stroke="#854F0B" stroke-width="0.6"/>
-      <line x1="546" y1="233" x2="660" y2="233" stroke="#854F0B" stroke-width="0.6"/>
-      <text x="603" y="180">right</text>
-      <text x="603" y="203">……</text>
-      <text x="603" y="226" font-weight="600">Rule_func</text>
-      <text x="603" y="249">down</text>
+    <g fill="#f8fafc" stroke="#f59e0b" stroke-width="1.5">
+      <rect x="210" y="200" width="120" height="152" rx="8"/>
+      <rect x="372" y="200" width="120" height="152" rx="8"/>
+      <rect x="534" y="200" width="120" height="152" rx="8"/>
+    </g>
+    <g stroke="#f59e0b" stroke-width="1">
+      <line x1="210" y1="238" x2="330" y2="238"/><line x1="210" y1="276" x2="330" y2="276"/><line x1="210" y1="314" x2="330" y2="314"/>
+      <line x1="372" y1="238" x2="492" y2="238"/><line x1="372" y1="276" x2="492" y2="276"/><line x1="372" y1="314" x2="492" y2="314"/>
+      <line x1="534" y1="238" x2="654" y2="238"/><line x1="534" y1="276" x2="654" y2="276"/><line x1="534" y1="314" x2="654" y2="314"/>
+    </g>
+    <g text-anchor="middle" font-size="15" fill="#92400e">
+      <text x="270" y="225">right</text><text x="270" y="263">……</text><text x="270" y="301" font-weight="600">Rule_func</text><text x="270" y="339">down</text>
+      <text x="432" y="225">right</text><text x="432" y="263">……</text><text x="432" y="301" font-weight="600">Rule_func</text><text x="432" y="339">down</text>
+      <text x="594" y="225">right</text><text x="594" y="263">……</text><text x="594" y="301" font-weight="600">Rule_func</text><text x="594" y="339">down</text>
     </g>
 
-    <line x1="158" y1="178" x2="214" y2="178" stroke="#898781" stroke-width="1.5" marker-end="url(#m-arr)"/>
-    <line x1="332" y1="176" x2="378" y2="176" stroke="#898781" stroke-width="1.4" marker-end="url(#m-arr)"/>
-    <line x1="496" y1="176" x2="542" y2="176" stroke="#898781" stroke-width="1.4" marker-end="url(#m-arr)"/>
-    <line x1="660" y1="176" x2="700" y2="176" stroke="#898781" stroke-width="1.4" marker-end="url(#m-arr)"/>
+    <g fill="none" stroke="#1f2937" stroke-width="1.5" marker-end="url(#snort-3d-arrow)">
+      <line x1="330" y1="219" x2="368" y2="219"/>
+      <line x1="492" y1="219" x2="530" y2="219"/>
+      <line x1="654" y1="219" x2="690" y2="219"/>
+    </g>
 
     <!-- Dim 3 bottom: OptTreeNode -->
-    <rect x="196" y="308" width="540" height="92" rx="8" fill="#E8F1FD" fill-opacity="0.55" stroke="#2B6CB0" stroke-width="0.7"/>
-    <text x="466" y="390" text-anchor="middle" font-size="13" font-weight="600" fill="#1E4E8C">OptTreeNode（第三维：规则选项链表）</text>
+    <rect x="188" y="410" width="524" height="122" rx="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="1" data-role="group"/>
+    <text x="450" y="520" text-anchor="middle" font-size="15" font-weight="600" fill="#1e40af">OptTreeNode（第三维：规则选项链表）</text>
 
-    <g font-size="12" fill="#1E4E8C" text-anchor="middle">
-      <rect x="218" y="322" width="114" height="46" rx="5" fill="#FFFFFF" stroke="#2B6CB0" stroke-width="0.8"/>
-      <line x1="218" y1="345" x2="332" y2="345" stroke="#2B6CB0" stroke-width="0.6"/>
-      <text x="275" y="338">……</text>
-      <text x="275" y="361" font-weight="600">Next</text>
-
-      <rect x="382" y="322" width="114" height="46" rx="5" fill="#FFFFFF" stroke="#2B6CB0" stroke-width="0.8"/>
-      <line x1="382" y1="345" x2="496" y2="345" stroke="#2B6CB0" stroke-width="0.6"/>
-      <text x="439" y="338">……</text>
-      <text x="439" y="361" font-weight="600">Next</text>
-
-      <rect x="546" y="322" width="114" height="46" rx="5" fill="#FFFFFF" stroke="#2B6CB0" stroke-width="0.8"/>
-      <line x1="546" y1="345" x2="660" y2="345" stroke="#2B6CB0" stroke-width="0.6"/>
-      <text x="603" y="338">……</text>
-      <text x="603" y="361" font-weight="600">Next</text>
+    <g fill="#f8fafc" stroke="#3b82f6" stroke-width="1.5">
+      <rect x="210" y="424" width="120" height="76" rx="8"/>
+      <rect x="372" y="424" width="120" height="76" rx="8"/>
+      <rect x="534" y="424" width="120" height="76" rx="8"/>
+    </g>
+    <g stroke="#3b82f6" stroke-width="1">
+      <line x1="210" y1="462" x2="330" y2="462"/>
+      <line x1="372" y1="462" x2="492" y2="462"/>
+      <line x1="534" y1="462" x2="654" y2="462"/>
+    </g>
+    <g text-anchor="middle" font-size="15" fill="#1e40af">
+      <text x="270" y="449">……</text><text x="270" y="487" font-weight="600">Next</text>
+      <text x="432" y="449">……</text><text x="432" y="487" font-weight="600">Next</text>
+      <text x="594" y="449">……</text><text x="594" y="487" font-weight="600">Next</text>
     </g>
 
-    <line x1="275" y1="256" x2="275" y2="318" stroke="#898781" stroke-width="1.5" marker-end="url(#m-arr)"/>
-    <path d="M332 356 H356 V334 H378" fill="none" stroke="#898781" stroke-width="1.4" marker-end="url(#m-arr)"/>
-    <path d="M496 356 H520 V334 H542" fill="none" stroke="#898781" stroke-width="1.4" marker-end="url(#m-arr)"/>
-    <path d="M660 356 H684 V334 H706" fill="none" stroke="#898781" stroke-width="1.4" marker-end="url(#m-arr)"/>
-
-    <!-- Title (no figure number) -->
-    <text x="380" y="426" text-anchor="middle" font-size="14" font-weight="600" fill="#0B0B0B">Snort 的三维规则链表结构</text>
+    <g fill="none" stroke="#1f2937" stroke-width="1.5" marker-end="url(#snort-3d-arrow)">
+      <line x1="270" y1="352" x2="270" y2="420"/>
+      <path d="M330 480 H350 V444 H368"/>
+      <path d="M492 480 H512 V444 H530"/>
+      <path d="M654 480 H674 V444 H692"/>
+    </g>
   </g>
 </svg>

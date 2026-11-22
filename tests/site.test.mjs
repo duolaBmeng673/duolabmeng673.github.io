@@ -270,21 +270,21 @@ test('pilot converted SVG assets are valid isolated diagrams within 10 KB', () =
       route: '/study-notes/837/intrusion-detection-snort/',
       encodedPrefix: 'CIDF%E6%A8%A1%E5%9E%8B.',
       expectedAlt: 'CIDF 模型示意图',
-      ratio: [816, 561],
+      ratio: [720, 381],
     },
     {
       srcRel: 'src/content/837考研/信息安全导论/信息安全导论考点问题总结/5 防火墙、入侵检测与安全传输协议/5.c.1  IPSec/IKESA野蛮模式.svg',
       route: '/study-notes/837/ipsec/',
       encodedPrefix: 'IKESA%E9%87%8E%E8%9B%AE%E6%A8%A1%E5%BC%8F.',
       expectedAlt: 'IKE SA 野蛮模式',
-      ratio: [743, 423],
+      ratio: [720, 292],
     },
     {
       srcRel: 'src/content/837考研/信息安全导论/信息安全导论考点问题总结/5 防火墙、入侵检测与安全传输协议/5.c.2  SSL/SSL记录协议数据处理.svg',
       route: '/study-notes/837/ssl/',
       encodedPrefix: 'SSL%E8%AE%B0%E5%BD%95%E5%8D%8F%E8%AE%AE%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86.',
       expectedAlt: 'SSL 记录协议数据处理流程',
-      ratio: [949, 659],
+      ratio: [720, 476],
     },
   ];
 

@@ -1,86 +1,74 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="37 0 949 659" width="949" height="659" role="img" aria-labelledby="ssl-rec-title ssl-rec-desc">
-  <title id="ssl-rec-title">SSL 记录协议的操作</title>
-  <desc id="ssl-rec-desc">SSL 记录协议数据处理流水线：1. 应用数据分段为多个数据块；2. 对分段数据进行压缩；3. 添加 MAC；4. 对压缩数据与 MAC 进行加密；5. 在前端添加记录头。</desc>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 476" width="720" height="476" role="img">
+  <title>SSL 记录协议的操作流水线</title>
+  <desc>SSL 记录协议数据处理流水线：1. 应用数据分段为多个数据块；2. 对分段数据进行压缩；3. 添加 MAC；4. 对压缩数据与 MAC 进行加密；5. 在前端添加记录头。</desc>
   <defs>
-    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-      <path d="M1 1.5 L9 5 L1 8.5 z" fill="#334155" />
+    <marker id="ssl-rec-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#1f2937" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
     </marker>
-    <pattern id="hatch-down" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(38)">
-      <rect width="10" height="10" fill="#f8fafc" />
-      <line x1="0" y1="0" x2="0" y2="10" stroke="#475569" stroke-width="2" />
-    </pattern>
-    <pattern id="hatch-up" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(-42)">
-      <rect width="10" height="10" fill="#fefce8" />
-      <line x1="0" y1="0" x2="0" y2="10" stroke="#475569" stroke-width="2" />
-    </pattern>
-    <pattern id="cross-enc" width="8" height="8" patternUnits="userSpaceOnUse">
-      <rect width="8" height="8" fill="#ede9fe" />
-      <rect x="0" y="0" width="4" height="4" fill="#334155" fill-opacity="0.72" />
-      <rect x="4" y="4" width="4" height="4" fill="#334155" fill-opacity="0.72" />
-    </pattern>
-    <pattern id="cross-hdr" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
-      <rect width="10" height="10" fill="#eff6ff" />
-      <line x1="0" y1="0" x2="0" y2="10" stroke="#60a5fa" stroke-width="1.6" />
-      <line x1="0" y1="0" x2="10" y2="0" stroke="#60a5fa" stroke-width="1.6" />
-    </pattern>
-    <style>
-      .t { font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif; fill: #1e293b; text-anchor: middle; dominant-baseline: central; }
-      .step { font-size: 23px; font-weight: 500; fill: #334155; }
-      .cap { font-size: 24px; font-weight: 600; fill: #1e293b; }
-      .box { stroke: #334155; stroke-width: 1.8; }
-      .dash { stroke: #334155; stroke-width: 1.6; stroke-dasharray: 8 6; }
-      .ln { fill: none; stroke: #334155; stroke-width: 2; }
-    </style>
   </defs>
+  <g font-family="'PingFang SC','Noto Sans SC','Microsoft YaHei',system-ui,sans-serif">
+    <!-- Left step column (x=8..116) -->
+    <g text-anchor="start" font-size="16" font-weight="600" fill="#1f2937">
+      <text x="8" y="36" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">应用数据</text>
+      <text x="8" y="114" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">分段</text>
+      <text x="8" y="208" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">压缩</text>
+      <text x="8" y="290" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">添加 MAC</text>
+      <text x="8" y="372" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">加密</text>
+      <text x="8" y="454" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">添加记录头</text>
+    </g>
 
-  <!-- Row 1: 应用数据 -->
-  <text class="t step" x="118" y="46">应用数据</text>
-  <rect class="box" x="304" y="24" width="636" height="44" rx="2" fill="#e2e8f0" />
+    <!-- Row 1: 应用数据 (x=140..712, w=572) -->
+    <rect x="140" y="8" width="572" height="44" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
+    <text x="426" y="36" text-anchor="middle" font-size="15" font-weight="600" fill="#1f2937">应用层原始数据流</text>
 
-  <!-- Split dashed lines -->
-  <line class="dash" x1="304" y1="68" x2="282" y2="122" />
-  <line class="dash" x1="516" y1="68" x2="486" y2="122" />
-  <line class="dash" x1="516" y1="68" x2="520" y2="122" />
-  <line class="dash" x1="728" y1="68" x2="724" y2="122" />
-  <line class="dash" x1="728" y1="68" x2="758" y2="122" />
-  <line class="dash" x1="940" y1="68" x2="962" y2="122" />
+    <!-- Split dashed lines -->
+    <g stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="6 4">
+      <line x1="140" y1="52" x2="124" y2="86"/>
+      <line x1="330" y1="52" x2="296" y2="86"/>
+      <line x1="330" y1="52" x2="340" y2="86"/>
+      <line x1="522" y1="52" x2="512" y2="86"/>
+      <line x1="522" y1="52" x2="540" y2="86"/>
+      <line x1="712" y1="52" x2="712" y2="86"/>
+    </g>
 
-  <!-- Row 2: 分段 -->
-  <text class="t step" x="118" y="144">分段</text>
-  <rect class="box" x="282" y="122" width="204" height="44" rx="2" fill="#e2e8f0" />
-  <rect class="box" x="520" y="122" width="204" height="44" rx="2" fill="#e2e8f0" />
-  <rect class="box" x="758" y="122" width="204" height="44" rx="2" fill="#e2e8f0" />
+    <!-- Row 2: 分段 (3 blocks: 124..296, 340..512, 540..712, w=172 each) -->
+    <g fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5">
+      <rect x="124" y="86" width="172" height="44" rx="8"/>
+      <rect x="340" y="86" width="172" height="44" rx="8"/>
+      <rect x="540" y="86" width="172" height="44" rx="8"/>
+    </g>
+    <g text-anchor="middle" font-size="15" font-weight="600" fill="#1f2937">
+      <text x="210" y="114">分片 1</text>
+      <text x="426" y="114">分片 2</text>
+      <text x="626" y="114">分片 3</text>
+    </g>
 
-  <!-- Arrow 1 -->
-  <line class="ln" x1="384" y1="166" x2="384" y2="218" marker-end="url(#arr)" />
+    <line x1="210" y1="130" x2="210" y2="174" stroke="#1f2937" stroke-width="1.5" marker-end="url(#ssl-rec-arrow)"/>
 
-  <!-- Row 3: 压缩 -->
-  <text class="t step" x="118" y="244">压缩</text>
-  <rect class="box" x="282" y="222" width="154" height="44" rx="2" fill="url(#hatch-down)" />
+    <!-- Row 3: 压缩 -->
+    <rect x="124" y="178" width="172" height="44" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+    <text x="210" y="206" text-anchor="middle" font-size="15" font-weight="600" fill="#1e40af">压缩数据</text>
 
-  <!-- Arrow 2 -->
-  <line class="ln" x1="384" y1="266" x2="384" y2="318" marker-end="url(#arr)" />
+    <line x1="210" y1="222" x2="210" y2="256" stroke="#1f2937" stroke-width="1.5" marker-end="url(#ssl-rec-arrow)"/>
 
-  <!-- Row 4: 添加MAC -->
-  <text class="t step" x="118" y="344">添加MAC</text>
-  <rect class="box" x="282" y="322" width="154" height="44" rx="2" fill="url(#hatch-down)" />
-  <rect class="box" x="436" y="322" width="50" height="44" rx="2" fill="url(#hatch-up)" />
+    <!-- Row 4: 添加 MAC -->
+    <rect x="124" y="260" width="172" height="44" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+    <text x="210" y="288" text-anchor="middle" font-size="15" font-weight="600" fill="#1e40af">压缩数据</text>
+    <rect x="300" y="260" width="76" height="44" rx="8" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5"/>
+    <text x="338" y="288" text-anchor="middle" font-size="15" font-weight="600" fill="#92400e">MAC</text>
 
-  <!-- Arrow 3 -->
-  <line class="ln" x1="384" y1="366" x2="384" y2="418" marker-end="url(#arr)" />
+    <line x1="250" y1="304" x2="250" y2="338" stroke="#1f2937" stroke-width="1.5" marker-end="url(#ssl-rec-arrow)"/>
 
-  <!-- Row 5: 加密 -->
-  <text class="t step" x="118" y="444">加密</text>
-  <rect class="box" x="282" y="422" width="204" height="44" rx="2" fill="url(#cross-enc)" />
+    <!-- Row 5: 加密 -->
+    <rect x="124" y="342" width="252" height="44" rx="8" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
+    <text x="250" y="370" text-anchor="middle" font-size="15" font-weight="600" fill="#115e59">加密（压缩数据 + MAC）</text>
 
-  <!-- Arrow 4 -->
-  <line class="ln" x1="384" y1="466" x2="384" y2="518" marker-end="url(#arr)" />
+    <line x1="250" y1="386" x2="250" y2="420" stroke="#1f2937" stroke-width="1.5" marker-end="url(#ssl-rec-arrow)"/>
 
-  <!-- Row 6: 添加记录头 -->
-  <text class="t step" x="118" y="544">添加记录头</text>
-  <rect class="box" x="234" y="522" width="48" height="44" rx="2" fill="url(#cross-hdr)" />
-  <rect class="box" x="282" y="522" width="204" height="44" rx="2" fill="url(#cross-enc)" />
-
-  <!-- Bottom Caption -->
-  <text class="t cap" x="525" y="618">SSL记录协议的操作</text>
+    <!-- Row 6: 添加记录头 (hdr 124..212 w=88, enc 216..468 w=252) -->
+    <rect x="124" y="424" width="88" height="44" rx="8" fill="#fef2f2" stroke="#ef4444" stroke-width="1.5"/>
+    <text x="168" y="452" text-anchor="middle" font-size="15" font-weight="600" fill="#991b1b">记录头</text>
+    <rect x="216" y="424" width="252" height="44" rx="8" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
+    <text x="342" y="452" text-anchor="middle" font-size="15" font-weight="600" fill="#115e59">加密载荷</text>
+  </g>
 </svg>

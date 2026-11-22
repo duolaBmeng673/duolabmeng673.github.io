@@ -1,47 +1,50 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="-4 -11 818 491" width="818" height="491" role="img" aria-label="面向应用的层次型信息安全技术体系结构">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 494" width="720" height="494" role="img">
+  <title>面向应用的层次型信息安全技术体系结构</title>
+  <desc>展示人员、信息、系统三类信息系统基本要素与管理安全、内容安全、数据安全、运行安全、物理安全五个安全层次之间的对应关系。</desc>
   <defs>
-    <marker id="arr-up" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
-      <path d="M2 1L8 5L2 9" fill="none" stroke="#534AB7" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <marker id="app-arch-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#1f2937" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
     </marker>
   </defs>
-  <g font-family="system-ui,-apple-system,'PingFang SC','Microsoft YaHei',sans-serif">
-    <text x="410" y="28" text-anchor="middle" font-size="16" font-weight="600" fill="#0B0B0B">面向应用的层次型信息安全技术体系结构</text>
-    <text x="96" y="60" text-anchor="middle" font-size="12" font-weight="500" fill="#52514E">信息系统基本要素</text>
-    <text x="455" y="60" text-anchor="middle" font-size="12" font-weight="500" fill="#52514E">五个安全层次</text>
+  <g font-family="'PingFang SC','Noto Sans SC','Microsoft YaHei',system-ui,sans-serif">
+    <text x="68" y="24" text-anchor="middle" font-size="15" font-weight="600" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">基本要素</text>
+    <text x="412" y="24" text-anchor="middle" font-size="15" font-weight="600" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">五个安全层次</text>
 
     <!-- 人员 -> 管理安全 -->
-    <rect x="20" y="76" width="152" height="68" rx="8" fill="#EEEDFE" stroke="#534AB7" stroke-width="0.7"/>
-    <text x="96" y="115" text-anchor="middle" font-size="15" font-weight="600" fill="#3C3489">人员</text>
-    <line x1="172" y1="110" x2="216" y2="110" stroke="#898781" stroke-width="1.2" stroke-dasharray="4,3"/>
-    <rect x="216" y="76" width="510" height="68" rx="8" fill="#EEEDFE" stroke="#534AB7" stroke-width="0.7"/>
-    <text x="236" y="102" font-size="14" font-weight="600" fill="#3C3489">管理安全</text>
-    <text x="236" y="125" font-size="12" fill="#534AB7">通过针对人的信息行为的规范和约束，提供机密性、完整性、可用性及可控性保护</text>
+    <rect x="8" y="42" width="120" height="88" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+    <text x="68" y="92" text-anchor="middle" font-size="16" font-weight="600" fill="#1e40af">人员</text>
+    <line x1="128" y1="86" x2="164" y2="86" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="6 4"/>
+    <rect x="164" y="42" width="496" height="88" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+    <text x="184" y="68" font-size="16" font-weight="600" fill="#1e40af">管理安全</text>
+    <text x="184" y="94" font-size="15" font-weight="400" fill="#1e40af">通过针对人的信息行为的规范和约束，</text>
+    <text x="184" y="116" font-size="15" font-weight="400" fill="#1e40af">提供机密性、完整性、可用性及可控性保护</text>
 
     <!-- 信息 -> 内容安全 & 数据安全 -->
-    <rect x="20" y="156" width="152" height="148" rx="8" fill="#E1F5EE" stroke="#0F6E56" stroke-width="0.7"/>
-    <text x="96" y="235" text-anchor="middle" font-size="15" font-weight="600" fill="#085041">信息</text>
-    <path d="M172 230 H194 V190 H216 M194 230 V270 H216" fill="none" stroke="#898781" stroke-width="1.2" stroke-dasharray="4,3"/>
-    <rect x="216" y="156" width="510" height="68" rx="8" fill="#E1F5EE" stroke="#0F6E56" stroke-width="0.7"/>
-    <text x="236" y="182" font-size="14" font-weight="600" fill="#085041">内容安全</text>
-    <text x="236" y="205" font-size="12" fill="#0F6E56">依据信息的具体内涵判断是否违反特定安全策略，对机密性、真实性等进行保护</text>
-    <rect x="216" y="236" width="510" height="68" rx="8" fill="#E1F5EE" stroke="#0F6E56" stroke-width="0.7"/>
-    <text x="236" y="262" font-size="14" font-weight="600" fill="#085041">数据安全</text>
-    <text x="236" y="285" font-size="12" fill="#0F6E56">对数据收集、处理、存储、检索、传输等过程中的保护</text>
+    <rect x="8" y="142" width="120" height="172" rx="8" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
+    <text x="68" y="234" text-anchor="middle" font-size="16" font-weight="600" fill="#115e59">信息</text>
+    <path d="M128 228 H146 V186 H164 M146 228 V278 H164" fill="none" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="6 4"/>
+    <rect x="164" y="142" width="496" height="88" rx="8" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
+    <text x="184" y="168" font-size="16" font-weight="600" fill="#115e59">内容安全</text>
+    <text x="184" y="194" font-size="15" font-weight="400" fill="#115e59">依据信息的具体内涵判断是否违反特定安全策略，</text>
+    <text x="184" y="216" font-size="15" font-weight="400" fill="#115e59">对机密性、真实性等进行保护</text>
+    <rect x="164" y="242" width="496" height="72" rx="8" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
+    <text x="184" y="270" font-size="16" font-weight="600" fill="#115e59">数据安全</text>
+    <text x="184" y="296" font-size="15" font-weight="400" fill="#115e59">对数据收集、处理、存储、检索、传输等过程中的保护</text>
 
     <!-- 系统 -> 运行安全 & 物理安全 -->
-    <rect x="20" y="316" width="152" height="140" rx="8" fill="#FAEEDA" stroke="#854F0B" stroke-width="0.7"/>
-    <text x="96" y="391" text-anchor="middle" font-size="15" font-weight="600" fill="#633806">系统</text>
-    <path d="M172 386 H194 V348 H216 M194 386 V422 H216" fill="none" stroke="#898781" stroke-width="1.2" stroke-dasharray="4,3"/>
-    <rect x="216" y="316" width="510" height="64" rx="8" fill="#FAEEDA" stroke="#854F0B" stroke-width="0.7"/>
-    <text x="236" y="341" font-size="14" font-weight="600" fill="#633806">运行安全</text>
-    <text x="236" y="363" font-size="12" fill="#854F0B">对网络及信息系统的运行过程和运行状态的保护</text>
-    <rect x="216" y="390" width="510" height="66" rx="8" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="0.7"/>
-    <text x="236" y="416" font-size="14" font-weight="600" fill="#444441">物理安全</text>
-    <text x="236" y="438" font-size="12" fill="#5F5E5A">对网络及信息系统物理装备的保护（基础）</text>
+    <rect x="8" y="326" width="120" height="160" rx="8" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5"/>
+    <text x="68" y="412" text-anchor="middle" font-size="16" font-weight="600" fill="#92400e">系统</text>
+    <path d="M128 406 H146 V362 H164 M146 406 V448 H164" fill="none" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="6 4"/>
+    <rect x="164" y="326" width="496" height="72" rx="8" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5"/>
+    <text x="184" y="354" font-size="16" font-weight="600" fill="#92400e">运行安全</text>
+    <text x="184" y="380" font-size="15" font-weight="400" fill="#92400e">对网络及信息系统的运行过程和运行状态的保护</text>
+    <rect x="164" y="410" width="496" height="76" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
+    <text x="184" y="438" font-size="16" font-weight="600" fill="#1f2937">物理安全</text>
+    <text x="184" y="466" font-size="15" font-weight="400" fill="#4b5563">对网络及信息系统物理装备的保护（基础）</text>
 
     <!-- Right upward arrow -->
-    <line x1="762" y1="450" x2="762" y2="86" stroke="#534AB7" stroke-width="1.6" marker-end="url(#arr-up)"/>
-    <text x="784" y="264" text-anchor="middle" font-size="12" font-weight="500" fill="#534AB7">基</text>
-    <text x="784" y="282" text-anchor="middle" font-size="12" font-weight="500" fill="#534AB7">础</text>
+    <line x1="680" y1="482" x2="680" y2="50" stroke="#3b82f6" stroke-width="2" marker-end="url(#app-arch-arrow)"/>
+    <text x="705" y="256" text-anchor="middle" font-size="15" font-weight="600" fill="#1e40af" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">基</text>
+    <text x="705" y="280" text-anchor="middle" font-size="15" font-weight="600" fill="#1e40af" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">础</text>
   </g>
 </svg>

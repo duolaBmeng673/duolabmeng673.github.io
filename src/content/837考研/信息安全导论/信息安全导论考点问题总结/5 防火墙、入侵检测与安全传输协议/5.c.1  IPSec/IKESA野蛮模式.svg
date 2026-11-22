@@ -1,32 +1,28 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="51 -7 743 423" width="743" height="423" role="img" aria-label="IKE SA 野蛮模式协商过程">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 292" width="720" height="292" role="img">
   <title>IKE SA 野蛮模式协商过程</title>
   <desc>IKE SA 野蛮模式三报文交互过程：1. 安全参数提议、DH公开值、认证数据等；2. 安全参数选择、DH公开值、认证数据、验证载荷等；3. 验证载荷。</desc>
   <defs>
-    <marker id="a-arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
-      <path d="M2 1L8 5L2 9" fill="none" stroke="#898781" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <marker id="ike-agg-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#1f2937" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
     </marker>
   </defs>
-  <g font-family="system-ui,-apple-system,'PingFang SC','Microsoft YaHei',sans-serif">
-    <text x="422" y="34" text-anchor="middle" font-size="18" font-weight="600" fill="#0B0B0B">野蛮模式协商过程</text>
+  <g font-family="'PingFang SC','Noto Sans SC','Microsoft YaHei',system-ui,sans-serif">
+    <rect x="8" y="8" width="128" height="42" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+    <text x="72" y="35" text-anchor="middle" font-size="16" font-weight="600" fill="#1e40af">发起方</text>
 
-    <line x1="140" y1="108" x2="140" y2="392" stroke="#898781" stroke-width="1.2" stroke-dasharray="4,3"/>
-    <line x1="705" y1="108" x2="705" y2="392" stroke="#898781" stroke-width="1.2" stroke-dasharray="4,3"/>
+    <rect x="584" y="8" width="128" height="42" rx="8" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
+    <text x="648" y="35" text-anchor="middle" font-size="16" font-weight="600" fill="#115e59">响应方</text>
 
-    <rect x="75" y="66" width="130" height="42" rx="8" fill="#EEEDFE" stroke="#534AB7" stroke-width="0.7"/>
-    <text x="140" y="92" text-anchor="middle" font-size="15" font-weight="600" fill="#3C3489">发起方</text>
-    <rect x="640" y="66" width="130" height="42" rx="8" fill="#E1F5EE" stroke="#0F6E56" stroke-width="0.7"/>
-    <text x="705" y="92" text-anchor="middle" font-size="15" font-weight="600" fill="#085041">响应方</text>
+    <line x1="72" y1="50" x2="72" y2="284" stroke="#94a3b8" stroke-width="1" stroke-dasharray="6 4"/>
+    <line x1="648" y1="50" x2="648" y2="284" stroke="#94a3b8" stroke-width="1" stroke-dasharray="6 4"/>
 
-    <line x1="144" y1="168" x2="697" y2="168" stroke="#898781" stroke-width="1.5" marker-end="url(#a-arr)"/>
-    <rect x="242" y="152" width="360" height="28" rx="6" fill="#EEEDFE" stroke="#534AB7" stroke-width="0.6"/>
-    <text x="422" y="171" text-anchor="middle" font-size="13.5" font-weight="500" fill="#3C3489">1. 安全参数提议、DH 公开值、认证数据等</text>
+    <line x1="72" y1="114" x2="644" y2="114" stroke="#3b82f6" stroke-width="2" marker-end="url(#ike-agg-arrow)"/>
+    <text x="360" y="100" text-anchor="middle" font-size="15" font-weight="600" fill="#1e40af" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">1. 安全参数提议、DH 公开值、认证数据等</text>
 
-    <line x1="701" y1="256" x2="148" y2="256" stroke="#898781" stroke-width="1.5" marker-end="url(#a-arr)"/>
-    <rect x="202" y="240" width="440" height="28" rx="6" fill="#E1F5EE" stroke="#0F6E56" stroke-width="0.6"/>
-    <text x="422" y="259" text-anchor="middle" font-size="13.5" font-weight="500" fill="#085041">2. 安全参数选择、DH 公开值、认证数据、验证载荷等</text>
+    <line x1="648" y1="190" x2="76" y2="190" stroke="#14b8a6" stroke-width="2" marker-end="url(#ike-agg-arrow)"/>
+    <text x="360" y="176" text-anchor="middle" font-size="15" font-weight="600" fill="#115e59" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">2. 安全参数选择、DH 公开值、认证数据、验证载荷等</text>
 
-    <line x1="144" y1="344" x2="697" y2="344" stroke="#898781" stroke-width="1.5" marker-end="url(#a-arr)"/>
-    <rect x="352" y="328" width="140" height="28" rx="6" fill="#FAEEDA" stroke="#854F0B" stroke-width="0.6"/>
-    <text x="422" y="347" text-anchor="middle" font-size="13.5" font-weight="500" fill="#633806">3. 验证载荷</text>
+    <line x1="72" y1="266" x2="644" y2="266" stroke="#f59e0b" stroke-width="2" marker-end="url(#ike-agg-arrow)"/>
+    <text x="360" y="252" text-anchor="middle" font-size="15" font-weight="600" fill="#92400e" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">3. 验证载荷</text>
   </g>
 </svg>
