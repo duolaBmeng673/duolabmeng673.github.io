@@ -211,11 +211,22 @@ test('all 837 SVGs have no canvas background rect and maintain 24±2px viewBox m
     failed.map((r) => `${r.path}: ${r.violations.map((v) => v.detail).join('; ')}`).join('\n'),
   );
 
-  // New SVGs (not in LEGACY_837_SVGS) must strictly satisfy viewBox width=720, min font-size >= 12, and rendered >= 10.5px
+  // New/v2 SVGs (not in LEGACY_837_SVGS) must strictly satisfy v2 rules: viewBox width=720, margins 8±2px, min font-size >= B-2 (15px)
   for (const r of results) {
     if (LEGACY_837_SVGS.has(r.path)) continue;
-    assert.equal(r.viewBox[2], 720, `${r.path}: new SVG viewBox width must be 720`);
-    assert.ok(r.minDesignFs >= 12, `${r.path}: new SVG min font-size ${r.minDesignFs} < 12`);
-    assert.ok(r.renderedFs720 >= 10.5, `${r.path}: new SVG rendered font-size ${r.renderedFs720} < 10.5px`);
+    assert.equal(r.viewBox[2], 720, `${r.path}: v2 SVG viewBox width must be 720`);
+    for (const [side, dist] of Object.entries(r.margins)) {
+      assert.ok(Math.abs(dist - 8) <= 2, `${r.path}: ${side} margin ${dist.toFixed(1)}px must be within 8±2px`);
+    }
+    assert.ok(r.minDesignFs >= 15, `${r.path}: v2 SVG min font-size ${r.minDesignFs} < 15 (B - 2)`);
+    assert.ok(r.renderedFs720 >= 15, `${r.path}: v2 SVG rendered font-size ${r.renderedFs720} < 15px (B - 2)`);
+
+    const svg = readFileSync(new URL(`../${r.path}`, import.meta.url), 'utf8');
+    assert.match(svg, /role="img"/, `${r.path}: missing role="img"`);
+    assert.match(svg, /<title>[^<]+<\/title>/, `${r.path}: missing non-empty <title>`);
+    assert.match(svg, /<desc>[^<]+<\/desc>/, `${r.path}: missing non-empty <desc>`);
+    assert.ok(!/<style[\s>]/i.test(svg), `${r.path}: must not contain <style> block`);
+    const ids = [...svg.matchAll(/\bid="([^"]+)"/g)].map((m) => m[1]);
+    assert.equal(new Set(ids).size, ids.length, `${r.path}: duplicate id detected`);
   }
 });

@@ -1142,14 +1142,11 @@ a.masthead-stat-card:hover { transform: translateY(-2px); border-color: var(--bd
   --article-text-max: 44rem;
   --article-toc-w: 16.5rem;
   --article-toc-gap: 2.25rem;
-  --svg-card-pad: 0.75rem;
   --svg-breakout-max: min(
     720px,
     calc(
       2 * min(var(--article-main-max), calc(100vw - 2 * var(--gutter)))
       - var(--article-text-max)
-      - 2 * var(--svg-card-pad)
-      - 2px
     )
   );
   display: grid;
@@ -1167,8 +1164,6 @@ a.masthead-stat-card:hover { transform: translateY(-2px); border-color: var(--bd
         calc(100vw - 2 * var(--gutter) - var(--article-toc-w) - var(--article-toc-gap))
       )
       - var(--article-text-max)
-      - 2 * var(--svg-card-pad)
-      - 2px
     )
   );
   grid-template-columns: minmax(0, var(--article-main-max)) var(--article-toc-w);
@@ -2144,15 +2139,17 @@ body.study-overview-page main { flex: 1 0 auto; min-height: 0; }
 }
 .is-recalling .study-fold-content { margin: 0.75rem 0 0.75rem 0.2rem; padding-left: 1rem; border-left: 2px solid color-mix(in srgb, var(--cat-study) 32%, transparent); }
 .article-svg-card {
+  --svg-scrim-color: color-mix(in srgb, var(--bg) calc(var(--svg-scrim-opacity, 0) * 100%), transparent);
   display: block;
-  box-sizing: content-box;
+  box-sizing: border-box;
   width: max-content;
   max-width: var(--svg-breakout-max, 100%);
   margin: 1.6em auto;
-  background: var(--svg-bg);
-  padding: var(--svg-card-pad, 0.75rem);
-  border: 1px solid var(--bd);
-  border-radius: var(--r-row);
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: var(--svg-scrim-color);
+  box-shadow: 0 0 28px 18px var(--svg-scrim-color);
 }
 .article-body img[src$=".svg"],
 .article-body img[data-svg-diagram="true"],
@@ -2182,12 +2179,12 @@ body.study-overview-page main { flex: 1 0 auto; min-height: 0; }
 .article-svg-link {
   display: block;
   width: max-content;
-  max-width: calc(var(--svg-breakout-max, 100%) + 2 * var(--svg-card-pad, 0.75rem) + 2px);
+  max-width: var(--svg-breakout-max, 100%);
   margin: 1.6em 0;
   position: relative;
   left: 50%;
   transform: translateX(-50%);
-  overflow: hidden;
+  overflow: visible;
   text-decoration: none;
 }
 .article-svg-card:not(.article-svg-link > .article-svg-card) {

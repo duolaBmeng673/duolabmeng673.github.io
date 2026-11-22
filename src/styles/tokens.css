@@ -56,6 +56,7 @@
   --vbg: #efede6;
   --code-bg: #f4f3ef;
   --svg-bg: var(--bg-elev);
+  --svg-scrim-opacity: 0;
   --preset-all: #2563eb;
   --preset-all-hi: #38bdf8;
   --preset-research: #5227ff;
@@ -148,6 +149,7 @@
   --btn: var(--brand-ac);
   --btnt: #100921;
   --svg-bg: var(--bg-elev);
+  --svg-scrim-opacity: 0;
 
   --syntax-background: #0d1117;
   --syntax-foreground: #e6edf3;

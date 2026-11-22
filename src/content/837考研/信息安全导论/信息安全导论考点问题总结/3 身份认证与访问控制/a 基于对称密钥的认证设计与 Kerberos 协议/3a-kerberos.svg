@@ -1,63 +1,91 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 520" width="720" height="520" role="img">
-  <title>Kerberos 认证协议三阶段时序图</title>
-  <desc>展示客户端 C、认证服务器 AS、票据授予服务器 TGS 与应用服务器 V 之间六个步骤的三阶段认证交换过程。</desc>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 1180" width="720" height="1180" role="img">
+  <title>Kerberos 认证协议三阶段交互</title>
+  <desc>展示客户端 C、认证服务器 AS、票据授予服务器 TGS 与应用服务器 V 之间三阶段六个步骤的完整消息内容、中文说明及票据与认证符公式。</desc>
   <defs>
     <marker id="3a-krb-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
       <path d="M2 1L8 5L2 9" fill="none" stroke="#1f2937" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
     </marker>
   </defs>
   <g font-family="'PingFang SC','Noto Sans SC','Microsoft YaHei',system-ui,sans-serif">
-    <text x="360" y="44" text-anchor="middle" font-size="18" font-weight="600" fill="#1f2937">Kerberos 认证协议三阶段交互</text>
+    <!-- Phase tinted bands (semantic grouping, no dashed border) -->
+    <rect x="8" y="68" width="704" height="272" rx="12" fill="#eff6ff" data-role="group"/>
+    <text x="20" y="96" text-anchor="start" font-size="16" font-weight="600" fill="#1e40af">一阶段</text>
+    <text x="20" y="122" text-anchor="start" font-size="15" font-weight="400" fill="#4b5563">C ↔ AS</text>
 
-    <rect x="24" y="108" width="672" height="124" rx="12" fill="#f8fafc" stroke="#94a3b8" stroke-width="1" stroke-dasharray="6 4" data-role="group"/>
-    <text x="40" y="136" text-anchor="start" font-size="12" font-weight="600" fill="#1e40af">一阶段</text>
-    <text x="40" y="156" text-anchor="start" font-size="12" font-weight="400" fill="#4b5563">C ↔ AS</text>
+    <rect x="8" y="352" width="704" height="316" rx="12" fill="#fffbeb" data-role="group"/>
+    <text x="20" y="380" text-anchor="start" font-size="16" font-weight="600" fill="#92400e">二阶段</text>
+    <text x="20" y="406" text-anchor="start" font-size="15" font-weight="400" fill="#4b5563">C ↔ TGS</text>
 
-    <rect x="24" y="240" width="672" height="124" rx="12" fill="#f8fafc" stroke="#94a3b8" stroke-width="1" stroke-dasharray="6 4" data-role="group"/>
-    <text x="40" y="268" text-anchor="start" font-size="12" font-weight="600" fill="#92400e">二阶段</text>
-    <text x="40" y="288" text-anchor="start" font-size="12" font-weight="400" fill="#4b5563">C ↔ TGS</text>
+    <rect x="8" y="680" width="704" height="280" rx="12" fill="#f0fdfa" data-role="group"/>
+    <text x="20" y="708" text-anchor="start" font-size="16" font-weight="600" fill="#115e59">三阶段</text>
+    <text x="20" y="734" text-anchor="start" font-size="15" font-weight="400" fill="#4b5563">C ↔ V</text>
 
-    <rect x="24" y="372" width="672" height="124" rx="12" fill="#f8fafc" stroke="#94a3b8" stroke-width="1" stroke-dasharray="6 4" data-role="group"/>
-    <text x="40" y="400" text-anchor="start" font-size="12" font-weight="600" fill="#115e59">三阶段</text>
-    <text x="40" y="420" text-anchor="start" font-size="12" font-weight="400" fill="#4b5563">C ↔ V</text>
+    <!-- Participants -->
+    <rect x="92" y="8" width="104" height="44" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+    <text x="144" y="36" text-anchor="middle" font-size="16" font-weight="600" fill="#1e40af">C 客户端</text>
 
-    <rect x="96" y="60" width="96" height="36" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
-    <text x="144" y="83" text-anchor="middle" font-size="14" font-weight="600" fill="#1e40af">C 客户机</text>
+    <rect x="280" y="8" width="72" height="44" rx="8" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5"/>
+    <text x="316" y="36" text-anchor="middle" font-size="16" font-weight="600" fill="#92400e">AS</text>
 
-    <rect x="288" y="60" width="80" height="36" rx="8" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5"/>
-    <text x="328" y="83" text-anchor="middle" font-size="14" font-weight="600" fill="#92400e">AS</text>
+    <rect x="448" y="8" width="76" height="44" rx="8" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5"/>
+    <text x="486" y="36" text-anchor="middle" font-size="16" font-weight="600" fill="#92400e">TGS</text>
 
-    <rect x="456" y="60" width="80" height="36" rx="8" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5"/>
-    <text x="496" y="83" text-anchor="middle" font-size="14" font-weight="600" fill="#92400e">TGS</text>
+    <rect x="608" y="8" width="104" height="44" rx="8" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
+    <text x="660" y="36" text-anchor="middle" font-size="16" font-weight="600" fill="#115e59">V 服务器</text>
 
-    <rect x="600" y="60" width="96" height="36" rx="8" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
-    <text x="648" y="83" text-anchor="middle" font-size="14" font-weight="600" fill="#115e59">V 服务器</text>
+    <!-- Lifelines -->
+    <line x1="144" y1="52" x2="144" y2="948" stroke="#94a3b8" stroke-width="1" stroke-dasharray="6 4"/>
+    <line x1="316" y1="52" x2="316" y2="948" stroke="#94a3b8" stroke-width="1" stroke-dasharray="6 4"/>
+    <line x1="486" y1="52" x2="486" y2="948" stroke="#94a3b8" stroke-width="1" stroke-dasharray="6 4"/>
+    <line x1="660" y1="52" x2="660" y2="948" stroke="#94a3b8" stroke-width="1" stroke-dasharray="6 4"/>
 
-    <line x1="144" y1="96" x2="144" y2="484" stroke="#94a3b8" stroke-width="1" stroke-dasharray="6 4"/>
-    <line x1="328" y1="96" x2="328" y2="484" stroke="#94a3b8" stroke-width="1" stroke-dasharray="6 4"/>
-    <line x1="496" y1="96" x2="496" y2="484" stroke="#94a3b8" stroke-width="1" stroke-dasharray="6 4"/>
-    <line x1="648" y1="96" x2="648" y2="484" stroke="#94a3b8" stroke-width="1" stroke-dasharray="6 4"/>
+    <!-- Step 1: C -> AS (center 230, span 172px) -->
+    <line x1="144" y1="112" x2="312" y2="112" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#3a-krb-arrow)"/>
+    <text x="230" y="96" text-anchor="middle" font-size="16" font-weight="600" fill="#1e40af">① ID<tspan dy="4" font-size="15">c</tspan><tspan dy="-4"> ‖ ID</tspan><tspan dy="4" font-size="15">tgs</tspan><tspan dy="-4"> ‖ TS</tspan><tspan dy="4" font-size="15">1</tspan></text>
+    <text x="230" y="136" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563">C 向 AS 请求 TGS 票据</text>
 
-    <line x1="144" y1="148" x2="324" y2="148" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#3a-krb-arrow)"/>
-    <text x="236" y="136" text-anchor="middle" font-size="12" font-weight="600" fill="#1e40af">① IDc ‖ IDtgs ‖ TS1</text>
+    <!-- Step 2: AS -> C (center 230, span 172px) -->
+    <line x1="316" y1="284" x2="148" y2="284" stroke="#f59e0b" stroke-width="1.5" marker-end="url(#3a-krb-arrow)"/>
+    <text x="230" y="184" text-anchor="middle" font-size="16" font-weight="600" fill="#92400e">② E<tspan dy="4" font-size="15">Kc</tspan><tspan dy="-4">[K</tspan><tspan dy="4" font-size="15">c,tgs</tspan><tspan dy="-4"> ‖</tspan></text>
+    <text x="230" y="212" text-anchor="middle" font-size="16" font-weight="600" fill="#92400e">ID<tspan dy="4" font-size="15">tgs</tspan><tspan dy="-4"> ‖ TS</tspan><tspan dy="4" font-size="15">2</tspan><tspan dy="-4"> ‖</tspan></text>
+    <text x="230" y="240" text-anchor="middle" font-size="16" font-weight="600" fill="#92400e">Lifetime<tspan dy="4" font-size="15">2</tspan><tspan dy="-4"> ‖</tspan></text>
+    <text x="230" y="268" text-anchor="middle" font-size="16" font-weight="600" fill="#92400e">Ticket<tspan dy="4" font-size="15">tgs</tspan><tspan dy="-4">]</tspan></text>
+    <text x="230" y="308" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563">AS 返回 TGS 票据</text>
 
-    <line x1="328" y1="204" x2="148" y2="204" stroke="#f59e0b" stroke-width="1.5" marker-end="url(#3a-krb-arrow)"/>
-    <text x="236" y="176" text-anchor="middle" font-size="12" font-weight="600" fill="#92400e">② E_Kc[Kc,tgs ‖ IDtgs ‖</text>
-    <text x="236" y="194" text-anchor="middle" font-size="12" font-weight="400" fill="#92400e">TS2 ‖ LT2 ‖ Ticket_tgs]</text>
+    <!-- Step 3: C -> TGS (center 401, span 170px) -->
+    <line x1="144" y1="424" x2="482" y2="424" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#3a-krb-arrow)"/>
+    <text x="401" y="380" text-anchor="middle" font-size="16" font-weight="600" fill="#1e40af">③ ID<tspan dy="4" font-size="15">v</tspan><tspan dy="-4"> ‖ Ticket</tspan><tspan dy="4" font-size="15">tgs</tspan><tspan dy="-4"> ‖</tspan></text>
+    <text x="401" y="408" text-anchor="middle" font-size="16" font-weight="600" fill="#1e40af">Authenticator<tspan dy="4" font-size="15">c</tspan></text>
+    <text x="401" y="448" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563">C 向 TGS 请求</text>
+    <text x="401" y="472" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563">应用服务器票据</text>
 
-    <line x1="144" y1="284" x2="492" y2="284" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#3a-krb-arrow)"/>
-    <text x="412" y="256" text-anchor="middle" font-size="12" font-weight="600" fill="#1e40af">③ IDv ‖ Ticket_tgs</text>
-    <text x="412" y="274" text-anchor="middle" font-size="12" font-weight="400" fill="#1e40af">‖ Authenticator_c</text>
+    <!-- Step 4: TGS -> C (center 401, span 170px) -->
+    <line x1="486" y1="596" x2="148" y2="596" stroke="#f59e0b" stroke-width="1.5" marker-end="url(#3a-krb-arrow)"/>
+    <text x="401" y="524" text-anchor="middle" font-size="16" font-weight="600" fill="#92400e">④ E<tspan dy="4" font-size="15">Kc,tgs</tspan><tspan dy="-4">[K</tspan><tspan dy="4" font-size="15">c,v</tspan><tspan dy="-4"> ‖</tspan></text>
+    <text x="401" y="552" text-anchor="middle" font-size="16" font-weight="600" fill="#92400e">ID<tspan dy="4" font-size="15">v</tspan><tspan dy="-4"> ‖ TS</tspan><tspan dy="4" font-size="15">4</tspan><tspan dy="-4"> ‖</tspan></text>
+    <text x="401" y="580" text-anchor="middle" font-size="16" font-weight="600" fill="#92400e">Ticket<tspan dy="4" font-size="15">v</tspan><tspan dy="-4">]</tspan></text>
+    <text x="401" y="620" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563">TGS 返回</text>
+    <text x="401" y="644" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563">应用服务器票据</text>
 
-    <line x1="496" y1="340" x2="148" y2="340" stroke="#f59e0b" stroke-width="1.5" marker-end="url(#3a-krb-arrow)"/>
-    <text x="412" y="312" text-anchor="middle" font-size="12" font-weight="600" fill="#92400e">④ E_Kc,tgs[Kc,v ‖ IDv</text>
-    <text x="412" y="330" text-anchor="middle" font-size="12" font-weight="400" fill="#92400e">‖ TS4 ‖ Ticket_v]</text>
+    <!-- Step 5: C -> V (center 573, span 174px) -->
+    <line x1="144" y1="752" x2="656" y2="752" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#3a-krb-arrow)"/>
+    <text x="573" y="708" text-anchor="middle" font-size="16" font-weight="600" fill="#1e40af">⑤ Ticket<tspan dy="4" font-size="15">v</tspan><tspan dy="-4"> ‖</tspan></text>
+    <text x="573" y="736" text-anchor="middle" font-size="16" font-weight="600" fill="#1e40af">Authenticator<tspan dy="4" font-size="15">c</tspan></text>
+    <text x="573" y="776" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563">C 向 V 发起</text>
+    <text x="573" y="800" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563">服务请求</text>
 
-    <line x1="144" y1="416" x2="644" y2="416" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#3a-krb-arrow)"/>
-    <text x="572" y="388" text-anchor="middle" font-size="12" font-weight="600" fill="#1e40af">⑤ Ticket_v ‖</text>
-    <text x="572" y="406" text-anchor="middle" font-size="12" font-weight="400" fill="#1e40af">Authenticator_c</text>
+    <!-- Step 6: V -> C (center 573, span 174px) -->
+    <line x1="660" y1="880" x2="148" y2="880" stroke="#14b8a6" stroke-width="1.5" marker-end="url(#3a-krb-arrow)"/>
+    <text x="573" y="864" text-anchor="middle" font-size="16" font-weight="600" fill="#115e59">⑥ E<tspan dy="4" font-size="15">Kc,v</tspan><tspan dy="-4">[TS</tspan><tspan dy="4" font-size="15">5</tspan><tspan dy="-4">+1]</tspan></text>
+    <text x="573" y="904" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563">V 回应 TS<tspan dy="3" font-size="15">5</tspan><tspan dy="-3">+1，</tspan></text>
+    <text x="573" y="928" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563">证明自己是真服务器</text>
 
-    <line x1="648" y1="472" x2="148" y2="472" stroke="#14b8a6" stroke-width="1.5" marker-end="url(#3a-krb-arrow)"/>
-    <text x="572" y="460" text-anchor="middle" font-size="12" font-weight="600" fill="#115e59">⑥ E_Kc,v[TS5+1]</text>
+    <!-- Bottom ticket & authenticator definitions -->
+    <rect x="8" y="976" width="704" height="196" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5" data-role="note"/>
+    <text x="28" y="1008" text-anchor="start" font-size="15" font-weight="400" fill="#1f2937">Ticket<tspan dy="3" font-size="15">tgs</tspan><tspan dy="-3"> = E</tspan><tspan dy="3" font-size="15">Ktgs</tspan><tspan dy="-3">[K</tspan><tspan dy="3" font-size="15">c,tgs</tspan><tspan dy="-3"> ‖ ID</tspan><tspan dy="3" font-size="15">c</tspan><tspan dy="-3"> ‖ AD</tspan><tspan dy="3" font-size="15">c</tspan><tspan dy="-3"> ‖ ID</tspan><tspan dy="3" font-size="15">tgs</tspan><tspan dy="-3"> ‖ TS</tspan><tspan dy="3" font-size="15">2</tspan><tspan dy="-3"> ‖ Lifetime</tspan><tspan dy="3" font-size="15">2</tspan><tspan dy="-3">]</tspan></text>
+    <text x="56" y="1034" text-anchor="start" font-size="15" font-weight="400" fill="#4b5563">只有 TGS 能解密</text>
+    <text x="28" y="1068" text-anchor="start" font-size="15" font-weight="400" fill="#1f2937">Authenticator<tspan dy="3" font-size="15">c</tspan><tspan dy="-3">（③）= E</tspan><tspan dy="3" font-size="15">Kc,tgs</tspan><tspan dy="-3">[ID</tspan><tspan dy="3" font-size="15">c</tspan><tspan dy="-3"> ‖ AD</tspan><tspan dy="3" font-size="15">c</tspan><tspan dy="-3"> ‖ TS</tspan><tspan dy="3" font-size="15">3</tspan><tspan dy="-3">]</tspan></text>
+    <text x="28" y="1102" text-anchor="start" font-size="15" font-weight="400" fill="#1f2937">Ticket<tspan dy="3" font-size="15">v</tspan><tspan dy="-3"> = E</tspan><tspan dy="3" font-size="15">Kv</tspan><tspan dy="-3">[K</tspan><tspan dy="3" font-size="15">c,v</tspan><tspan dy="-3"> ‖ ID</tspan><tspan dy="3" font-size="15">c</tspan><tspan dy="-3"> ‖ AD</tspan><tspan dy="3" font-size="15">c</tspan><tspan dy="-3"> ‖ ID</tspan><tspan dy="3" font-size="15">v</tspan><tspan dy="-3"> ‖ TS</tspan><tspan dy="3" font-size="15">4</tspan><tspan dy="-3"> ‖ Lifetime</tspan><tspan dy="3" font-size="15">4</tspan><tspan dy="-3">]  只有 V 能解密</tspan></text>
+    <text x="28" y="1140" text-anchor="start" font-size="15" font-weight="400" fill="#1f2937">Authenticator<tspan dy="3" font-size="15">c</tspan><tspan dy="-3">（⑤）= E</tspan><tspan dy="3" font-size="15">Kc,v</tspan><tspan dy="-3">[ID</tspan><tspan dy="3" font-size="15">c</tspan><tspan dy="-3"> ‖ AD</tspan><tspan dy="3" font-size="15">c</tspan><tspan dy="-3"> ‖ TS</tspan><tspan dy="3" font-size="15">5</tspan><tspan dy="-3">]</tspan></text>
   </g>
 </svg>

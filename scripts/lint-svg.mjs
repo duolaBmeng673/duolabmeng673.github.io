@@ -136,7 +136,8 @@ ${svgContent}
   const H = vb.height;
   const violations = [];
 
-  const MARGIN = 24;
+  const IS_LEGACY = ${JSON.stringify(isLegacy)};
+  const MARGIN = IS_LEGACY ? 24 : 8;
   const MARGIN_TOL = 2;
   const PAD_X = 16;
   const PAD_Y = 8;
@@ -265,16 +266,17 @@ ${svgContent}
   }
   const renderedFs720 = Number.isFinite(minDesignFs) ? minDesignFs * Math.min(1, 720 / W) : null;
   const warnings = [];
-  const IS_LEGACY = ${JSON.stringify(isLegacy)};
   const checkNewSpec = (rule, ok, detail) => {
     if (ok) return;
     if (IS_LEGACY) warnings.push({ rule, detail });
     else violations.push({ rule, detail });
   };
-  checkNewSpec('viewBox-width-720', W === 720, 'viewBox width is ' + W + ' (new SVG spec requires 720)');
+  checkNewSpec('viewBox-width-720', W === 720, 'viewBox width is ' + W + ' (v2 SVG spec requires 720)');
   if (Number.isFinite(minDesignFs)) {
-    checkNewSpec('min-font-size', minDesignFs >= 12, 'min design font-size is ' + minDesignFs + ' (new SVG spec requires >=12)');
-    checkNewSpec('breakout-rendered-font-size', renderedFs720 >= 10.5, 'rendered font-size at 720px break-out is ' + renderedFs720.toFixed(2) + 'px (requires >=10.5px)');
+    const reqFs = IS_LEGACY ? 12 : 15;
+    const reqRenderFs = IS_LEGACY ? 10.5 : 15;
+    checkNewSpec('min-font-size', minDesignFs >= reqFs, 'min design font-size is ' + minDesignFs + ' (requires >=' + reqFs + ')');
+    checkNewSpec('breakout-rendered-font-size', renderedFs720 >= reqRenderFs, 'rendered font-size at 720px break-out is ' + renderedFs720.toFixed(2) + 'px (requires >=' + reqRenderFs + 'px)');
   }
 
   if (CHECK_V1_LAYOUT) {
