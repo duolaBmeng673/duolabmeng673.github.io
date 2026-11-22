@@ -24,11 +24,11 @@ tags:
 
 # Network Pruning Method:
 
-考虑网络参数***W ***：
+考虑网络参数***W***：
 
 ![image\.png](./squeezerfacenet/assets/image-4.png)
 
-以及以输入x和输出y对为元素的训练集***D ***：
+以及以输入x和输出y对为元素的训练集***D***：
 
 ![image\.png](./squeezerfacenet/assets/image.png)
 
@@ -36,11 +36,11 @@ tags:
 
 ![image\.png](./squeezerfacenet/assets/image-5.png)
 
-一个参数的重要性分数被定义为移除该参数后对错误的影响，该参数诱导误差可量化为参数去除前后的***E ***的差平方：
+一个参数的重要性分数被定义为移除该参数后对错误的影响，该参数诱导误差可量化为参数去除前后的***E***的差平方：
 
 ![image\.png](./squeezerfacenet/assets/image-3.png)
 
-但是，这样做计算成本很高，为了避免这个问题，使用一阶泰勒展开来逼近***W ***附近的***Im***：
+但是，这样做计算成本很高，为了避免这个问题，使用一阶泰勒展开来逼近***W***附近的***Im***：
 
 ![image\.png](./squeezerfacenet/assets/image-7.png)
 
@@ -48,9 +48,9 @@ tags:
 
 ![image\.png](./squeezerfacenet/assets/image-2.png)
 
-梯度***g***可由反向传播获得，大大简化了***Im ***的计算
+梯度***g***可由反向传播获得，大大简化了***Im***的计算
 
-同时定义***s ***个参数组成的集合***Ws*** 的共同重要性分数为：
+同时定义***s***个参数组成的集合***Ws*** 的共同重要性分数为：
 
 ![image\.png](./squeezerfacenet/assets/image-8.png)
 
