@@ -82,6 +82,7 @@ const navItems = [
         themeKey: STORAGE_KEYS.theme,
         themeLegacyKey: STORAGE_KEYS.themeLegacy,
         typographyKey: STORAGE_KEYS.typography,
+        svgScrimKey: STORAGE_KEYS.svgScrim,
         presetKey: STORAGE_KEYS.preset,
       }}
     >
@@ -95,6 +96,7 @@ const navItems = [
           const scales = { small: '0.94', medium: '1', large: '1.12' };
           if (typo.size && scales[typo.size]) root.style.setProperty('--font-scale', scales[typo.size]);
           if (typo.bold === true) root.setAttribute('data-font-bold', '');
+          root.style.setProperty('--svg-scrim-opacity', localStorage.getItem(svgScrimKey) === 'true' ? '0.8' : '0');
           const savedPreset = localStorage.getItem(presetKey);
           if (savedPreset && /^[a-z0-9-]+$/i.test(savedPreset)) root.dataset.preset = savedPreset;
         } catch {}
@@ -150,15 +152,54 @@ const navItems = [
           </div>
 
           <details class="type-settings">
-            <summary aria-label="文字设置">Aa</summary>
-            <div class="type-settings-panel">
-              <span class="panel-label">文字大小</span>
-              <div class="type-size-options" role="group" aria-label="文字大小">
-                <button type="button" data-font-size="small" aria-pressed="false">小</button>
-                <button type="button" data-font-size="medium" aria-pressed="false">中</button>
-                <button type="button" data-font-size="large" aria-pressed="false">大</button>
+            <summary aria-label="设置" aria-expanded="false">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="3" />
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z" />
+              </svg>
+            </summary>
+            <div class="type-settings-panel" role="group" aria-labelledby="settings-panel-title">
+              <p id="settings-panel-title" class="settings-panel-title">设置</p>
+              <div class="settings-group">
+                <span class="panel-label">文字大小</span>
+                <div class="type-size-options" role="group" aria-label="文字大小">
+                  <button type="button" data-font-size="small" aria-pressed="false">小</button>
+                  <button type="button" data-font-size="medium" aria-pressed="false">中</button>
+                  <button type="button" data-font-size="large" aria-pressed="false">大</button>
+                </div>
               </div>
-              <label class="type-bold-toggle"><span>加粗文字</span><input type="checkbox" data-font-bold /></label>
+              <div class="type-switch-row">
+                <div class="type-switch-copy">
+                  <span id="setting-bold-label" class="type-switch-label">加粗文字</span>
+                </div>
+                <button
+                  type="button"
+                  class="pill-switch"
+                  role="switch"
+                  aria-checked="false"
+                  aria-labelledby="setting-bold-label"
+                  data-font-bold
+                >
+                  <span class="pill-switch-thumb" aria-hidden="true"></span>
+                </button>
+              </div>
+              <div class="type-switch-row">
+                <div class="type-switch-copy">
+                  <span id="setting-scrim-label" class="type-switch-label">图示衬底</span>
+                  <p id="setting-scrim-desc" class="type-switch-desc">给笔记中的图表加一层半透明底，方格背景下更易读</p>
+                </div>
+                <button
+                  type="button"
+                  class="pill-switch"
+                  role="switch"
+                  aria-checked="false"
+                  aria-labelledby="setting-scrim-label"
+                  aria-describedby="setting-scrim-desc"
+                  data-svg-scrim
+                >
+                  <span class="pill-switch-thumb" aria-hidden="true"></span>
+                </button>
+              </div>
             </div>
           </details>
 

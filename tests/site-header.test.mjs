@@ -109,3 +109,187 @@ test('desktop header across all pages stays always visible at top: 12px and swit
   assert.match(read('dist/index.html'), /<header\b[^>]*class="site-header"[^>]*data-page="home"/);
   assert.match(read('dist/blog/index.html'), /<header\b[^>]*class="site-header"[^>]*data-page="subpage"/);
 });
+
+test('settings gear popover controls typography, SVG scrim, persistence, fallback and keyboard Esc', () => {
+  const html = read('dist/index.html');
+  assert.match(html, /<details class="type-settings">\s*<summary\b[^>]*aria-expanded="false"[^>]*>\s*<svg\b/);
+  assert.doesNotMatch(html, /<details class="type-settings">[^]*?<summary[^>]*>Aa<\/summary>/);
+  assert.match(html, /<button\b[^>]*role="switch"[^>]*aria-checked="false"[^>]*data-font-bold/);
+  assert.match(html, /<button\b[^>]*role="switch"[^>]*aria-checked="false"[^>]*data-svg-scrim/);
+
+  const css = read('src/styles/global.css');
+  assert.match(css, /\.pill-switch:focus-visible\s*\{/);
+  assert.match(css, /max-width:\s*calc\(100vw - 2 \* var\(--gutter\)\)/);
+
+  const headScript = [...html.matchAll(/<script\b[^>]*>([^]*?)<\/script>/g)]
+    .find(([, code]) => code.includes('--svg-scrim-opacity'))?.[1];
+  assert.ok(headScript, 'inline pre-paint script must restore --svg-scrim-opacity');
+
+  const createHarness = (initialStore = {}, throwStorage = false) => {
+    const store = new Map(Object.entries(initialStore));
+    const styles = new Map();
+    const attrs = new Map();
+    const docListeners = new Map();
+    let focusedElement = null;
+
+    const makeEl = (extra = {}) => {
+      const elAttrs = new Map(Object.entries(extra.attrs ?? {}));
+      const listeners = new Map();
+      return {
+        ...extra,
+        dataset: { ...(extra.dataset ?? {}) },
+        setAttribute: (k, v) => elAttrs.set(k, String(v)),
+        getAttribute: (k) => elAttrs.get(k) ?? null,
+        addEventListener: (ev, cb) => {
+          if (!listeners.has(ev)) listeners.set(ev, []);
+          listeners.get(ev).push(cb);
+        },
+        dispatch: (ev, payload = {}) => {
+          for (const cb of listeners.get(ev) ?? []) cb({ target: extra.selfTarget, ...payload });
+        },
+        focus: () => { focusedElement = extra.name ?? 'focused'; },
+        click() { this.dispatch('click'); },
+      };
+    };
+
+    const summary = makeEl({ name: 'summary', attrs: { 'aria-expanded': 'false' } });
+    const boldBtn = makeEl({ attrs: { role: 'switch', 'aria-checked': 'false' } });
+    const scrimBtn = makeEl({ attrs: { role: 'switch', 'aria-checked': 'false' } });
+    const sizeBtns = ['small', 'medium', 'large'].map((size) =>
+      makeEl({ dataset: { fontSize: size }, attrs: { 'aria-pressed': 'false' } }),
+    );
+    const panel = makeEl({ open: false });
+    panel.contains = (node) => node === panel || node === boldBtn || node === scrimBtn;
+    panel.querySelector = (sel) => (sel === 'summary' ? summary : null);
+
+    const root = {
+      dataset: { themeMode: 'system' },
+      style: {
+        setProperty: (k, v) => styles.set(k, v),
+        getPropertyValue: (k) => styles.get(k) ?? '',
+      },
+      setAttribute: (name, value) => attrs.set(name, String(value)),
+      toggleAttribute: (name, force) => {
+        if (force) attrs.set(name, '');
+        else attrs.delete(name);
+      },
+      hasAttribute: (name) => attrs.has(name),
+    };
+
+    const localStorage = {
+      getItem: (k) => {
+        if (throwStorage) throw new Error('SecurityError');
+        return store.has(k) ? store.get(k) : null;
+      },
+      setItem: (k, v) => {
+        if (throwStorage) throw new Error('SecurityError');
+        store.set(k, String(v));
+      },
+    };
+
+    const document = {
+      documentElement: root,
+      querySelectorAll: (sel) => (sel === '[data-font-size]' ? sizeBtns : []),
+      querySelector: (sel) => {
+        if (sel === '[data-font-bold]') return boldBtn;
+        if (sel === '[data-svg-scrim]') return scrimBtn;
+        if (sel === '.type-settings') return panel;
+        return null;
+      },
+      addEventListener: (ev, cb) => {
+        if (!docListeners.has(ev)) docListeners.set(ev, []);
+        docListeners.get(ev).push(cb);
+      },
+    };
+
+    const storageKeysSrc = ts.transpileModule(read('src/lib/storage-keys.ts'), {
+      compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 },
+    }).outputText;
+    const storageExports = {};
+    runInNewContext(storageKeysSrc, { exports: storageExports });
+
+    const scriptSrc = ts.transpileModule(read('src/scripts/typography.ts'), {
+      compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 },
+    }).outputText;
+
+    const matchMedia = () => ({ matches: false, addEventListener: () => {} });
+    runInNewContext(scriptSrc, {
+      document,
+      localStorage,
+      matchMedia,
+      navigator: { userAgent: 'Mozilla/5.0' },
+      exports: {},
+      require: (id) => (id.includes('storage-keys') ? storageExports : {}),
+    });
+
+    const emitDoc = (ev, payload) => {
+      for (const cb of docListeners.get(ev) ?? []) cb(payload);
+    };
+
+    return {
+      store,
+      styles,
+      root,
+      summary,
+      boldBtn,
+      scrimBtn,
+      sizeBtns,
+      panel,
+      emitDoc,
+      getFocused: () => focusedElement,
+      runHead: () => runInNewContext(headScript, { document, localStorage, matchMedia }),
+    };
+  };
+
+  // 1. Toggle all three settings and verify DOM + localStorage persistence
+  const session1 = createHarness();
+  assert.equal(session1.styles.get('--svg-scrim-opacity'), '0');
+  assert.equal(session1.scrimBtn.getAttribute('aria-checked'), 'false');
+  assert.equal(session1.boldBtn.getAttribute('aria-checked'), 'false');
+
+  session1.sizeBtns[2].click(); // large
+  session1.boldBtn.click();
+  session1.scrimBtn.click();
+
+  assert.equal(session1.styles.get('--font-scale'), '1.12');
+  assert.equal(session1.sizeBtns[2].getAttribute('aria-pressed'), 'true');
+  assert.equal(session1.root.hasAttribute('data-font-bold'), true);
+  assert.equal(session1.boldBtn.getAttribute('aria-checked'), 'true');
+  assert.equal(session1.styles.get('--svg-scrim-opacity'), '0.8');
+  assert.equal(session1.scrimBtn.getAttribute('aria-checked'), 'true');
+
+  // 2. Reload with persisted storage: inline head script restores before paint & module syncs controls
+  const persisted = Object.fromEntries(session1.store.entries());
+  const session2 = createHarness(persisted);
+  session2.styles.clear();
+  session2.root.toggleAttribute('data-font-bold', false);
+  session2.runHead();
+  assert.equal(session2.styles.get('--font-scale'), '1.12');
+  assert.equal(session2.root.hasAttribute('data-font-bold'), true);
+  assert.equal(session2.styles.get('--svg-scrim-opacity'), '0.8');
+
+  // 3. Keyboard Escape closes panel & returns focus to summary; outside click closes panel; toggle syncs aria-expanded
+  session2.panel.open = true;
+  session2.panel.dispatch('toggle');
+  assert.equal(session2.summary.getAttribute('aria-expanded'), 'true');
+  session2.emitDoc('keydown', { key: 'Escape' });
+  assert.equal(session2.panel.open, false);
+  assert.equal(session2.summary.getAttribute('aria-expanded'), 'false');
+  assert.equal(session2.getFocused(), 'summary');
+
+  session2.panel.open = true;
+  session2.panel.dispatch('toggle');
+  session2.emitDoc('click', { target: {} });
+  assert.equal(session2.panel.open, false);
+  assert.equal(session2.summary.getAttribute('aria-expanded'), 'false');
+
+  // 4. Storage unavailable (incognito / blocked) remains interactive without throwing
+  const incognito = createHarness({}, true);
+  incognito.runHead();
+  incognito.sizeBtns[0].click();
+  incognito.boldBtn.click();
+  incognito.scrimBtn.click();
+  assert.equal(incognito.styles.get('--font-scale'), '0.94');
+  assert.equal(incognito.root.hasAttribute('data-font-bold'), true);
+  assert.equal(incognito.styles.get('--svg-scrim-opacity'), '0.8');
+});
