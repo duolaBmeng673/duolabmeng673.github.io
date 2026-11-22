@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { basename } from 'node:path';
-import { ALL_837_ROOT, CHROME_PATH, findSvgs, lintSvgs } from '../scripts/lint-svg.mjs';
+import { ALL_837_ROOT, CHROME_PATH, LEGACY_837_SVGS, findSvgs, lintSvgs } from '../scripts/lint-svg.mjs';
 
 const NET_ROOT = new URL('../src/content/837考研/计算机网络/', import.meta.url);
 
@@ -210,4 +210,12 @@ test('all 837 SVGs have no canvas background rect and maintain 24±2px viewBox m
     0,
     failed.map((r) => `${r.path}: ${r.violations.map((v) => v.detail).join('; ')}`).join('\n'),
   );
+
+  // New SVGs (not in LEGACY_837_SVGS) must strictly satisfy viewBox width=720, min font-size >= 12, and rendered >= 10.5px
+  for (const r of results) {
+    if (LEGACY_837_SVGS.has(r.path)) continue;
+    assert.equal(r.viewBox[2], 720, `${r.path}: new SVG viewBox width must be 720`);
+    assert.ok(r.minDesignFs >= 12, `${r.path}: new SVG min font-size ${r.minDesignFs} < 12`);
+    assert.ok(r.renderedFs720 >= 10.5, `${r.path}: new SVG rendered font-size ${r.renderedFs720} < 10.5px`);
+  }
 });

@@ -61,6 +61,53 @@ document.querySelectorAll<HTMLElement>('.article-body pre').forEach((pre) => {
   tools.append(language, feedback, button);
   wrapper.insertBefore(tools, pre);
 });
+let svgZoomDialog: HTMLDialogElement | null = null;
+let svgZoomStage: HTMLDivElement | null = null;
+let svgZoomTrigger: HTMLImageElement | SVGSVGElement | null = null;
+
+const ensureSvgZoomDialog = () => {
+  if (svgZoomDialog) return { dialog: svgZoomDialog, stage: svgZoomStage! };
+  const dialog = document.createElement('dialog');
+  dialog.className = 'svg-zoom-dialog';
+  dialog.setAttribute('aria-label', 'SVG 放大视图');
+  const surface = document.createElement('div');
+  surface.className = 'svg-zoom-surface';
+  const closeBtn = document.createElement('button');
+  closeBtn.type = 'button';
+  closeBtn.className = 'svg-zoom-close';
+  closeBtn.setAttribute('aria-label', '关闭放大视图');
+  closeBtn.textContent = '×';
+  closeBtn.addEventListener('click', () => dialog.close());
+  const stage = document.createElement('div');
+  stage.className = 'svg-zoom-stage';
+  surface.append(closeBtn, stage);
+  dialog.append(surface);
+  dialog.addEventListener('click', (e) => {
+    if (e.target === dialog) dialog.close();
+  });
+  dialog.addEventListener('close', () => {
+    stage.replaceChildren();
+    svgZoomTrigger?.focus();
+    svgZoomTrigger = null;
+  });
+  document.body.append(dialog);
+  svgZoomDialog = dialog;
+  svgZoomStage = stage;
+  return { dialog, stage };
+};
+
+const openSvgZoom = (diagram: HTMLImageElement | SVGSVGElement) => {
+  const { dialog, stage } = ensureSvgZoomDialog();
+  const clone = diagram.cloneNode(true) as HTMLElement;
+  clone.removeAttribute('tabindex');
+  clone.removeAttribute('role');
+  clone.removeAttribute('style');
+  stage.replaceChildren(clone);
+  svgZoomTrigger = diagram;
+  if (typeof dialog.showModal === 'function') dialog.showModal();
+  else dialog.setAttribute('open', '');
+};
+
 document.querySelectorAll<HTMLImageElement | SVGSVGElement>('.article-body [data-svg-diagram="true"]').forEach((diagram) => {
   let card = diagram.closest<HTMLElement>('.article-svg-card');
   if (!card) {
@@ -75,6 +122,22 @@ document.querySelectorAll<HTMLImageElement | SVGSVGElement>('.article-body [data
       diagram.style.width = `${attrW}px`;
     }
   }
+  diagram.setAttribute('tabindex', '0');
+  diagram.setAttribute('role', 'button');
+  const alt = diagram.getAttribute('alt') || diagram.querySelector('title')?.textContent?.trim() || '图表';
+  diagram.setAttribute('aria-label', `放大查看 SVG：${alt}`);
+  diagram.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    openSvgZoom(diagram);
+  });
+  diagram.addEventListener('keydown', (e) => {
+    if ((e as KeyboardEvent).key === 'Enter') {
+      e.preventDefault();
+      e.stopPropagation();
+      openSvgZoom(diagram);
+    }
+  });
   if (diagram.tagName !== 'IMG' || diagram.closest('a')) return;
   const src = diagram.getAttribute('src');
   if (!src?.endsWith('.svg')) return;

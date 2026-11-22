@@ -47,7 +47,7 @@
 - 粗指针设备标签 13px、最小高度 32px、内边距 `8px 10px`。图例文字 13px／400、色块与标签相同、条目间距 4px、每项最小高 32px。
 - 标签与图例选择态均跟随 `/study-notes/**` 频道强调色 `--ac` / `--ac-strong`（浅色深绿 `#08544a`/`#0b6e61`、深色 `#5fd6b8`/`#86e6cc`）；类别识别色仍只在小方块。图例选择态用描边与柔绿背景，不把整项涂成类别色。
 
-【已核实】文章 H1、正文容器阅读主栏文本约 `44rem` 舒适中文行长（开启 `text-autospace: normal`），宽表格、代码块与 SVG 图表不受限于文本窄栏；文章 TOC 仅在启用 JS 时按当前 H2 章节展开 H3 子项，并与章节目录共用 `220ms cubic-bezier(.22, 1, .36, 1)` 共享滑动指示块与 `scrollend` + 超时兜底锁定。
+【已核实】文章 H1、正文容器阅读主栏文本约 `44rem`（`--article-text-max`）舒适中文行长（开启 `text-autospace: normal`），主栏容器 `--article-main-max: 50rem`、右侧目录栏 `--article-toc-w: 16.5rem`、栏间距 `--article-toc-gap: 2.25rem`；宽表格、代码块与 SVG 图表不受限于文本窄栏，其中桌面端（`>= 1180px`）`.article-svg-card` 内容最大宽度以正文列中心对称 break-out 至 `min(720px, 不与右侧目录栏重叠的最大宽度)`，窄视口（`< 1180px`）恢复 `max-width: 100%`；文章 TOC 仅在启用 JS 时按当前 H2 章节展开 H3 子项，并与章节目录共用 `220ms cubic-bezier(.22, 1, .36, 1)` 共享滑动指示块与 `scrollend` + 超时兜底锁定。
 
 ## 已核实的顶栏行为
 

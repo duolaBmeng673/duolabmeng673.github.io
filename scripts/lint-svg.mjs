@@ -18,6 +18,90 @@ export function findSvgs(dirPath) {
 export const ALL_837_ROOT = 'src/content/837考研';
 export const NETWORK_ROOT = 'src/content/837考研/计算机网络';
 
+export const LEGACY_837_SVGS = new Set([
+  'src/content/837考研/信息安全导论/信息安全导论考点问题总结/1 信息安全的基本概念/开放系统互连安全体系结构.svg',
+  'src/content/837考研/信息安全导论/信息安全导论考点问题总结/1 信息安全的基本概念/面向应用的层次型技术体系架构.svg',
+  'src/content/837考研/信息安全导论/信息安全导论考点问题总结/2 密码学基础/b 对称密钥密码与 DES/mode_cbc.svg',
+  'src/content/837考研/信息安全导论/信息安全导论考点问题总结/2 密码学基础/b 对称密钥密码与 DES/mode_cfb.svg',
+  'src/content/837考研/信息安全导论/信息安全导论考点问题总结/2 密码学基础/b 对称密钥密码与 DES/mode_ctr.svg',
+  'src/content/837考研/信息安全导论/信息安全导论考点问题总结/2 密码学基础/b 对称密钥密码与 DES/mode_ecb.svg',
+  'src/content/837考研/信息安全导论/信息安全导论考点问题总结/2 密码学基础/b 对称密钥密码与 DES/mode_ofb.svg',
+  'src/content/837考研/信息安全导论/信息安全导论考点问题总结/3 身份认证与访问控制/a 基于对称密钥的认证设计与 Kerberos 协议/3a-challenge-response.svg',
+  'src/content/837考研/信息安全导论/信息安全导论考点问题总结/3 身份认证与访问控制/a 基于对称密钥的认证设计与 Kerberos 协议/3a-kerberos.svg',
+  'src/content/837考研/信息安全导论/信息安全导论考点问题总结/3 身份认证与访问控制/a 基于对称密钥的认证设计与 Kerberos 协议/3a-needham-schroeder.svg',
+  'src/content/837考研/信息安全导论/信息安全导论考点问题总结/3 身份认证与访问控制/b 基于公开密钥的认证设计与 PKI 理论/ca-auth-process.svg',
+  'src/content/837考研/信息安全导论/信息安全导论考点问题总结/3 身份认证与访问控制/b 基于公开密钥的认证设计与 PKI 理论/ca-cert-structure.svg',
+  'src/content/837考研/信息安全导论/信息安全导论考点问题总结/3 身份认证与访问控制/b 基于公开密钥的认证设计与 PKI 理论/needham-schroeder.svg',
+  'src/content/837考研/信息安全导论/信息安全导论考点问题总结/3 身份认证与访问控制/d Windows 系统网络认证及访问控制/win-access-control.svg',
+  'src/content/837考研/信息安全导论/信息安全导论考点问题总结/3 身份认证与访问控制/d Windows 系统网络认证及访问控制/win-domain-login.svg',
+  'src/content/837考研/信息安全导论/信息安全导论考点问题总结/5 防火墙、入侵检测与安全传输协议/5.b 入侵检测理论与 snorts 结构原理/CIDF模型.svg',
+  'src/content/837考研/信息安全导论/信息安全导论考点问题总结/5 防火墙、入侵检测与安全传输协议/5.b 入侵检测理论与 snorts 结构原理/Snort模块.svg',
+  'src/content/837考研/信息安全导论/信息安全导论考点问题总结/5 防火墙、入侵检测与安全传输协议/5.b 入侵检测理论与 snorts 结构原理/Snort的三维规则链表结构.svg',
+  'src/content/837考研/信息安全导论/信息安全导论考点问题总结/5 防火墙、入侵检测与安全传输协议/5.c.1  IPSec/AH工作模式.svg',
+  'src/content/837考研/信息安全导论/信息安全导论考点问题总结/5 防火墙、入侵检测与安全传输协议/5.c.1  IPSec/ESP工作模式.svg',
+  'src/content/837考研/信息安全导论/信息安全导论考点问题总结/5 防火墙、入侵检测与安全传输协议/5.c.1  IPSec/IKESA主模式.svg',
+  'src/content/837考研/信息安全导论/信息安全导论考点问题总结/5 防火墙、入侵检测与安全传输协议/5.c.1  IPSec/IKESA野蛮模式.svg',
+  'src/content/837考研/信息安全导论/信息安全导论考点问题总结/5 防火墙、入侵检测与安全传输协议/5.c.1  IPSec/IPSecSA快速模式.svg',
+  'src/content/837考研/信息安全导论/信息安全导论考点问题总结/5 防火墙、入侵检测与安全传输协议/5.c.2  SSL/SSL协议分层.svg',
+  'src/content/837考研/信息安全导论/信息安全导论考点问题总结/5 防火墙、入侵检测与安全传输协议/5.c.2  SSL/SSL握手协议流程.svg',
+  'src/content/837考研/信息安全导论/信息安全导论考点问题总结/5 防火墙、入侵检测与安全传输协议/5.c.2  SSL/SSL记录协议数据处理.svg',
+  'src/content/837考研/信息安全导论/信息安全导论考点问题总结/5 防火墙、入侵检测与安全传输协议/5.d  SET/DS.svg',
+  'src/content/837考研/信息安全导论/信息安全导论考点问题总结/5 防火墙、入侵检测与安全传输协议/5.d  SET/电子信封.svg',
+  'src/content/837考研/信息安全导论/信息安全导论考点问题总结/6 安全风险管理与法律法规/风险控制措施.svg',
+  'src/content/837考研/网络安全基础考点笔记总结/1 网络攻击/c 格式化攻击、缓冲区溢出攻击/buffer_overflow_stack_normal_vs_attack.svg',
+  'src/content/837考研/网络安全基础考点笔记总结/1 网络攻击/c 格式化攻击、缓冲区溢出攻击/format_string_attack_stack_compare.svg',
+  'src/content/837考研/网络安全基础考点笔记总结/2 网络数据获取/c WinPcap 或 Libpcap 编程/libpcap_call_order.svg',
+  'src/content/837考研/网络安全基础考点笔记总结/5 典型模式匹配算法/a 单模式匹配算法/5.a.1 KMP算法/kmp_shift.svg',
+  'src/content/837考研/网络安全基础考点笔记总结/5 典型模式匹配算法/a 单模式匹配算法/5.a.1 KMP算法/kmp_steps_anim.svg',
+  'src/content/837考研/网络安全基础考点笔记总结/5 典型模式匹配算法/a 单模式匹配算法/5.a.1 KMP算法/kmp_vs_bf.svg',
+  'src/content/837考研/网络安全基础考点笔记总结/5 典型模式匹配算法/a 单模式匹配算法/5.a.2 BM算法/bm-01-scan-direction.svg',
+  'src/content/837考研/网络安全基础考点笔记总结/5 典型模式匹配算法/a 单模式匹配算法/5.a.2 BM算法/bm-02-bad-char-rules.svg',
+  'src/content/837考研/网络安全基础考点笔记总结/5 典型模式匹配算法/a 单模式匹配算法/5.a.2 BM算法/bm-03-bmBc.svg',
+  'src/content/837考研/网络安全基础考点笔记总结/5 典型模式匹配算法/a 单模式匹配算法/5.a.2 BM算法/bm-04-good-suffix-cases.svg',
+  'src/content/837考研/网络安全基础考点笔记总结/5 典型模式匹配算法/a 单模式匹配算法/5.a.2 BM算法/bm-06-flow.svg',
+  'src/content/837考研/网络安全基础考点笔记总结/5 典型模式匹配算法/a 单模式匹配算法/5.a.2 BM算法/bm-07-homework-trace.svg',
+  'src/content/837考研/网络安全基础考点笔记总结/5 典型模式匹配算法/b 多模式匹配算法/5.b.1 AC 算法/ac_automaton.svg',
+  'src/content/837考研/网络安全基础考点笔记总结/5 典型模式匹配算法/b 多模式匹配算法/5.b.2 WM 算法/wm_1_blocks.svg',
+  'src/content/837考研/网络安全基础考点笔记总结/5 典型模式匹配算法/b 多模式匹配算法/5.b.2 WM 算法/wm_2_shift.svg',
+  'src/content/837考研/网络安全基础考点笔记总结/5 典型模式匹配算法/b 多模式匹配算法/5.b.2 WM 算法/wm_3_hash.svg',
+  'src/content/837考研/网络安全基础考点笔记总结/5 典型模式匹配算法/b 多模式匹配算法/5.b.2 WM 算法/wm_4_prefix_patptr.svg',
+  'src/content/837考研/网络安全基础考点笔记总结/5 典型模式匹配算法/b 多模式匹配算法/5.b.2 WM 算法/wm_5_relations.svg',
+  'src/content/837考研/网络安全基础考点笔记总结/6 典型分类聚类算法/b 贝叶斯分类/naive-bayes-flow.svg',
+  'src/content/837考研/计算机网络/1 计算机网络体系结构的概念/a 报文交换基本概念/delay-bandwidth-product.svg',
+  'src/content/837考研/计算机网络/1 计算机网络体系结构的概念/a 报文交换基本概念/store-forward-timeline.svg',
+  'src/content/837考研/计算机网络/1 计算机网络体系结构的概念/b TCP-IP 体系结构/osi-tcpip-layers.svg',
+  'src/content/837考研/计算机网络/1 计算机网络体系结构的概念/b TCP-IP 体系结构/router-forwarding-layers.svg',
+  'src/content/837考研/计算机网络/1 计算机网络体系结构的概念/b TCP-IP 体系结构/tcpip-hourglass.svg',
+  'src/content/837考研/计算机网络/1 计算机网络体系结构的概念/c IP 地址与子网/cidr-prefix.svg',
+  'src/content/837考研/计算机网络/1 计算机网络体系结构的概念/c IP 地址与子网/ip-address-topology.svg',
+  'src/content/837考研/计算机网络/1 计算机网络体系结构的概念/c IP 地址与子网/ipv4-classful-address.svg',
+  'src/content/837考研/计算机网络/1 计算机网络体系结构的概念/c IP 地址与子网/route-aggregation.svg',
+  'src/content/837考研/计算机网络/2 应用层/a Web 与 HTTP/http-message-format.svg',
+  'src/content/837考研/计算机网络/2 应用层/a Web 与 HTTP/http-persistent-vs-nonpersistent.svg',
+  'src/content/837考研/计算机网络/2 应用层/b DNS/dns-2020-timeline.svg',
+  'src/content/837考研/计算机网络/2 应用层/b DNS/dns-domain-tree.svg',
+  'src/content/837考研/计算机网络/2 应用层/b DNS/dns-resolution-modes.svg',
+  'src/content/837考研/计算机网络/2 应用层/b DNS/dns-server-hierarchy.svg',
+  'src/content/837考研/计算机网络/2 应用层/c SMTP/email-system-components.svg',
+  'src/content/837考研/计算机网络/2 应用层/c SMTP/mime-smtp-relation.svg',
+  'src/content/837考研/计算机网络/3 传输层/a UDP/udp-header-format.svg',
+  'src/content/837考研/计算机网络/3 传输层/b TCP/tcp-flow-control.svg',
+  'src/content/837考研/计算机网络/3 传输层/b TCP/tcp-handshake-teardown.svg',
+  'src/content/837考研/计算机网络/3 传输层/b TCP/tcp-header-format.svg',
+  'src/content/837考研/计算机网络/3 传输层/c 拥塞控制/tcp-congestion-control.svg',
+  'src/content/837考研/计算机网络/4 Socket 编程/a UDP 编程/socket-udp-flow.svg',
+  'src/content/837考研/计算机网络/4 Socket 编程/b TCP 编程/socket-tcp-flow.svg',
+  'src/content/837考研/计算机网络/4 Socket 编程/c 原始套接字编程/socket-raw-stack.svg',
+  'src/content/837考研/计算机网络/5 网络层/a 链路状态路由协议/ospf-areas.svg',
+  'src/content/837考研/计算机网络/5 网络层/b 距离向量路由协议/rip-update-flow.svg',
+  'src/content/837考研/计算机网络/5 网络层/c BGP/bgp-as-speakers.svg',
+  'src/content/837考研/计算机网络/6 链路层/a ARP/arp-broadcast-unicast.svg',
+  'src/content/837考研/计算机网络/6 链路层/a ARP/arp-mac-hop-changes.svg',
+  'src/content/837考研/计算机网络/6 链路层/b WIFI/csma-cd-collision-window.svg',
+  'src/content/837考研/计算机网络/6 链路层/b WIFI/wifi-rts-cts-nav.svg',
+  'src/content/837考研/计算机网络/6 链路层/c CDMA/cdma-orthogonality-decoding.svg',
+]);
+
 export const CHROME_PATH =
   process.env.CHROME_PATH ||
   '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
@@ -30,6 +114,7 @@ export function lintSvgs(files, { quiet = false } = {}) {
 
     for (const relPath of files) {
       const absPath = resolve(relPath);
+      const isLegacy = LEGACY_837_SVGS.has(relPath);
       const isNetworkV1 = relPath.includes('计算机网络');
       const svgContent = readFileSync(absPath, 'utf8');
       const html = `<!doctype html>
@@ -171,6 +256,30 @@ ${svgContent}
       box: el.getBBox(),
     }));
 
+  let minDesignFs = Infinity;
+  for (const el of svg.querySelectorAll('text, tspan')) {
+    if (el.closest('defs')) continue;
+    const hasDirectText = [...el.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim().length > 0);
+    if (!hasDirectText) continue;
+    const fsPx = parseFloat(getComputedStyle(el).fontSize);
+    if (Number.isFinite(fsPx) && fsPx > 0 && fsPx < minDesignFs) {
+      minDesignFs = fsPx;
+    }
+  }
+  const renderedFs720 = Number.isFinite(minDesignFs) ? minDesignFs * Math.min(1, 720 / W) : null;
+  const warnings = [];
+  const IS_LEGACY = ${JSON.stringify(isLegacy)};
+  const checkNewSpec = (rule, ok, detail) => {
+    if (ok) return;
+    if (IS_LEGACY) warnings.push({ rule, detail });
+    else violations.push({ rule, detail });
+  };
+  checkNewSpec('viewBox-width-720', W === 720, 'viewBox width is ' + W + ' (new SVG spec requires 720)');
+  if (Number.isFinite(minDesignFs)) {
+    checkNewSpec('min-font-size', minDesignFs >= 12, 'min design font-size is ' + minDesignFs + ' (new SVG spec requires >=12)');
+    checkNewSpec('breakout-rendered-font-size', renderedFs720 >= 10.5, 'rendered font-size at 720px break-out is ' + renderedFs720.toFixed(2) + 'px (requires >=10.5px)');
+  }
+
   if (CHECK_V1_LAYOUT) {
     // 2. Pairwise text-text intersection
     for (let i = 0; i < texts.length; i++) {
@@ -244,8 +353,11 @@ ${svgContent}
   document.getElementById('lint-output').textContent = JSON.stringify({
     viewBox: [vbX, vbY, W, H],
     margins,
+    minDesignFs: Number.isFinite(minDesignFs) ? minDesignFs : null,
+    renderedFs720,
     textCount: texts.length,
     violations,
+    warnings,
   });
 })();
 </script>
@@ -279,13 +391,17 @@ ${svgContent}
       results.push({ path: relPath, ...report });
 
       if (!quiet) {
+        const warnSuffix = report.warnings?.length ? ` [${report.warnings.length} legacy warnings]` : '';
         if (count === 0) {
-          console.log(`[PASS] ${relPath} (viewBox ${report.viewBox.join(' ')}, ${report.textCount} texts, 0 violations)`);
+          console.log(`[PASS] ${relPath} (viewBox ${report.viewBox.join(' ')}, ${report.textCount} texts, 0 violations)${warnSuffix}`);
         } else {
           console.log(`[FAIL] ${relPath} (${count} violations):`);
           for (const v of report.violations) {
             console.log(`  - [${v.rule}] ${v.detail}`);
           }
+        }
+        for (const w of report.warnings ?? []) {
+          console.log(`  [WARN legacy] [${w.rule}] ${w.detail}`);
         }
       }
     }
