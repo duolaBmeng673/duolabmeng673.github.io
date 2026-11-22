@@ -688,7 +688,7 @@ if (tocPanel) {
   articleJumpBtns.forEach((btn) => btn.addEventListener('click', () => openJumpPanel(btn)));
 
   document.addEventListener('keydown', (event) => {
-    if (!event.altKey || event.ctrlKey || event.metaKey || event.code !== 'KeyJ') return;
+    if (!event.altKey || event.ctrlKey || event.metaKey || event.shiftKey || event.code !== 'KeyJ') return;
     const target = event.target as HTMLElement | null;
     if (target && target !== jumpFilter && (/^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName) || target.isContentEditable)) return;
     event.preventDefault();

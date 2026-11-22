@@ -424,12 +424,18 @@ span.knowledge-chip { cursor: inherit; }
   color: var(--ac);
 }
 .study-quick-jump-trigger kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.3rem;
   padding: 0.08rem 0.36rem;
   border: 1px solid var(--bd);
   border-radius: 4px;
   background: var(--glass);
   font-family: var(--mono);
   font-size: 0.75rem;
+  line-height: 1.2;
+  white-space: nowrap;
   color: var(--tm);
 }
 

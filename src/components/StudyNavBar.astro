@@ -29,8 +29,9 @@ const modules = getStudyModuleSummaries(allPosts.filter((post) => post.data.seri
     data-study-jump-open
     aria-expanded="false"
     aria-controls="study-quick-jump-dialog"
-    title="快捷键 Option/Alt + J"
+    title="快捷键 Alt + J"
+    data-jump-shortcut-title
   >
-    笔记直达 <kbd aria-hidden="true">Alt J</kbd>
+    笔记直达 <kbd aria-hidden="true" data-jump-shortcut data-shortcut-kind="jump">Alt J</kbd>
   </button>
 </div>

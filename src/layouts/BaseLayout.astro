@@ -102,6 +102,10 @@ const navItems = [
         } catch {}
         root.dataset.themeMode = mode;
         root.dataset.theme = mode === 'system' ? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : mode;
+        const navObj = typeof navigator !== 'undefined' ? navigator : undefined;
+        const uadPlatform = navObj && navObj.userAgentData && typeof navObj.userAgentData.platform === 'string' ? navObj.userAgentData.platform.trim() : '';
+        const rawPlatform = uadPlatform || (navObj && typeof navObj.platform === 'string' ? navObj.platform.trim() : '') || (navObj && navObj.userAgent) || '';
+        root.dataset.platform = /Mac|iOS|iPadOS|iPhone|iPad|iPod/i.test(rawPlatform) ? 'mac' : 'other';
         const themeMeta = document.querySelector('meta[name="theme-color"]');
         if (themeMeta) themeMeta.setAttribute('content', root.dataset.theme === 'dark' ? '#08070c' : '#f7f6f2');
       })();
@@ -147,7 +151,7 @@ const navItems = [
                 aria-controls="header-search-results"
                 aria-expanded="false"
               />
-              <kbd aria-hidden="true" data-search-shortcut>Ctrl K</kbd>
+              <kbd aria-hidden="true" data-search-shortcut data-shortcut-kind="search">Ctrl K</kbd>
             </form>
             <div id="header-search-results" class="search-popover" data-search-popover hidden>
               <p class="search-status" data-search-status role="status">输入关键词，搜索标题、标签与正文。</p>
@@ -262,6 +266,16 @@ const navItems = [
 
     <script is:inline>
       (() => {
+        const isMac = document.documentElement.dataset.platform === 'mac';
+        const searchShortcut = document.querySelector('[data-search-shortcut]');
+        if (searchShortcut) {
+          searchShortcut.textContent = isMac ? '⌘ K' : 'Ctrl K';
+          searchShortcut.dataset.shortcutSynced = 'true';
+        }
+      })();
+    </script>
+    <script is:inline>
+      (() => {
         const header = document.querySelector('.site-header');
         if (!header) return;
         const syncHeight = () => document.documentElement.style.setProperty('--header-h', `${header.getBoundingClientRect().height}px`);
@@ -272,6 +286,18 @@ const navItems = [
     </script>
 
     <main id="main-content"><slot /></main>
+    <script is:inline>
+      (() => {
+        const isMac = document.documentElement.dataset.platform === 'mac';
+        document.querySelectorAll('[data-jump-shortcut]').forEach((el) => {
+          el.textContent = isMac ? '⌥ J' : 'Alt J';
+          el.dataset.shortcutSynced = 'true';
+        });
+        document.querySelectorAll('[data-jump-shortcut-title]').forEach((el) => {
+          el.setAttribute('title', isMac ? '快捷键 ⌥ J' : '快捷键 Alt + J');
+        });
+      })();
+    </script>
 
     <footer class="site-footer">
       <div class="footer-brand">

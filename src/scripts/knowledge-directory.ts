@@ -283,7 +283,7 @@ if (studyJumpDialog && studyJumpOpeners.length) {
       closeStudyJump(true);
       return;
     }
-    if (event.altKey && !event.ctrlKey && !event.metaKey && event.code === 'KeyJ') {
+    if (event.altKey && !event.ctrlKey && !event.metaKey && !event.shiftKey && event.code === 'KeyJ') {
       const active = document.activeElement as HTMLElement | null;
       const inInput = active && (['INPUT', 'TEXTAREA', 'SELECT'].includes(active.tagName) || active.isContentEditable);
       if (inInput && studyJumpDialog.hidden) return;

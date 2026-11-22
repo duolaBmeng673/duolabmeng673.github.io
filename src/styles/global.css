@@ -424,14 +424,30 @@ body:not(.home-page) .site-header .header-inner {
 .header-search-form input::placeholder { color: var(--tm); }
 .header-search-form kbd {
   flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.3rem;
   color: var(--tm);
   font-family: var(--mono);
   font-size: 0.68rem;
+  line-height: 1.2;
   white-space: nowrap;
   padding: 0.06rem 0.32rem;
   border-radius: 0.25rem;
   border: 1px solid var(--bd);
   background: var(--bg-elev);
+}
+html[data-platform="mac"] [data-shortcut-kind]:not([data-shortcut-synced]) {
+  font-size: 0;
+}
+html[data-platform="mac"] [data-shortcut-kind="search"]:not([data-shortcut-synced])::after {
+  content: "⌘ K";
+  font-size: 0.68rem;
+}
+html[data-platform="mac"] [data-shortcut-kind="jump"]:not([data-shortcut-synced])::after {
+  content: "⌥ J";
+  font-size: 0.75rem;
 }
 .search-popover {
   position: absolute;
@@ -1353,12 +1369,18 @@ button.quick-jump-pill:hover,
   cursor: pointer;
 }
 .quick-jump-pill kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.3rem;
   padding: 0.06rem 0.34rem;
   border: 1px solid var(--bd);
   border-radius: 4px;
   background: var(--glass);
   font-family: var(--mono);
   font-size: 0.75rem;
+  line-height: 1.2;
+  white-space: nowrap;
   color: var(--tm);
 }
 .article-chapter-switcher {

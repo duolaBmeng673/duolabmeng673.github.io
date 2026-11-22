@@ -57,8 +57,6 @@ theme?.addEventListener('click', () => {
   mode = modes[(modes.indexOf(mode) + 1) % 3];
   applyTheme(); save(STORAGE_KEYS.theme, mode);
 });
-const shortcut = document.querySelector('[data-search-shortcut]');
-if (shortcut && /Mac/.test(navigator.userAgent)) shortcut.textContent = 'Cmd K';
 media.addEventListener('change', () => { if (mode === 'system') applyTheme(); });
 document.addEventListener('click', (event) => {
   if (panel?.open && !panel.contains(event.target as Node)) {

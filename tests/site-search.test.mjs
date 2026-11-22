@@ -3,6 +3,22 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
 import ts from 'typescript';
+import {
+  detectIsMac,
+  getShortcutLabels,
+  matchesJumpShortcut,
+  matchesSearchShortcut,
+} from '../src/lib/platform-shortcuts.ts';
+
+const loadPlatformShortcuts = () => {
+  const src = ts.transpileModule(
+    readFileSync(new URL('../src/lib/platform-shortcuts.ts', import.meta.url), 'utf8'),
+    { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 } },
+  ).outputText;
+  const mod = { exports: {} };
+  runInNewContext(src, { exports: mod.exports, module: mod });
+  return mod.exports;
+};
 
 test('search keeps native candidate links alive across null focus transitions and pending index loads', async () => {
   const script = ts.transpileModule(readFileSync(new URL('../src/scripts/site-search.ts', import.meta.url), 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 } }).outputText;
@@ -24,7 +40,14 @@ test('search keeps native candidate links alive across null focus transitions an
   let resolve;
   let pending = new Promise((done) => { resolve = done; });
   const search = { rankSearch: () => [record], searchSnippet: () => '认证流程', loadSearchIndex: () => pending };
-  runInNewContext(script, { document, URLSearchParams, exports: {}, require: () => search });
+  const platformShortcuts = loadPlatformShortcuts();
+  runInNewContext(script, {
+    document,
+    URLSearchParams,
+    navigator: { platform: 'Win32', userAgent: 'Mozilla/5.0 (Windows NT 10.0)' },
+    exports: {},
+    require: (id) => (id.includes('platform-shortcuts') ? platformShortcuts : search),
+  });
   input.value = 'Kerberos'; input.handlers.input();
   resolve([record]); await new Promise(setImmediate);
   const link = results.children[0].children[0];
@@ -49,4 +72,61 @@ test('search keeps native candidate links alive across null focus transitions an
   assert.equal(popover.hidden, false);
   document.handlers.focusin({ target: new Element('button') });
   assert.equal(popover.hidden, true, 'keyboard focus outside still closes candidates');
+});
+
+test('platform shortcut detection, labels, event.code matching, and pre-paint HTML adapt per OS', () => {
+  assert.equal(detectIsMac({ userAgentData: { platform: 'macOS' }, platform: 'Win32' }), true);
+  assert.equal(detectIsMac({ userAgentData: { platform: 'Windows' }, platform: 'MacIntel' }), false);
+  assert.equal(detectIsMac({ platform: 'MacIntel', userAgent: 'Mozilla/5.0' }), true);
+  assert.equal(detectIsMac({ platform: 'Linux x86_64', userAgent: 'Mozilla/5.0 (X11; Linux x86_64)' }), false);
+  assert.equal(detectIsMac({ userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 14_0)' }), true);
+  assert.equal(detectIsMac({ userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64)' }), false);
+
+  assert.deepEqual(getShortcutLabels(true), { search: '⌘ K', jump: '⌥ J', jumpTitle: '快捷键 ⌥ J' });
+  assert.deepEqual(getShortcutLabels(false), { search: 'Ctrl K', jump: 'Alt J', jumpTitle: '快捷键 Alt + J' });
+
+  assert.equal(matchesSearchShortcut({ code: 'KeyK', key: '˚', metaKey: true }, true), true);
+  assert.equal(matchesSearchShortcut({ code: 'KeyK', key: 'k', ctrlKey: true }, true), false);
+  assert.equal(matchesSearchShortcut({ code: 'KeyK', key: 'л', ctrlKey: true }, false), true);
+  assert.equal(matchesSearchShortcut({ code: 'KeyK', key: 'k', metaKey: true }, false), false);
+  assert.equal(matchesSearchShortcut({ code: 'KeyK', key: 'k', metaKey: true, altKey: true }, true), false);
+
+  assert.equal(matchesJumpShortcut({ code: 'KeyJ', key: '∆', altKey: true }), true);
+  assert.equal(matchesJumpShortcut({ code: 'KeyJ', key: 'j', altKey: true, shiftKey: true }), false);
+  assert.equal(matchesJumpShortcut({ code: 'KeyJ', key: 'j', ctrlKey: true }), false);
+
+  const script = ts.transpileModule(
+    readFileSync(new URL('../src/scripts/site-search.ts', import.meta.url), 'utf8'),
+    { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 } },
+  ).outputText;
+  const platformShortcuts = loadPlatformShortcuts();
+  for (const scenario of [
+    { name: 'mac', navigator: { userAgentData: { platform: 'macOS' } }, accept: { code: 'KeyK', key: '˚', metaKey: true }, reject: { code: 'KeyK', key: 'k', ctrlKey: true } },
+    { name: 'win', navigator: { platform: 'Win32' }, accept: { code: 'KeyK', key: 'л', ctrlKey: true }, reject: { code: 'KeyK', key: 'k', metaKey: true } },
+  ]) {
+    let focused = false;
+    let prevented = false;
+    const handlers = {};
+    const input = { addEventListener() {}, focus() { focused = true; }, setAttribute() {}, value: '' };
+    const document = { activeElement: null, querySelector: (sel) => (sel === '[data-search-input]' ? input : null), addEventListener: (ev, cb) => { handlers[ev] = cb; } };
+    runInNewContext(script, {
+      document,
+      URLSearchParams,
+      navigator: scenario.navigator,
+      exports: {},
+      require: (id) => (id.includes('platform-shortcuts') ? platformShortcuts : { rankSearch: () => [], searchSnippet: () => '', loadSearchIndex: async () => [] }),
+    });
+    handlers.keydown({ ...scenario.reject, preventDefault() { prevented = true; } });
+    assert.equal(focused, false, `${scenario.name} must ignore wrong modifier`);
+    handlers.keydown({ ...scenario.accept, preventDefault() { prevented = true; } });
+    assert.equal(focused, true, `${scenario.name} must focus search input via event.code KeyK`);
+    assert.equal(prevented, true);
+  }
+
+  const homeHtml = readFileSync(new URL('../dist/index.html', import.meta.url), 'utf8');
+  const studyHtml = readFileSync(new URL('../dist/study-notes/837/symmetric-key-cryptography-des/index.html', import.meta.url), 'utf8');
+  assert.match(homeHtml, /dataset\.platform\s*=\s*\/Mac/);
+  assert.match(homeHtml, /data-search-shortcut\s+data-shortcut-kind="search"/);
+  assert.doesNotMatch(homeHtml, /Cmd K/);
+  assert.match(studyHtml, /data-jump-shortcut\s+data-shortcut-kind="jump"/);
 });

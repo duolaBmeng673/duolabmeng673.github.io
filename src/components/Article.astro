@@ -163,9 +163,9 @@ const canRecall = Boolean(study && headings.some((heading) => heading.depth >= 2
               ) : (
                 <span class="quick-jump-pill is-disabled" aria-disabled="true">已是末篇 →</span>
               )}
-              <button type="button" class="quick-jump-pill is-action" data-article-jump-open>
+              <button type="button" class="quick-jump-pill is-action" data-article-jump-open title="快捷键 Alt + J" data-jump-shortcut-title>
                 <span>笔记直达</span>
-                <kbd aria-hidden="true">Alt J</kbd>
+                <kbd aria-hidden="true" data-jump-shortcut data-shortcut-kind="jump">Alt J</kbd>
               </button>
             </div>
           )}

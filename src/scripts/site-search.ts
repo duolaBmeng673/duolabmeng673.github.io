@@ -1,4 +1,5 @@
 import { rankSearch, searchSnippet, loadSearchIndex, type SearchRecord } from '../lib/search';
+import { detectIsMac, matchesSearchShortcut } from '../lib/platform-shortcuts';
 const shell = document.querySelector<HTMLElement>('[data-search-shell]');
 const input = document.querySelector<HTMLInputElement>('[data-search-input]');
 const popover = document.querySelector<HTMLElement>('[data-search-popover]');
@@ -67,7 +68,7 @@ shell?.addEventListener('focusout', (event) => {
 document.addEventListener('focusin', (event) => { if (shell && !shell.contains(event.target as Node)) setExpanded(false); });
 document.addEventListener('click', (event) => { if (shell && !shell.contains(event.target as Node)) setExpanded(false); });
 document.addEventListener('keydown', (event) => {
-  if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
+  if (matchesSearchShortcut(event, detectIsMac(typeof navigator !== 'undefined' ? navigator : undefined))) {
     event.preventDefault(); input?.focus({ preventScroll: true }); void update();
   }
   if (event.key === 'Escape' && expanded) {
