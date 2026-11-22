@@ -1,5 +1,423 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="-4 -11 708 665" width="708" height="665" xmlns:c2pa="http://c2pa.org/manifest"><metadata><c2pa:manifest>AAAWgmp1bWIAAAAeanVtZGMycGEAEQAQgAAAqgA4m3EDYzJwYQAAABZcanVtYgAAAEdqdW1kYzJtYQARABCAAACqADibcQN1cm46YzJwYTozY2RiN2Y5Yy1lZWVkLTQ0ODktOWJhYi0wODUwMmQ0MDA5YzcAAAADl2p1bWIAAAApanVtZGMyYXMAEQAQgAAAqgA4m3EDYzJwYS5hc3NlcnRpb25zAAAAALxqdW1iAAAARGp1bWRjYm9yABEAEIAAAKoAOJtxE2MycGEuaW5ncmVkaWVudC52MwAAAAAYYzJzaD7+frlRbOxHixx7LZxIOvcAAABwY2JvcqNpZGM6Zm9ybWF0bWltYWdlL3N2Zyt4bWxqaW5zdGFuY2VJRHgseG1wOmlpZDo4OTc1NzZiNS03ZmExLTQ3MDAtYWI3OC01MDFkMWIzMDU2YjBscmVsYXRpb25zaGlwaHBhcmVudE9mAAAB4mp1bWIAAABBanVtZGNib3IAEQAQgAAAqgA4m3ETYzJwYS5hY3Rpb25zLnYyAAAAABhjMnNopQi9gSHvbm/pGVYnZpzWvwAAAZljYm9yomdhY3Rpb25zgqJmYWN0aW9ua2MycGEub3BlbmVkanBhcmFtZXRlcnOha2luZ3JlZGllbnRzgaJjdXJseC1zZWxmI2p1bWJmPWMycGEuYXNzZXJ0aW9ucy9jMnBhLmluZ3JlZGllbnQudjNkaGFzaFggZPA7d0SzaYaVeIShw02kDe70I+iQUbl1JnS4L8HNagmkZmFjdGlvbngdY29tLmFudGhyb3BpYy5jbGF1ZGUucHJvdmlkZWRqcGFyYW1ldGVyc6F4H2NvbS5hbnRocm9waWMub3JpZ2luLWNvbmZpZGVuY2VndW5rbm93bmtkZXNjcmlwdGlvbnhmQ2xhdWRlIHByb3ZpZGVkIHRoaXMgZmlsZSBhdCB0aGUgcmVxdWVzdCBvZiBhIHVzZXIgYW5kIG1heSBoYXZlIGNyZWF0ZWQgb3IgbW9kaWZpZWQgdGhlIGZpbGUgY29udGVudHMubXNvZnR3YXJlQWdlbnShZG5hbWVmQ2xhdWRlcmFsbEFjdGlvbnNJbmNsdWRlZPUAAADIanVtYgAAAEBqdW1kY2JvcgARABCAAACqADibcRNjMnBhLmhhc2guZGF0YQAAAAAYYzJzaLZhs+Ktvx4D7k4llVFLRp4AAACAY2JvcqVjYWxnZnNoYTI1NmNwYWRNAAAAAAAAAAAAAAAAAGRoYXNoWCDf2v03sZnn26VPKH9/ch1fXF4uq1FUxTlQkSnntftEiGRuYW1lbmp1bWJmIG1hbmlmZXN0amV4Y2x1c2lvbnOBomVzdGFydBiWZmxlbmd0aBkeBAAAAj5qdW1iAAAAJ2p1bWRjMmNsABEAEIAAAKoAOJtxA2MycGEuY2xhaW0udjIAAAACD2Nib3KlY2FsZ2ZzaGEyNTZpc2lnbmF0dXJleE1zZWxmI2p1bWJmPS9jMnBhL3VybjpjMnBhOjNjZGI3ZjljLWVlZWQtNDQ4OS05YmFiLTA4NTAyZDQwMDljNy9jMnBhLnNpZ25hdHVyZWppbnN0YW5jZUlEeCx4bXA6aWlkOjY1MWEzMTk4LTQyOGUtNGUyNC1iYTQ1LTRiZDg4ODcxOTk2OHJjcmVhdGVkX2Fzc2VydGlvbnODomN1cmx4LXNlbGYjanVtYmY9YzJwYS5hc3NlcnRpb25zL2MycGEuaW5ncmVkaWVudC52M2RoYXNoWCBk8Dt3RLNphpV4hKHDTaQN7vQj6JBRuXUmdLgvwc1qCaJjdXJseCpzZWxmI2p1bWJmPWMycGEuYXNzZXJ0aW9ucy9jMnBhLmFjdGlvbnMudjJkaGFzaFggBFZdr58QYok6p4hUTEvTwgNpJPB96X0Nv19AeDBhda6iY3VybHgpc2VsZiNqdW1iZj1jMnBhLmFzc2VydGlvbnMvYzJwYS5oYXNoLmRhdGFkaGFzaFggJDgZw72kP/JDWkPUjcdUr9pG0EZ32FjDLvLJERd9THl0Y2xhaW1fZ2VuZXJhdG9yX2luZm+jZG5hbWVvQW50aHJvcGljIEZpbGVzZ3ZlcnNpb25lMS4wLjBrc3BlY1ZlcnNpb25lMi40LjAAABA4anVtYgAAAChqdW1kYzJjcwARABCAAACqADibcQNjMnBhLnNpZ25hdHVyZQAAABAIY2JvctKEWQISogEmGCFZAgowggIGMIIBjaADAgECAhRA5aAK7sI50L64g/oGQgU9Z1UTADAKBggqhkjOPQQDAzBJMRcwFQYDVQQKEw5BbnRocm9waWMsIFBCQzEuMCwGA1UEAxMlQW50aHJvcGljIENvbnRlbnQgQ3JlZGVudGlhbHMgUm9vdCBDQTAeFw0yNjA4MDcxODQzNTZaFw0yODA4MDYxOTQzNTZaMEQxFzAVBgNVBAoTDkFudGhyb3BpYywgUEJDMSkwJwYDVQQDEyBBbnRocm9waWMgQ2xhdWRlIENvbnRlbnQgU2lnbmluZzBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABJh6CmvLUBgFFNU0vUKlOVtE6djd17L5SuwX0LemFisBM3dkd/3cyjxFA3Qo5S46fX0/ihY0VZ7mfb9KF703t5OjWDBWMA4GA1UdDwEB/wQEAwIHgDAVBgNVHSUEDjAMBgorBgEEAYPoXgIBMAwGA1UdEwEB/wQCMAAwHwYDVR0jBBgwFoAUzlHiBIFOZFsj+OPEz5o+nMHXXMIwCgYIKoZIzj0EAwMDZwAwZAIwMXMdFJ4BetLLVY7ORuE9noqbbAZOZn/aArXyTwFAZfKrPzxF2vPoJNf1+UCdg1XGAjBwX1zd9WGqYkqmL5SFqw1QySjr1zJfpJM9+1rdDwSPLMOPOjKuiXjoU/pUUeG9RwmhY3BhZFkNngAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPZYQLGqqnf538pV3V6R/vGOQ9UOcHOB58vqFVJo7yhegNe3NfdOFsLcgWvmiTYI9rVC+8iCXv0aL8flgobFMrS/W6M=</c2pa:manifest></metadata><style>
-.t{font-family:'Noto Sans CJK SC','Noto Sans SC','Microsoft YaHei','PingFang SC',sans-serif;font-size:13px;fill:#1f2937}.tb{font-family:'Noto Sans CJK SC','Noto Sans SC','Microsoft YaHei','PingFang SC',sans-serif;font-size:14px;font-weight:700;fill:#111827}
-.s{font-family:'Noto Sans CJK SC','Noto Sans SC','Microsoft YaHei','PingFang SC',sans-serif;font-size:12px;fill:#6b7280}.m{font-family:'JetBrains Mono','Consolas','Menlo','DejaVu Sans Mono',monospace;font-weight:700;fill:#111827;text-anchor:middle;dominant-baseline:central}
-.i{font-family:'JetBrains Mono','Consolas','Menlo','DejaVu Sans Mono',monospace;font-size:10px;fill:#6b7280;text-anchor:middle}.c{text-anchor:middle}.r{text-anchor:end}
-</style><defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#475569"/></marker></defs><text x="20" y="28" class="tb">图 4  好后缀三条规则（好后缀 = BCDE，坏字符：文本 A ≠ 模式 G）</text><rect x="20" y="40" width="16" height="16" rx="3" fill="#bbf7d0" stroke="#16a34a" stroke-width="1.2"/><text x="42" y="53" class="s">好后缀</text><rect x="100" y="40" width="16" height="16" rx="3" fill="#fecaca" stroke="#dc2626" stroke-width="1.2"/><text x="122" y="53" class="s">坏字符</text><rect x="180" y="40" width="16" height="16" rx="3" fill="#fde68a" stroke="#d97706" stroke-width="1.2"/><text x="202" y="53" class="s">重现的子串 / 前缀</text><rect x="344" y="40" width="16" height="16" rx="3" fill="#fef9c3" stroke="#ca8a04" stroke-width="1.2" stroke-dasharray="5 3"/><text x="366" y="53" class="s">移动后的模式串</text><text x="20" y="88" class="tb">规则 1</text><text x="86" y="88" class="t">好后缀 BCDE 在模式串中还出现过（其前一字符 A ≠ G）→ 把最靠右的那一份对齐到好后缀</text><text x="56" y="129" class="s r">文本</text><rect x="64" y="110" width="28" height="28" rx="4" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.5"/><text x="78.0" y="125.0" class="m" style="font-size:14px;fill:#6b7280">·</text><text x="78.0" y="105" class="i">0</text><rect x="92" y="110" width="28" height="28" rx="4" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.5"/><text x="106.0" y="125.0" class="m" style="font-size:14px;fill:#6b7280">·</text><text x="106.0" y="105" class="i">1</text><rect x="120" y="110" width="28" height="28" rx="4" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.5"/><text x="134.0" y="125.0" class="m" style="font-size:14px;fill:#6b7280">·</text><text x="134.0" y="105" class="i">2</text><rect x="148" y="110" width="28" height="28" rx="4" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.5"/><text x="162.0" y="125.0" class="m" style="font-size:14px;fill:#6b7280">·</text><text x="162.0" y="105" class="i">3</text><rect x="176" y="110" width="28" height="28" rx="4" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.5"/><text x="190.0" y="125.0" class="m" style="font-size:14px;fill:#6b7280">·</text><text x="190.0" y="105" class="i">4</text><rect x="204" y="110" width="28" height="28" rx="4" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.5"/><text x="218.0" y="125.0" class="m" style="font-size:14px;fill:#6b7280">·</text><text x="218.0" y="105" class="i">5</text><rect x="232" y="110" width="28" height="28" rx="4" fill="#fecaca" stroke="#dc2626" stroke-width="1.5"/><text x="246.0" y="125.0" class="m" style="font-size:14px;fill:#111827">A</text><text x="246.0" y="105" class="i">6</text><rect x="260" y="110" width="28" height="28" rx="4" fill="#bbf7d0" stroke="#16a34a" stroke-width="1.5"/><text x="274.0" y="125.0" class="m" style="font-size:14px;fill:#111827">B</text><text x="274.0" y="105" class="i">7</text><rect x="288" y="110" width="28" height="28" rx="4" fill="#bbf7d0" stroke="#16a34a" stroke-width="1.5"/><text x="302.0" y="125.0" class="m" style="font-size:14px;fill:#111827">C</text><text x="302.0" y="105" class="i">8</text><rect x="316" y="110" width="28" height="28" rx="4" fill="#bbf7d0" stroke="#16a34a" stroke-width="1.5"/><text x="330.0" y="125.0" class="m" style="font-size:14px;fill:#111827">D</text><text x="330.0" y="105" class="i">9</text><rect x="344" y="110" width="28" height="28" rx="4" fill="#bbf7d0" stroke="#16a34a" stroke-width="1.5"/><text x="358.0" y="125.0" class="m" style="font-size:14px;fill:#111827">E</text><text x="358.0" y="105" class="i">10</text><rect x="372" y="110" width="28" height="28" rx="4" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.5"/><text x="386.0" y="125.0" class="m" style="font-size:14px;fill:#6b7280">·</text><text x="386.0" y="105" class="i">11</text><rect x="400" y="110" width="28" height="28" rx="4" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.5"/><text x="414.0" y="125.0" class="m" style="font-size:14px;fill:#6b7280">·</text><text x="414.0" y="105" class="i">12</text><rect x="428" y="110" width="28" height="28" rx="4" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.5"/><text x="442.0" y="125.0" class="m" style="font-size:14px;fill:#6b7280">·</text><text x="442.0" y="105" class="i">13</text><rect x="456" y="110" width="28" height="28" rx="4" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.5"/><text x="470.0" y="125.0" class="m" style="font-size:14px;fill:#6b7280">·</text><text x="470.0" y="105" class="i">14</text><rect x="484" y="110" width="28" height="28" rx="4" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.5"/><text x="498.0" y="125.0" class="m" style="font-size:14px;fill:#6b7280">·</text><text x="498.0" y="105" class="i">15</text><rect x="512" y="110" width="28" height="28" rx="4" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.5"/><text x="526.0" y="125.0" class="m" style="font-size:14px;fill:#6b7280">·</text><text x="526.0" y="105" class="i">16</text><text x="56" y="167" class="s r">模式</text><rect x="64" y="148" width="28" height="28" rx="4" fill="#dbeafe" stroke="#60a5fa" stroke-width="1.5"/><text x="78.0" y="163.0" class="m" style="font-size:14px;fill:#111827">A</text><rect x="92" y="148" width="28" height="28" rx="4" fill="#fde68a" stroke="#d97706" stroke-width="1.5"/><text x="106.0" y="163.0" class="m" style="font-size:14px;fill:#111827">B</text><rect x="120" y="148" width="28" height="28" rx="4" fill="#fde68a" stroke="#d97706" stroke-width="1.5"/><text x="134.0" y="163.0" class="m" style="font-size:14px;fill:#111827">C</text><rect x="148" y="148" width="28" height="28" rx="4" fill="#fde68a" stroke="#d97706" stroke-width="1.5"/><text x="162.0" y="163.0" class="m" style="font-size:14px;fill:#111827">D</text><rect x="176" y="148" width="28" height="28" rx="4" fill="#fde68a" stroke="#d97706" stroke-width="1.5"/><text x="190.0" y="163.0" class="m" style="font-size:14px;fill:#111827">E</text><rect x="204" y="148" width="28" height="28" rx="4" fill="#dbeafe" stroke="#60a5fa" stroke-width="1.5"/><text x="218.0" y="163.0" class="m" style="font-size:14px;fill:#111827">F</text><rect x="232" y="148" width="28" height="28" rx="4" fill="#fecaca" stroke="#dc2626" stroke-width="1.5"/><text x="246.0" y="163.0" class="m" style="font-size:14px;fill:#111827">G</text><rect x="260" y="148" width="28" height="28" rx="4" fill="#bbf7d0" stroke="#16a34a" stroke-width="1.5"/><text x="274.0" y="163.0" class="m" style="font-size:14px;fill:#111827">B</text><rect x="288" y="148" width="28" height="28" rx="4" fill="#bbf7d0" stroke="#16a34a" stroke-width="1.5"/><text x="302.0" y="163.0" class="m" style="font-size:14px;fill:#111827">C</text><rect x="316" y="148" width="28" height="28" rx="4" fill="#bbf7d0" stroke="#16a34a" stroke-width="1.5"/><text x="330.0" y="163.0" class="m" style="font-size:14px;fill:#111827">D</text><rect x="344" y="148" width="28" height="28" rx="4" fill="#bbf7d0" stroke="#16a34a" stroke-width="1.5"/><text x="358.0" y="163.0" class="m" style="font-size:14px;fill:#111827">E</text><text x="56" y="205" class="s r">移动后</text><rect x="232" y="186" width="28" height="28" rx="4" fill="#fef9c3" stroke="#ca8a04" stroke-width="1.5" stroke-dasharray="5 3"/><text x="246.0" y="201.0" class="m" style="font-size:14px;fill:#111827">A</text><rect x="260" y="186" width="28" height="28" rx="4" fill="#bbf7d0" stroke="#ca8a04" stroke-width="1.5" stroke-dasharray="5 3"/><text x="274.0" y="201.0" class="m" style="font-size:14px;fill:#111827">B</text><rect x="288" y="186" width="28" height="28" rx="4" fill="#bbf7d0" stroke="#ca8a04" stroke-width="1.5" stroke-dasharray="5 3"/><text x="302.0" y="201.0" class="m" style="font-size:14px;fill:#111827">C</text><rect x="316" y="186" width="28" height="28" rx="4" fill="#bbf7d0" stroke="#ca8a04" stroke-width="1.5" stroke-dasharray="5 3"/><text x="330.0" y="201.0" class="m" style="font-size:14px;fill:#111827">D</text><rect x="344" y="186" width="28" height="28" rx="4" fill="#bbf7d0" stroke="#ca8a04" stroke-width="1.5" stroke-dasharray="5 3"/><text x="358.0" y="201.0" class="m" style="font-size:14px;fill:#111827">E</text><rect x="372" y="186" width="28" height="28" rx="4" fill="#fef9c3" stroke="#ca8a04" stroke-width="1.5" stroke-dasharray="5 3"/><text x="386.0" y="201.0" class="m" style="font-size:14px;fill:#111827">F</text><rect x="400" y="186" width="28" height="28" rx="4" fill="#fef9c3" stroke="#ca8a04" stroke-width="1.5" stroke-dasharray="5 3"/><text x="414.0" y="201.0" class="m" style="font-size:14px;fill:#111827">G</text><rect x="428" y="186" width="28" height="28" rx="4" fill="#fef9c3" stroke="#ca8a04" stroke-width="1.5" stroke-dasharray="5 3"/><text x="442.0" y="201.0" class="m" style="font-size:14px;fill:#111827">B</text><rect x="456" y="186" width="28" height="28" rx="4" fill="#fef9c3" stroke="#ca8a04" stroke-width="1.5" stroke-dasharray="5 3"/><text x="470.0" y="201.0" class="m" style="font-size:14px;fill:#111827">C</text><rect x="484" y="186" width="28" height="28" rx="4" fill="#fef9c3" stroke="#ca8a04" stroke-width="1.5" stroke-dasharray="5 3"/><text x="498.0" y="201.0" class="m" style="font-size:14px;fill:#111827">D</text><rect x="512" y="186" width="28" height="28" rx="4" fill="#fef9c3" stroke="#ca8a04" stroke-width="1.5" stroke-dasharray="5 3"/><text x="526.0" y="201.0" class="m" style="font-size:14px;fill:#111827">E</text><text x="64" y="236" class="t">shift = (m−1) − i = 10 − 4 = 6，i 为该子串最右下标</text><text x="20" y="283" class="tb">规则 2</text><text x="86" y="283" class="t">BCDE 没有重复出现，但它的后缀 CDE 等于模式串前缀 CDE → 前缀对齐到后缀</text><text x="56" y="324" class="s r">文本</text><rect x="64" y="305" width="28" height="28" rx="4" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.5"/><text x="78.0" y="320.0" class="m" style="font-size:14px;fill:#6b7280">·</text><text x="78.0" y="300" class="i">0</text><rect x="92" y="305" width="28" height="28" rx="4" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.5"/><text x="106.0" y="320.0" class="m" style="font-size:14px;fill:#6b7280">·</text><text x="106.0" y="300" class="i">1</text><rect x="120" y="305" width="28" height="28" rx="4" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.5"/><text x="134.0" y="320.0" class="m" style="font-size:14px;fill:#6b7280">·</text><text x="134.0" y="300" class="i">2</text><rect x="148" y="305" width="28" height="28" rx="4" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.5"/><text x="162.0" y="320.0" class="m" style="font-size:14px;fill:#6b7280">·</text><text x="162.0" y="300" class="i">3</text><rect x="176" y="305" width="28" height="28" rx="4" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.5"/><text x="190.0" y="320.0" class="m" style="font-size:14px;fill:#6b7280">·</text><text x="190.0" y="300" class="i">4</text><rect x="204" y="305" width="28" height="28" rx="4" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.5"/><text x="218.0" y="320.0" class="m" style="font-size:14px;fill:#6b7280">·</text><text x="218.0" y="300" class="i">5</text><rect x="232" y="305" width="28" height="28" rx="4" fill="#fecaca" stroke="#dc2626" stroke-width="1.5"/><text x="246.0" y="320.0" class="m" style="font-size:14px;fill:#111827">A</text><text x="246.0" y="300" class="i">6</text><rect x="260" y="305" width="28" height="28" rx="4" fill="#bbf7d0" stroke="#16a34a" stroke-width="1.5"/><text x="274.0" y="320.0" class="m" style="font-size:14px;fill:#111827">B</text><text x="274.0" y="300" class="i">7</text><rect x="288" y="305" width="28" height="28" rx="4" fill="#bbf7d0" stroke="#16a34a" stroke-width="1.5"/><text x="302.0" y="320.0" class="m" style="font-size:14px;fill:#111827">C</text><text x="302.0" y="300" class="i">8</text><rect x="316" y="305" width="28" height="28" rx="4" fill="#bbf7d0" stroke="#16a34a" stroke-width="1.5"/><text x="330.0" y="320.0" class="m" style="font-size:14px;fill:#111827">D</text><text x="330.0" y="300" class="i">9</text><rect x="344" y="305" width="28" height="28" rx="4" fill="#bbf7d0" stroke="#16a34a" stroke-width="1.5"/><text x="358.0" y="320.0" class="m" style="font-size:14px;fill:#111827">E</text><text x="358.0" y="300" class="i">10</text><rect x="372" y="305" width="28" height="28" rx="4" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.5"/><text x="386.0" y="320.0" class="m" style="font-size:14px;fill:#6b7280">·</text><text x="386.0" y="300" class="i">11</text><rect x="400" y="305" width="28" height="28" rx="4" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.5"/><text x="414.0" y="320.0" class="m" style="font-size:14px;fill:#6b7280">·</text><text x="414.0" y="300" class="i">12</text><rect x="428" y="305" width="28" height="28" rx="4" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.5"/><text x="442.0" y="320.0" class="m" style="font-size:14px;fill:#6b7280">·</text><text x="442.0" y="300" class="i">13</text><rect x="456" y="305" width="28" height="28" rx="4" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.5"/><text x="470.0" y="320.0" class="m" style="font-size:14px;fill:#6b7280">·</text><text x="470.0" y="300" class="i">14</text><rect x="484" y="305" width="28" height="28" rx="4" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.5"/><text x="498.0" y="320.0" class="m" style="font-size:14px;fill:#6b7280">·</text><text x="498.0" y="300" class="i">15</text><rect x="512" y="305" width="28" height="28" rx="4" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.5"/><text x="526.0" y="320.0" class="m" style="font-size:14px;fill:#6b7280">·</text><text x="526.0" y="300" class="i">16</text><rect x="540" y="305" width="28" height="28" rx="4" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.5"/><text x="554.0" y="320.0" class="m" style="font-size:14px;fill:#6b7280">·</text><text x="554.0" y="300" class="i">17</text><rect x="568" y="305" width="28" height="28" rx="4" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.5"/><text x="582.0" y="320.0" class="m" style="font-size:14px;fill:#6b7280">·</text><text x="582.0" y="300" class="i">18</text><text x="56" y="362" class="s r">模式</text><rect x="64" y="343" width="28" height="28" rx="4" fill="#fde68a" stroke="#d97706" stroke-width="1.5"/><text x="78.0" y="358.0" class="m" style="font-size:14px;fill:#111827">C</text><rect x="92" y="343" width="28" height="28" rx="4" fill="#fde68a" stroke="#d97706" stroke-width="1.5"/><text x="106.0" y="358.0" class="m" style="font-size:14px;fill:#111827">D</text><rect x="120" y="343" width="28" height="28" rx="4" fill="#fde68a" stroke="#d97706" stroke-width="1.5"/><text x="134.0" y="358.0" class="m" style="font-size:14px;fill:#111827">E</text><rect x="148" y="343" width="28" height="28" rx="4" fill="#dbeafe" stroke="#60a5fa" stroke-width="1.5"/><text x="162.0" y="358.0" class="m" style="font-size:14px;fill:#111827">C</text><rect x="176" y="343" width="28" height="28" rx="4" fill="#dbeafe" stroke="#60a5fa" stroke-width="1.5"/><text x="190.0" y="358.0" class="m" style="font-size:14px;fill:#111827">D</text><rect x="204" y="343" width="28" height="28" rx="4" fill="#dbeafe" stroke="#60a5fa" stroke-width="1.5"/><text x="218.0" y="358.0" class="m" style="font-size:14px;fill:#111827">E</text><rect x="232" y="343" width="28" height="28" rx="4" fill="#fecaca" stroke="#dc2626" stroke-width="1.5"/><text x="246.0" y="358.0" class="m" style="font-size:14px;fill:#111827">G</text><rect x="260" y="343" width="28" height="28" rx="4" fill="#bbf7d0" stroke="#16a34a" stroke-width="1.5"/><text x="274.0" y="358.0" class="m" style="font-size:14px;fill:#111827">B</text><rect x="288" y="343" width="28" height="28" rx="4" fill="#bbf7d0" stroke="#16a34a" stroke-width="1.5"/><text x="302.0" y="358.0" class="m" style="font-size:14px;fill:#111827">C</text><rect x="316" y="343" width="28" height="28" rx="4" fill="#bbf7d0" stroke="#16a34a" stroke-width="1.5"/><text x="330.0" y="358.0" class="m" style="font-size:14px;fill:#111827">D</text><rect x="344" y="343" width="28" height="28" rx="4" fill="#bbf7d0" stroke="#16a34a" stroke-width="1.5"/><text x="358.0" y="358.0" class="m" style="font-size:14px;fill:#111827">E</text><text x="56" y="400" class="s r">移动后</text><rect x="288" y="381" width="28" height="28" rx="4" fill="#bbf7d0" stroke="#ca8a04" stroke-width="1.5" stroke-dasharray="5 3"/><text x="302.0" y="396.0" class="m" style="font-size:14px;fill:#111827">C</text><rect x="316" y="381" width="28" height="28" rx="4" fill="#bbf7d0" stroke="#ca8a04" stroke-width="1.5" stroke-dasharray="5 3"/><text x="330.0" y="396.0" class="m" style="font-size:14px;fill:#111827">D</text><rect x="344" y="381" width="28" height="28" rx="4" fill="#bbf7d0" stroke="#ca8a04" stroke-width="1.5" stroke-dasharray="5 3"/><text x="358.0" y="396.0" class="m" style="font-size:14px;fill:#111827">E</text><rect x="372" y="381" width="28" height="28" rx="4" fill="#fef9c3" stroke="#ca8a04" stroke-width="1.5" stroke-dasharray="5 3"/><text x="386.0" y="396.0" class="m" style="font-size:14px;fill:#111827">C</text><rect x="400" y="381" width="28" height="28" rx="4" fill="#fef9c3" stroke="#ca8a04" stroke-width="1.5" stroke-dasharray="5 3"/><text x="414.0" y="396.0" class="m" style="font-size:14px;fill:#111827">D</text><rect x="428" y="381" width="28" height="28" rx="4" fill="#fef9c3" stroke="#ca8a04" stroke-width="1.5" stroke-dasharray="5 3"/><text x="442.0" y="396.0" class="m" style="font-size:14px;fill:#111827">E</text><rect x="456" y="381" width="28" height="28" rx="4" fill="#fef9c3" stroke="#ca8a04" stroke-width="1.5" stroke-dasharray="5 3"/><text x="470.0" y="396.0" class="m" style="font-size:14px;fill:#111827">G</text><rect x="484" y="381" width="28" height="28" rx="4" fill="#fef9c3" stroke="#ca8a04" stroke-width="1.5" stroke-dasharray="5 3"/><text x="498.0" y="396.0" class="m" style="font-size:14px;fill:#111827">B</text><rect x="512" y="381" width="28" height="28" rx="4" fill="#fef9c3" stroke="#ca8a04" stroke-width="1.5" stroke-dasharray="5 3"/><text x="526.0" y="396.0" class="m" style="font-size:14px;fill:#111827">C</text><rect x="540" y="381" width="28" height="28" rx="4" fill="#fef9c3" stroke="#ca8a04" stroke-width="1.5" stroke-dasharray="5 3"/><text x="554.0" y="396.0" class="m" style="font-size:14px;fill:#111827">D</text><rect x="568" y="381" width="28" height="28" rx="4" fill="#fef9c3" stroke="#ca8a04" stroke-width="1.5" stroke-dasharray="5 3"/><text x="582.0" y="396.0" class="m" style="font-size:14px;fill:#111827">E</text><text x="64" y="431" class="t">shift = m − 前缀长度 = 11 − 3 = 8（等价于 (m−1) − i，i=2）</text><text x="20" y="478" class="tb">规则 3</text><text x="86" y="478" class="t">既没有重复子串，也没有可对齐的前缀 → 整个模式串右移 m 位</text><text x="56" y="519" class="s r">文本</text><rect x="64" y="500" width="28" height="28" rx="4" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.5"/><text x="78.0" y="515.0" class="m" style="font-size:14px;fill:#6b7280">·</text><text x="78.0" y="495" class="i">0</text><rect x="92" y="500" width="28" height="28" rx="4" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.5"/><text x="106.0" y="515.0" class="m" style="font-size:14px;fill:#6b7280">·</text><text x="106.0" y="495" class="i">1</text><rect x="120" y="500" width="28" height="28" rx="4" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.5"/><text x="134.0" y="515.0" class="m" style="font-size:14px;fill:#6b7280">·</text><text x="134.0" y="495" class="i">2</text><rect x="148" y="500" width="28" height="28" rx="4" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.5"/><text x="162.0" y="515.0" class="m" style="font-size:14px;fill:#6b7280">·</text><text x="162.0" y="495" class="i">3</text><rect x="176" y="500" width="28" height="28" rx="4" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.5"/><text x="190.0" y="515.0" class="m" style="font-size:14px;fill:#6b7280">·</text><text x="190.0" y="495" class="i">4</text><rect x="204" y="500" width="28" height="28" rx="4" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.5"/><text x="218.0" y="515.0" class="m" style="font-size:14px;fill:#6b7280">·</text><text x="218.0" y="495" class="i">5</text><rect x="232" y="500" width="28" height="28" rx="4" fill="#fecaca" stroke="#dc2626" stroke-width="1.5"/><text x="246.0" y="515.0" class="m" style="font-size:14px;fill:#111827">A</text><text x="246.0" y="495" class="i">6</text><rect x="260" y="500" width="28" height="28" rx="4" fill="#bbf7d0" stroke="#16a34a" stroke-width="1.5"/><text x="274.0" y="515.0" class="m" style="font-size:14px;fill:#111827">B</text><text x="274.0" y="495" class="i">7</text><rect x="288" y="500" width="28" height="28" rx="4" fill="#bbf7d0" stroke="#16a34a" stroke-width="1.5"/><text x="302.0" y="515.0" class="m" style="font-size:14px;fill:#111827">C</text><text x="302.0" y="495" class="i">8</text><rect x="316" y="500" width="28" height="28" rx="4" fill="#bbf7d0" stroke="#16a34a" stroke-width="1.5"/><text x="330.0" y="515.0" class="m" style="font-size:14px;fill:#111827">D</text><text x="330.0" y="495" class="i">9</text><rect x="344" y="500" width="28" height="28" rx="4" fill="#bbf7d0" stroke="#16a34a" stroke-width="1.5"/><text x="358.0" y="515.0" class="m" style="font-size:14px;fill:#111827">E</text><text x="358.0" y="495" class="i">10</text><rect x="372" y="500" width="28" height="28" rx="4" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.5"/><text x="386.0" y="515.0" class="m" style="font-size:14px;fill:#6b7280">·</text><text x="386.0" y="495" class="i">11</text><rect x="400" y="500" width="28" height="28" rx="4" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.5"/><text x="414.0" y="515.0" class="m" style="font-size:14px;fill:#6b7280">·</text><text x="414.0" y="495" class="i">12</text><rect x="428" y="500" width="28" height="28" rx="4" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.5"/><text x="442.0" y="515.0" class="m" style="font-size:14px;fill:#6b7280">·</text><text x="442.0" y="495" class="i">13</text><rect x="456" y="500" width="28" height="28" rx="4" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.5"/><text x="470.0" y="515.0" class="m" style="font-size:14px;fill:#6b7280">·</text><text x="470.0" y="495" class="i">14</text><rect x="484" y="500" width="28" height="28" rx="4" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.5"/><text x="498.0" y="515.0" class="m" style="font-size:14px;fill:#6b7280">·</text><text x="498.0" y="495" class="i">15</text><rect x="512" y="500" width="28" height="28" rx="4" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.5"/><text x="526.0" y="515.0" class="m" style="font-size:14px;fill:#6b7280">·</text><text x="526.0" y="495" class="i">16</text><rect x="540" y="500" width="28" height="28" rx="4" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.5"/><text x="554.0" y="515.0" class="m" style="font-size:14px;fill:#6b7280">·</text><text x="554.0" y="495" class="i">17</text><rect x="568" y="500" width="28" height="28" rx="4" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.5"/><text x="582.0" y="515.0" class="m" style="font-size:14px;fill:#6b7280">·</text><text x="582.0" y="495" class="i">18</text><rect x="596" y="500" width="28" height="28" rx="4" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.5"/><text x="610.0" y="515.0" class="m" style="font-size:14px;fill:#6b7280">·</text><text x="610.0" y="495" class="i">19</text><rect x="624" y="500" width="28" height="28" rx="4" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.5"/><text x="638.0" y="515.0" class="m" style="font-size:14px;fill:#6b7280">·</text><text x="638.0" y="495" class="i">20</text><rect x="652" y="500" width="28" height="28" rx="4" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.5"/><text x="666.0" y="515.0" class="m" style="font-size:14px;fill:#6b7280">·</text><text x="666.0" y="495" class="i">21</text><text x="56" y="557" class="s r">模式</text><rect x="64" y="538" width="28" height="28" rx="4" fill="#dbeafe" stroke="#60a5fa" stroke-width="1.5"/><text x="78.0" y="553.0" class="m" style="font-size:14px;fill:#111827">A</text><rect x="92" y="538" width="28" height="28" rx="4" fill="#dbeafe" stroke="#60a5fa" stroke-width="1.5"/><text x="106.0" y="553.0" class="m" style="font-size:14px;fill:#111827">A</text><rect x="120" y="538" width="28" height="28" rx="4" fill="#dbeafe" stroke="#60a5fa" stroke-width="1.5"/><text x="134.0" y="553.0" class="m" style="font-size:14px;fill:#111827">C</text><rect x="148" y="538" width="28" height="28" rx="4" fill="#dbeafe" stroke="#60a5fa" stroke-width="1.5"/><text x="162.0" y="553.0" class="m" style="font-size:14px;fill:#111827">D</text><rect x="176" y="538" width="28" height="28" rx="4" fill="#dbeafe" stroke="#60a5fa" stroke-width="1.5"/><text x="190.0" y="553.0" class="m" style="font-size:14px;fill:#111827">E</text><rect x="204" y="538" width="28" height="28" rx="4" fill="#dbeafe" stroke="#60a5fa" stroke-width="1.5"/><text x="218.0" y="553.0" class="m" style="font-size:14px;fill:#111827">F</text><rect x="232" y="538" width="28" height="28" rx="4" fill="#fecaca" stroke="#dc2626" stroke-width="1.5"/><text x="246.0" y="553.0" class="m" style="font-size:14px;fill:#111827">G</text><rect x="260" y="538" width="28" height="28" rx="4" fill="#bbf7d0" stroke="#16a34a" stroke-width="1.5"/><text x="274.0" y="553.0" class="m" style="font-size:14px;fill:#111827">B</text><rect x="288" y="538" width="28" height="28" rx="4" fill="#bbf7d0" stroke="#16a34a" stroke-width="1.5"/><text x="302.0" y="553.0" class="m" style="font-size:14px;fill:#111827">C</text><rect x="316" y="538" width="28" height="28" rx="4" fill="#bbf7d0" stroke="#16a34a" stroke-width="1.5"/><text x="330.0" y="553.0" class="m" style="font-size:14px;fill:#111827">D</text><rect x="344" y="538" width="28" height="28" rx="4" fill="#bbf7d0" stroke="#16a34a" stroke-width="1.5"/><text x="358.0" y="553.0" class="m" style="font-size:14px;fill:#111827">E</text><text x="56" y="595" class="s r">移动后</text><rect x="372" y="576" width="28" height="28" rx="4" fill="#fef9c3" stroke="#ca8a04" stroke-width="1.5" stroke-dasharray="5 3"/><text x="386.0" y="591.0" class="m" style="font-size:14px;fill:#111827">A</text><rect x="400" y="576" width="28" height="28" rx="4" fill="#fef9c3" stroke="#ca8a04" stroke-width="1.5" stroke-dasharray="5 3"/><text x="414.0" y="591.0" class="m" style="font-size:14px;fill:#111827">A</text><rect x="428" y="576" width="28" height="28" rx="4" fill="#fef9c3" stroke="#ca8a04" stroke-width="1.5" stroke-dasharray="5 3"/><text x="442.0" y="591.0" class="m" style="font-size:14px;fill:#111827">C</text><rect x="456" y="576" width="28" height="28" rx="4" fill="#fef9c3" stroke="#ca8a04" stroke-width="1.5" stroke-dasharray="5 3"/><text x="470.0" y="591.0" class="m" style="font-size:14px;fill:#111827">D</text><rect x="484" y="576" width="28" height="28" rx="4" fill="#fef9c3" stroke="#ca8a04" stroke-width="1.5" stroke-dasharray="5 3"/><text x="498.0" y="591.0" class="m" style="font-size:14px;fill:#111827">E</text><rect x="512" y="576" width="28" height="28" rx="4" fill="#fef9c3" stroke="#ca8a04" stroke-width="1.5" stroke-dasharray="5 3"/><text x="526.0" y="591.0" class="m" style="font-size:14px;fill:#111827">F</text><rect x="540" y="576" width="28" height="28" rx="4" fill="#fef9c3" stroke="#ca8a04" stroke-width="1.5" stroke-dasharray="5 3"/><text x="554.0" y="591.0" class="m" style="font-size:14px;fill:#111827">G</text><rect x="568" y="576" width="28" height="28" rx="4" fill="#fef9c3" stroke="#ca8a04" stroke-width="1.5" stroke-dasharray="5 3"/><text x="582.0" y="591.0" class="m" style="font-size:14px;fill:#111827">B</text><rect x="596" y="576" width="28" height="28" rx="4" fill="#fef9c3" stroke="#ca8a04" stroke-width="1.5" stroke-dasharray="5 3"/><text x="610.0" y="591.0" class="m" style="font-size:14px;fill:#111827">C</text><rect x="624" y="576" width="28" height="28" rx="4" fill="#fef9c3" stroke="#ca8a04" stroke-width="1.5" stroke-dasharray="5 3"/><text x="638.0" y="591.0" class="m" style="font-size:14px;fill:#111827">D</text><rect x="652" y="576" width="28" height="28" rx="4" fill="#fef9c3" stroke="#ca8a04" stroke-width="1.5" stroke-dasharray="5 3"/><text x="666.0" y="591.0" class="m" style="font-size:14px;fill:#111827">E</text><text x="64" y="626" class="t">shift = m = 11</text></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 730" width="720" height="730" role="img">
+  <title>BM 好后缀三条规则</title>
+  <desc>展示好后缀 BCDE 存在重现子串（规则 1）、存在可对齐前缀（规则 2）及完全无重叠仅右移 m 位（规则 3）的三种位移情况。</desc>
+  <defs>
+    <marker id="bm04-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#1f2937" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+  <g font-family="'PingFang SC','Noto Sans SC','Microsoft YaHei',system-ui,sans-serif">
+    <rect x="8" y="8" width="20" height="20" rx="4" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
+    <text x="36" y="23" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">好后缀</text>
+    <rect x="108" y="8" width="20" height="20" rx="4" fill="#fef2f2" stroke="#ef4444" stroke-width="1.5"/>
+    <text x="136" y="23" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">坏字符</text>
+    <rect x="208" y="8" width="20" height="20" rx="4" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5"/>
+    <text x="236" y="23" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">重现的子串 / 前缀</text>
+    <rect x="384" y="8" width="20" height="20" rx="4" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="6 4"/>
+    <text x="412" y="23" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">移动后的模式串</text>
+    <text x="8" y="58" font-size="16" font-weight="600" fill="#1f2937" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">规则 1　好后缀 BCDE 在模式串中还出现过（其前一字符 A ≠ G）</text>
+    <text x="8" y="80" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">→ 把最靠右的那一份对齐到好后缀</text>
+    <text x="53" y="140" text-anchor="end" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">文本</text>
+    <rect x="63" y="116" width="501.5" height="36" rx="4" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5" data-role="group"/>
+    <path d="M240 116h29.5v36h-29.5z" fill="#fef2f2" stroke="#ef4444" stroke-width="1.5"/>
+    <path d="M269.5 116h29.5v36h-29.5z" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
+    <path d="M299 116h29.5v36h-29.5z" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
+    <path d="M328.5 116h29.5v36h-29.5z" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
+    <path d="M358 116h29.5v36h-29.5z" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
+    <line x1="92.5" y1="116" x2="92.5" y2="152" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="122" y1="116" x2="122" y2="152" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="151.5" y1="116" x2="151.5" y2="152" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="181" y1="116" x2="181" y2="152" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="210.5" y1="116" x2="210.5" y2="152" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="240" y1="116" x2="240" y2="152" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="269.5" y1="116" x2="269.5" y2="152" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="299" y1="116" x2="299" y2="152" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="328.5" y1="116" x2="328.5" y2="152" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="358" y1="116" x2="358" y2="152" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="387.5" y1="116" x2="387.5" y2="152" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="417" y1="116" x2="417" y2="152" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="446.5" y1="116" x2="446.5" y2="152" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="476" y1="116" x2="476" y2="152" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="505.5" y1="116" x2="505.5" y2="152" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="535" y1="116" x2="535" y2="152" stroke="#94a3b8" stroke-width="1"/>
+    <text x="77.75" y="105" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">0</text>
+    <text x="77.75" y="140" text-anchor="middle" font-size="16" font-weight="600" fill="#4b5563">·</text>
+    <text x="107.25" y="105" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">1</text>
+    <text x="107.25" y="140" text-anchor="middle" font-size="16" font-weight="600" fill="#4b5563">·</text>
+    <text x="136.75" y="105" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">2</text>
+    <text x="136.75" y="140" text-anchor="middle" font-size="16" font-weight="600" fill="#4b5563">·</text>
+    <text x="166.25" y="105" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">3</text>
+    <text x="166.25" y="140" text-anchor="middle" font-size="16" font-weight="600" fill="#4b5563">·</text>
+    <text x="195.75" y="105" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">4</text>
+    <text x="195.75" y="140" text-anchor="middle" font-size="16" font-weight="600" fill="#4b5563">·</text>
+    <text x="225.25" y="105" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">5</text>
+    <text x="225.25" y="140" text-anchor="middle" font-size="16" font-weight="600" fill="#4b5563">·</text>
+    <text x="254.75" y="105" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">6</text>
+    <text x="254.75" y="140" text-anchor="middle" font-size="16" font-weight="600" fill="#991b1b">A</text>
+    <text x="284.25" y="105" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">7</text>
+    <text x="284.25" y="140" text-anchor="middle" font-size="16" font-weight="600" fill="#115e59">B</text>
+    <text x="313.75" y="105" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">8</text>
+    <text x="313.75" y="140" text-anchor="middle" font-size="16" font-weight="600" fill="#115e59">C</text>
+    <text x="343.25" y="105" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">9</text>
+    <text x="343.25" y="140" text-anchor="middle" font-size="16" font-weight="600" fill="#115e59">D</text>
+    <text x="372.75" y="105" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">10</text>
+    <text x="372.75" y="140" text-anchor="middle" font-size="16" font-weight="600" fill="#115e59">E</text>
+    <text x="402.25" y="105" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">11</text>
+    <text x="402.25" y="140" text-anchor="middle" font-size="16" font-weight="600" fill="#4b5563">·</text>
+    <text x="431.75" y="105" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">12</text>
+    <text x="431.75" y="140" text-anchor="middle" font-size="16" font-weight="600" fill="#4b5563">·</text>
+    <text x="461.25" y="105" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">13</text>
+    <text x="461.25" y="140" text-anchor="middle" font-size="16" font-weight="600" fill="#4b5563">·</text>
+    <text x="490.75" y="105" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">14</text>
+    <text x="490.75" y="140" text-anchor="middle" font-size="16" font-weight="600" fill="#4b5563">·</text>
+    <text x="520.25" y="105" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">15</text>
+    <text x="520.25" y="140" text-anchor="middle" font-size="16" font-weight="600" fill="#4b5563">·</text>
+    <text x="549.75" y="105" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">16</text>
+    <text x="549.75" y="140" text-anchor="middle" font-size="16" font-weight="600" fill="#4b5563">·</text>
+    <text x="53" y="182" text-anchor="end" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">模式</text>
+    <rect x="63" y="158" width="324.5" height="36" rx="4" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5" data-role="group"/>
+    <path d="M63 158h29.5v36h-29.5z" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+    <path d="M92.5 158h29.5v36h-29.5z" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5"/>
+    <path d="M122 158h29.5v36h-29.5z" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5"/>
+    <path d="M151.5 158h29.5v36h-29.5z" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5"/>
+    <path d="M181 158h29.5v36h-29.5z" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5"/>
+    <path d="M210.5 158h29.5v36h-29.5z" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+    <path d="M240 158h29.5v36h-29.5z" fill="#fef2f2" stroke="#ef4444" stroke-width="1.5"/>
+    <path d="M269.5 158h29.5v36h-29.5z" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
+    <path d="M299 158h29.5v36h-29.5z" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
+    <path d="M328.5 158h29.5v36h-29.5z" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
+    <path d="M358 158h29.5v36h-29.5z" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
+    <line x1="92.5" y1="158" x2="92.5" y2="194" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="122" y1="158" x2="122" y2="194" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="151.5" y1="158" x2="151.5" y2="194" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="181" y1="158" x2="181" y2="194" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="210.5" y1="158" x2="210.5" y2="194" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="240" y1="158" x2="240" y2="194" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="269.5" y1="158" x2="269.5" y2="194" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="299" y1="158" x2="299" y2="194" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="328.5" y1="158" x2="328.5" y2="194" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="358" y1="158" x2="358" y2="194" stroke="#94a3b8" stroke-width="1"/>
+    <text x="77.75" y="182" text-anchor="middle" font-size="16" font-weight="600" fill="#1e40af">A</text>
+    <text x="107.25" y="182" text-anchor="middle" font-size="16" font-weight="600" fill="#92400e">B</text>
+    <text x="136.75" y="182" text-anchor="middle" font-size="16" font-weight="600" fill="#92400e">C</text>
+    <text x="166.25" y="182" text-anchor="middle" font-size="16" font-weight="600" fill="#92400e">D</text>
+    <text x="195.75" y="182" text-anchor="middle" font-size="16" font-weight="600" fill="#92400e">E</text>
+    <text x="225.25" y="182" text-anchor="middle" font-size="16" font-weight="600" fill="#1e40af">F</text>
+    <text x="254.75" y="182" text-anchor="middle" font-size="16" font-weight="600" fill="#991b1b">G</text>
+    <text x="284.25" y="182" text-anchor="middle" font-size="16" font-weight="600" fill="#115e59">B</text>
+    <text x="313.75" y="182" text-anchor="middle" font-size="16" font-weight="600" fill="#115e59">C</text>
+    <text x="343.25" y="182" text-anchor="middle" font-size="16" font-weight="600" fill="#115e59">D</text>
+    <text x="372.75" y="182" text-anchor="middle" font-size="16" font-weight="600" fill="#115e59">E</text>
+    <text x="53" y="224" text-anchor="end" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">移动后</text>
+    <rect x="240" y="200" width="324.5" height="36" rx="4" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="6 4" data-role="group"/>
+    <path d="M240 200h29.5v36h-29.5z" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="6 4"/>
+    <path d="M269.5 200h29.5v36h-29.5z" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5" stroke-dasharray="6 4"/>
+    <path d="M299 200h29.5v36h-29.5z" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5" stroke-dasharray="6 4"/>
+    <path d="M328.5 200h29.5v36h-29.5z" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5" stroke-dasharray="6 4"/>
+    <path d="M358 200h29.5v36h-29.5z" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5" stroke-dasharray="6 4"/>
+    <path d="M387.5 200h29.5v36h-29.5z" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="6 4"/>
+    <path d="M417 200h29.5v36h-29.5z" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="6 4"/>
+    <path d="M446.5 200h29.5v36h-29.5z" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="6 4"/>
+    <path d="M476 200h29.5v36h-29.5z" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="6 4"/>
+    <path d="M505.5 200h29.5v36h-29.5z" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="6 4"/>
+    <path d="M535 200h29.5v36h-29.5z" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="6 4"/>
+    <line x1="269.5" y1="200" x2="269.5" y2="236" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="299" y1="200" x2="299" y2="236" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="328.5" y1="200" x2="328.5" y2="236" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="358" y1="200" x2="358" y2="236" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="387.5" y1="200" x2="387.5" y2="236" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="417" y1="200" x2="417" y2="236" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="446.5" y1="200" x2="446.5" y2="236" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="476" y1="200" x2="476" y2="236" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="505.5" y1="200" x2="505.5" y2="236" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="535" y1="200" x2="535" y2="236" stroke="#94a3b8" stroke-width="1"/>
+    <text x="254.75" y="224" text-anchor="middle" font-size="16" font-weight="600" fill="#92400e">A</text>
+    <text x="284.25" y="224" text-anchor="middle" font-size="16" font-weight="600" fill="#115e59">B</text>
+    <text x="313.75" y="224" text-anchor="middle" font-size="16" font-weight="600" fill="#115e59">C</text>
+    <text x="343.25" y="224" text-anchor="middle" font-size="16" font-weight="600" fill="#115e59">D</text>
+    <text x="372.75" y="224" text-anchor="middle" font-size="16" font-weight="600" fill="#115e59">E</text>
+    <text x="402.25" y="224" text-anchor="middle" font-size="16" font-weight="600" fill="#92400e">F</text>
+    <text x="431.75" y="224" text-anchor="middle" font-size="16" font-weight="600" fill="#92400e">G</text>
+    <text x="461.25" y="224" text-anchor="middle" font-size="16" font-weight="600" fill="#92400e">B</text>
+    <text x="490.75" y="224" text-anchor="middle" font-size="16" font-weight="600" fill="#92400e">C</text>
+    <text x="520.25" y="224" text-anchor="middle" font-size="16" font-weight="600" fill="#92400e">D</text>
+    <text x="549.75" y="224" text-anchor="middle" font-size="16" font-weight="600" fill="#92400e">E</text>
+    <text x="63" y="260" font-size="15" font-weight="400" fill="#1f2937" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">shift = (m−1) − i = 10 − 4 = 6，i 为该子串最右下标</text>
+    <text x="8" y="298" font-size="16" font-weight="600" fill="#1f2937" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">规则 2　BCDE 没有重复出现，但它的后缀 CDE 等于模式串前缀 CDE</text>
+    <text x="8" y="320" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">→ 前缀对齐到后缀</text>
+    <text x="53" y="380" text-anchor="end" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">文本</text>
+    <rect x="63" y="356" width="560.5" height="36" rx="4" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5" data-role="group"/>
+    <path d="M240 356h29.5v36h-29.5z" fill="#fef2f2" stroke="#ef4444" stroke-width="1.5"/>
+    <path d="M269.5 356h29.5v36h-29.5z" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
+    <path d="M299 356h29.5v36h-29.5z" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
+    <path d="M328.5 356h29.5v36h-29.5z" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
+    <path d="M358 356h29.5v36h-29.5z" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
+    <line x1="92.5" y1="356" x2="92.5" y2="392" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="122" y1="356" x2="122" y2="392" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="151.5" y1="356" x2="151.5" y2="392" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="181" y1="356" x2="181" y2="392" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="210.5" y1="356" x2="210.5" y2="392" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="240" y1="356" x2="240" y2="392" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="269.5" y1="356" x2="269.5" y2="392" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="299" y1="356" x2="299" y2="392" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="328.5" y1="356" x2="328.5" y2="392" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="358" y1="356" x2="358" y2="392" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="387.5" y1="356" x2="387.5" y2="392" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="417" y1="356" x2="417" y2="392" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="446.5" y1="356" x2="446.5" y2="392" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="476" y1="356" x2="476" y2="392" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="505.5" y1="356" x2="505.5" y2="392" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="535" y1="356" x2="535" y2="392" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="564.5" y1="356" x2="564.5" y2="392" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="594" y1="356" x2="594" y2="392" stroke="#94a3b8" stroke-width="1"/>
+    <text x="77.75" y="345" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">0</text>
+    <text x="77.75" y="380" text-anchor="middle" font-size="16" font-weight="600" fill="#4b5563">·</text>
+    <text x="107.25" y="345" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">1</text>
+    <text x="107.25" y="380" text-anchor="middle" font-size="16" font-weight="600" fill="#4b5563">·</text>
+    <text x="136.75" y="345" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">2</text>
+    <text x="136.75" y="380" text-anchor="middle" font-size="16" font-weight="600" fill="#4b5563">·</text>
+    <text x="166.25" y="345" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">3</text>
+    <text x="166.25" y="380" text-anchor="middle" font-size="16" font-weight="600" fill="#4b5563">·</text>
+    <text x="195.75" y="345" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">4</text>
+    <text x="195.75" y="380" text-anchor="middle" font-size="16" font-weight="600" fill="#4b5563">·</text>
+    <text x="225.25" y="345" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">5</text>
+    <text x="225.25" y="380" text-anchor="middle" font-size="16" font-weight="600" fill="#4b5563">·</text>
+    <text x="254.75" y="345" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">6</text>
+    <text x="254.75" y="380" text-anchor="middle" font-size="16" font-weight="600" fill="#991b1b">A</text>
+    <text x="284.25" y="345" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">7</text>
+    <text x="284.25" y="380" text-anchor="middle" font-size="16" font-weight="600" fill="#115e59">B</text>
+    <text x="313.75" y="345" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">8</text>
+    <text x="313.75" y="380" text-anchor="middle" font-size="16" font-weight="600" fill="#115e59">C</text>
+    <text x="343.25" y="345" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">9</text>
+    <text x="343.25" y="380" text-anchor="middle" font-size="16" font-weight="600" fill="#115e59">D</text>
+    <text x="372.75" y="345" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">10</text>
+    <text x="372.75" y="380" text-anchor="middle" font-size="16" font-weight="600" fill="#115e59">E</text>
+    <text x="402.25" y="345" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">11</text>
+    <text x="402.25" y="380" text-anchor="middle" font-size="16" font-weight="600" fill="#4b5563">·</text>
+    <text x="431.75" y="345" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">12</text>
+    <text x="431.75" y="380" text-anchor="middle" font-size="16" font-weight="600" fill="#4b5563">·</text>
+    <text x="461.25" y="345" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">13</text>
+    <text x="461.25" y="380" text-anchor="middle" font-size="16" font-weight="600" fill="#4b5563">·</text>
+    <text x="490.75" y="345" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">14</text>
+    <text x="490.75" y="380" text-anchor="middle" font-size="16" font-weight="600" fill="#4b5563">·</text>
+    <text x="520.25" y="345" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">15</text>
+    <text x="520.25" y="380" text-anchor="middle" font-size="16" font-weight="600" fill="#4b5563">·</text>
+    <text x="549.75" y="345" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">16</text>
+    <text x="549.75" y="380" text-anchor="middle" font-size="16" font-weight="600" fill="#4b5563">·</text>
+    <text x="579.25" y="345" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">17</text>
+    <text x="579.25" y="380" text-anchor="middle" font-size="16" font-weight="600" fill="#4b5563">·</text>
+    <text x="608.75" y="345" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">18</text>
+    <text x="608.75" y="380" text-anchor="middle" font-size="16" font-weight="600" fill="#4b5563">·</text>
+    <text x="53" y="422" text-anchor="end" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">模式</text>
+    <rect x="63" y="398" width="324.5" height="36" rx="4" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5" data-role="group"/>
+    <path d="M63 398h29.5v36h-29.5z" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5"/>
+    <path d="M92.5 398h29.5v36h-29.5z" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5"/>
+    <path d="M122 398h29.5v36h-29.5z" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5"/>
+    <path d="M151.5 398h29.5v36h-29.5z" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+    <path d="M181 398h29.5v36h-29.5z" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+    <path d="M210.5 398h29.5v36h-29.5z" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+    <path d="M240 398h29.5v36h-29.5z" fill="#fef2f2" stroke="#ef4444" stroke-width="1.5"/>
+    <path d="M269.5 398h29.5v36h-29.5z" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
+    <path d="M299 398h29.5v36h-29.5z" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
+    <path d="M328.5 398h29.5v36h-29.5z" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
+    <path d="M358 398h29.5v36h-29.5z" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
+    <line x1="92.5" y1="398" x2="92.5" y2="434" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="122" y1="398" x2="122" y2="434" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="151.5" y1="398" x2="151.5" y2="434" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="181" y1="398" x2="181" y2="434" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="210.5" y1="398" x2="210.5" y2="434" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="240" y1="398" x2="240" y2="434" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="269.5" y1="398" x2="269.5" y2="434" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="299" y1="398" x2="299" y2="434" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="328.5" y1="398" x2="328.5" y2="434" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="358" y1="398" x2="358" y2="434" stroke="#94a3b8" stroke-width="1"/>
+    <text x="77.75" y="422" text-anchor="middle" font-size="16" font-weight="600" fill="#92400e">C</text>
+    <text x="107.25" y="422" text-anchor="middle" font-size="16" font-weight="600" fill="#92400e">D</text>
+    <text x="136.75" y="422" text-anchor="middle" font-size="16" font-weight="600" fill="#92400e">E</text>
+    <text x="166.25" y="422" text-anchor="middle" font-size="16" font-weight="600" fill="#1e40af">C</text>
+    <text x="195.75" y="422" text-anchor="middle" font-size="16" font-weight="600" fill="#1e40af">D</text>
+    <text x="225.25" y="422" text-anchor="middle" font-size="16" font-weight="600" fill="#1e40af">E</text>
+    <text x="254.75" y="422" text-anchor="middle" font-size="16" font-weight="600" fill="#991b1b">G</text>
+    <text x="284.25" y="422" text-anchor="middle" font-size="16" font-weight="600" fill="#115e59">B</text>
+    <text x="313.75" y="422" text-anchor="middle" font-size="16" font-weight="600" fill="#115e59">C</text>
+    <text x="343.25" y="422" text-anchor="middle" font-size="16" font-weight="600" fill="#115e59">D</text>
+    <text x="372.75" y="422" text-anchor="middle" font-size="16" font-weight="600" fill="#115e59">E</text>
+    <text x="53" y="464" text-anchor="end" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">移动后</text>
+    <rect x="299" y="440" width="324.5" height="36" rx="4" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="6 4" data-role="group"/>
+    <path d="M299 440h29.5v36h-29.5z" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5" stroke-dasharray="6 4"/>
+    <path d="M328.5 440h29.5v36h-29.5z" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5" stroke-dasharray="6 4"/>
+    <path d="M358 440h29.5v36h-29.5z" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5" stroke-dasharray="6 4"/>
+    <path d="M387.5 440h29.5v36h-29.5z" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="6 4"/>
+    <path d="M417 440h29.5v36h-29.5z" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="6 4"/>
+    <path d="M446.5 440h29.5v36h-29.5z" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="6 4"/>
+    <path d="M476 440h29.5v36h-29.5z" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="6 4"/>
+    <path d="M505.5 440h29.5v36h-29.5z" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="6 4"/>
+    <path d="M535 440h29.5v36h-29.5z" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="6 4"/>
+    <path d="M564.5 440h29.5v36h-29.5z" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="6 4"/>
+    <path d="M594 440h29.5v36h-29.5z" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="6 4"/>
+    <line x1="328.5" y1="440" x2="328.5" y2="476" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="358" y1="440" x2="358" y2="476" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="387.5" y1="440" x2="387.5" y2="476" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="417" y1="440" x2="417" y2="476" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="446.5" y1="440" x2="446.5" y2="476" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="476" y1="440" x2="476" y2="476" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="505.5" y1="440" x2="505.5" y2="476" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="535" y1="440" x2="535" y2="476" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="564.5" y1="440" x2="564.5" y2="476" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="594" y1="440" x2="594" y2="476" stroke="#94a3b8" stroke-width="1"/>
+    <text x="313.75" y="464" text-anchor="middle" font-size="16" font-weight="600" fill="#115e59">C</text>
+    <text x="343.25" y="464" text-anchor="middle" font-size="16" font-weight="600" fill="#115e59">D</text>
+    <text x="372.75" y="464" text-anchor="middle" font-size="16" font-weight="600" fill="#115e59">E</text>
+    <text x="402.25" y="464" text-anchor="middle" font-size="16" font-weight="600" fill="#92400e">C</text>
+    <text x="431.75" y="464" text-anchor="middle" font-size="16" font-weight="600" fill="#92400e">D</text>
+    <text x="461.25" y="464" text-anchor="middle" font-size="16" font-weight="600" fill="#92400e">E</text>
+    <text x="490.75" y="464" text-anchor="middle" font-size="16" font-weight="600" fill="#92400e">G</text>
+    <text x="520.25" y="464" text-anchor="middle" font-size="16" font-weight="600" fill="#92400e">B</text>
+    <text x="549.75" y="464" text-anchor="middle" font-size="16" font-weight="600" fill="#92400e">C</text>
+    <text x="579.25" y="464" text-anchor="middle" font-size="16" font-weight="600" fill="#92400e">D</text>
+    <text x="608.75" y="464" text-anchor="middle" font-size="16" font-weight="600" fill="#92400e">E</text>
+    <text x="63" y="500" font-size="15" font-weight="400" fill="#1f2937" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">shift = m − 前缀长度 = 11 − 3 = 8（等价于 (m−1) − i，i=2）</text>
+    <text x="8" y="538" font-size="16" font-weight="600" fill="#1f2937" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">规则 3　既没有重复子串，也没有可对齐的前缀 → 整个模式串右移 m 位</text>
+    <text x="53" y="598" text-anchor="end" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">文本</text>
+    <rect x="63" y="574" width="649" height="36" rx="4" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5" data-role="group"/>
+    <path d="M240 574h29.5v36h-29.5z" fill="#fef2f2" stroke="#ef4444" stroke-width="1.5"/>
+    <path d="M269.5 574h29.5v36h-29.5z" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
+    <path d="M299 574h29.5v36h-29.5z" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
+    <path d="M328.5 574h29.5v36h-29.5z" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
+    <path d="M358 574h29.5v36h-29.5z" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
+    <line x1="92.5" y1="574" x2="92.5" y2="610" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="122" y1="574" x2="122" y2="610" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="151.5" y1="574" x2="151.5" y2="610" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="181" y1="574" x2="181" y2="610" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="210.5" y1="574" x2="210.5" y2="610" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="240" y1="574" x2="240" y2="610" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="269.5" y1="574" x2="269.5" y2="610" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="299" y1="574" x2="299" y2="610" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="328.5" y1="574" x2="328.5" y2="610" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="358" y1="574" x2="358" y2="610" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="387.5" y1="574" x2="387.5" y2="610" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="417" y1="574" x2="417" y2="610" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="446.5" y1="574" x2="446.5" y2="610" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="476" y1="574" x2="476" y2="610" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="505.5" y1="574" x2="505.5" y2="610" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="535" y1="574" x2="535" y2="610" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="564.5" y1="574" x2="564.5" y2="610" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="594" y1="574" x2="594" y2="610" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="623.5" y1="574" x2="623.5" y2="610" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="653" y1="574" x2="653" y2="610" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="682.5" y1="574" x2="682.5" y2="610" stroke="#94a3b8" stroke-width="1"/>
+    <text x="77.75" y="563" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">0</text>
+    <text x="77.75" y="598" text-anchor="middle" font-size="16" font-weight="600" fill="#4b5563">·</text>
+    <text x="107.25" y="563" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">1</text>
+    <text x="107.25" y="598" text-anchor="middle" font-size="16" font-weight="600" fill="#4b5563">·</text>
+    <text x="136.75" y="563" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">2</text>
+    <text x="136.75" y="598" text-anchor="middle" font-size="16" font-weight="600" fill="#4b5563">·</text>
+    <text x="166.25" y="563" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">3</text>
+    <text x="166.25" y="598" text-anchor="middle" font-size="16" font-weight="600" fill="#4b5563">·</text>
+    <text x="195.75" y="563" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">4</text>
+    <text x="195.75" y="598" text-anchor="middle" font-size="16" font-weight="600" fill="#4b5563">·</text>
+    <text x="225.25" y="563" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">5</text>
+    <text x="225.25" y="598" text-anchor="middle" font-size="16" font-weight="600" fill="#4b5563">·</text>
+    <text x="254.75" y="563" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">6</text>
+    <text x="254.75" y="598" text-anchor="middle" font-size="16" font-weight="600" fill="#991b1b">A</text>
+    <text x="284.25" y="563" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">7</text>
+    <text x="284.25" y="598" text-anchor="middle" font-size="16" font-weight="600" fill="#115e59">B</text>
+    <text x="313.75" y="563" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">8</text>
+    <text x="313.75" y="598" text-anchor="middle" font-size="16" font-weight="600" fill="#115e59">C</text>
+    <text x="343.25" y="563" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">9</text>
+    <text x="343.25" y="598" text-anchor="middle" font-size="16" font-weight="600" fill="#115e59">D</text>
+    <text x="372.75" y="563" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">10</text>
+    <text x="372.75" y="598" text-anchor="middle" font-size="16" font-weight="600" fill="#115e59">E</text>
+    <text x="402.25" y="563" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">11</text>
+    <text x="402.25" y="598" text-anchor="middle" font-size="16" font-weight="600" fill="#4b5563">·</text>
+    <text x="431.75" y="563" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">12</text>
+    <text x="431.75" y="598" text-anchor="middle" font-size="16" font-weight="600" fill="#4b5563">·</text>
+    <text x="461.25" y="563" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">13</text>
+    <text x="461.25" y="598" text-anchor="middle" font-size="16" font-weight="600" fill="#4b5563">·</text>
+    <text x="490.75" y="563" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">14</text>
+    <text x="490.75" y="598" text-anchor="middle" font-size="16" font-weight="600" fill="#4b5563">·</text>
+    <text x="520.25" y="563" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">15</text>
+    <text x="520.25" y="598" text-anchor="middle" font-size="16" font-weight="600" fill="#4b5563">·</text>
+    <text x="549.75" y="563" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">16</text>
+    <text x="549.75" y="598" text-anchor="middle" font-size="16" font-weight="600" fill="#4b5563">·</text>
+    <text x="579.25" y="563" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">17</text>
+    <text x="579.25" y="598" text-anchor="middle" font-size="16" font-weight="600" fill="#4b5563">·</text>
+    <text x="608.75" y="563" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">18</text>
+    <text x="608.75" y="598" text-anchor="middle" font-size="16" font-weight="600" fill="#4b5563">·</text>
+    <text x="638.25" y="563" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">19</text>
+    <text x="638.25" y="598" text-anchor="middle" font-size="16" font-weight="600" fill="#4b5563">·</text>
+    <text x="667.75" y="563" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">20</text>
+    <text x="667.75" y="598" text-anchor="middle" font-size="16" font-weight="600" fill="#4b5563">·</text>
+    <text x="697.25" y="563" text-anchor="middle" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">21</text>
+    <text x="697.25" y="598" text-anchor="middle" font-size="16" font-weight="600" fill="#4b5563">·</text>
+    <text x="53" y="640" text-anchor="end" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">模式</text>
+    <rect x="63" y="616" width="324.5" height="36" rx="4" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5" data-role="group"/>
+    <path d="M63 616h29.5v36h-29.5z" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+    <path d="M92.5 616h29.5v36h-29.5z" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+    <path d="M122 616h29.5v36h-29.5z" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+    <path d="M151.5 616h29.5v36h-29.5z" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+    <path d="M181 616h29.5v36h-29.5z" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+    <path d="M210.5 616h29.5v36h-29.5z" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+    <path d="M240 616h29.5v36h-29.5z" fill="#fef2f2" stroke="#ef4444" stroke-width="1.5"/>
+    <path d="M269.5 616h29.5v36h-29.5z" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
+    <path d="M299 616h29.5v36h-29.5z" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
+    <path d="M328.5 616h29.5v36h-29.5z" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
+    <path d="M358 616h29.5v36h-29.5z" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
+    <line x1="92.5" y1="616" x2="92.5" y2="652" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="122" y1="616" x2="122" y2="652" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="151.5" y1="616" x2="151.5" y2="652" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="181" y1="616" x2="181" y2="652" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="210.5" y1="616" x2="210.5" y2="652" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="240" y1="616" x2="240" y2="652" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="269.5" y1="616" x2="269.5" y2="652" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="299" y1="616" x2="299" y2="652" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="328.5" y1="616" x2="328.5" y2="652" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="358" y1="616" x2="358" y2="652" stroke="#94a3b8" stroke-width="1"/>
+    <text x="77.75" y="640" text-anchor="middle" font-size="16" font-weight="600" fill="#1e40af">A</text>
+    <text x="107.25" y="640" text-anchor="middle" font-size="16" font-weight="600" fill="#1e40af">A</text>
+    <text x="136.75" y="640" text-anchor="middle" font-size="16" font-weight="600" fill="#1e40af">C</text>
+    <text x="166.25" y="640" text-anchor="middle" font-size="16" font-weight="600" fill="#1e40af">D</text>
+    <text x="195.75" y="640" text-anchor="middle" font-size="16" font-weight="600" fill="#1e40af">E</text>
+    <text x="225.25" y="640" text-anchor="middle" font-size="16" font-weight="600" fill="#1e40af">F</text>
+    <text x="254.75" y="640" text-anchor="middle" font-size="16" font-weight="600" fill="#991b1b">G</text>
+    <text x="284.25" y="640" text-anchor="middle" font-size="16" font-weight="600" fill="#115e59">B</text>
+    <text x="313.75" y="640" text-anchor="middle" font-size="16" font-weight="600" fill="#115e59">C</text>
+    <text x="343.25" y="640" text-anchor="middle" font-size="16" font-weight="600" fill="#115e59">D</text>
+    <text x="372.75" y="640" text-anchor="middle" font-size="16" font-weight="600" fill="#115e59">E</text>
+    <text x="53" y="682" text-anchor="end" font-size="15" font-weight="400" fill="#4b5563" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">移动后</text>
+    <rect x="387.5" y="658" width="324.5" height="36" rx="4" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="6 4" data-role="group"/>
+    <path d="M387.5 658h29.5v36h-29.5z" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="6 4"/>
+    <path d="M417 658h29.5v36h-29.5z" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="6 4"/>
+    <path d="M446.5 658h29.5v36h-29.5z" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="6 4"/>
+    <path d="M476 658h29.5v36h-29.5z" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="6 4"/>
+    <path d="M505.5 658h29.5v36h-29.5z" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="6 4"/>
+    <path d="M535 658h29.5v36h-29.5z" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="6 4"/>
+    <path d="M564.5 658h29.5v36h-29.5z" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="6 4"/>
+    <path d="M594 658h29.5v36h-29.5z" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="6 4"/>
+    <path d="M623.5 658h29.5v36h-29.5z" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="6 4"/>
+    <path d="M653 658h29.5v36h-29.5z" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="6 4"/>
+    <path d="M682.5 658h29.5v36h-29.5z" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="6 4"/>
+    <line x1="417" y1="658" x2="417" y2="694" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="446.5" y1="658" x2="446.5" y2="694" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="476" y1="658" x2="476" y2="694" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="505.5" y1="658" x2="505.5" y2="694" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="535" y1="658" x2="535" y2="694" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="564.5" y1="658" x2="564.5" y2="694" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="594" y1="658" x2="594" y2="694" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="623.5" y1="658" x2="623.5" y2="694" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="653" y1="658" x2="653" y2="694" stroke="#94a3b8" stroke-width="1"/>
+    <line x1="682.5" y1="658" x2="682.5" y2="694" stroke="#94a3b8" stroke-width="1"/>
+    <text x="402.25" y="682" text-anchor="middle" font-size="16" font-weight="600" fill="#92400e">A</text>
+    <text x="431.75" y="682" text-anchor="middle" font-size="16" font-weight="600" fill="#92400e">A</text>
+    <text x="461.25" y="682" text-anchor="middle" font-size="16" font-weight="600" fill="#92400e">C</text>
+    <text x="490.75" y="682" text-anchor="middle" font-size="16" font-weight="600" fill="#92400e">D</text>
+    <text x="520.25" y="682" text-anchor="middle" font-size="16" font-weight="600" fill="#92400e">E</text>
+    <text x="549.75" y="682" text-anchor="middle" font-size="16" font-weight="600" fill="#92400e">F</text>
+    <text x="579.25" y="682" text-anchor="middle" font-size="16" font-weight="600" fill="#92400e">G</text>
+    <text x="608.75" y="682" text-anchor="middle" font-size="16" font-weight="600" fill="#92400e">B</text>
+    <text x="638.25" y="682" text-anchor="middle" font-size="16" font-weight="600" fill="#92400e">C</text>
+    <text x="667.75" y="682" text-anchor="middle" font-size="16" font-weight="600" fill="#92400e">D</text>
+    <text x="697.25" y="682" text-anchor="middle" font-size="16" font-weight="600" fill="#92400e">E</text>
+    <text x="63" y="718" font-size="15" font-weight="400" fill="#1f2937" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">shift = m = 11</text>
+  </g>
+</svg>
