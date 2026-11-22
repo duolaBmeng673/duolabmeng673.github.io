@@ -8,9 +8,9 @@ const canvas = document.querySelector<HTMLCanvasElement>('[data-ambient-grid]');
 if (canvas) {
   const ctx = canvas.getContext('2d');
   if (ctx) {
-    const squareSize = 44;
     const homeRoot = document.querySelector<HTMLElement>('[data-home-root]');
     const isHome = Boolean(homeRoot) || document.body.classList.contains('home-page');
+    const squareSize = isHome ? Math.round((44 * 2) / 3) : 44;
     const motionMedia = window.matchMedia?.('(prefers-reduced-motion: reduce)');
     const pointerMedia = window.matchMedia?.('(hover: hover) and (pointer: fine)');
     const coarseOrNoHoverMedia = window.matchMedia?.('(hover: none), (pointer: coarse)');

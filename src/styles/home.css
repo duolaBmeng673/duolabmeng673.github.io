@@ -843,7 +843,7 @@
 }
 
 .heat-cat-dot[data-type="research"] {
-  background: var(--c1, var(--ac));
+  background: var(--heat-cat-paper, var(--c1, var(--ac)));
 }
 
 .heat-cat-dot[data-type="coding"] {
