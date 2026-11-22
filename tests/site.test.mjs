@@ -543,7 +543,7 @@ test('article pages mount fixed non-repeating random tile background while non-a
   assert.ok(!tileScript.includes('setInterval'), 'article-tile-bg must not run a setInterval loop');
 
   const ambientGrid = read('src/scripts/ambient-grid.ts');
-  assert.match(ambientGrid, /isHome \? Math\.round\(\(44 \* 2\) \/ 3\) : 44/, 'homepage ambient grid side length must be 2/3 of 44px');
+  assert.match(ambientGrid, /const squareSize = Math\.round\(\(44 \* 2\) \/ 3\);/, 'ambient grid side length across all pages must be 2/3 of 44px');
 });
 
 test('article TOC preserves smooth scrolling, study cards/chapter nav omit left green bars, and nav aligns numbers', () => {

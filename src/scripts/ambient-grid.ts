@@ -10,7 +10,7 @@ if (canvas) {
   if (ctx) {
     const homeRoot = document.querySelector<HTMLElement>('[data-home-root]');
     const isHome = Boolean(homeRoot) || document.body.classList.contains('home-page');
-    const squareSize = isHome ? Math.round((44 * 2) / 3) : 44;
+    const squareSize = Math.round((44 * 2) / 3);
     const motionMedia = window.matchMedia?.('(prefers-reduced-motion: reduce)');
     const pointerMedia = window.matchMedia?.('(hover: hover) and (pointer: fine)');
     const coarseOrNoHoverMedia = window.matchMedia?.('(hover: none), (pointer: coarse)');
