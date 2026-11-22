@@ -169,7 +169,7 @@ document.querySelectorAll<HTMLElement>('[data-knowledge-directory]').forEach((ro
       };
       scrollEndHandler = finishArrival;
       window.addEventListener('scrollend', finishArrival, { once: true });
-      scrollLockTimer = window.setTimeout(finishArrival, 620);
+      scrollLockTimer = window.setTimeout(finishArrival, 1400);
       target.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
     if (push && typeof history !== 'undefined') {
