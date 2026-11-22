@@ -91,12 +91,6 @@
 ::selection { background: var(--ac-soft); color: var(--tx); }
 [hidden] { display: none !important; }
 
-@media (prefers-reduced-motion: no-preference) {
-  @view-transition {
-    navigation: auto;
-  }
-}
-
 body[data-channel="study"] {
   --ac: var(--study-ac);
   --ac-strong: var(--study-ac-strong);
@@ -821,7 +815,7 @@ h1, h2, h3 {
 
 /* Inner Pages: Intro, Masthead, Archive, Timeline */
 .page-intro { padding: 2.5rem 0 1.65rem; border-bottom: 1px solid var(--bd); }
-.page-intro h1 { margin-bottom: 0.65rem; font-size: clamp(1.85rem, 3.2vw, 2.75rem); view-transition-name: page-title; }
+.page-intro h1 { margin-bottom: 0.65rem; font-size: clamp(1.85rem, 3.2vw, 2.75rem); }
 .page-intro p:last-child, .page-intro .lead { margin: 0; color: var(--ts); font-size: 1rem; line-height: 1.7; max-width: 62ch; }
 .page-masthead {
   display: grid;
@@ -1293,7 +1287,7 @@ a.masthead-stat-card:hover { transform: translateY(-2px); border-color: var(--bd
   .article-taxonomy > :not(.back-link) { display: none; }
 }
 .article-title-block { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: start; gap: 0.65rem 1rem; margin-bottom: 0.75rem; }
-.article-title-block h1 { margin-bottom: 0; font-size: clamp(1.85rem, 3.2vw, 2.7rem); overflow-wrap: anywhere; view-transition-name: page-title; }
+.article-title-block h1 { margin-bottom: 0; font-size: clamp(1.85rem, 3.2vw, 2.7rem); overflow-wrap: anywhere; }
 .article-title-block .view-switch { justify-self: end; align-self: center; }
 .article-header h1.title-long { font-size: clamp(1.65rem, 2.7vw, 2.25rem); }
 .article-subtitle { margin: -0.15rem 0 0.85rem; color: var(--tm); font-size: 1.15rem; }
@@ -2061,6 +2055,24 @@ a.toc-step-btn:focus-visible {
   border-color: var(--bd-strong);
   box-shadow: 0 6px 20px var(--sh);
   transform: translateY(-2px);
+}
+.study-series-row.is-entering-module {
+  border-color: var(--ac);
+  background: var(--ac-soft);
+  transform: translateY(-1px);
+  transition: border-color var(--dur-1) var(--ease-out), background var(--dur-1) var(--ease-out), transform var(--dur-1) var(--ease-out);
+}
+main.study-page-leaving {
+  opacity: 0;
+  transform: translateY(-6px);
+  transition: opacity var(--dur-1) var(--ease-out), transform var(--dur-1) var(--ease-out);
+}
+@keyframes study-module-enter {
+  from { opacity: 0.01; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+main:has(.study-module-layout) {
+  animation: study-module-enter var(--dur-2) var(--ease-out) both;
 }
 .study-series-row .module-title-link { color: inherit; transition: color var(--transition); }
 .study-series-row .module-title-link:is(:hover,:focus-visible) { color: var(--link); }

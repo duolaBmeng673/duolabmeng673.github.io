@@ -588,3 +588,14 @@ test('built HTML text nodes contain zero residual literal ** or __ outside code/
   const hits = scanBuiltBoldIssues(fileURLToPath(new URL('../dist', import.meta.url)));
   assert.deepEqual(hits, []);
 });
+
+test('study module entry disables View Transitions and uses reduced-motion-safe page transitions', () => {
+  const globalCss = read('src/styles/global.css');
+  assert.doesNotMatch(globalCss, /@view-transition|view-transition-name/, 'site must not use CSS View Transitions');
+  assert.match(globalCss, /main\.study-page-leaving\s*\{[^}]*opacity:\s*0;[^}]*var\(--dur-1\)/);
+  assert.match(globalCss, /@keyframes study-module-enter/);
+  assert.match(globalCss, /prefers-reduced-motion:\s*reduce[\s\S]*animation:\s*none !important/);
+
+  const overviewScript = read('src/scripts/study-overview.ts');
+  assert.match(overviewScript, /prefers-reduced-motion:\s*reduce/);
+});
