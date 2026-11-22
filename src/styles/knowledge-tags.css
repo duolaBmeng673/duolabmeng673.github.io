@@ -165,17 +165,24 @@
   position: relative;
   z-index: 1;
   display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.3rem 0.55rem;
+  align-items: baseline;
+  gap: 0.45rem;
+  padding: 0.32rem 0.55rem;
   border-radius: var(--r-ctl);
   font-size: 0.8rem;
+  line-height: 1.35;
   color: var(--ts);
   transition: background var(--transition), color var(--transition);
 }
 .study-chapter-nav a:hover { background: var(--bg); color: var(--tx); }
 .study-chapter-nav a.is-active { background: var(--ac-soft); color: var(--ac); font-weight: var(--fw-m); }
-.ch-nav-code, .ch-nav-count { font-family: var(--mono); font-size: var(--fs-xs); color: var(--tm); }
+.ch-nav-code, .ch-nav-count {
+  font-family: var(--mono);
+  font-size: var(--fs-xs);
+  line-height: 1.35;
+  font-variant-numeric: tabular-nums;
+  color: var(--tm);
+}
 .study-chapter-nav a.is-active .ch-nav-code { color: var(--ac); }
 .chapter-count {
   margin-left: auto;
@@ -279,7 +286,6 @@
     top: 0;
     border-radius: var(--r-ctl);
     background: var(--ac-soft);
-    border-left: 2.5px solid var(--ac);
     pointer-events: none;
     z-index: 0;
     opacity: 0;
@@ -296,11 +302,12 @@
   }
   .study-chapter-nav a {
     display: grid;
-    grid-template-columns: 22px minmax(0, 1fr) auto;
-    align-items: start;
-    padding: 0.4rem 0.5rem;
+    grid-template-columns: 1.45rem minmax(0, 1fr) auto;
+    align-items: baseline;
+    padding: 0.42rem 0.55rem;
   }
-  .ch-nav-code, .ch-nav-count { padding-top: 0.12rem; }
+  .ch-nav-code, .ch-nav-count { padding-top: 0; }
+  .ch-nav-count { justify-self: end; text-align: right; }
   .ch-nav-name {
     min-width: 0;
     display: -webkit-box;
