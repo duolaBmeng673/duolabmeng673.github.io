@@ -1,7 +1,9 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import { FORBIDDEN_PUBLIC_TERMS, findForbiddenMatches } from '../src/config/forbidden-terms.ts';
+import { scanBuiltBoldIssues } from '../scripts/check-bold.mjs';
 const read = (path) => readFileSync(new URL('../' + path, import.meta.url), 'utf8');
 const index = JSON.parse(read('dist/search-index.json'));
 test('six algorithm and I/O notes are public with their original URLs and without exam-origin tags', () => {
@@ -580,4 +582,9 @@ test('article TOC preserves smooth scrolling, study cards/chapter nav omit left 
   const slideRule = knowledgeCss.match(/\.study-chapter-nav nav\.has-slide-indicator \.nav-slide-indicator\s*\{[^}]*\}/)?.[0] ?? '';
   assert.ok(!slideRule.includes('border-left:'), 'chapter nav active indicator must not render left green accent bar');
   assert.match(knowledgeCss, /\.study-chapter-nav a\s*\{[^}]*align-items:\s*baseline;/, 'chapter nav items baseline-align numbers and text');
+});
+
+test('built HTML text nodes contain zero residual literal ** or __ outside code/math', () => {
+  const hits = scanBuiltBoldIssues(fileURLToPath(new URL('../dist', import.meta.url)));
+  assert.deepEqual(hits, []);
 });

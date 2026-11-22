@@ -5,6 +5,8 @@ import { articleHeadings } from '../src/plugins/article-headings.mjs';
 import { articleInlineSvg } from '../src/plugins/article-inline-svg.mjs';
 import { articlePresentation } from '../src/plugins/article-presentation.mjs';
 import { tokenizeHeadingText, normalizeTocSections } from '../src/plugins/heading-tokens.mjs';
+import { preprocessCjkEmphasis, stripCjkEmphasisSentinels } from '../src/plugins/cjk-emphasis.mjs';
+import { findResidualBoldInHtml } from '../scripts/check-bold.mjs';
 import { rankSearch, searchSnippet } from '../src/lib/search.ts';
 import { activityLevel, createActivityCalendar } from '../src/lib/activity.ts';
 
@@ -128,4 +130,23 @@ test('normalizeTocSections removes single top-level wrapper heading and promotes
 
   const singleOnly = [{ depth: 2, slug: 'only', text: '唯一小节' }];
   assert.deepEqual(normalizeTocSections(singleOnly), singleOnly);
+});
+
+test('cjk-emphasis parses CJK punctuation-adjacent bold spans cleanly while skipping code/math', () => {
+  const renderCjk = (md) => markdownToHtml(preprocessCjkEmphasis(md), {
+    features: { math: true },
+    mdastPlugins: [stripCjkEmphasisSentinels],
+  }).html;
+
+  assert.equal(renderCjk('**Simplification：**提醒').trim(), '<p><strong>Simplification：</strong>提醒</p>');
+  assert.equal(renderCjk('在分组中**“看到了” IP 地址**，通常').trim(), '<p>在分组中<strong>“看到了” IP 地址</strong>，通常</p>');
+  assert.equal(renderCjk('找到**默认网关（接口）**的地址').trim(), '<p>找到<strong>默认网关（接口）</strong>的地址</p>');
+  assert.equal(renderCjk('中文__加粗__中文').trim(), '<p>中文<strong>加粗</strong>中文</p>');
+  assert.match(renderCjk('除**连字符（`-`）**外'), /<strong>连字符（<code>-<\/code>）<\/strong>外/);
+  assert.match(renderCjk('```md\n**不该改：**文\n```\n`__keep__`'), /<code\b[^>]*>\*\*不该改：\*\*文[\s\S]*<code>__keep__<\/code>/);
+
+  const sampleHtml = '<p>正常</p><pre><code>**code**</code></pre><code>__inline__</code><span class="katex"><span>**math**</span></span><!-- **comment** --><p>**broken**字</p>';
+  const hits = findResidualBoldInHtml(sampleHtml, 'sample.html');
+  assert.equal(hits.length, 1);
+  assert.equal(hits[0].context, '**broken**字');
 });

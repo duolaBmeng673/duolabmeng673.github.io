@@ -5,6 +5,7 @@ import katex from 'katex';
 import { articleHeadings } from './src/plugins/article-headings.mjs';
 import { articlePresentation, articleSvgHtml } from './src/plugins/article-presentation.mjs';
 import { articleInlineSvg } from './src/plugins/article-inline-svg.mjs';
+import { withCjkEmphasis } from './src/plugins/cjk-emphasis.mjs';
 import { createCssVariablesTheme } from '@shikijs/core';
 
 function renderMath(node, context, displayMode) {
@@ -24,7 +25,7 @@ export default defineConfig({
   site: 'https://duolabmeng673.github.io',
   integrations: [react()],
   markdown: {
-    processor: satteri({
+    processor: withCjkEmphasis(satteri({
       features: { math: true },
       mdastPlugins: [articleHeadings, articleInlineSvg, articleSvgHtml, {
         name: 'katex-formulas',
@@ -32,7 +33,7 @@ export default defineConfig({
         inlineMath: (node, context) => renderMath(node, context, false),
       }],
       hastPlugins: [articlePresentation],
-    }),
+    })),
     shikiConfig: {
       theme: createCssVariablesTheme({ name: 'notebook', variablePrefix: '--syntax-' }),
     },
