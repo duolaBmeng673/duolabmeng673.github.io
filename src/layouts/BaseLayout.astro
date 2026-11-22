@@ -108,6 +108,11 @@ const navItems = [
     </script>
   </head>
   <body class={bodyClass} data-channel={channel}>
+    {type === 'article' && (
+      <div class="article-fixed-tile-backdrop" aria-hidden="true">
+        <canvas data-article-fixed-tile></canvas>
+      </div>
+    )}
     <div class="dotgrid-hero-backdrop" aria-hidden="true">
       <canvas data-ambient-grid></canvas>
     </div>
