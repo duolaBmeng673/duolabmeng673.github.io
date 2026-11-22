@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 424" width="760" height="424" role="img">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 1 760 423" width="760" height="423" role="img">
   <title>ARP 解析流程：广播请求与单播响应</title>
   <desc>展示同一局域网广播域内，主机 A 广播发送 ARP 请求（目的 MAC 为全 F），非目标主机 C 丢弃，目标主机 B 单播返回 ARP 响应的过程。</desc>
   <defs>

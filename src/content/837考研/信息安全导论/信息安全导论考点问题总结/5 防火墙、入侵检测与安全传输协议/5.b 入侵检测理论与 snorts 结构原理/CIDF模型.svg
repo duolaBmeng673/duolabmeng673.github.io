@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 896 578" width="896" height="578" role="img" aria-labelledby="cidf-title cidf-desc">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="42 13 816 561" width="816" height="561" role="img" aria-labelledby="cidf-title cidf-desc">
   <title id="cidf-title">图 7.14 CIDF 模型</title>
   <desc id="cidf-desc">通用入侵检测框架（CIDF）模型：事件产生器 E 向事件分析器 A、事件数据库 D 与响应单元 R 输送事件数据；A 与 D 交互并输出给 R；R 经由 D 与 A 的信息启动适当响应。</desc>
   <defs>
@@ -14,8 +14,6 @@
       .ln { fill: none; stroke: #334155; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
     </style>
   </defs>
-
-  <rect width="896" height="578" fill="#ffffff" />
 
   <!-- Top Node Captions -->
   <text class="t lbl" x="149" y="52">事件产生器</text>

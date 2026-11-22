@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 408" width="760" height="408" role="img">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 1 760 407" width="760" height="407" role="img">
   <title>TCP 拥塞控制 cwnd 变化曲线：慢开始、拥塞避免、超时与快恢复</title>
   <desc>展示拥塞窗口 cwnd 随传输轮次的演变，包含慢开始指数增长、ssthresh 切换至拥塞避免、第 12 轮拥塞后超时重传与快恢复（TCP Reno）两条分支。</desc>
   <g font-family="'PingFang SC','Noto Sans SC','Microsoft YaHei',system-ui,sans-serif">

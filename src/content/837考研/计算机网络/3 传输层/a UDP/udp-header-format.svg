@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 392" width="760" height="392" role="img">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="33 1 725 391" width="725" height="391" role="img">
   <title>UDP 伪首部（12 B）与首部格式（8 B）</title>
   <desc>展示不实际发送、仅用于检验和计算的 12 字节 UDP 伪首部，以及 8 字节 UDP 首部与数据部分格式。</desc>
   <g font-family="'PingFang SC','Noto Sans SC','Microsoft YaHei',system-ui,sans-serif">

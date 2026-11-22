@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 500" width="760" height="500" role="img">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="8 1 696 491" width="696" height="491" role="img">
   <title>TCP 利用可变接收窗口 rwnd 进行流量控制</title>
   <desc>按时间顺序展示发送方 A 与接收方 B 通过 ACK 报文段携带可变接收窗口 rwnd 动态控制发送字节流的过程，包含中间分组丢失的处理。</desc>
   <defs>

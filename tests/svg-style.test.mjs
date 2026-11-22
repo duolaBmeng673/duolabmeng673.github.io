@@ -1,7 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readdirSync, readFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { basename } from 'node:path';
+import { ALL_837_ROOT, CHROME_PATH, findSvgs, lintSvgs } from '../scripts/lint-svg.mjs';
 
 const NET_ROOT = new URL('../src/content/837考研/计算机网络/', import.meta.url);
 
@@ -94,11 +95,11 @@ test('all 计算机网络 SVGs strictly satisfy v1 static style specification', 
   for (const { path, prefixPrefix } of NETWORK_SVGS) {
     const svg = readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
 
-    // 1. viewBox width = 760, height <= 520
-    const vbMatch = svg.match(/viewBox="0 0 (\d+) (\d+)"/);
-    assert.ok(vbMatch, `${path}: missing viewBox="0 0 W H"`);
-    assert.equal(Number(vbMatch[1]), 760, `${path}: viewBox width must be 760`);
-    assert.ok(Number(vbMatch[2]) <= 520, `${path}: viewBox height ${vbMatch[2]} exceeds 520`);
+    // 1. viewBox X Y W H with W <= 760, height <= 520
+    const vbMatch = svg.match(/viewBox="(-?\d+(?:\.\d+)?)\s+(-?\d+(?:\.\d+)?)\s+(\d+(?:\.\d+)?)\s+(\d+(?:\.\d+)?)"/);
+    assert.ok(vbMatch, `${path}: missing viewBox="X Y W H"`);
+    assert.ok(Number(vbMatch[3]) <= 760, `${path}: viewBox width ${vbMatch[3]} exceeds 760`);
+    assert.ok(Number(vbMatch[4]) <= 520, `${path}: viewBox height ${vbMatch[4]} exceeds 520`);
 
     // 2. Accessibility & structure
     assert.match(svg, /role="img"/, `${path}: missing role="img"`);
@@ -145,7 +146,7 @@ test('all 计算机网络 SVGs strictly satisfy v1 static style specification', 
 
     // 8. No full-canvas background rect
     assert.ok(
-      !new RegExp(`<rect[^>]*width="760"[^>]*height="${vbMatch[2]}"`).test(svg),
+      !new RegExp(`<rect[^>]*width="${vbMatch[3]}"[^>]*height="${vbMatch[4]}"`).test(svg),
       `${path}: must not draw full-canvas background rect`,
     );
   }
@@ -172,4 +173,41 @@ test('SVG v1 palette meets >= 4.5:1 contrast in both light and dark filter modes
     assert.ok(light >= 4.5, `Light contrast ${fg} on ${bg} is ${light.toFixed(2)}:1 (< 4.5:1)`);
     assert.ok(dark >= 4.5, `Dark contrast ${fg} on ${bg} is ${dark.toFixed(2)}:1 (< 4.5:1)`);
   }
+});
+
+test('all 837 SVGs have no canvas background rect and maintain 24±2px viewBox margins', (t) => {
+  const allSvgs = findSvgs(ALL_837_ROOT);
+  assert.equal(allSvgs.length, 81, `expected 81 SVGs under ${ALL_837_ROOT}, got ${allSvgs.length}`);
+
+  for (const relPath of allSvgs) {
+    const svg = readFileSync(new URL(`../${relPath}`, import.meta.url), 'utf8');
+    const vbMatch = svg.match(/viewBox="(-?\d+(?:\.\d+)?)\s+(-?\d+(?:\.\d+)?)\s+(\d+(?:\.\d+)?)\s+(\d+(?:\.\d+)?)"/);
+    assert.ok(vbMatch, `${relPath}: missing valid viewBox`);
+    const vbW = Number(vbMatch[3]);
+    const vbH = Number(vbMatch[4]);
+    for (const [rect] of svg.matchAll(/<rect\b([^>]*)\/?>/gi)) {
+      const fillM = rect.match(/\bfill\s*=\s*["']([^"']+)["']/i);
+      const wM = rect.match(/\bwidth\s*=\s*["']([^"']+)["']/i);
+      const hM = rect.match(/\bheight\s*=\s*["']([^"']+)["']/i);
+      if (!fillM || !wM || !hM) continue;
+      const fill = fillM[1].trim().toLowerCase();
+      if (!['#fff', '#ffffff', 'white', '#fafafa'].includes(fill)) continue;
+      const w = wM[1].trim();
+      const h = hM[1].trim();
+      const isFull = w === '100%' || h === '100%' || (Number(w) >= vbW * 0.9 && Number(h) >= vbH * 0.9);
+      assert.ok(!isFull, `${relPath}: must not contain full-canvas background rect (${rect})`);
+    }
+  }
+
+  if (!existsSync(CHROME_PATH)) {
+    t.skip('Headless Chrome not available in this environment');
+    return;
+  }
+  const { totalViolations, results } = lintSvgs(allSvgs, { quiet: true });
+  const failed = results.filter((r) => r.violations.length > 0);
+  assert.equal(
+    totalViolations,
+    0,
+    failed.map((r) => `${r.path}: ${r.violations.map((v) => v.detail).join('; ')}`).join('\n'),
+  );
 });

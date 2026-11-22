@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 456" width="760" height="456" role="img">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 1 760 455" width="760" height="455" role="img">
   <title>BGP 发言人、自治系统 AS 关系与路径向量交换</title>
   <desc>左侧展示不同自治系统 AS 间的 BGP 发言人建立 TCP 会话，右侧展示路径向量通过记录经过的 AS 序列来避免路由环路。</desc>
   <g font-family="'PingFang SC','Noto Sans SC','Microsoft YaHei',system-ui,sans-serif">

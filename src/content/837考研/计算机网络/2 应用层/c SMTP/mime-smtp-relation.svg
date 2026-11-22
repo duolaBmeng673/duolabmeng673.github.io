@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 328" width="760" height="328" role="img">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="64 1 632 311" width="632" height="311" role="img">
   <title>MIME 与 SMTP 的关系（不改动 SMTP）</title>
   <desc>展示发送端先经 MIME 将非 ASCII 数据转为 7 位 ASCII 码再交由 SMTP 传输，接收端经 MIME 逆转换还原非 ASCII 数据。</desc>
   <defs>

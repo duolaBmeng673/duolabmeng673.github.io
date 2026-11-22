@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 416" width="760" height="416" role="img">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 1 760 411" width="760" height="411" role="img">
   <title>CSMA/CD 最坏冲突检测时间：争用期 2τ</title>
   <desc>展示单程传播时延为 τ 时，站点 A 与站点 B 在最坏情况下经过 2τ 争用期检测到冲突的时序过程，以及最短帧长与最长帧长结论。</desc>
   <defs>

@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 288" width="760" height="288" role="img">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="52 1 660 283" width="660" height="283" role="img">
   <title>时延带宽积示意图：链路就像一根空心管道</title>
   <desc>将网络链路类比为圆柱形空心管道，横截面积表示信道带宽，长度表示传播时延，管道可容纳的比特数等于传播时延与信道带宽的乘积。</desc>
   <defs>

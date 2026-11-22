@@ -61,14 +61,28 @@ document.querySelectorAll<HTMLElement>('.article-body pre').forEach((pre) => {
   tools.append(language, feedback, button);
   wrapper.insertBefore(tools, pre);
 });
-document.querySelectorAll<HTMLImageElement>('.article-body img').forEach((image) => {
-  const src = image.getAttribute('src');
-  if (!src?.endsWith('.svg') || image.closest('a')) return;
+document.querySelectorAll<HTMLImageElement | SVGSVGElement>('.article-body [data-svg-diagram="true"]').forEach((diagram) => {
+  let card = diagram.closest<HTMLElement>('.article-svg-card');
+  if (!card) {
+    card = document.createElement('span');
+    card.className = 'article-svg-card';
+    diagram.replaceWith(card);
+    card.append(diagram);
+  }
+  if (diagram.tagName === 'IMG') {
+    const attrW = diagram.getAttribute('width');
+    if (attrW && /^\d+(?:\.\d+)?$/.test(attrW) && !diagram.style.width) {
+      diagram.style.width = `${attrW}px`;
+    }
+  }
+  if (diagram.tagName !== 'IMG' || diagram.closest('a')) return;
+  const src = diagram.getAttribute('src');
+  if (!src?.endsWith('.svg')) return;
   const link = document.createElement('a');
   link.href = src; link.target = '_blank'; link.rel = 'noopener';
   link.className = 'article-svg-link';
   link.title = '在新标签页查看 SVG 原图';
-  image.replaceWith(link); link.append(image);
+  card.replaceWith(link); link.append(card);
   const hint = document.createElement('span');
   hint.className = 'svg-hint'; hint.textContent = '查看 SVG 原图 →';
   link.append(hint);
@@ -191,6 +205,9 @@ const scrollToHeadingLink = (link: HTMLAnchorElement, event: MouseEvent) => {
   if (!target) return;
   event.preventDefault();
   revealInsideFold(target);
+  document.querySelectorAll<HTMLImageElement>('.article-body img[loading="lazy"]').forEach((img) => {
+    img.loading = 'eager';
+  });
   const reduce = reducedMotion();
   clearTocScrollLock();
   tocScrollLock = !reduce;
@@ -199,17 +216,33 @@ const scrollToHeadingLink = (link: HTMLAnchorElement, event: MouseEvent) => {
     target.scrollIntoView({ behavior: 'auto', block: 'start' });
   } else {
     let arrived = false;
+    let hops = 0;
+    const scrollTarget = () => target.scrollIntoView({ behavior: 'smooth', block: 'start' });
     const finishArrival = () => {
       if (arrived) return;
+      const expectedTop = parseFloat(getComputedStyle(target).scrollMarginTop) || 0;
+      const delta = target.getBoundingClientRect().top - expectedTop;
+      const atBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4;
+      if (Math.abs(delta) > 96 && !(delta > 0 && atBottom) && hops < 2) {
+        hops += 1;
+        clearTocScrollLock();
+        tocScrollLock = true;
+        scheduleArrival();
+        scrollTarget();
+        return;
+      }
       arrived = true;
       clearTocScrollLock();
       setCurrentById(id);
       flashArrivedHeading(target);
     };
-    tocScrollEndHandler = finishArrival;
-    window.addEventListener('scrollend', finishArrival, { once: true });
-    tocScrollLockTimer = window.setTimeout(finishArrival, 620);
-    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    const scheduleArrival = () => {
+      tocScrollEndHandler = finishArrival;
+      window.addEventListener('scrollend', finishArrival, { once: true });
+      tocScrollLockTimer = window.setTimeout(finishArrival, 1400);
+    };
+    scheduleArrival();
+    scrollTarget();
   }
   if (typeof history !== 'undefined') {
     history.replaceState(null, '', `${location.pathname}${location.search}${link.hash}`);
@@ -217,7 +250,12 @@ const scrollToHeadingLink = (link: HTMLAnchorElement, event: MouseEvent) => {
 };
 links.forEach((link) => link.addEventListener('click', (event) => scrollToHeadingLink(link, event)));
 let framePending = false;
-document.addEventListener('study-mode-change', () => { clearTocScrollLock(); updateCurrent(); });
+document.addEventListener('study-mode-change', (event) => {
+  const reason = (event as CustomEvent<{ reason?: string }>).detail?.reason;
+  if (tocScrollLock && reason !== 'mode') return;
+  clearTocScrollLock();
+  updateCurrent();
+});
 if (tocList) {
   tocList.addEventListener('transitionend', (e) => {
     if ((e.target as HTMLElement)?.classList?.contains('toc-sub-group')) syncTocIndicator();
@@ -235,8 +273,9 @@ if (headings.length) {
   updateCurrent();
 }
 document.querySelectorAll<HTMLAnchorElement>('.article-toc-mobile a').forEach((link) => link.addEventListener('click', (event) => {
+  const details = link.closest('details');
+  if (details) details.open = false;
   scrollToHeadingLink(link, event);
-  const details = link.closest('details'); if (details) details.open = false;
 }));
 
 const chapterSwitchers = [...document.querySelectorAll<HTMLDetailsElement>('[data-chapter-switcher]')];

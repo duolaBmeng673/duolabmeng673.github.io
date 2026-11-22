@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 392" width="760" height="392" role="img">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 1 760 383" width="760" height="383" role="img">
   <title>TCP/IP 协议族（沙漏形：IP 是核心细腰）</title>
   <desc>展示 TCP/IP 协议族的沙漏形结构：上层应用协议与运输层汇聚于网际层 IP，下层适配多种物理网络接口。</desc>
   <g font-family="'PingFang SC','Noto Sans SC','Microsoft YaHei',system-ui,sans-serif">

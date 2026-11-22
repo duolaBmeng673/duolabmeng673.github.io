@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 328" width="760" height="328" role="img">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 1 760 327" width="760" height="327" role="img">
   <title>原始套接字（SOCK_RAW）协议栈路径</title>
   <desc>对比普通流式/数据报套接字经过传输层与原始套接字绕过传输层直接访问 IP 与 ICMP 报文的协议栈路径。</desc>
   <defs>

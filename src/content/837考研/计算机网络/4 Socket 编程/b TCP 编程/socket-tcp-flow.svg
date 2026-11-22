@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 520" width="760" height="520" role="img">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 1 760 519" width="760" height="519" role="img">
   <title>TCP 套接字（SOCK_STREAM）编程流程图</title>
   <desc>展示 TCP 客户端与服务器端的套接字建立、监听、三次握手阻塞连接、请求响应收发及关闭流程。</desc>
   <defs>

@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 516" width="760" height="516" role="img">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 1 760 515" width="760" height="515" role="img">
   <title>HTTP 非持续连接与持续连接时间对比</title>
   <desc>对比 HTTP 非持续连接（每个对象建立一次 TCP 连接，耗时 2 RTT 加传输时间）与持续连接（复用同一条 TCP 连接传输多个对象）。</desc>
   <defs>

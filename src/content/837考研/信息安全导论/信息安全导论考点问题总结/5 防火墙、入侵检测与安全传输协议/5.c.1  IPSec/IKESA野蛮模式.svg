@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 845 432" width="845" height="432" role="img" aria-label="IKE SA 野蛮模式协商过程">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="51 -7 743 423" width="743" height="423" role="img" aria-label="IKE SA 野蛮模式协商过程">
   <title>IKE SA 野蛮模式协商过程</title>
   <desc>IKE SA 野蛮模式三报文交互过程：1. 安全参数提议、DH公开值、认证数据等；2. 安全参数选择、DH公开值、认证数据、验证载荷等；3. 验证载荷。</desc>
   <defs>

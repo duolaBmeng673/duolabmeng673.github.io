@@ -270,21 +270,21 @@ test('pilot converted SVG assets are valid isolated diagrams within 10 KB', () =
       route: '/study-notes/837/intrusion-detection-snort/',
       encodedPrefix: 'CIDF%E6%A8%A1%E5%9E%8B.',
       expectedAlt: 'CIDF 模型示意图',
-      ratio: [896, 578],
+      ratio: [816, 561],
     },
     {
       srcRel: 'src/content/837考研/信息安全导论/信息安全导论考点问题总结/5 防火墙、入侵检测与安全传输协议/5.c.1  IPSec/IKESA野蛮模式.svg',
       route: '/study-notes/837/ipsec/',
       encodedPrefix: 'IKESA%E9%87%8E%E8%9B%AE%E6%A8%A1%E5%BC%8F.',
       expectedAlt: 'IKE SA 野蛮模式',
-      ratio: [845, 432],
+      ratio: [743, 423],
     },
     {
       srcRel: 'src/content/837考研/信息安全导论/信息安全导论考点问题总结/5 防火墙、入侵检测与安全传输协议/5.c.2  SSL/SSL记录协议数据处理.svg',
       route: '/study-notes/837/ssl/',
       encodedPrefix: 'SSL%E8%AE%B0%E5%BD%95%E5%8D%8F%E8%AE%AE%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86.',
       expectedAlt: 'SSL 记录协议数据处理流程',
-      ratio: [998, 654],
+      ratio: [949, 659],
     },
   ];
 
@@ -516,4 +516,46 @@ test('study articles include header quick jump bar, chapter switcher, TOC jump f
   }
   assert.ok(hasCrossPrev, 'Expected at least one study note at module boundary with previous cross-module link');
   assert.ok(hasCrossNext, 'Expected at least one study note at module boundary with next cross-module link');
+});
+
+test('article pages mount fixed non-repeating random tile background while non-article pages keep upper grid only', () => {
+  for (const articlePage of ['dist/study-notes/837/decision-tree-c45/index.html', 'dist/blog/bert/index.html']) {
+    const html = read(articlePage);
+    assert.match(html, /class="article-fixed-tile-backdrop"/, `${articlePage} must mount fixed random tile backdrop`);
+    assert.match(html, /data-article-fixed-tile/, `${articlePage} must include data-article-fixed-tile canvas`);
+    assert.match(html, /class="dotgrid-hero-backdrop"/, `${articlePage} must keep upper ambient grid for top transition`);
+  }
+  for (const nonArticlePage of [
+    'dist/index.html',
+    'dist/about/index.html',
+    'dist/blog/index.html',
+    'dist/study-notes/index.html',
+    'dist/tools/index.html',
+    'dist/study-notes/837/information-security/index.html',
+  ]) {
+    const html = read(nonArticlePage);
+    assert.ok(!html.includes('article-fixed-tile-backdrop'), `${nonArticlePage} must not include article-fixed-tile-backdrop`);
+    assert.ok(!html.includes('data-article-fixed-tile'), `${nonArticlePage} must not include data-article-fixed-tile`);
+  }
+
+  const tileScript = read('src/scripts/article-tile-bg.ts');
+  assert.ok(!tileScript.includes('requestAnimationFrame'), 'article-tile-bg must not run a requestAnimationFrame animation loop');
+  assert.ok(!tileScript.includes('setInterval'), 'article-tile-bg must not run a setInterval loop');
+
+  const ambientGrid = read('src/scripts/ambient-grid.ts');
+  assert.match(ambientGrid, /isHome \? Math\.round\(\(44 \* 2\) \/ 3\) : 44/, 'homepage ambient grid side length must be 2/3 of 44px');
+});
+
+test('article TOC preserves smooth scrolling, study cards/chapter nav omit left green bars, and nav aligns numbers', () => {
+  const recallScript = read('src/scripts/recall.ts');
+  assert.match(recallScript, /revealTarget\(link\.hash,\s*false\)/, 'recall.ts must not override TOC click smooth scrolling with instant jump');
+
+  const globalCss = read('src/styles/global.css');
+  const seriesRowRule = globalCss.match(/\.study-series-row\s*\{[^}]*\}/)?.[0] ?? '';
+  assert.ok(!seriesRowRule.includes('border-left:'), 'study overview module cards must not render left green accent bar');
+
+  const knowledgeCss = read('src/styles/knowledge-tags.css');
+  const slideRule = knowledgeCss.match(/\.study-chapter-nav nav\.has-slide-indicator \.nav-slide-indicator\s*\{[^}]*\}/)?.[0] ?? '';
+  assert.ok(!slideRule.includes('border-left:'), 'chapter nav active indicator must not render left green accent bar');
+  assert.match(knowledgeCss, /\.study-chapter-nav a\s*\{[^}]*align-items:\s*baseline;/, 'chapter nav items baseline-align numbers and text');
 });

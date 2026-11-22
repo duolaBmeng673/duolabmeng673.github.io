@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 472" width="760" height="472" role="img">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 1 760 471" width="760" height="471" role="img">
   <title>DNS 迭代查询与递归查询工作原理</title>
   <desc>左侧对比本地域名服务器向根、顶级、权限服务器发起迭代查询的 8 个步骤，右侧对比全部采用递归查询的 8 个步骤。</desc>
   <defs>

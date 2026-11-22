@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 288" width="760" height="288" role="img">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 1 760 283" width="760" height="283" role="img">
   <title>电子邮件系统组成与协议分工</title>
   <desc>展示发件人用户代理、发送方邮件服务器、接收方邮件服务器与收件人用户代理之间的 SMTP 推协议与 POP3/IMAP 拉协议。</desc>
   <defs>

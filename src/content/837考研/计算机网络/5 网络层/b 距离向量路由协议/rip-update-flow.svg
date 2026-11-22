@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 416" width="760" height="416" role="img">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 1 760 415" width="760" height="415" role="img">
   <title>RIP 距离向量更新流程与路由更新规则</title>
   <desc>展示路由器收到邻居 X 的 RIP 报文后的距离加 1 与逐项比对三种更新分支、180 秒超时置 16 跳不可达规则，以及 RIP 的三要素与优缺点。</desc>
   <defs>

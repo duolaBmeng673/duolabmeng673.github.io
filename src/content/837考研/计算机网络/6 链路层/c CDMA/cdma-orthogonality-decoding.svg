@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 384" width="760" height="384" role="img">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 1 760 383" width="760" height="383" role="img">
   <title>CDMA 码分多址发送调制、线性叠加与正交内积解码过程</title>
   <desc>展示 A、B、D 三站码片发送信号在公共信道线性叠加为 S = A - B + D 后，接收端通过与指定码片序列做规格化内积分别解码得到 1、0 与未发送结果的过程。</desc>
   <defs>

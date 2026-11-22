@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 228" width="760" height="228" role="img">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 1 760 227" width="760" height="227" role="img">
   <title>【2020 统考】最短与最长时间拆解</title>
   <desc>对比本地缓存命中（仅 TCP 建连加 HTTP 共 2 RTT = 20 ms）与无缓存时经根、com、abc.com 迭代查询 DNS（3 RTT = 30 ms）后再建立 TCP 获取页面（合计 5 RTT = 50 ms）。</desc>
   <g font-family="'PingFang SC','Noto Sans SC','Microsoft YaHei',system-ui,sans-serif">

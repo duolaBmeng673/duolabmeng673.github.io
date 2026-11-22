@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 456" width="760" height="456" role="img">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 1 760 455" width="760" height="455" role="img">
   <title>UDP 套接字（SOCK_DGRAM）编程流程图</title>
   <desc>对比 UDP 客户端与服务器端的套接字调用顺序，展示无握手下的请求与应答数据报交互以及阻塞 recvfrom 循环服务机制。</desc>
   <defs>

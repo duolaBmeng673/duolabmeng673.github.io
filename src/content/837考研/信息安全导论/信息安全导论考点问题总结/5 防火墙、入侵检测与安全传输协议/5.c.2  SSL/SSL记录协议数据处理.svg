@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 998 654" width="998" height="654" role="img" aria-labelledby="ssl-rec-title ssl-rec-desc">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="37 0 949 659" width="949" height="659" role="img" aria-labelledby="ssl-rec-title ssl-rec-desc">
   <title id="ssl-rec-title">SSL 记录协议的操作</title>
   <desc id="ssl-rec-desc">SSL 记录协议数据处理流水线：1. 应用数据分段为多个数据块；2. 对分段数据进行压缩；3. 添加 MAC；4. 对压缩数据与 MAC 进行加密；5. 在前端添加记录头。</desc>
   <defs>
@@ -32,8 +32,6 @@
       .ln { fill: none; stroke: #334155; stroke-width: 2; }
     </style>
   </defs>
-
-  <rect width="998" height="654" fill="#ffffff" />
 
   <!-- Row 1: 应用数据 -->
   <text class="t step" x="118" y="46">应用数据</text>

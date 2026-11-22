@@ -156,6 +156,22 @@ export const articleSvgHtml = {
   },
 };
 
+function isDiagramNode(node) {
+  if (node?.type !== 'element') return false;
+  if (node.tagName === 'img') {
+    const src = String(node.properties?.src ?? '');
+    return /\.svg(?:$|[?#])/i.test(src) || src.startsWith('data:image/svg+xml');
+  }
+  if (node.tagName === 'svg') {
+    const vb = String(node.properties?.viewBox ?? '');
+    const isKatexSvg = node.properties?.width === '400em'
+      || vb.startsWith('0 0 400000')
+      || (node.properties?.ariaHidden === 'true' && node.properties?.role !== 'img');
+    return !isKatexSvg;
+  }
+  return false;
+}
+
 export const articlePresentation = {
   name: 'article-display-only',
   element: {
@@ -192,9 +208,17 @@ export const articlePresentation = {
         }
         return;
       }
-      if (!demo) return;
-      const reference = node.children?.find((child) => isReference(child, demo.reference));
-      if (!reference) return;
+      const reference = demo ? node.children?.find((child) => isReference(child, demo.reference)) : null;
+      if (!reference) {
+        if (node.children?.some(isDiagramNode)) {
+          context.setProperty(
+            node,
+            'children',
+            node.children.map((child) => (isDiagramNode(child) ? element('span', { className: ['article-svg-card'] }, [child]) : child)),
+          );
+        }
+        return;
+      }
       const { html, key } = embeddedDocument(slug, demo);
       const frame = element('iframe', {
         className: ['article-interactive'], title: demo.title, sandbox: ['allow-scripts'],

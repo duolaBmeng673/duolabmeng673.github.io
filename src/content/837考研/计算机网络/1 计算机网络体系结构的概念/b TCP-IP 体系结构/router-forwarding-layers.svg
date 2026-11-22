@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 448" width="760" height="448" role="img">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 1 760 447" width="760" height="447" role="img">
   <title>TCP/IP 通信路径：路由器只处理到网际层</title>
   <desc>展示主机 A 与主机 B 在应用层和运输层进行端到端逻辑通信，而中间路由器只处理到网际层和网络接口层。</desc>
   <g font-family="'PingFang SC','Noto Sans SC','Microsoft YaHei',system-ui,sans-serif">

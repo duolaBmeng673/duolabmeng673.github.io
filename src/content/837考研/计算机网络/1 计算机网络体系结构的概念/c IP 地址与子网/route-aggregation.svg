@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 328" width="760" height="328" role="img">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="16 1 728 327" width="728" height="327" role="img">
   <title>路由聚合（构成超网）</title>
   <desc>路由器 R1 通过 R2 到达两个连续的 /17 网络，将路由表项聚合为一条 206.1.0.0/16 超网路由。</desc>
   <g font-family="'PingFang SC','Noto Sans SC','Microsoft YaHei',system-ui,sans-serif">
