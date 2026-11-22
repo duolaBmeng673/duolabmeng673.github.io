@@ -4,7 +4,7 @@ import { siteConfig } from '../config';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import HeadingText from './HeadingText.astro';
 import KnowledgeChips from './KnowledgeChips.astro';
-import { enrichHeadingsWithMath } from '../plugins/heading-tokens.mjs';
+import { enrichHeadingsWithMath, normalizeTocSections } from '../plugins/heading-tokens.mjs';
 import { getKnowledgeTags } from '../lib/knowledge-tags';
 import { getBlogPosts, getPostHref, getPostTitle, taxonomyLabel, formatPostDate, type BlogPost } from '../lib/blog';
 import { getChapterHref, getChapterKey, getPublicStudyNotes, getStudyChapters, getStudySeries, getStudyModuleHref, studyModules, type StudyPost } from '../lib/study';
@@ -12,7 +12,8 @@ interface Props { post: BlogPost }
 const { post } = Astro.props;
 const { Content, headings } = await render(post);
 const displayHeadings: typeof headings = enrichHeadingsWithMath(headings, post.body ?? '', post.data.title, post.data.shortTitle);
-const sections = displayHeadings.filter((heading) => heading.depth >= 2 && heading.depth <= 3);
+const sections = normalizeTocSections(displayHeadings);
+const currentPostTitle = getPostTitle(post);
 const study = post.collection === 'study_notes' ? post : undefined;
 const knowledgeTags = study ? getKnowledgeTags(study.id) : [];
 const info = study ? getStudySeries(study.data.series) : undefined;
@@ -26,6 +27,18 @@ const previous = index > 0 ? ordered[index - 1] : undefined;
 const next = index >= 0 && index + 1 < ordered.length ? ordered[index + 1] : undefined;
 const prevIsCrossModule = Boolean(study && previous && previous.collection === 'study_notes' && previous.data.subject !== study.data.subject);
 const nextIsCrossModule = Boolean(study && next && next.collection === 'study_notes' && next.data.subject !== study.data.subject);
+const prevJumpText = previous
+  ? (prevIsCrossModule && previous.collection === 'study_notes'
+    ? `${studyModules[previous.data.subject].title} · 上一节`
+    : (study ? '上一节' : '上一篇'))
+  : '';
+const prevJumpTitle = previous ? getPostTitle(previous) : '';
+const nextJumpText = next
+  ? (nextIsCrossModule && next.collection === 'study_notes'
+    ? `下一节 · ${studyModules[next.data.subject].title}`
+    : (study ? '下一节' : '下一篇'))
+  : '';
+const nextJumpTitle = next ? getPostTitle(next) : '';
 const chapterNotes = study
   ? ordered.filter((item): item is StudyPost => item.collection === 'study_notes' && getChapterKey(item) === getChapterKey(study))
   : [];
@@ -40,7 +53,10 @@ const studyJumpModules = (['信息安全导论', '网络安全基础', '计算�
     title: studyModules[subject].title,
     meta: `${modPosts.length} 篇 · ${chapters.length} 章`,
     chapters: chapters.map((ch) => ({
+      code: ch.code,
+      title: ch.title,
       heading: `${ch.code} ${ch.title}`,
+      hasActive: ch.posts.some((item) => item.collection === post.collection && item.id === post.id),
       items: ch.posts.map((item) => ({
         title: getPostTitle(item),
         href: getPostHref(item),
@@ -57,17 +73,24 @@ const blogJumpModule = !study
       title: '技术与论文',
       meta: `${allBlogPosts.length} 篇`,
       chapters: (['Research', 'Computer Science'] as const)
-        .map((cat) => ({
-          heading: cat === 'Research' ? '论文精读' : '算法题解',
-          items: allBlogPosts
+        .map((cat, idx) => {
+          const items = allBlogPosts
             .filter((item) => item.data.category === cat)
             .map((item) => ({
               title: getPostTitle(item),
               href: getPostHref(item),
               active: item.collection === post.collection && item.id === post.id,
               code: item.data.pubDate.toISOString().slice(5, 10),
-            })),
-        }))
+            }));
+          const title = cat === 'Research' ? '论文精读' : '算法题解';
+          return {
+            code: `0${idx + 1}`,
+            title,
+            heading: `0${idx + 1} ${title}`,
+            hasActive: items.some((item) => item.active),
+            items,
+          };
+        })
         .filter((group) => group.items.length > 0),
     }]
   : [];
@@ -103,8 +126,8 @@ const canRecall = Boolean(study && headings.some((heading) => heading.depth >= 2
           {study && (
             <div class="article-quick-jump" aria-label="知识点快速跳转">
               {previous ? (
-                <a class="quick-jump-pill" href={getPostHref(previous)} rel="prev" title={getPostTitle(previous)}>
-                  ← {prevIsCrossModule && previous.collection === 'study_notes' ? `${studyModules[previous.data.subject].title} · 上一节` : '上一节'}
+                <a class="quick-jump-pill" href={getPostHref(previous)} rel="prev" title={prevJumpTitle}>
+                  ← {prevJumpText}
                 </a>
               ) : (
                 <span class="quick-jump-pill is-disabled" aria-disabled="true">← 已是首篇</span>
@@ -133,8 +156,8 @@ const canRecall = Boolean(study && headings.some((heading) => heading.depth >= 2
                 </details>
               )}
               {next ? (
-                <a class="quick-jump-pill" href={getPostHref(next)} rel="next" title={getPostTitle(next)}>
-                  {nextIsCrossModule && next.collection === 'study_notes' ? `下一节 · ${studyModules[next.data.subject].title}` : '下一节'} →
+                <a class="quick-jump-pill" href={getPostHref(next)} rel="next" title={nextJumpTitle}>
+                  {nextJumpText} →
                 </a>
               ) : (
                 <span class="quick-jump-pill is-disabled" aria-disabled="true">已是末篇 →</span>
@@ -182,26 +205,61 @@ const canRecall = Boolean(study && headings.some((heading) => heading.depth >= 2
       <div class="toc-drawer-backdrop" data-toc-backdrop hidden></div>
       <aside class="article-toc" id="article-toc-drawer" aria-label="文章章节" data-toc-panel data-toc-view="toc" data-current-module={currentJumpSlug}>
         <div class="toc-header">
-          <p class="panel-label" data-toc-heading>目录</p>
+          <div class="toc-step-nav" role="group" aria-label={study ? '章节上下篇' : '文章上下篇'}>
+            {previous ? (
+              <a
+                class="toc-step-btn"
+                href={getPostHref(previous)}
+                rel="prev"
+                title={`${prevJumpText}：${prevJumpTitle}`}
+                aria-label={`${prevJumpText}：${prevJumpTitle}`}
+              >
+                <span aria-hidden="true">←</span>
+              </a>
+            ) : (
+              <span class="toc-step-btn is-disabled" role="link" aria-disabled="true" title="已是首篇" aria-label={`${study ? '上一节' : '上一篇'}：已是首篇`}>←</span>
+            )}
+            {next ? (
+              <a
+                class="toc-step-btn"
+                href={getPostHref(next)}
+                rel="next"
+                title={`${nextJumpText}：${nextJumpTitle}`}
+                aria-label={`${nextJumpText}：${nextJumpTitle}`}
+              >
+                <span aria-hidden="true">→</span>
+              </a>
+            ) : (
+              <span class="toc-step-btn is-disabled" role="link" aria-disabled="true" title="已是末篇" aria-label={`${study ? '下一节' : '下一篇'}：已是末篇`}>→</span>
+            )}
+          </div>
           <div class="toc-header-actions">
             <button type="button" class="toc-jump-toggle" data-toc-jump-toggle aria-expanded="false">笔记直达</button>
             <button type="button" class="toc-drawer-close" data-toc-drawer-close aria-label="关闭目录" hidden>×</button>
           </div>
         </div>
-        <div class="toc-viewport">
+        <div class="toc-fixed-title">
+          <p class="toc-fixed-title-text" data-toc-heading data-note-title={currentPostTitle}>{currentPostTitle}</p>
+        </div>
+        <div class="toc-viewport" data-toc-viewport>
           <div class="toc-track" data-toc-track>
-            <div class="toc-pane" data-toc-pane="toc">
+            <div class="toc-pane" data-toc-pane="toc" data-toc-scroll>
               {sections.length > 0 ? (
                 <nav><ol>{sections.map((heading) => <li class={`toc-level-${heading.depth}`}><a data-toc-link href={`#${heading.slug}`}><HeadingText text={heading.text} /></a></li>)}</ol></nav>
               ) : (
                 <p class="toc-empty-hint">本篇暂无二级目录，可点击上方「笔记直达」浏览全站章节。</p>
               )}
             </div>
-            <div class="toc-pane" data-toc-pane="modules" aria-hidden="true">
+            <div class="toc-pane" data-toc-pane="modules" data-toc-scroll aria-hidden="true">
               <p class="toc-pane-tip">选择专题模块</p>
               <div class="toc-module-list">
                 {jumpModules.map((mod) => (
-                  <button type="button" class="toc-module-btn" data-toc-select-module={mod.slug}>
+                  <button
+                    type="button"
+                    class:list={['toc-module-btn', { 'is-current': mod.slug === currentJumpSlug }]}
+                    data-toc-select-module={mod.slug}
+                    data-module-label={mod.title}
+                  >
                     <div>
                       <strong>{mod.title}</strong>
                       <span>{mod.meta}</span>
@@ -211,24 +269,27 @@ const canRecall = Boolean(study && headings.some((heading) => heading.depth >= 2
                 ))}
               </div>
             </div>
-            <div class="toc-pane" data-toc-pane="chapters" aria-hidden="true">
+            <div class="toc-pane" data-toc-pane="tree" aria-hidden="true">
               <div class="toc-chapters-toolbar">
-                {jumpModules.length > 1 && (
-                  <div class="toc-module-tabs" role="tablist" aria-label="切换笔记模块">
-                    {jumpModules.map((mod) => (
-                      <button
-                        type="button"
-                        role="tab"
-                        class:list={['toc-module-tab', { 'is-active': mod.slug === currentJumpSlug }]}
-                        data-toc-module-tab={mod.slug}
-                        data-module-label={mod.title}
-                        aria-selected={mod.slug === currentJumpSlug ? 'true' : 'false'}
-                      >
-                        {mod.title}
-                      </button>
-                    ))}
-                  </div>
-                )}
+                <div class="toc-tree-bar-head">
+                  <button type="button" class="toc-back-btn" data-toc-back-modules aria-label="返回模块选择">‹ 模块</button>
+                  {jumpModules.length > 1 && (
+                    <div class="toc-module-tabs" role="tablist" aria-label="切换笔记模块">
+                      {jumpModules.map((mod) => (
+                        <button
+                          type="button"
+                          role="tab"
+                          class:list={['toc-module-tab', { 'is-active': mod.slug === currentJumpSlug }]}
+                          data-toc-module-tab={mod.slug}
+                          data-module-label={mod.title}
+                          aria-selected={mod.slug === currentJumpSlug ? 'true' : 'false'}
+                        >
+                          {mod.title}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
                 <input
                   type="search"
                   class="toc-jump-filter"
@@ -238,27 +299,44 @@ const canRecall = Boolean(study && headings.some((heading) => heading.depth >= 2
                   autocomplete="off"
                 />
               </div>
-              <p class="toc-jump-empty" data-toc-jump-empty hidden>没有匹配的知识点</p>
-              {jumpModules.map((mod) => (
-                <div class="toc-chapter-panel" data-toc-module-panel={mod.slug} hidden={mod.slug !== currentJumpSlug}>
-                  <p class="toc-module-current">{mod.title}</p>
-                  {mod.chapters.map((ch) => (
-                    <div class="toc-jump-group">
-                      <p class="toc-jump-group-title">{ch.heading}</p>
-                      <ol>
-                        {ch.items.map((item) => (
-                          <li data-toc-jump-item data-search-text={`${item.code} ${item.title} ${ch.heading}`.toLowerCase()}>
-                            <a href={item.href} class:list={{ 'is-active': item.active }} aria-current={item.active ? 'page' : undefined}>
-                              <span class="toc-jump-code">{item.code}</span>
-                              <span class="toc-jump-name">{item.title}</span>
-                            </a>
-                          </li>
-                        ))}
-                      </ol>
+              <div class="toc-tree-scroll" data-toc-scroll>
+                <p class="toc-jump-empty" data-toc-jump-empty hidden>没有匹配的知识点</p>
+                {jumpModules.map((mod) => {
+                  const hasActiveInMod = mod.chapters.some((ch) => ch.hasActive);
+                  return (
+                    <div class="toc-chapter-panel" data-toc-module-panel={mod.slug} hidden={mod.slug !== currentJumpSlug}>
+                      <p class="toc-module-current">{mod.title}</p>
+                      {mod.chapters.map((ch, chIdx) => {
+                        const defaultOpen = ch.hasActive || (!hasActiveInMod && chIdx === 0);
+                        return (
+                          <details
+                            class="toc-jump-group"
+                            open={defaultOpen}
+                            data-toc-chapter-group
+                            data-default-open={defaultOpen ? 'true' : undefined}
+                          >
+                            <summary class="toc-jump-group-title">
+                              <span class="toc-jump-group-code">{ch.code}</span>
+                              <span class="toc-jump-group-name">{ch.title}</span>
+                              <span class="toc-jump-group-caret" aria-hidden="true">›</span>
+                            </summary>
+                            <ol class="toc-jump-note-list">
+                              {ch.items.map((item) => (
+                                <li data-toc-jump-item data-search-text={`${item.code} ${item.title} ${ch.heading}`.toLowerCase()}>
+                                  <a href={item.href} class:list={{ 'is-active': item.active }} aria-current={item.active ? 'page' : undefined}>
+                                    <span class="toc-jump-code">{item.code}</span>
+                                    <span class="toc-jump-name">{item.title}</span>
+                                  </a>
+                                </li>
+                              ))}
+                            </ol>
+                          </details>
+                        );
+                      })}
                     </div>
-                  ))}
-                </div>
-              ))}
+                  );
+                })}
+              </div>
             </div>
           </div>
         </div>

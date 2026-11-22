@@ -4,7 +4,7 @@ import { markdownToHtml, markdownToMdast } from 'satteri';
 import { articleHeadings } from '../src/plugins/article-headings.mjs';
 import { articleInlineSvg } from '../src/plugins/article-inline-svg.mjs';
 import { articlePresentation } from '../src/plugins/article-presentation.mjs';
-import { tokenizeHeadingText } from '../src/plugins/heading-tokens.mjs';
+import { tokenizeHeadingText, normalizeTocSections } from '../src/plugins/heading-tokens.mjs';
 import { rankSearch, searchSnippet } from '../src/lib/search.ts';
 import { activityLevel, createActivityCalendar } from '../src/lib/activity.ts';
 
@@ -101,4 +101,28 @@ test('heading presentation transforms leading full-width brackets and 原题 bad
     { type: 'lead-punct', value: '《' },
     { type: 'text', value: '信息安全》' },
   ]);
+});
+
+test('normalizeTocSections removes single top-level wrapper heading and promotes children without touching normal outlines', () => {
+  const wrapped = [
+    { depth: 2, slug: 'c2', text: '第二章 密码学基础' },
+    { depth: 3, slug: 's1', text: '1 古典替换密码' },
+    { depth: 4, slug: 's11', text: '1.1 移位密码' },
+    { depth: 3, slug: 's2', text: '2 基于统计的密码分析' },
+  ];
+  assert.deepEqual(normalizeTocSections(wrapped), [
+    { depth: 2, slug: 's1', text: '1 古典替换密码' },
+    { depth: 3, slug: 's11', text: '1.1 移位密码' },
+    { depth: 2, slug: 's2', text: '2 基于统计的密码分析' },
+  ]);
+
+  const normal = [
+    { depth: 2, slug: 'a', text: '1 对称密钥密码' },
+    { depth: 3, slug: 'a1', text: '1.1 分组密码' },
+    { depth: 2, slug: 'b', text: '2 DES' },
+  ];
+  assert.deepEqual(normalizeTocSections(normal), normal);
+
+  const singleOnly = [{ depth: 2, slug: 'only', text: '唯一小节' }];
+  assert.deepEqual(normalizeTocSections(singleOnly), singleOnly);
 });

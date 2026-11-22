@@ -119,6 +119,8 @@
   --fs-toc-3: max(12px, 0.76rem);
   --header-h: 72px;
   --header-offset: var(--header-h);
+  --toc-panel-height: min(560px, calc(100vh - var(--header-h, 56px) - 24px));
+  --toc-slide-dur: calc(var(--dur-3) - var(--dur-2));
 }
 
 :root[data-theme="dark"] {

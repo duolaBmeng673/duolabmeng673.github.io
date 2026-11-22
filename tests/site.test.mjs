@@ -503,6 +503,24 @@ test('study articles include header quick jump bar, chapter switcher, TOC jump f
   assert.match(c45, /data-toc-jump-filter/);
   assert.match(c45, /data-toc-module-tab="network-security"/);
   assert.match(c45, /<details class="mobile-jump-module" open>/);
+  assert.match(c45, /data-toc-view="toc"/);
+  assert.match(c45, /data-toc-pane="toc"[\s\S]*data-toc-pane="modules"[\s\S]*data-toc-pane="tree"/);
+  assert.match(c45, /class="toc-step-nav"/);
+  assert.match(c45, /class="toc-fixed-title-text"[^>]*>决策树分类（C4\.5）<\/p>/);
+
+  const classical = read('dist/study-notes/837/classical-ciphers-design-principles/index.html');
+  const classicalTocPane = classical.match(/data-toc-pane="toc"[^>]*>([\s\S]*?)<\/div>\s*<div class="toc-pane" data-toc-pane="modules"/)?.[1] ?? '';
+  assert.ok(!classicalTocPane.includes('第二章 密码学基础'), 'single wrapper heading must not appear in TOC list');
+  assert.match(classicalTocPane, /<li class="toc-level-2"><a data-toc-link[^>]*>1 古典替换密码/);
+  assert.match(classicalTocPane, /<li class="toc-level-3"><a data-toc-link[^>]*>1\.1 移位密码/);
+
+  const firstNote = read('dist/study-notes/837/security-basics/index.html');
+  assert.match(firstNote, /class="toc-step-btn is-disabled"[^>]*aria-disabled="true"[^>]*>←/);
+
+  const tokensCss = read('src/styles/tokens.css');
+  assert.match(tokensCss, /--toc-panel-height:\s*min\(560px,\s*calc\(100vh - var\(--header-h, 56px\) - 24px\)\)/);
+  const globalCss = read('src/styles/global.css');
+  assert.match(globalCss, /overscroll-behavior:\s*contain/);
 
   const studyArticleDirs = readdirSync('dist/study-notes/837', { withFileTypes: true })
     .filter((entry) => entry.isDirectory() && !['information-security', 'network-security', 'computer-networks', 'chapter'].includes(entry.name))

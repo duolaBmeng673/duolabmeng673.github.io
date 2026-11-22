@@ -362,11 +362,21 @@ if (chapterSwitchers.length) {
 
 const tocPanel = document.querySelector<HTMLElement>('[data-toc-panel]');
 if (tocPanel) {
+  type TocView = 'toc' | 'modules' | 'tree';
   const tocHeading = tocPanel.querySelector<HTMLElement>('[data-toc-heading]');
+  const noteTitle = tocHeading?.dataset.noteTitle || tocHeading?.textContent?.trim() || '';
   const jumpToggle = tocPanel.querySelector<HTMLButtonElement>('[data-toc-jump-toggle]');
   const panes = [...tocPanel.querySelectorAll<HTMLElement>('[data-toc-pane]')];
+  const paneByView = new Map<TocView, HTMLElement>();
+  panes.forEach((pane) => {
+    const key = pane.dataset.tocPane as TocView | undefined;
+    if (key) paneByView.set(key, pane);
+  });
+  const treeScroll = tocPanel.querySelector<HTMLElement>('.toc-tree-scroll');
   const modulePanels = [...tocPanel.querySelectorAll<HTMLElement>('[data-toc-module-panel]')];
   const moduleTabs = [...tocPanel.querySelectorAll<HTMLButtonElement>('[data-toc-module-tab]')];
+  const moduleButtons = [...tocPanel.querySelectorAll<HTMLButtonElement>('[data-toc-select-module]')];
+  const backModulesBtn = tocPanel.querySelector<HTMLButtonElement>('[data-toc-back-modules]');
   const jumpFilter = tocPanel.querySelector<HTMLInputElement>('[data-toc-jump-filter]');
   const jumpEmpty = tocPanel.querySelector<HTMLElement>('[data-toc-jump-empty]');
   const openBtn = document.querySelector<HTMLButtonElement>('[data-toc-drawer-open]');
@@ -376,10 +386,36 @@ if (tocPanel) {
   const articleJumpBtns = [...document.querySelectorAll<HTMLButtonElement>('[data-article-jump-open]')];
   const mobileMq = window.matchMedia?.('(max-width: 639px)');
   const currentModuleSlug = tocPanel.dataset.currentModule || modulePanels[0]?.dataset.tocModulePanel || '';
+  const ANIMATE_CLASSES = ['is-enter-from-right', 'is-enter-from-left', 'is-leave-to-left', 'is-leave-to-right', 'is-leaving'];
   let activeModuleSlug = currentModuleSlug;
-  let view: 'toc' | 'modules' | 'chapters' = 'toc';
-  let activeModuleLabel = '笔记直达';
+  let view: TocView = 'toc';
   let drawerOpen = false;
+  let transitionSeq = 0;
+  let phaseTimer = 0;
+  let lastJumpTrigger: HTMLElement | null = null;
+
+  const installScrollContain = (container: HTMLElement) => {
+    container.addEventListener('wheel', (event: WheelEvent) => {
+      if (event.ctrlKey || Math.abs(event.deltaX) > Math.abs(event.deltaY)) return;
+      const maxScroll = container.scrollHeight - container.clientHeight;
+      if (maxScroll <= 1) return;
+      const dy = event.deltaMode === 1
+        ? event.deltaY * 16
+        : event.deltaMode === 2
+          ? event.deltaY * container.clientHeight
+          : event.deltaY;
+      if (dy === 0) return;
+      const next = container.scrollTop + dy;
+      if (dy < 0 && next <= 0) {
+        event.preventDefault();
+        container.scrollTop = 0;
+      } else if (dy > 0 && next >= maxScroll) {
+        event.preventDefault();
+        container.scrollTop = maxScroll;
+      }
+    }, { passive: false });
+  };
+  tocPanel.querySelectorAll<HTMLElement>('[data-toc-scroll]').forEach(installScrollContain);
 
   const syncDrawer = (nextOpen = drawerOpen) => {
     const isMobile = Boolean(mobileMq?.matches);
@@ -394,19 +430,22 @@ if (tocPanel) {
     tocPanel.inert = isMobile && !drawerOpen;
   };
 
-  const scrollToActiveChapterItem = (pane: HTMLElement) => {
+  const scrollToActiveChapterItem = (instant = false) => {
+    if (!treeScroll) return;
     const visibleMod = modulePanels.find((p) => !p.hidden);
     const activeItem = visibleMod?.querySelector<HTMLElement>('a.is-active, a[aria-current="page"]');
-    if (activeItem) {
-      requestAnimationFrame(() => {
-        const paneRect = pane.getBoundingClientRect();
+    const activeGroup = activeItem?.closest<HTMLDetailsElement>('[data-toc-chapter-group]');
+    if (activeGroup) activeGroup.open = true;
+    requestAnimationFrame(() => {
+      if (activeItem) {
+        const containerRect = treeScroll.getBoundingClientRect();
         const itemRect = activeItem.getBoundingClientRect();
-        const targetTop = pane.scrollTop + (itemRect.top - paneRect.top) - pane.clientHeight / 2 + itemRect.height / 2;
-        pane.scrollTo({ top: Math.max(0, targetTop), behavior: reducedMotion() ? 'auto' : 'smooth' });
-      });
-    } else {
-      pane.scrollTop = 0;
-    }
+        const targetTop = treeScroll.scrollTop + (itemRect.top - containerRect.top) - treeScroll.clientHeight / 2 + itemRect.height / 2;
+        treeScroll.scrollTo({ top: Math.max(0, targetTop), behavior: instant || reducedMotion() ? 'auto' : 'smooth' });
+      } else {
+        treeScroll.scrollTop = 0;
+      }
+    });
   };
 
   const applyJumpFilter = (rawQuery: string) => {
@@ -414,7 +453,7 @@ if (tocPanel) {
     let visibleCount = 0;
     modulePanels.forEach((panel) => {
       let panelCount = 0;
-      panel.querySelectorAll<HTMLElement>('.toc-jump-group').forEach((group) => {
+      panel.querySelectorAll<HTMLDetailsElement>('[data-toc-chapter-group]').forEach((group) => {
         let groupCount = 0;
         group.querySelectorAll<HTMLElement>('[data-toc-jump-item]').forEach((item) => {
           const text = item.dataset.searchText ?? item.textContent?.toLowerCase() ?? '';
@@ -423,6 +462,11 @@ if (tocPanel) {
           if (hit) groupCount += 1;
         });
         group.hidden = groupCount === 0;
+        if (query) {
+          group.open = groupCount > 0;
+        } else {
+          group.open = group.dataset.defaultOpen === 'true';
+        }
         panelCount += groupCount;
       });
       if (!panel.hidden) visibleCount = panelCount;
@@ -430,14 +474,12 @@ if (tocPanel) {
     if (jumpEmpty) jumpEmpty.hidden = visibleCount > 0;
   };
 
-  const setView = (nextView: 'toc' | 'modules' | 'chapters', label?: string) => {
+  const applyViewState = (nextView: TocView) => {
     view = nextView;
-    if (label) activeModuleLabel = label;
     tocPanel.dataset.tocView = nextView;
     panes.forEach((pane) => {
       const visible = pane.dataset.tocPane === nextView;
       pane.setAttribute('aria-hidden', String(!visible));
-      if (visible && nextView === 'chapters') scrollToActiveChapterItem(pane);
     });
     if (jumpToggle) {
       const inJump = nextView !== 'toc';
@@ -446,39 +488,159 @@ if (tocPanel) {
       jumpToggle.classList.toggle('is-active', inJump);
     }
     if (tocHeading) {
-      tocHeading.textContent = nextView === 'toc' ? '目录' : nextView === 'modules' ? '笔记直达' : activeModuleLabel;
+      tocHeading.textContent = nextView === 'toc' ? noteTitle : nextView === 'modules' ? '笔记直达 · 选择模块' : '笔记直达 · 模块导航';
     }
   };
 
-  const activateModule = (slug: string, focusFilter = false) => {
+  const focusFirstInView = (targetView: TocView, preferSelectedModule = false) => {
+    requestAnimationFrame(() => {
+      if (targetView === 'modules') {
+        const target = preferSelectedModule
+          ? (moduleButtons.find((b) => b.dataset.tocSelectModule === activeModuleSlug) ?? moduleButtons[0])
+          : moduleButtons[0];
+        target?.focus({ preventScroll: true });
+      } else if (targetView === 'tree') {
+        jumpFilter?.focus({ preventScroll: true });
+      }
+    });
+  };
+
+  const clearTransitionState = () => {
+    if (phaseTimer) {
+      window.clearTimeout(phaseTimer);
+      phaseTimer = 0;
+    }
+    panes.forEach((pane) => pane.classList.remove(...ANIMATE_CLASSES));
+  };
+
+  const runSlide = (fromView: TocView, toView: TocView, direction: 'forward' | 'backward', seq: number, onDone?: () => void) => {
+    const fromPane = paneByView.get(fromView);
+    const toPane = paneByView.get(toView);
+    applyViewState(toView);
+    if (toView === 'tree') scrollToActiveChapterItem(true);
+
+    if (reducedMotion() || !fromPane || !toPane) {
+      clearTransitionState();
+      onDone?.();
+      return;
+    }
+
+    fromPane.classList.add('is-leaving');
+    toPane.classList.add(direction === 'forward' ? 'is-enter-from-right' : 'is-enter-from-left');
+    void tocPanel.offsetHeight;
+
+    requestAnimationFrame(() => {
+      if (seq !== transitionSeq) return;
+      fromPane.classList.add(direction === 'forward' ? 'is-leave-to-left' : 'is-leave-to-right');
+      toPane.classList.remove('is-enter-from-right', 'is-enter-from-left');
+      onDone?.();
+      phaseTimer = window.setTimeout(() => {
+        if (seq !== transitionSeq) return;
+        clearTransitionState();
+      }, 210);
+    });
+  };
+
+  const transitionToView = (
+    nextView: TocView,
+    options: { direction?: 'forward' | 'backward'; focusFirst?: boolean; preferSelectedModule?: boolean; restoreTrigger?: boolean } = {},
+  ) => {
+    const { direction = 'forward', focusFirst = false, preferSelectedModule = false, restoreTrigger = false } = options;
+    if (view === nextView) {
+      applyViewState(nextView);
+      if (nextView === 'tree') scrollToActiveChapterItem(false);
+      if (focusFirst) focusFirstInView(nextView, preferSelectedModule);
+      return;
+    }
+
+    const seq = ++transitionSeq;
+    clearTransitionState();
+    const prevView = view;
+
+    const afterSlide = () => {
+      if (focusFirst) focusFirstInView(nextView, preferSelectedModule);
+      else if (restoreTrigger && nextView === 'toc') {
+        const trigger = lastJumpTrigger && document.contains(lastJumpTrigger) ? lastJumpTrigger : jumpToggle;
+        trigger?.focus({ preventScroll: true });
+      }
+    };
+
+    if (reducedMotion() || mobileMq?.matches) {
+      tocPanel.style.height = '';
+      applyViewState(nextView);
+      if (nextView === 'tree') scrollToActiveChapterItem(true);
+      afterSlide();
+      return;
+    }
+
+    const startH = Math.round(tocPanel.getBoundingClientRect().height);
+    tocPanel.style.transition = 'none';
+    tocPanel.style.height = '';
+    tocPanel.dataset.tocView = nextView;
+    const endH = Math.round(tocPanel.getBoundingClientRect().height);
+    tocPanel.dataset.tocView = prevView;
+    tocPanel.style.height = `${startH}px`;
+    void tocPanel.offsetHeight;
+    tocPanel.style.transition = '';
+
+    if (prevView === 'toc' && endH - startH > 2) {
+      tocPanel.style.height = `${endH}px`;
+      let moved = false;
+      const startContentSlide = () => {
+        if (moved || seq !== transitionSeq) return;
+        moved = true;
+        tocPanel.style.height = '';
+        runSlide(prevView, nextView, direction, seq, afterSlide);
+      };
+      const onHeightEnd = (ev: TransitionEvent) => {
+        if (ev.target === tocPanel && ev.propertyName === 'height') {
+          tocPanel.removeEventListener('transitionend', onHeightEnd);
+          startContentSlide();
+        }
+      };
+      tocPanel.addEventListener('transitionend', onHeightEnd);
+      phaseTimer = window.setTimeout(() => {
+        tocPanel.removeEventListener('transitionend', onHeightEnd);
+        startContentSlide();
+      }, 240);
+      return;
+    }
+
+    if (nextView === 'toc' && startH - endH > 2) {
+      tocPanel.style.height = `${endH}px`;
+      runSlide(prevView, nextView, direction, seq, afterSlide);
+      window.setTimeout(() => {
+        if (seq !== transitionSeq) return;
+        tocPanel.style.height = '';
+      }, 240);
+      return;
+    }
+
+    tocPanel.style.height = '';
+    runSlide(prevView, nextView, direction, seq, afterSlide);
+  };
+
+  const activateModule = (slug: string, focusFirst = false) => {
     const targetSlug = slug || modulePanels[0]?.dataset.tocModulePanel || '';
     if (!targetSlug) return;
     activeModuleSlug = targetSlug;
     modulePanels.forEach((panel) => {
       panel.hidden = panel.dataset.tocModulePanel !== targetSlug;
     });
-    let resolvedLabel = '笔记直达';
     moduleTabs.forEach((tab) => {
       const active = tab.dataset.tocModuleTab === targetSlug;
       tab.classList.toggle('is-active', active);
       tab.setAttribute('aria-selected', String(active));
-      if (active) resolvedLabel = tab.dataset.moduleLabel || tab.textContent?.trim() || resolvedLabel;
     });
-    if (!moduleTabs.length) {
-      const fallbackBtn = tocPanel.querySelector<HTMLElement>(`[data-toc-select-module="${targetSlug}"] strong`);
-      if (fallbackBtn?.textContent) resolvedLabel = fallbackBtn.textContent.trim();
-    }
-    setView('chapters', resolvedLabel);
     applyJumpFilter(jumpFilter?.value ?? '');
-    if (focusFilter && jumpFilter) {
-      requestAnimationFrame(() => jumpFilter.focus({ preventScroll: true }));
-    }
+    transitionToView('tree', { direction: 'forward', focusFirst });
   };
 
-  const openJumpPanel = () => {
+  const openJumpPanel = (trigger?: HTMLElement | null) => {
+    lastJumpTrigger = trigger ?? jumpToggle;
     if (mobileMq?.matches) {
       syncDrawer(true);
-      activateModule(activeModuleSlug || currentModuleSlug, true);
+      transitionToView('modules', { direction: 'forward', focusFirst: true });
       return;
     }
     if (getComputedStyle(tocPanel).display === 'none' && navMobile) {
@@ -487,14 +649,15 @@ if (tocPanel) {
       navMobile.querySelector<HTMLElement>('summary')?.focus();
       return;
     }
-    activateModule(activeModuleSlug || currentModuleSlug, true);
+    transitionToView('modules', { direction: 'forward', focusFirst: true });
   };
 
   jumpToggle?.addEventListener('click', () => {
     if (view === 'toc') {
-      activateModule(activeModuleSlug || currentModuleSlug, true);
+      openJumpPanel(jumpToggle);
     } else {
-      setView('toc');
+      transitionToView('toc', { direction: 'backward', restoreTrigger: false });
+      jumpToggle.focus({ preventScroll: true });
     }
   });
 
@@ -512,39 +675,40 @@ if (tocPanel) {
   jumpFilter?.addEventListener('keydown', (event) => {
     if (event.key !== 'Escape') return;
     event.stopPropagation();
+    event.preventDefault();
     if (jumpFilter.value) {
       jumpFilter.value = '';
       applyJumpFilter('');
       return;
     }
     if (mobileMq?.matches && drawerOpen) closeDrawer(true);
-    else setView('toc');
+    else transitionToView('toc', { direction: 'backward', restoreTrigger: true });
   });
 
-  articleJumpBtns.forEach((btn) => btn.addEventListener('click', openJumpPanel));
+  articleJumpBtns.forEach((btn) => btn.addEventListener('click', () => openJumpPanel(btn)));
 
   document.addEventListener('keydown', (event) => {
     if (!event.altKey || event.ctrlKey || event.metaKey || event.code !== 'KeyJ') return;
     const target = event.target as HTMLElement | null;
     if (target && target !== jumpFilter && (/^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName) || target.isContentEditable)) return;
     event.preventDefault();
-    if (view === 'chapters' && (!mobileMq?.matches || drawerOpen)) {
+    if (view !== 'toc' && (!mobileMq?.matches || drawerOpen)) {
       if (mobileMq?.matches) closeDrawer(true);
-      else setView('toc');
+      else transitionToView('toc', { direction: 'backward', restoreTrigger: true });
     } else {
-      openJumpPanel();
+      openJumpPanel(document.activeElement instanceof HTMLElement ? document.activeElement : jumpToggle);
     }
   });
 
-  tocPanel.querySelectorAll<HTMLButtonElement>('[data-toc-select-module]').forEach((btn) => {
+  moduleButtons.forEach((btn) => {
     btn.addEventListener('click', () => {
       const slug = btn.dataset.tocSelectModule;
       if (slug) activateModule(slug, true);
     });
   });
 
-  tocPanel.querySelector('[data-toc-back-modules]')?.addEventListener('click', () => {
-    setView('modules');
+  backModulesBtn?.addEventListener('click', () => {
+    transitionToView('modules', { direction: 'backward', focusFirst: true, preferSelectedModule: true });
   });
 
   openBtn?.addEventListener('click', () => {
@@ -561,9 +725,15 @@ if (tocPanel) {
   closeBtn?.addEventListener('click', () => closeDrawer(true));
   backdrop?.addEventListener('click', () => closeDrawer(true));
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && drawerOpen) {
+    if (e.key !== 'Escape') return;
+    if (drawerOpen) {
       e.preventDefault();
       closeDrawer(true);
+      return;
+    }
+    if (view !== 'toc') {
+      e.preventDefault();
+      transitionToView('toc', { direction: 'backward', restoreTrigger: true });
     }
   });
   links.forEach((link) => link.addEventListener('click', () => {

@@ -170,3 +170,22 @@ export function tokenizeHeadingText(value) {
 
   return tokens;
 }
+
+/**
+ * Strip a single top-level wrapper heading (e.g. a non-matching chapter H1) and promote its children.
+ */
+export function normalizeTocSections(headings) {
+  if (!Array.isArray(headings) || !headings.length) return [];
+  let items = headings;
+  if (items.length > 1) {
+    const minDepth = Math.min(...items.map((heading) => heading.depth));
+    const topCount = items.filter((heading) => heading.depth === minDepth).length;
+    if (topCount === 1 && items[0].depth === minDepth) {
+      const rest = items.slice(1);
+      const nextMin = Math.min(...rest.map((heading) => heading.depth));
+      const delta = Math.max(0, nextMin - 2);
+      items = rest.map((heading) => ({ ...heading, depth: Math.max(2, heading.depth - delta) }));
+    }
+  }
+  return items.filter((heading) => heading.depth >= 2 && heading.depth <= 3);
+}
