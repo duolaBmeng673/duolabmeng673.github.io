@@ -340,28 +340,28 @@ test('all markdown-referenced SVG assets in 837 study notes exist and pass XML s
   assert.ok(checked >= 30, `Expected at least 30 active SVG references in 837 notes, found ${checked}`);
 });
 
-test('study notes render leading-bracket alignment, 原题 badges in body and TOC, and recall toolbar data hooks', () => {
+test('study notes render leading-bracket alignment, omit 原题/重点 badges in body/TOC/search, and keep recall toolbar hooks', () => {
   const yuantiRoutes = [
-    { route: '/study-notes/837/firewall-netfilter/', count: 1 },
-    { route: '/study-notes/837/intrusion-detection-snort/', count: 4 },
-    { route: '/study-notes/837/ipsec/', count: 3 },
-    { route: '/study-notes/837/risk-management/', count: 1 },
-    { route: '/study-notes/837/set/', count: 1 },
-    { route: '/study-notes/837/ssl/', count: 2 },
+    '/study-notes/837/firewall-netfilter/',
+    '/study-notes/837/intrusion-detection-snort/',
+    '/study-notes/837/ipsec/',
+    '/study-notes/837/risk-management/',
+    '/study-notes/837/set/',
+    '/study-notes/837/ssl/',
   ];
-  let totalBadges = 0;
-  for (const { route, count } of yuantiRoutes) {
+  for (const route of yuantiRoutes) {
     const html = read(`dist${route}index.html`);
-    const bodyBadges = html.match(/<h2\b[^>]*><span class="heading-badge" data-badge="原题"><span class="heading-badge-paren" aria-hidden="true">（<\/span>原题<span class="heading-badge-paren" aria-hidden="true">）<\/span><\/span>/g) ?? [];
-    assert.equal(bodyBadges.length, count, `${route} body badge count`);
-    const tocBadges = html.match(/class="heading-badge heading-badge-toc" data-badge="原题"/g) ?? [];
-    assert.equal(tocBadges.length, count * 2, `${route} renders 原题 badge in both desktop/drawer TOC and tablet mobile TOC`);
-    totalBadges += bodyBadges.length;
+    assert.ok(!html.includes('heading-badge'), `${route} must not render heading-badge`);
+    assert.ok(!html.includes('data-badge='), `${route} must not render data-badge`);
+    assert.ok(!/<h[2-6][^>]*>[\s\S]*?（(?:原题|重点)）/.test(html), `${route} body headings must strip （原题）/（重点）`);
+    const tocPane = html.match(/data-toc-pane="toc"[^>]*>([\s\S]*?)<\/div>\s*<div class="toc-pane" data-toc-pane="modules"/)?.[1] ?? '';
+    assert.ok(!tocPane.includes('（原题）') && !tocPane.includes('（重点）'), `${route} TOC must not show （原题）/（重点）`);
+    const searchEntry = index.find((item) => item.href === route);
+    assert.ok(searchEntry && !searchEntry.searchText.includes('（原题）') && !searchEntry.body.includes('（原题）'), `${route} search index strips （原题）`);
   }
-  assert.equal(totalBadges, 12);
 
   const snortHtml = read('dist/study-notes/837/intrusion-detection-snort/index.html');
-  assert.ok(snortHtml.includes('<h2 id="原题入侵检测模型的过程"><span class="heading-badge" data-badge="原题">'));
+  assert.ok(snortHtml.includes('<h2 id="原题入侵检测模型的过程">入侵检测模型的过程？</h2>'));
   assert.equal((snortHtml.match(/<h4\b[^>]*><span class="lead-punct">（<\/span>/g) ?? []).length, 10);
   const basicsHtml = read('dist/study-notes/837/security-basics/index.html');
   assert.equal((basicsHtml.match(/<h4\b[^>]*><span class="lead-punct">（<\/span>/g) ?? []).length, 7);

@@ -6,9 +6,6 @@ const { text } = Astro.props;
 const tokens = tokenizeHeadingText(text);
 ---
 {tokens.map((token) => {
-  if (token.type === 'badge') {
-    return <span class="heading-badge heading-badge-toc" data-badge={token.badge}><span class="heading-badge-paren" aria-hidden="true">{token.open}</span>{token.label}<span class="heading-badge-paren" aria-hidden="true">{token.close}</span></span>;
-  }
   if (token.type === 'lead-punct') {
     return <span class="lead-punct">{token.value}</span>;
   }

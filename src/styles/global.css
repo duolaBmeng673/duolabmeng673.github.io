@@ -2258,35 +2258,6 @@ body.study-overview-page main { flex: 1 0 auto; min-height: 0; }
     text-spacing-trim: trim-start;
   }
 }
-.heading-badge {
-  position: relative;
-  display: inline;
-  vertical-align: 0.06em;
-  margin-right: 0.45em;
-  padding: 0.14em 0.46em;
-  border: 1px solid color-mix(in srgb, var(--cat-study) 34%, transparent);
-  border-radius: var(--r-badge);
-  background: color-mix(in srgb, var(--cat-study) 13%, var(--bg-elev));
-  color: color-mix(in srgb, var(--cat-study) 86%, var(--tx));
-  font-family: var(--sans);
-  font-size: 0.72em;
-  font-weight: var(--fw-m);
-  line-height: 1.3;
-  letter-spacing: 0.02em;
-  white-space: nowrap;
-}
-.heading-badge-toc {
-  font-size: max(12px, 0.86em);
-  padding: 0.08em 0.38em;
-  margin-right: 0.35em;
-  vertical-align: 0.03em;
-}
-.heading-badge-paren {
-  display: inline;
-  font-size: 0;
-  line-height: 0;
-  color: transparent;
-}
 .study-fold { min-width: 0; }
 .study-fold > summary { list-style: none; margin: 1.2em 0 0.65em; }
 .study-fold > summary::-webkit-details-marker { display: none; }

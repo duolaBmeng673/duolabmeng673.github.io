@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
-import { BADGE_PREFIX, OPEN_BRACKET_RE } from './heading-tokens.mjs';
+import { OPEN_BRACKET_RE, stripHeadingBadge } from './heading-tokens.mjs';
 
 const element = (tagName, properties, children = []) => ({ type: 'element', tagName, properties, children });
 const text = (value) => ({ type: 'text', value });
@@ -11,23 +11,15 @@ function decorateHeadingLead(children, state = { done: false }) {
     if (child.type === 'text') {
       if (!child.value) return [child];
       state.done = true;
-      if (child.value.startsWith(BADGE_PREFIX)) {
-        const rest = child.value.slice(BADGE_PREFIX.length);
-        const badge = element('span', { className: ['heading-badge'], dataBadge: '原题' }, [
-          element('span', { className: ['heading-badge-paren'], ariaHidden: 'true' }, [text('（')]),
-          text('原题'),
-          element('span', { className: ['heading-badge-paren'], ariaHidden: 'true' }, [text('）')]),
-        ]);
-        return rest ? [badge, text(rest)] : [badge];
-      }
-      const match = child.value.match(OPEN_BRACKET_RE);
+      const stripped = stripHeadingBadge(child.value);
+      const match = stripped.match(OPEN_BRACKET_RE);
       if (match) {
         const ch = match[1];
-        const rest = child.value.slice(ch.length);
+        const rest = stripped.slice(ch.length);
         const punct = element('span', { className: ['lead-punct'] }, [text(ch)]);
         return rest ? [punct, text(rest)] : [punct];
       }
-      return [child];
+      return stripped ? [text(stripped)] : [];
     }
     if (child.children?.length) {
       return [{ ...child, children: decorateHeadingLead(child.children, state) }];

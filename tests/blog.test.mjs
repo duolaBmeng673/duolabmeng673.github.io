@@ -81,21 +81,24 @@ test('activity calendar uses local dates, sums activity types, and handles leap 
   assert.equal(result.columns.flat().filter((day) => day?.date === '2023-03-02').length, 0);
   assert.throws(() => createActivityCalendar([{ date: '2024-02-30', type: 'coding', count: 1 }], today), /Invalid activity date/);
 });
-test('heading presentation transforms leading full-width brackets and 原题 badge without mutating IDs or tokens', () => {
+test('heading presentation transforms leading full-width brackets and strips 原题/重点 markers without mutating IDs', () => {
   const { html } = markdownToHtml(
-    '## （原题）入侵检测模型\n\n### 【重点】检测方法\n\n#### （1）静态包过滤',
+    '## （原题）入侵检测模型\n\n### 【重点】检测方法\n\n### 【参考】检测步骤\n\n#### （1）静态包过滤',
     {
       mdastPlugins: [articleHeadings],
       hastPlugins: [articlePresentation],
       data: { astro: { frontmatter: { title: '标题' } } },
     },
   );
-  assert.match(html, /<h2 id="原题入侵检测模型"><span class="heading-badge" data-badge="原题"><span class="heading-badge-paren" aria-hidden="true">（<\/span>原题<span class="heading-badge-paren" aria-hidden="true">）<\/span><\/span>入侵检测模型<\/h2>/);
-  assert.match(html, /<h3 id="重点检测方法"><span class="lead-punct">【<\/span>重点】检测方法<\/h3>/);
+  assert.match(html, /<h2 id="原题入侵检测模型">入侵检测模型<\/h2>/);
+  assert.match(html, /<h3 id="重点检测方法">检测方法<\/h3>/);
+  assert.match(html, /<h3 id="参考检测步骤"><span class="lead-punct">【<\/span>参考】检测步骤<\/h3>/);
   assert.match(html, /<h4 id="1静态包过滤"><span class="lead-punct">（<\/span>1）静态包过滤<\/h4>/);
   assert.deepEqual(tokenizeHeadingText('（原题）SSL 协议位于哪一层？'), [
-    { type: 'badge', badge: '原题', open: '（', label: '原题', close: '）' },
     { type: 'text', value: 'SSL 协议位于哪一层？' },
+  ]);
+  assert.deepEqual(tokenizeHeadingText('【重点】TCP 状态机'), [
+    { type: 'text', value: 'TCP 状态机' },
   ]);
   assert.deepEqual(tokenizeHeadingText('《信息安全》'), [
     { type: 'lead-punct', value: '《' },

@@ -4,7 +4,7 @@ import { siteConfig } from '../config';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import HeadingText from './HeadingText.astro';
 import KnowledgeChips from './KnowledgeChips.astro';
-import { enrichHeadingsWithMath, normalizeTocSections } from '../plugins/heading-tokens.mjs';
+import { enrichHeadingsWithMath, normalizeTocSections, stripHeadingBadge } from '../plugins/heading-tokens.mjs';
 import { getKnowledgeTags } from '../lib/knowledge-tags';
 import { getBlogPosts, getPostHref, getPostTitle, taxonomyLabel, formatPostDate, type BlogPost } from '../lib/blog';
 import { getChapterHref, getChapterKey, getPublicStudyNotes, getStudyChapters, getStudySeries, getStudyModuleHref, studyModules, type StudyPost } from '../lib/study';
@@ -98,7 +98,8 @@ const blogJumpModule = !study
 const jumpModules = [...studyJumpModules, ...blogJumpModule];
 // Preserve validation of legacy question metadata used by search.
 for (const question of study?.data.questions ?? []) {
-  const matches = headings.filter((heading) => heading.text === question.heading);
+  const targetHeading = stripHeadingBadge(question.heading);
+  const matches = headings.filter((heading) => stripHeadingBadge(heading.text) === targetHeading);
   if (matches.length !== 1) throw new Error(`Question heading must match exactly one rendered heading in ${post.id}: ${question.heading}`);
 }
 const canRecall = Boolean(study && headings.some((heading) => heading.depth >= 2));

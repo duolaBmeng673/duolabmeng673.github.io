@@ -1,5 +1,14 @@
 export const BADGE_PREFIX = '（原题）';
+export const HEADING_BADGE_RE = /^(?:[（(【\[]\s*(?:原题|重点)\s*[）)】\]])\s*/;
 export const OPEN_BRACKET_RE = /^([（【「《『〈〔〖])/;
+
+export function stripHeadingBadge(value) {
+  let rest = String(value ?? '');
+  while (HEADING_BADGE_RE.test(rest)) {
+    rest = rest.replace(HEADING_BADGE_RE, '');
+  }
+  return rest;
+}
 
 const TEX_COMMANDS = {
   mid: ' | ',
@@ -153,17 +162,12 @@ export function enrichHeadingsWithMath(headings, markdownBody, frontmatterTitle,
  */
 export function tokenizeHeadingText(value) {
   const tokens = [];
-  let rest = String(value ?? '');
+  let rest = stripHeadingBadge(value);
 
-  if (rest.startsWith(BADGE_PREFIX)) {
-    tokens.push({ type: 'badge', badge: '原题', open: '（', label: '原题', close: '）' });
-    rest = rest.slice(BADGE_PREFIX.length);
-  } else {
-    const match = rest.match(OPEN_BRACKET_RE);
-    if (match) {
-      tokens.push({ type: 'lead-punct', value: match[1] });
-      rest = rest.slice(match[1].length);
-    }
+  const match = rest.match(OPEN_BRACKET_RE);
+  if (match) {
+    tokens.push({ type: 'lead-punct', value: match[1] });
+    rest = rest.slice(match[1].length);
   }
 
   if (rest) tokens.push({ type: 'text', value: rest });
