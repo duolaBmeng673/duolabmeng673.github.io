@@ -497,18 +497,21 @@ test('study module pages include module switcher, adjacent module footer links, 
   }
 });
 
-test('study articles include header quick jump bar, chapter switcher, TOC jump filter, and cross-module pagination', () => {
+test('study articles include header quick jump bar, chapter switcher, TOC module navigation, and cross-module pagination', () => {
   const c45 = read('dist/study-notes/837/decision-tree-c45/index.html');
   assert.match(c45, /class="article-quick-jump"/);
   assert.match(c45, /class="article-chapter-switcher"/);
   assert.match(c45, /data-article-jump-open/);
-  assert.match(c45, /data-toc-jump-filter/);
-  assert.match(c45, /data-toc-module-tab="network-security"/);
+  assert.doesNotMatch(c45, /data-toc-jump-filter|data-toc-module-tab|class="toc-module-current"/);
+  assert.match(c45, /data-toc-heading-module/);
   assert.match(c45, /<details class="mobile-jump-module" open>/);
   assert.match(c45, /data-toc-view="toc"/);
   assert.match(c45, /data-toc-pane="toc"[\s\S]*data-toc-pane="modules"[\s\S]*data-toc-pane="tree"/);
   assert.match(c45, /class="toc-step-nav"/);
   assert.match(c45, /class="toc-fixed-title-text"[^>]*>决策树分类（C4\.5）<\/p>/);
+  const jumpGroups = c45.match(/<details\b[^>]*class="toc-jump-group"[^>]*>/g) ?? [];
+  assert.ok(jumpGroups.length > 0);
+  assert.ok(jumpGroups.every((tag) => /\bopen\b/.test(tag)), 'all chapters in TOC tree must stay open by default');
 
   const classical = read('dist/study-notes/837/classical-ciphers-design-principles/index.html');
   const classicalTocPane = classical.match(/data-toc-pane="toc"[^>]*>([\s\S]*?)<\/div>\s*<div class="toc-pane" data-toc-pane="modules"/)?.[1] ?? '';
@@ -517,12 +520,16 @@ test('study articles include header quick jump bar, chapter switcher, TOC jump f
   assert.match(classicalTocPane, /<li class="toc-level-3"><a data-toc-link[^>]*>1\.1 移位密码/);
 
   const firstNote = read('dist/study-notes/837/security-basics/index.html');
-  assert.match(firstNote, /class="toc-step-btn is-disabled"[^>]*aria-disabled="true"[^>]*>←/);
+  assert.match(firstNote, /class="toc-step-btn is-disabled"[^>]*aria-disabled="true"[^>]*><span aria-hidden="true">←<\/span><span>上一章<\/span>/);
+  assert.match(firstNote, /class="toc-step-btn"[^>]*><span>下一章<\/span><span aria-hidden="true">→<\/span>/);
 
   const tokensCss = read('src/styles/tokens.css');
   assert.match(tokensCss, /--toc-panel-height:\s*min\(560px,\s*calc\(100vh - var\(--header-h, 56px\) - 24px\)\)/);
+  assert.match(tokensCss, /--toc-tree-height:\s*min\(760px,\s*calc\(100vh - var\(--header-h, 56px\) - 36px\)\)/);
   const globalCss = read('src/styles/global.css');
   assert.match(globalCss, /overscroll-behavior:\s*contain/);
+  assert.match(globalCss, /\.article-toc\[data-toc-view="modules"\]\s*\{[^}]*height:\s*auto;/);
+  assert.match(globalCss, /\.article-toc\[data-toc-view="tree"\]\s*\{[^}]*height:\s*var\(--toc-tree-height\)/);
 
   const studyArticleDirs = readdirSync('dist/study-notes/837', { withFileTypes: true })
     .filter((entry) => entry.isDirectory() && !['information-security', 'network-security', 'computer-networks', 'chapter'].includes(entry.name))
@@ -534,7 +541,7 @@ test('study articles include header quick jump bar, chapter switcher, TOC jump f
   for (const file of studyArticleDirs) {
     const html = read(file);
     assert.match(html, /class="article-quick-jump"/);
-    assert.match(html, /data-toc-jump-filter/);
+    assert.doesNotMatch(html, /data-toc-jump-filter|data-toc-module-tab/);
     if (/上一模块（/.test(html)) hasCrossPrev = true;
     if (/下一模块（/.test(html)) hasCrossNext = true;
   }
@@ -589,10 +596,10 @@ test('built HTML text nodes contain zero residual literal ** or __ outside code/
   assert.deepEqual(hits, []);
 });
 
-test('study module entry disables View Transitions and uses reduced-motion-safe page transitions', () => {
+test('site preserves cross-page View Transitions without title morph and honors reduced motion', () => {
   const globalCss = read('src/styles/global.css');
-  assert.doesNotMatch(globalCss, /@view-transition|view-transition-name/, 'site must not use CSS View Transitions');
-  assert.match(globalCss, /main\.study-page-leaving\s*\{[^}]*opacity:\s*0;[^}]*var\(--dur-1\)/);
+  assert.match(globalCss, /prefers-reduced-motion:\s*no-preference[\s\S]*@view-transition\s*\{\s*navigation:\s*auto;\s*\}/);
+  assert.doesNotMatch(globalCss, /view-transition-name/, 'heading view-transition-name must stay disabled to prevent title pop');
   assert.match(globalCss, /@keyframes study-module-enter/);
   assert.match(globalCss, /prefers-reduced-motion:\s*reduce[\s\S]*animation:\s*none !important/);
 

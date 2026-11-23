@@ -364,6 +364,7 @@ const tocPanel = document.querySelector<HTMLElement>('[data-toc-panel]');
 if (tocPanel) {
   type TocView = 'toc' | 'modules' | 'tree';
   const tocHeading = tocPanel.querySelector<HTMLElement>('[data-toc-heading]');
+  const tocHeadingModule = tocPanel.querySelector<HTMLElement>('[data-toc-heading-module]');
   const noteTitle = tocHeading?.dataset.noteTitle || tocHeading?.textContent?.trim() || '';
   const jumpToggle = tocPanel.querySelector<HTMLButtonElement>('[data-toc-jump-toggle]');
   const panes = [...tocPanel.querySelectorAll<HTMLElement>('[data-toc-pane]')];
@@ -374,11 +375,8 @@ if (tocPanel) {
   });
   const treeScroll = tocPanel.querySelector<HTMLElement>('.toc-tree-scroll');
   const modulePanels = [...tocPanel.querySelectorAll<HTMLElement>('[data-toc-module-panel]')];
-  const moduleTabs = [...tocPanel.querySelectorAll<HTMLButtonElement>('[data-toc-module-tab]')];
   const moduleButtons = [...tocPanel.querySelectorAll<HTMLButtonElement>('[data-toc-select-module]')];
   const backModulesBtn = tocPanel.querySelector<HTMLButtonElement>('[data-toc-back-modules]');
-  const jumpFilter = tocPanel.querySelector<HTMLInputElement>('[data-toc-jump-filter]');
-  const jumpEmpty = tocPanel.querySelector<HTMLElement>('[data-toc-jump-empty]');
   const openBtn = document.querySelector<HTMLButtonElement>('[data-toc-drawer-open]');
   const closeBtn = tocPanel.querySelector<HTMLButtonElement>('[data-toc-drawer-close]');
   const backdrop = document.querySelector<HTMLElement>('[data-toc-backdrop]');
@@ -448,31 +446,10 @@ if (tocPanel) {
     });
   };
 
-  const applyJumpFilter = (rawQuery: string) => {
-    const query = rawQuery.trim().toLowerCase();
-    let visibleCount = 0;
-    modulePanels.forEach((panel) => {
-      let panelCount = 0;
-      panel.querySelectorAll<HTMLDetailsElement>('[data-toc-chapter-group]').forEach((group) => {
-        let groupCount = 0;
-        group.querySelectorAll<HTMLElement>('[data-toc-jump-item]').forEach((item) => {
-          const text = item.dataset.searchText ?? item.textContent?.toLowerCase() ?? '';
-          const hit = !query || text.includes(query);
-          item.hidden = !hit;
-          if (hit) groupCount += 1;
-        });
-        group.hidden = groupCount === 0;
-        if (query) {
-          group.open = groupCount > 0;
-        } else {
-          group.open = group.dataset.defaultOpen === 'true';
-        }
-        panelCount += groupCount;
-      });
-      if (!panel.hidden) visibleCount = panelCount;
-    });
-    if (jumpEmpty) jumpEmpty.hidden = visibleCount > 0;
-  };
+  const getModuleLabel = (slug: string) =>
+    modulePanels.find((panel) => panel.dataset.tocModulePanel === slug)?.dataset.moduleLabel
+    || moduleButtons.find((btn) => btn.dataset.tocSelectModule === slug)?.dataset.moduleLabel
+    || '';
 
   const applyViewState = (nextView: TocView) => {
     view = nextView;
@@ -488,7 +465,12 @@ if (tocPanel) {
       jumpToggle.classList.toggle('is-active', inJump);
     }
     if (tocHeading) {
-      tocHeading.textContent = nextView === 'toc' ? noteTitle : nextView === 'modules' ? '笔记直达 · 选择模块' : '笔记直达 · 模块导航';
+      tocHeading.textContent = nextView === 'toc' ? noteTitle : nextView === 'modules' ? '笔记直达 · 选择模块' : '笔记直达';
+    }
+    if (tocHeadingModule) {
+      const modTitle = nextView === 'tree' ? getModuleLabel(activeModuleSlug) : '';
+      tocHeadingModule.textContent = modTitle;
+      tocHeadingModule.hidden = !modTitle;
     }
   };
 
@@ -500,7 +482,7 @@ if (tocPanel) {
           : moduleButtons[0];
         target?.focus({ preventScroll: true });
       } else if (targetView === 'tree') {
-        jumpFilter?.focus({ preventScroll: true });
+        backModulesBtn?.focus({ preventScroll: true });
       }
     });
   };
@@ -510,10 +492,19 @@ if (tocPanel) {
       window.clearTimeout(phaseTimer);
       phaseTimer = 0;
     }
+    tocPanel.style.height = '';
+    tocPanel.style.maxHeight = '';
     panes.forEach((pane) => pane.classList.remove(...ANIMATE_CLASSES));
   };
 
-  const runSlide = (fromView: TocView, toView: TocView, direction: 'forward' | 'backward', seq: number, onDone?: () => void) => {
+  const runSlide = (
+    fromView: TocView,
+    toView: TocView,
+    direction: 'forward' | 'backward',
+    seq: number,
+    onFrame?: () => void,
+    onDone?: () => void,
+  ) => {
     const fromPane = paneByView.get(fromView);
     const toPane = paneByView.get(toView);
     applyViewState(toView);
@@ -521,6 +512,7 @@ if (tocPanel) {
 
     if (reducedMotion() || !fromPane || !toPane) {
       clearTransitionState();
+      onFrame?.();
       onDone?.();
       return;
     }
@@ -533,11 +525,12 @@ if (tocPanel) {
       if (seq !== transitionSeq) return;
       fromPane.classList.add(direction === 'forward' ? 'is-leave-to-left' : 'is-leave-to-right');
       toPane.classList.remove('is-enter-from-right', 'is-enter-from-left');
-      onDone?.();
+      onFrame?.();
       phaseTimer = window.setTimeout(() => {
         if (seq !== transitionSeq) return;
         clearTransitionState();
-      }, 210);
+        onDone?.();
+      }, 240);
     });
   };
 
@@ -566,7 +559,6 @@ if (tocPanel) {
     };
 
     if (reducedMotion() || mobileMq?.matches) {
-      tocPanel.style.height = '';
       applyViewState(nextView);
       if (nextView === 'tree') scrollToActiveChapterItem(true);
       afterSlide();
@@ -576,48 +568,30 @@ if (tocPanel) {
     const startH = Math.round(tocPanel.getBoundingClientRect().height);
     tocPanel.style.transition = 'none';
     tocPanel.style.height = '';
+    tocPanel.style.maxHeight = '';
     tocPanel.dataset.tocView = nextView;
     const endH = Math.round(tocPanel.getBoundingClientRect().height);
     tocPanel.dataset.tocView = prevView;
-    tocPanel.style.height = `${startH}px`;
+    const heightDiff = Math.abs(endH - startH);
+    if (heightDiff > 2) {
+      tocPanel.style.height = `${startH}px`;
+      tocPanel.style.maxHeight = `${Math.max(startH, endH)}px`;
+    }
     void tocPanel.offsetHeight;
     tocPanel.style.transition = '';
 
-    if (prevView === 'toc' && endH - startH > 2) {
-      tocPanel.style.height = `${endH}px`;
-      let moved = false;
-      const startContentSlide = () => {
-        if (moved || seq !== transitionSeq) return;
-        moved = true;
-        tocPanel.style.height = '';
-        runSlide(prevView, nextView, direction, seq, afterSlide);
-      };
-      const onHeightEnd = (ev: TransitionEvent) => {
-        if (ev.target === tocPanel && ev.propertyName === 'height') {
-          tocPanel.removeEventListener('transitionend', onHeightEnd);
-          startContentSlide();
+    runSlide(
+      prevView,
+      nextView,
+      direction,
+      seq,
+      () => {
+        if (heightDiff > 2) {
+          tocPanel.style.height = `${endH}px`;
         }
-      };
-      tocPanel.addEventListener('transitionend', onHeightEnd);
-      phaseTimer = window.setTimeout(() => {
-        tocPanel.removeEventListener('transitionend', onHeightEnd);
-        startContentSlide();
-      }, 240);
-      return;
-    }
-
-    if (nextView === 'toc' && startH - endH > 2) {
-      tocPanel.style.height = `${endH}px`;
-      runSlide(prevView, nextView, direction, seq, afterSlide);
-      window.setTimeout(() => {
-        if (seq !== transitionSeq) return;
-        tocPanel.style.height = '';
-      }, 240);
-      return;
-    }
-
-    tocPanel.style.height = '';
-    runSlide(prevView, nextView, direction, seq, afterSlide);
+        afterSlide();
+      },
+    );
   };
 
   const activateModule = (slug: string, focusFirst = false) => {
@@ -626,13 +600,15 @@ if (tocPanel) {
     activeModuleSlug = targetSlug;
     modulePanels.forEach((panel) => {
       panel.hidden = panel.dataset.tocModulePanel !== targetSlug;
+      if (!panel.hidden) {
+        panel.querySelectorAll<HTMLDetailsElement>('[data-toc-chapter-group]').forEach((group) => {
+          group.open = true;
+        });
+      }
     });
-    moduleTabs.forEach((tab) => {
-      const active = tab.dataset.tocModuleTab === targetSlug;
-      tab.classList.toggle('is-active', active);
-      tab.setAttribute('aria-selected', String(active));
+    moduleButtons.forEach((btn) => {
+      btn.classList.toggle('is-current', btn.dataset.tocSelectModule === targetSlug);
     });
-    applyJumpFilter(jumpFilter?.value ?? '');
     transitionToView('tree', { direction: 'forward', focusFirst });
   };
 
@@ -661,36 +637,12 @@ if (tocPanel) {
     }
   });
 
-  moduleTabs.forEach((tab) => {
-    tab.addEventListener('click', () => {
-      const slug = tab.dataset.tocModuleTab;
-      if (slug) activateModule(slug, true);
-    });
-  });
-
-  jumpFilter?.addEventListener('input', () => {
-    applyJumpFilter(jumpFilter.value);
-  });
-
-  jumpFilter?.addEventListener('keydown', (event) => {
-    if (event.key !== 'Escape') return;
-    event.stopPropagation();
-    event.preventDefault();
-    if (jumpFilter.value) {
-      jumpFilter.value = '';
-      applyJumpFilter('');
-      return;
-    }
-    if (mobileMq?.matches && drawerOpen) closeDrawer(true);
-    else transitionToView('toc', { direction: 'backward', restoreTrigger: true });
-  });
-
   articleJumpBtns.forEach((btn) => btn.addEventListener('click', () => openJumpPanel(btn)));
 
   document.addEventListener('keydown', (event) => {
     if (!event.altKey || event.ctrlKey || event.metaKey || event.shiftKey || event.code !== 'KeyJ') return;
     const target = event.target as HTMLElement | null;
-    if (target && target !== jumpFilter && (/^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName) || target.isContentEditable)) return;
+    if (target && (/^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName) || target.isContentEditable)) return;
     event.preventDefault();
     if (view !== 'toc' && (!mobileMq?.matches || drawerOpen)) {
       if (mobileMq?.matches) closeDrawer(true);
