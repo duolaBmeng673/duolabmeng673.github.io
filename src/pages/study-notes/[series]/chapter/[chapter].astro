@@ -3,7 +3,6 @@ import BaseLayout from '../../../../layouts/BaseLayout.astro';
 import KnowledgeDirectory from '../../../../components/KnowledgeDirectory.astro';
 import StudyNoteList from '../../../../components/StudyNoteList.astro';
 import StudyNavBar from '../../../../components/StudyNavBar.astro';
-import StudyQuickJumpDialog from '../../../../components/StudyQuickJumpDialog.astro';
 import { getPublicStudyNotes, getStudyChapters, getStudyModuleHref, studyModules, studySeries } from '../../../../lib/study';
 export async function getStaticPaths() {
   const posts = await getPublicStudyNotes();
@@ -26,5 +25,4 @@ const currentModuleSlug = studyModules[chapter.subject].slug;
     </div>
   </header>
   <KnowledgeDirectory posts={chapter.posts}><StudyNoteList posts={chapter.posts} chapterCode={chapter.code} /></KnowledgeDirectory>
-  <StudyQuickJumpDialog series={currentSeries} currentModuleSlug={currentModuleSlug} />
 </BaseLayout>

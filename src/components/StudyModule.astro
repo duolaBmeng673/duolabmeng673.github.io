@@ -3,17 +3,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import KnowledgeDirectory from './KnowledgeDirectory.astro';
 import StudyNoteList from './StudyNoteList.astro';
 import StudyNavBar from './StudyNavBar.astro';
-import StudyQuickJumpDialog from './StudyQuickJumpDialog.astro';
-import { getChapterHref, getPublicStudyNotes, getStudyChapters, getStudyModuleSummaries, getStudySeries, type StudyModuleSummary } from '../lib/study';
+import { getChapterHref, getStudyChapters, getStudySeries, type StudyModuleSummary } from '../lib/study';
 interface Props { module: StudyModuleSummary }
 const { module } = Astro.props;
 const info = getStudySeries(module.series);
 const chapters = getStudyChapters(module.posts);
-const allSeriesPosts = (await getPublicStudyNotes()).filter((post) => post.data.series === module.series);
-const seriesModules = getStudyModuleSummaries(allSeriesPosts);
-const modIdx = seriesModules.findIndex((item) => item.slug === module.slug);
-const prevModule = modIdx > 0 ? seriesModules[modIdx - 1] : undefined;
-const nextModule = modIdx >= 0 && modIdx + 1 < seriesModules.length ? seriesModules[modIdx + 1] : undefined;
 ---
 <BaseLayout title={`${module.title} · ${module.series}`} description={module.description}>
   <KnowledgeDirectory posts={module.posts} showLegend={true}>
@@ -50,12 +44,5 @@ const nextModule = modIdx >= 0 && modIdx + 1 < seriesModules.length ? seriesModu
       </section>)}
     </div>
   </div>
-  <p slot="footer" class="home-about-links">
-    {prevModule && <a class="text-link" href={prevModule.href}>← 上一模块：{prevModule.title}</a>}
-    <a class="text-link" href={`/study-notes/${info.slug}/`}>← 返回模块选择</a>
-    <a class="text-link" href="/study-notes/">全部学习笔记 →</a>
-    {nextModule && <a class="text-link" href={nextModule.href}>下一模块：{nextModule.title} →</a>}
-  </p>
   </KnowledgeDirectory>
-  <StudyQuickJumpDialog series={module.series} currentModuleSlug={module.slug} />
 </BaseLayout>

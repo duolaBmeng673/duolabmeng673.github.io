@@ -478,22 +478,18 @@ test('built site HTML, search index, RSS, and sitemap contain no forbidden terms
   }
 });
 
-test('study module pages include module switcher, adjacent module footer links, and quick jump dialog', () => {
-  const modules = [
-    { slug: 'information-security', next: '下一模块：网络安全' },
-    { slug: 'network-security', prev: '← 上一模块：信息安全', next: '下一模块：计算机网络' },
-    { slug: 'computer-networks', prev: '← 上一模块：网络安全' },
-  ];
+test('study module pages include module switcher and omit quick jump dialog and bottom footer links', () => {
+  const modules = ['information-security', 'network-security', 'computer-networks'];
+  const knowledgeCss = read('src/styles/knowledge-tags.css');
+  assert.match(knowledgeCss, /\.knowledge-aside\.archive-tools\s*\{[^}]*background:\s*transparent;/);
+  assert.match(knowledgeCss, /\.knowledge-aside\.archive-tools::before\s*\{[^}]*content:\s*none;/);
+  assert.match(knowledgeCss, /\.study-module-pill\s*\{[^}]*border-radius:\s*var\(--r-ctl\);[^}]*background:\s*var\(--surface\);/);
 
-  for (const mod of modules) {
-    const html = read(`dist/study-notes/837/${mod.slug}/index.html`);
+  for (const slug of modules) {
+    const html = read(`dist/study-notes/837/${slug}/index.html`);
     assert.match(html, /class="study-module-switcher"/);
-    assert.match(html, /id="study-quick-jump-dialog"/);
-    assert.match(html, /data-study-jump-filter/);
-    assert.match(html, /class="home-about-links"[^]*?<\/p>\s*<\/div>/);
-    if (mod.prev) assert.match(html, new RegExp(mod.prev.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
-    if (mod.next) assert.match(html, new RegExp(mod.next.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
-    assert.equal((html.match(/data-study-jump-item/g) ?? []).length > 0, true);
+    assert.doesNotMatch(html, /id="study-quick-jump-dialog"|data-study-jump-open/);
+    assert.doesNotMatch(html, /class="home-about-links"/);
   }
 });
 

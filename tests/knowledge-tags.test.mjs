@@ -188,7 +188,7 @@ test('both study modules render one sticky category toolbar with no copied mobil
     const container = html.indexOf('class="knowledge-directory"');
     assert.ok(container < html.indexOf('class="page-intro"'), 'legend container starts before the page intro');
     assert.ok(container < html.indexOf('class="study-chapters"'), 'all chapters share the page-level reference');
-    assert.match(html, /class="home-about-links"[^]*?<\/p>\s*<\/div>/, 'container also includes the bottom navigation');
+    assert.doesNotMatch(html, /class="home-about-links"/, 'bottom module footer links must be omitted');
   }
   for (const page of ['dist/index.html', 'dist/blog/index.html', 'dist/study-notes/837/chapter/02/index.html', 'dist/study-notes/837/security-basics/index.html']) {
     const other = read(page);
