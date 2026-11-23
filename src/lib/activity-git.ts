@@ -237,7 +237,11 @@ export function filterAndClassifyGitCommits(
       }
     }
 
+    const forceInclude = HEATMAP_FILTER_CONFIG.forceIncludeHashes.some((prefix) =>
+      commit.hash.startsWith(prefix),
+    );
     if (
+      !forceInclude &&
       HEATMAP_FILTER_CONFIG.tinyMarkdownOnly.enabled &&
       commit.files.length > 0 &&
       commit.files.every((file) => isMarkdownPath(file.path))

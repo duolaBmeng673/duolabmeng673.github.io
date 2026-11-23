@@ -52,6 +52,9 @@ export const HEATMAP_FILTER_CONFIG = {
     /(?:^|\/)\.DS_Store$/,
   ],
 
+  /** Explicit short commit prefixes that should always bypass `tinyMarkdownOnly` and count toward heatmap. */
+  forceIncludeHashes: ['f02b22f'],
+
   /** Redact display titles in heatmap entries without changing commit filtering or counts. */
   subjectRedaction: {
     patterns: [/huawei|华为/i],

@@ -13,7 +13,7 @@
 | 3 | `revertNoise` | 标题匹配 `/^Revert\s+"(.+)"$/i` 的回退提交（含 `Revert "Revert ..."`）及其在同历史中互相抵消的原提交（`cancelRevertedOriginal: true`） | **2** (`826448e` + `65f9067`) |
 | 4 | `messagePrefix` | 标题前缀匹配 `/^(?:chore\|typo\|wip\|format\|lint)(?:\([^)]*\))?:/i` 或 `/^(?:typo\|wip\|format\|fixup!\|squash!)\b/i` | **2** (`cf48f15`, `f3ab204`) |
 | 5 | `whitespaceOnly` | 非根提交且 `git diff-tree -p -w --ignore-blank-lines` 忽略空白与空行后无任何有效差异 | **1** (`0f2b4f8`) |
-| 6 | `tinyMarkdownOnly` | 本次仅改动 `.md` / `.mdx` 文件，且字符级差异（`--word-diff=porcelain --word-diff-regex=.` 去除空白字符后）总改动字符数 **`< 40`** | **4** (`3237e52` [3], `5305736` [7], `2f53fc9` [20], `5f7e48f` [31]) |
+| 6 | `tinyMarkdownOnly` | 本次仅改动 `.md` / `.mdx` 文件，且字符级差异（`--word-diff=porcelain --word-diff-regex=.` 去除空白字符后）总改动字符数 **`< 40`**（`forceIncludeHashes` 白名单如 `f02b22f` 例外） | **4** (`3237e52` [3], `5305736` [7], `2f53fc9` [20], `5f7e48f` [31]) |
 
 - **上述 6 类合计实测过滤**：**`10` 条**（总提交 `129` 条），该数字会直接渲染在 `/about/` 热力图底部的“已过滤 N 条琐碎提交”说明行中（`data-activity-filtered-count="10"`）。
 
