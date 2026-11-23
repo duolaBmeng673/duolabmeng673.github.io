@@ -7,7 +7,7 @@ import KnowledgeChips from './KnowledgeChips.astro';
 import { enrichHeadingsWithMath, normalizeTocSections, stripHeadingBadge } from '../plugins/heading-tokens.mjs';
 import { getKnowledgeTags } from '../lib/knowledge-tags';
 import { getBlogPosts, getPostHref, getPostTitle, taxonomyLabel, formatPostDate, type BlogPost } from '../lib/blog';
-import { getChapterHref, getChapterKey, getPublicStudyNotes, getStudyChapters, getStudySeries, getStudyModuleHref, studyModules, type StudyPost } from '../lib/study';
+import { getChapterHref, getPublicStudyNotes, getStudyChapters, getStudySeries, getStudyModuleHref, studyModules } from '../lib/study';
 interface Props { post: BlogPost }
 const { post } = Astro.props;
 const { Content, headings } = await render(post);
@@ -39,10 +39,6 @@ const nextJumpText = next
     : (study ? '下一节' : '下一篇'))
   : '';
 const nextJumpTitle = next ? getPostTitle(next) : '';
-const chapterNotes = study
-  ? ordered.filter((item): item is StudyPost => item.collection === 'study_notes' && getChapterKey(item) === getChapterKey(study))
-  : [];
-const chapterPos = study ? chapterNotes.findIndex((item) => item.id === study.id) : -1;
 const currentJumpSlug = study ? studyModules[study.data.subject].slug : 'blog';
 
 const studyJumpModules = (['信息安全导论', '网络安全基础', '计算机网络'] as const).map((subject) => {
@@ -124,51 +120,6 @@ const canRecall = Boolean(study && headings.some((heading) => heading.depth >= 2
             {knowledgeTags.length && study ? <KnowledgeChips tags={knowledgeTags} href={getStudyModuleHref(study)} /> : <div class="tag-list">{post.data.tags.map((tag) => <a href={`/blog/?tag=${encodeURIComponent(tag)}`}>{tag}</a>)}</div>}
             <div class="article-meta"><time datetime={post.data.pubDate.toISOString()}>{formatPostDate(post.data.pubDate)}</time>{post.data.updatedDate && <><span aria-hidden="true">·</span><span>更新于 <time datetime={post.data.updatedDate.toISOString()}>{formatPostDate(post.data.updatedDate)}</time></span></>}{study?.data.syllabusSection && <><span aria-hidden="true">·</span><span>考纲 {study.data.syllabusSection}</span></>}</div>
           </div>
-          {study && (
-            <div class="article-quick-jump" aria-label="知识点快速跳转">
-              {previous ? (
-                <a class="quick-jump-pill" href={getPostHref(previous)} rel="prev" title={prevJumpTitle}>
-                  ← {prevJumpText}
-                </a>
-              ) : (
-                <span class="quick-jump-pill is-disabled" aria-disabled="true">← 已是首篇</span>
-              )}
-              {chapterNotes.length > 0 && (
-                <details class="article-chapter-switcher" data-chapter-switcher>
-                  <summary class="quick-jump-pill is-switcher">
-                    <span>本章 {chapterPos >= 0 ? `${chapterPos + 1}/${chapterNotes.length}` : `${chapterNotes.length} 篇`}</span>
-                    <span class="chapter-switcher-caret" aria-hidden="true">⌄</span>
-                  </summary>
-                  <div class="chapter-switcher-menu" role="region" aria-label="同章知识点列表">
-                    <p class="chapter-switcher-head">
-                      <a href={getChapterHref(study)}>{study.data.syllabusChapter} {study.data.chapterTitle}</a>
-                    </p>
-                    <ol class="chapter-switcher-list">
-                      {chapterNotes.map((item) => (
-                        <li>
-                          <a href={getPostHref(item)} class:list={{ 'is-active': item.id === study.id }} aria-current={item.id === study.id ? 'page' : undefined}>
-                            <span class="chapter-switcher-code">{item.data.syllabusSection ?? item.data.syllabusChapter}</span>
-                            <span class="chapter-switcher-name">{item.data.shortTitle ?? item.data.title}</span>
-                          </a>
-                        </li>
-                      ))}
-                    </ol>
-                  </div>
-                </details>
-              )}
-              {next ? (
-                <a class="quick-jump-pill" href={getPostHref(next)} rel="next" title={nextJumpTitle}>
-                  {nextJumpText} →
-                </a>
-              ) : (
-                <span class="quick-jump-pill is-disabled" aria-disabled="true">已是末篇 →</span>
-              )}
-              <button type="button" class="quick-jump-pill is-action" data-article-jump-open title="快捷键 Alt + J" data-jump-shortcut-title>
-                <span>笔记直达</span>
-                <kbd aria-hidden="true" data-jump-shortcut data-shortcut-kind="jump">Alt J</kbd>
-              </button>
-            </div>
-          )}
         </header>
         <button type="button" class="toc-drawer-open-btn" data-toc-drawer-open aria-controls="article-toc-drawer" aria-expanded="false" hidden>目录</button>
         <div class="article-mobile-drawers">
@@ -239,7 +190,10 @@ const canRecall = Boolean(study && headings.some((heading) => heading.depth >= 2
             )}
           </div>
           <div class="toc-header-actions">
-            <button type="button" class="toc-jump-toggle" data-toc-jump-toggle aria-expanded="false">笔记直达</button>
+            <button type="button" class="toc-jump-toggle" data-toc-jump-toggle aria-expanded="false" title="快捷键 Alt + J" data-jump-shortcut-title>
+              <span data-toc-jump-label>笔记直达</span>
+              <kbd aria-hidden="true" data-jump-shortcut data-shortcut-kind="jump">Alt J</kbd>
+            </button>
             <button type="button" class="toc-drawer-close" data-toc-drawer-close aria-label="关闭目录" hidden>×</button>
           </div>
         </div>

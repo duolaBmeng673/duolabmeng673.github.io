@@ -367,6 +367,7 @@ if (tocPanel) {
   const tocHeadingModule = tocPanel.querySelector<HTMLElement>('[data-toc-heading-module]');
   const noteTitle = tocHeading?.dataset.noteTitle || tocHeading?.textContent?.trim() || '';
   const jumpToggle = tocPanel.querySelector<HTMLButtonElement>('[data-toc-jump-toggle]');
+  const jumpToggleLabel = jumpToggle?.querySelector<HTMLElement>('[data-toc-jump-label]');
   const panes = [...tocPanel.querySelectorAll<HTMLElement>('[data-toc-pane]')];
   const paneByView = new Map<TocView, HTMLElement>();
   panes.forEach((pane) => {
@@ -460,7 +461,7 @@ if (tocPanel) {
     });
     if (jumpToggle) {
       const inJump = nextView !== 'toc';
-      jumpToggle.textContent = inJump ? '返回目录' : '笔记直达';
+      (jumpToggleLabel ?? jumpToggle).textContent = inJump ? '返回目录' : '笔记直达';
       jumpToggle.setAttribute('aria-expanded', String(inJump));
       jumpToggle.classList.toggle('is-active', inJump);
     }

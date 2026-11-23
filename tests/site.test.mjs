@@ -497,12 +497,11 @@ test('study module pages include module switcher, adjacent module footer links, 
   }
 });
 
-test('study articles include header quick jump bar, chapter switcher, TOC module navigation, and cross-module pagination', () => {
+test('study articles omit redundant header quick jump row, show shortcut on TOC button, and keep cross-module pagination', () => {
   const c45 = read('dist/study-notes/837/decision-tree-c45/index.html');
-  assert.match(c45, /class="article-quick-jump"/);
-  assert.match(c45, /class="article-chapter-switcher"/);
-  assert.match(c45, /data-article-jump-open/);
+  assert.doesNotMatch(c45, /class="article-quick-jump"/);
   assert.doesNotMatch(c45, /data-toc-jump-filter|data-toc-module-tab|class="toc-module-current"/);
+  assert.match(c45, /data-toc-jump-toggle[^>]*data-jump-shortcut-title[\s\S]*data-toc-jump-label>笔记直达<\/span>[\s\S]*data-jump-shortcut data-shortcut-kind="jump"/);
   assert.match(c45, /data-toc-heading-module/);
   assert.match(c45, /<details class="mobile-jump-module" open>/);
   assert.match(c45, /data-toc-view="toc"/);
@@ -540,7 +539,8 @@ test('study articles include header quick jump bar, chapter switcher, TOC module
   let hasCrossNext = false;
   for (const file of studyArticleDirs) {
     const html = read(file);
-    assert.match(html, /class="article-quick-jump"/);
+    assert.doesNotMatch(html, /class="article-quick-jump"/);
+    assert.match(html, /data-toc-jump-toggle/);
     assert.doesNotMatch(html, /data-toc-jump-filter|data-toc-module-tab/);
     if (/上一模块（/.test(html)) hasCrossPrev = true;
     if (/下一模块（/.test(html)) hasCrossNext = true;
