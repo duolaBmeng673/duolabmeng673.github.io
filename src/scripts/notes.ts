@@ -1,118 +1,139 @@
 import { rankSearch, loadSearchIndex, type SearchRecord } from '../lib/search';
+import { bindStickyAutoHide } from '../lib/sticky-dock';
 type RecordWithId = SearchRecord & { id: string };
 let records: RecordWithId[] = JSON.parse(document.querySelector('#notes-index')?.textContent ?? '[]');
 let fullIndex = false;
 let run = 0;
 const categoryLinks = [...document.querySelectorAll<HTMLAnchorElement>('[data-category-filter]')];
-const viewButtons = [...document.querySelectorAll<HTMLButtonElement>('[data-view-toggle]')];
+const legendButtons = [...document.querySelectorAll<HTMLButtonElement>('[data-blog-category]')];
 const search = document.querySelector<HTMLInputElement>('[data-search-input]');
-const subcategory = document.querySelector<HTMLSelectElement>('[data-subcategory-filter]');
-const series = document.querySelector<HTMLSelectElement>('[data-series-filter]');
 const empty = document.querySelector<HTMLElement>('[data-archive-empty]');
 const status = document.querySelector<HTMLElement>('[data-result-status]');
 const title = document.querySelector<HTMLElement>('[data-archive-title]');
-const description = document.querySelector<HTMLElement>('[data-archive-description]');
-let category = 'all', view = 'notes', tag = '', query = '';
+const tagButtons = [...document.querySelectorAll<HTMLButtonElement>('[data-blog-tag]')];
+const monthBands = [...document.querySelectorAll<HTMLElement>('[data-timeline-month-band]')];
+const timelineRows = [...document.querySelectorAll<HTMLElement>('[data-timeline-row]')];
+const timelineYears = [...document.querySelectorAll<HTMLElement>('[data-timeline-year]')];
+let category = 'all', tag = '', query = '', activeCategory = '';
+
 const readUrl = () => {
   const params = new URLSearchParams(location.search);
   // Preserve shared links created before Study Notes gained its own entry point.
   category = params.get('category') === 'Study Notes' || categoryLinks.some((link) => link.dataset.categoryFilter === params.get('category')) ? params.get('category')! : 'all';
-  view = params.get('view') === 'timeline' ? 'timeline' : 'notes';
-  tag = params.get('tag') ?? ''; query = params.get('q') ?? '';
+  tag = params.get('tag') ?? '';
+  query = params.get('q') ?? '';
   if (search) search.value = query;
-  if (subcategory) subcategory.value = params.get('subcategory') ?? '';
-  if (series) series.value = params.get('series') ?? '';
 };
-const notesView = document.querySelector<HTMLElement>('[data-notes-view]');
-const timelineView = document.querySelector<HTMLElement>('[data-timeline-view]');
-const noteRows = [...document.querySelectorAll<HTMLElement>('[data-note-row]')];
-const timelineRows = [...document.querySelectorAll<HTMLElement>('[data-timeline-row]')];
+
+const setTransientStatus = (message: string, visible: boolean) => {
+  if (!status) return;
+  status.textContent = message;
+  status.classList.toggle('visually-hidden', !visible);
+};
+
 const apply = async (writeUrl = true) => {
   const current = ++run;
   if (writeUrl) {
     const params = new URLSearchParams();
     if (category !== 'all') params.set('category', category);
-    if (subcategory?.value) params.set('subcategory', subcategory.value);
-    if (series?.value) params.set('series', series.value);
     if (tag) params.set('tag', tag);
-    if (view !== 'notes') params.set('view', view);
     if (query) params.set('q', query);
     const next = `${location.pathname}${params.size ? `?${params}` : ''}`;
     if (next !== location.pathname + location.search) history.replaceState(null, '', next);
   }
   if (query && !fullIndex) {
-    if (status) status.textContent = '正在搜索正文…';
+    setTransientStatus('正在搜索正文…', true);
     try {
       const index = await loadSearchIndex();
       records = records.map((record) => ({ ...record, ...index.find((entry) => entry.href === record.href) }));
       fullIndex = true;
     } catch {
-      if (current === run && status) status.textContent = '正文索引加载失败，请刷新重试。';
+      if (current === run) setTransientStatus('正文索引加载失败，请刷新重试。', true);
       return;
     }
     if (current !== run) return;
   }
-  const regularOnly = category === 'all' && !query && !tag && !subcategory?.value && !series?.value;
+  const regularOnly = category === 'all' && !query && !tag;
   const sharedSearch = Boolean(query || (tag && category === 'all'));
   if (title) title.textContent = sharedSearch ? (query ? '搜索结果' : '标签检索') : category === 'Study Notes' ? '学习笔记检索' : '技术笔记';
-  if (description) description.hidden = sharedSearch || category === 'Study Notes';
   const filtered = records.filter((record) =>
-    (category === 'all' || record.category === category) && (!regularOnly || record.category !== 'Study Notes') &&
-    (!subcategory?.value || record.subcategory === subcategory.value) && (!series?.value || record.series === series.value) &&
-    (!tag || record.tags.includes(tag))
+    (category === 'all' || record.category === category) &&
+    (!regularOnly || record.category !== 'Study Notes') &&
+    (!tag || record.tags.includes(tag) || (record.knowledgeTags ?? []).some((item) => item.name === tag))
   );
   const visible = rankSearch(filtered, query);
   const ids = new Set(visible.map((record) => record.id));
+
   categoryLinks.forEach((link) => {
     const active = link.dataset.categoryFilter === category;
     link.classList.toggle('is-active', active);
     if (active) link.setAttribute('aria-current', 'true'); else link.removeAttribute('aria-current');
   });
-  viewButtons.forEach((button) => {
-    const active = button.dataset.viewToggle === view;
-    button.classList.toggle('is-active', active); button.setAttribute('aria-pressed', String(active));
+  legendButtons.forEach((button) => {
+    const active = button.dataset.blogCategory === activeCategory;
+    button.setAttribute('aria-pressed', String(active));
+    button.classList.toggle('is-active', active);
   });
-  if (notesView) notesView.hidden = view !== 'notes';
-  if (timelineView) timelineView.hidden = view !== 'timeline';
-  [...noteRows, ...timelineRows].forEach((row) => { row.hidden = !ids.has(row.dataset.id ?? ''); });
-  // Only search lists use relevance; the timeline always keeps chronological DOM order.
-  const ordered = query ? visible : records;
-  ordered.forEach((record) => { const row = noteRows.find((row) => row.dataset.id === record.id); if (row) notesView?.append(row); });
-  document.querySelectorAll<HTMLElement>('[data-timeline-month]').forEach((month) => { month.hidden = !month.querySelector('[data-timeline-row]:not([hidden])'); });
-  document.querySelectorAll<HTMLElement>('[data-timeline-year]').forEach((year) => { year.hidden = !year.querySelector('[data-timeline-month]:not([hidden])'); });
+  tagButtons.forEach((button) => {
+    const active = Boolean(tag && button.dataset.blogTag === tag);
+    button.setAttribute('aria-pressed', String(active));
+    button.classList.toggle('is-active', active);
+    button.classList.toggle('is-muted', Boolean(activeCategory && button.dataset.c !== activeCategory));
+  });
+
+  timelineRows.forEach((row) => { row.hidden = !ids.has(row.dataset.id ?? ''); });
+  monthBands.forEach((band) => {
+    const visibleCount = band.querySelectorAll('[data-timeline-row]:not([hidden])').length;
+    band.hidden = visibleCount === 0;
+  });
+  timelineYears.forEach((year) => {
+    const visibleCount = year.querySelectorAll('[data-timeline-row]:not([hidden])').length;
+    year.hidden = visibleCount === 0;
+  });
+
   if (empty) empty.hidden = ids.size > 0;
-  if (status) status.textContent = `${ids.size} 篇笔记${query && view === 'notes' ? ' · 按相关度排序' : ' · 按发布日期排序'}`;
+  setTransientStatus(`${ids.size} 篇笔记 · 按发布日期排序`, false);
   const tagStatus = document.querySelector<HTMLElement>('[data-active-tag]');
-  if (tagStatus) { tagStatus.hidden = !tag; tagStatus.textContent = `标签：${tag}`; }
+  const tagLabel = document.querySelector<HTMLElement>('[data-tag-label]');
+  if (tagStatus) tagStatus.hidden = !tag;
+  if (tagLabel) tagLabel.textContent = `标签：${tag}`;
+  else if (tagStatus) tagStatus.textContent = `标签：${tag}`;
   const queryStatus = document.querySelector<HTMLElement>('[data-active-query]');
   if (queryStatus) queryStatus.hidden = !query;
   const queryLabel = document.querySelector<HTMLElement>('[data-query-label]');
   if (queryLabel) queryLabel.textContent = `搜索：${query}`;
 };
+
+const dock = bindStickyAutoHide({
+  bar: document.querySelector<HTMLElement>('.archive-tools'),
+  sentinel: document.querySelector<HTMLElement>('[data-archive-sentinel]'),
+});
+
 categoryLinks.forEach((link) => link.addEventListener('click', (event) => {
   if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
-  event.preventDefault(); category = link.dataset.categoryFilter ?? 'all';
-  if (subcategory) subcategory.value = ''; if (series) series.value = ''; void apply();
+  event.preventDefault();
+  category = link.dataset.categoryFilter ?? 'all';
+  dock.reveal();
+  void apply();
 }));
-viewButtons.forEach((button) => button.addEventListener('click', () => { view = button.dataset.viewToggle ?? 'notes'; void apply(); }));
-subcategory?.addEventListener('change', () => { if (series) series.value = ''; void apply(); });
-series?.addEventListener('change', () => { void apply(); });
+legendButtons.forEach((button) => button.addEventListener('click', () => {
+  const clicked = button.dataset.blogCategory ?? '';
+  activeCategory = activeCategory === clicked ? '' : clicked;
+  dock.reveal();
+  void apply(false);
+}));
+tagButtons.forEach((button) => button.addEventListener('click', () => {
+  const clicked = button.dataset.blogTag ?? '';
+  tag = tag === clicked ? '' : clicked;
+  dock.reveal();
+  void apply();
+}));
 const clearQuery = () => { query = ''; if (search) { search.value = ''; search.dispatchEvent(new Event('input')); } };
+document.querySelector('[data-clear-tag]')?.addEventListener('click', () => { tag = ''; dock.reveal(); void apply(); });
 document.querySelector('[data-clear-filters]')?.addEventListener('click', () => {
-  category = 'all'; tag = ''; clearQuery();
-  if (subcategory) subcategory.value = ''; if (series) series.value = ''; void apply(); search?.focus();
+  category = 'all'; tag = ''; activeCategory = ''; clearQuery(); dock.reveal(); void apply(); search?.focus();
 });
-document.querySelector('[data-clear-query]')?.addEventListener('click', () => { clearQuery(); void apply(); search?.focus(); });
-window.addEventListener('popstate', () => { readUrl(); void apply(false); });
+document.querySelector('[data-clear-query]')?.addEventListener('click', () => { clearQuery(); dock.reveal(); void apply(); search?.focus(); });
+window.addEventListener('popstate', () => { readUrl(); dock.reveal(); void apply(false); });
 readUrl(); void apply(false);
-const sentinel = document.querySelector<HTMLElement>('[data-archive-sentinel]');
-const toolsBar = document.querySelector<HTMLElement>('.archive-tools');
-if (sentinel && toolsBar && 'IntersectionObserver' in window) {
-  new IntersectionObserver(
-    ([entry]) => {
-      toolsBar.classList.toggle('is-stuck', !entry?.isIntersecting && entry.boundingClientRect.top < 120);
-    },
-    { threshold: 0 },
-  ).observe(sentinel);
-}
 export {};

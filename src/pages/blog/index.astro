@@ -1,57 +1,109 @@
 ---
-import StudyPostRow from '../../components/StudyPostRow.astro';
-import KnowledgeChips from '../../components/KnowledgeChips.astro';
 import CountUp from '../../components/CountUp.astro';
-import { getKnowledgeTags } from '../../lib/knowledge-tags';
+import { countKnowledgeCategories, getBlogKnowledgeTags, getKnowledgeTags } from '../../lib/knowledge-tags';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getAllPosts, getCategorySummaries, getPostHref, getPostKey, getPostTitle, formatPostDate, taxonomyLabel, getTimeline, toSearchRecord } from '../../lib/blog';
+import { getAllPosts, getCategorySummaries, getPostHref, getPostKey, getPostTitle, taxonomyLabel, getYearlyTimeline, toSearchRecord } from '../../lib/blog';
 const posts = await getAllPosts();
 const regularPosts = posts.filter((post) => post.collection !== 'study_notes');
 const researchCount = regularPosts.filter((post) => post.data.category === 'Research').length;
 const csCount = regularPosts.filter((post) => post.data.category === 'Computer Science').length;
 const summaries = getCategorySummaries(regularPosts);
-const timeline = getTimeline(posts);
+const legendCategories = countKnowledgeCategories(
+  regularPosts.map((post) => post.id),
+  getBlogKnowledgeTags,
+);
+const timeline = getYearlyTimeline(posts).map((yearGroup) => {
+  const monthMap = new Map<string, { key: string; monthNum: number; label: string; posts: typeof yearGroup.posts; regularCount: number }>();
+  for (const post of yearGroup.posts) {
+    const key = post.data.pubDate.toISOString().slice(0, 7);
+    const monthNum = post.data.pubDate.getUTCMonth() + 1;
+    let entry = monthMap.get(key);
+    if (!entry) {
+      entry = { key, monthNum, label: `${yearGroup.year} 年 ${monthNum} 月`, posts: [], regularCount: 0 };
+      monthMap.set(key, entry);
+    }
+    entry.posts.push(post);
+    if (post.collection !== 'study_notes') entry.regularCount++;
+  }
+  const regularCount = yearGroup.posts.filter((post) => post.collection !== 'study_notes').length;
+  return {
+    ...yearGroup,
+    regularCount,
+    months: [...monthMap.values()].sort((a, b) => b.key.localeCompare(a.key)),
+  };
+});
 ---
 <BaseLayout title="技术笔记" description="论文阅读与算法题解。" bodyClass="archive-page">
   <header class="page-intro page-masthead">
     <div>
       <p class="eyebrow">论文 · 算法</p>
       <h1 data-archive-title>技术笔记</h1>
-      <p data-archive-description>论文阅读与算法题解。837 专业课考研内容请前往 <a class="text-link" href="/study-notes/">学习笔记</a>。</p>
     </div>
     <div class="masthead-stats" aria-label="技术归档统计">
       <div class="masthead-stat-card">
         <span class="masthead-stat-label">公开技术与论文</span>
         <CountUp to={regularPosts.length} />
-        <span class="masthead-stat-sub">归档可见篇目</span>
       </div>
       <a class="masthead-stat-card" href="/blog/?category=Research">
         <span class="masthead-stat-label">论文精读</span>
         <CountUp to={researchCount} />
-        <span class="masthead-stat-sub">NLP · 多模态 · 表格</span>
       </a>
       <a class="masthead-stat-card" href="/blog/?category=Computer%20Science">
         <span class="masthead-stat-label">算法题解</span>
         <CountUp to={csCount} />
-        <span class="masthead-stat-sub">ACM / OJ 与工程</span>
       </a>
     </div>
   </header>
   <div class="archive-sentinel" data-archive-sentinel aria-hidden="true"></div>
-  <section class="archive-tools" aria-label="文章筛选与浏览方式">
+  <section class="archive-tools" aria-label="文章筛选与知识点类别">
     <div class="archive-bar">
       <nav class="filter-row" aria-label="一级分类"><a class="filter-button is-active" href="/blog/" data-category-filter="all" aria-current="true">全部 <span>{regularPosts.length}</span></a>{summaries.map((summary) => <a class="filter-button" href={`/blog/?category=${encodeURIComponent(summary.category)}`} data-category-filter={summary.category}>{summary.category === 'Computer Science' ? '算法题解' : taxonomyLabel(summary.category)} <span>{summary.count}</span></a>)}</nav>
-      <div class="archive-bar-right">
-        <div class="archive-actions"><div class="view-switch" role="group" aria-label="浏览方式"><button type="button" class="view-button is-active" data-view-toggle="notes" aria-pressed="true">列表</button><button type="button" class="view-button" data-view-toggle="timeline" aria-pressed="false">时间线</button></div></div>
-        <div class="hierarchy-filters"><label><span class="visually-hidden">子分类</span><select data-subcategory-filter aria-label="子分类"><option value="">全部子分类</option>{[...new Set(regularPosts.map((post) => post.data.subcategory))].map((name) => <option value={name}>{taxonomyLabel(name)}</option>)}</select></label><label><span class="visually-hidden">系列</span><select data-series-filter aria-label="系列"><option value="">全部系列</option>{[...new Set(regularPosts.map((post) => post.data.series))].map((name) => <option value={name}>{taxonomyLabel(name)}</option>)}</select></label></div>
-        <p class="result-status" data-result-status role="status">{regularPosts.length} 篇笔记</p>
+      <div class="knowledge-legend blog-legend" role="group" aria-label="知识点类别高亮">
+        {legendCategories.map((cat) => <button type="button" class="blog-legend-btn" data-blog-category={cat.id} data-c={cat.id} aria-pressed="false"><span aria-hidden="true" class="knowledge-swatch"></span>{cat.label} <span class="knowledge-cat-count">{cat.count}</span></button>)}
       </div>
+      <p class="result-status visually-hidden" data-result-status role="status" aria-live="polite">{regularPosts.length} 篇笔记</p>
     </div>
-    <p class="active-tag" data-active-tag hidden></p>
+    <p class="active-query active-tag" data-active-tag hidden><span data-tag-label></span><button type="button" data-clear-tag>清除标签</button></p>
     <p class="active-query" data-active-query hidden><span data-query-label></span><button type="button" data-clear-query>清除搜索</button></p>
   </section>
-  <section class="notes-view" data-notes-view aria-label="文章列表">{posts.map((post) => <article class="note-row" data-note-row hidden={post.collection === 'study_notes'} data-id={getPostKey(post)}>{post.collection === 'study_notes' ? <StudyPostRow post={post} heading /> : <a class="editorial-row" data-category={post.data.category} href={getPostHref(post)} aria-label={`阅读：${post.data.title}`}><div class="editorial-card-head"><span class="note-taxonomy">{taxonomyLabel(post.data.category)} · {taxonomyLabel(post.data.subcategory)} · {taxonomyLabel(post.data.series)}</span><time datetime={post.data.pubDate.toISOString()}>{formatPostDate(post.data.pubDate)}</time></div><div class="editorial-title"><h2>{getPostTitle(post)}</h2>{post.data.subtitle && <em>{post.data.subtitle}</em>}</div><span class="note-description">{post.data.description}</span><div class="editorial-card-foot"><span class="editorial-card-cta">阅读笔记</span><span class="row-arrow" aria-hidden="true">→</span></div></a>}</article>)}</section>
-  <section class="timeline-view" data-timeline-view hidden aria-label="按时间浏览文章">{timeline.map((year) => <section class="timeline-year" data-timeline-year><h2>{year.year}</h2>{year.months.map((month) => <div class="timeline-month" data-timeline-month><h3>{month.label}</h3><div>{month.posts.map((post) => <a class="timeline-row" data-category={post.data.category} data-timeline-row hidden={post.collection === 'study_notes'} data-id={getPostKey(post)} href={getPostHref(post)}><time datetime={post.data.pubDate.toISOString()}>{post.data.pubDate.toISOString().slice(5, 10).replace('-', '.')}</time><span><strong>{getPostTitle(post)}</strong>{post.data.subtitle && <em>{post.data.subtitle}</em>}<small>{taxonomyLabel(post.data.category)} · {taxonomyLabel(post.data.series)}</small>{post.collection === 'study_notes' && <KnowledgeChips tags={getKnowledgeTags(post.id)} />}</span><span aria-hidden="true">→</span></a>)}</div></div>)}</section>)}</section>
+  <section class="timeline-view" data-timeline-view aria-label="按年份浏览文章">{timeline.map((year) => {
+    const yearHidden = year.regularCount === 0;
+    return <section class="timeline-year" data-timeline-year={String(year.year)} hidden={yearHidden}>
+      <div class="year-rail">
+        <div class="timeline-year-box">
+          <span class="timeline-rail-dot is-year" aria-hidden="true"></span>
+          <span class="timeline-year-label">{year.year}</span>
+        </div>
+      </div>
+      {year.months.map((month) => (
+        <div class="timeline-month-band" data-timeline-month-band={month.key} hidden={month.regularCount === 0}>
+          <div class="timeline-month-cell">
+            <div class="timeline-month-box" data-rail-month-box={month.key}>
+              <span class="timeline-rail-dot is-month" aria-hidden="true"></span>
+              <span class="timeline-month-name">{month.label}</span>
+            </div>
+          </div>
+          <div class="timeline-month-content">
+            <h2 class="timeline-mobile-heading">{month.label}</h2>
+            <div class="timeline-card-grid">{month.posts.map((post) => {
+              const postKey = getPostKey(post);
+              const postTags = post.collection === 'study_notes' ? getKnowledgeTags(post.id) : getBlogKnowledgeTags(post.id);
+              const postYear = String(post.data.pubDate.getUTCFullYear());
+              const postMonth = post.data.pubDate.toISOString().slice(0, 7);
+              return <article class="timeline-row blog-card knowledge-entry" data-category={post.data.category} data-year={postYear} data-month={postMonth} data-timeline-row hidden={post.collection === 'study_notes'} data-id={postKey}>
+                <time class="chapter-code knowledge-code blog-date-pill" datetime={post.data.pubDate.toISOString()}>{post.data.pubDate.toISOString().slice(5, 10).replace('-', '.')}</time>
+                <div class="knowledge-entry-content">
+                  <a class="knowledge-title" href={getPostHref(post)} aria-label={`阅读：${post.data.title}`}>{getPostTitle(post)}</a>
+                  {postTags.length > 0 && <div class="knowledge-tags" role="group" aria-label={`${getPostTitle(post)}的知识点标签`}>{postTags.map((kt) => <button type="button" class="knowledge-chip blog-tag-chip" data-c={kt.category} data-blog-tag={kt.name} data-knowledge-label={kt.name} aria-pressed="false">{kt.name}</button>)}</div>}
+                </div>
+                <span class="knowledge-arrow" aria-hidden="true">→</span>
+              </article>;
+            })}</div>
+          </div>
+        </div>
+      ))}
+    </section>;
+  })}</section>
   <div class="archive-empty" data-archive-empty hidden><p>没有找到匹配的笔记。试试其他关键词或清除筛选。</p><button class="button" type="button" data-clear-filters>清除筛选</button></div>
   <script is:inline type="application/json" id="notes-index" set:html={JSON.stringify(posts.map((post) => ({ id: getPostKey(post), ...toSearchRecord(post, false) }))).replace(/</g, '\\u003c')} />
   <script>import '../../scripts/notes';</script>

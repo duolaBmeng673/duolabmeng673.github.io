@@ -1,0 +1,171 @@
+{
+  "transformers": {
+    "collection": "blog_read",
+    "knowledgeTags": [
+      "自注意力机制",
+      "多头注意力",
+      "编码器—解码器",
+      "位置编码",
+      "并行计算"
+    ]
+  },
+  "bert": {
+    "collection": "blog_read",
+    "knowledgeTags": [
+      "双向 Transformer 编码器",
+      "MLM 掩码语言模型",
+      "NSP 下一句预测",
+      "WordPiece 分词",
+      "微调迁移"
+    ]
+  },
+  "gpt-1": {
+    "collection": "blog_read",
+    "knowledgeTags": [
+      "自回归语言建模",
+      "Transformer 解码器",
+      "输入遍历变换",
+      "辅助训练目标",
+      "零样本迁移"
+    ]
+  },
+  "clip": {
+    "collection": "blog_read",
+    "knowledgeTags": [
+      "自然语言监督",
+      "对比学习",
+      "双编码器架构",
+      "零样本迁移",
+      "自然分布鲁棒性"
+    ]
+  },
+  "squeezerfacenet": {
+    "collection": "blog_read",
+    "knowledgeTags": [
+      "SqueezeNet 轻量架构",
+      "Taylor 剪枝",
+      "重要性分数",
+      "微调恢复",
+      "人脸身份模板"
+    ]
+  },
+  "tablesense": {
+    "collection": "blog_read",
+    "knowledgeTags": [
+      "电子表格表检测",
+      "单元格特征化",
+      "边界回归 BBR / PBR",
+      "主动学习",
+      "EoB 边界误差"
+    ]
+  },
+  "sheetcopilot": {
+    "collection": "blog_read",
+    "knowledgeTags": [
+      "原子动作 API",
+      "状态机任务规划",
+      "动作消歧与格式化",
+      "终态表格评估"
+    ]
+  },
+  "spreadsheet-llm": {
+    "collection": "blog_read",
+    "knowledgeTags": [
+      "SheetCompressor 编码",
+      "结构锚点提取",
+      "反转索引字典",
+      "数据类型标注"
+    ]
+  },
+  "tablequest": {
+    "collection": "blog_read",
+    "knowledgeTags": [
+      "分层表格推理",
+      "EDGAR HTML 表格",
+      "渐进式三轮对话",
+      "思维链推理"
+    ]
+  },
+  "llm-table-processing-survey": {
+    "collection": "blog_read",
+    "knowledgeTags": [
+      "四类表格载体",
+      "二维网格表征",
+      "指令微调与数据合成",
+      "ReAct 代理方法"
+    ]
+  },
+  "mmmu": {
+    "collection": "blog_read",
+    "knowledgeTags": [
+      "多学科多模态基准",
+      "Expert AGI 评测",
+      "图文交错输入",
+      "感知与知识错误分析"
+    ]
+  },
+  "mathvista": {
+    "collection": "blog_read",
+    "knowledgeTags": [
+      "视觉数学推理基准",
+      "PoT 程序化思维",
+      "三阶段评测协议",
+      "幻觉与视觉感知误差"
+    ]
+  },
+  "acm_io": {
+    "collection": "blog_coding_practice",
+    "knowledgeTags": [
+      "标准输入输出管道",
+      "sys.stdin.readline",
+      "多组测试与 EOF",
+      "split 与类型转换"
+    ]
+  },
+  "ci-cd-pipeline-jobs": {
+    "collection": "blog_coding_practice",
+    "knowledgeTags": [
+      "状态转移三维 DP",
+      "间距约束转化",
+      "滑动窗口最小值",
+      "单调队列优化",
+      "滚动数组空间优化"
+    ]
+  },
+  "maze-shortest-rescue-bfs": {
+    "collection": "blog_coding_practice",
+    "knowledgeTags": [
+      "BFS",
+      "状态空间建模",
+      "三维距离数组",
+      "危险区域预处理"
+    ]
+  },
+  "photovoltaic-optimizer-greedy": {
+    "collection": "blog_coding_practice",
+    "knowledgeTags": [
+      "贪心策略",
+      "交换论证",
+      "循环不变式",
+      "指针状态压缩"
+    ]
+  },
+  "two-team-greedy-partition": {
+    "collection": "blog_coding_practice",
+    "knowledgeTags": [
+      "频次统计判无解",
+      "重复元素对称分配",
+      "贪心排序划分",
+      "交换论证"
+    ]
+  },
+  "推理设备覆盖": {
+    "collection": "blog_coding_practice",
+    "knowledgeTags": [
+      "集合覆盖问题",
+      "Bitmask 位压缩",
+      "状态压缩 DP",
+      "快照防串联更新"
+    ]
+  }
+}

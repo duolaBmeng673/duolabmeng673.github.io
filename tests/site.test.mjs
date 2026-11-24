@@ -2,6 +2,9 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
+import { runInNewContext } from 'node:vm';
+import ts from 'typescript';
+import * as searchHelper from '../src/lib/search.ts';
 import { FORBIDDEN_PUBLIC_TERMS, findForbiddenMatches } from '../src/config/forbidden-terms.ts';
 import { scanBuiltBoldIssues } from '../scripts/check-bold.mjs';
 const read = (path) => readFileSync(new URL('../' + path, import.meta.url), 'utf8');
@@ -128,12 +131,10 @@ test('technical archive offers only papers and algorithms while global search re
   const html = read('dist/blog/index.html');
   assert.deepEqual([...html.matchAll(/data-category-filter="([^"]+)"/g)].map((match) => match[1]), ['all', 'Research', 'Computer Science']);
   assert.ok(html.includes('算法题解'));
-  const options = [...html.matchAll(/<option\b[^>]*value="([^"]*)"/g)].map((match) => match[1]);
-  assert.ok(!options.includes('HIT 837'));
-  assert.ok(!options.includes('考研复习'));
+  assert.doesNotMatch(html, /<select\b|data-subcategory-filter|data-series-filter|data-view-toggle/);
   const records = JSON.parse(html.match(/id="notes-index"[^>]*>([^]*?)<\/script>/)[1]);
   assert.equal(records.length, index.length, 'global queries and legacy tag links retain all public notes');
-  const rows = [...html.matchAll(/<article\b([^>]*data-note-row[^>]*)>/g)].map((match) => match[1]);
+  const rows = [...html.matchAll(/<article\b([^>]*data-timeline-row[^>]*)>/g)].map((match) => match[1]);
   const technical = index.filter((post) => post.category !== 'Study Notes');
   assert.equal(rows.filter((attrs) => !/\bhidden\b/.test(attrs)).length, technical.length);
   for (const path of ['dist/study-notes/index.html', 'dist/study-notes/837/index.html']) {
@@ -478,12 +479,18 @@ test('built site HTML, search index, RSS, and sitemap contain no forbidden terms
   }
 });
 
-test('study module pages include module switcher and omit quick jump dialog and bottom footer links', () => {
+test('study module pages include module switcher and swapped lower dock pill, and blog archive uses yearly 2-layer timeline UI', () => {
   const modules = ['information-security', 'network-security', 'computer-networks'];
   const knowledgeCss = read('src/styles/knowledge-tags.css');
-  assert.match(knowledgeCss, /\.knowledge-aside\.archive-tools\s*\{[^}]*background:\s*transparent;/);
+  const globalCss = read('src/styles/global.css');
+  assert.match(knowledgeCss, /\.knowledge-aside\.archive-tools\s*\{[^}]*border-radius:\s*14px;[^}]*background:\s*var\(--navg\);[^}]*backdrop-filter:\s*blur\(1rem\)\s*saturate\(155%\);/);
   assert.match(knowledgeCss, /\.knowledge-aside\.archive-tools::before\s*\{[^}]*content:\s*none;/);
   assert.match(knowledgeCss, /\.study-module-pill\s*\{[^}]*border-radius:\s*var\(--r-ctl\);[^}]*background:\s*var\(--surface\);/);
+  assert.match(globalCss, /\.archive-tools\s*\{[^}]*border-radius:\s*14px;[^}]*background:\s*var\(--navg\);[^}]*backdrop-filter:\s*blur\(1rem\)\s*saturate\(155%\);/);
+  assert.match(globalCss, /\.archive-tools\[data-dock-hidden="true"\]\s*\{[^}]*transform:\s*translateY\(calc\(-100%\s*-\s*1rem\)\);[^}]*opacity:\s*0;/);
+  assert.doesNotMatch(globalCss, /\.archive-tools::before\s*\{|\.hierarchy-filters\s*\{|\.notes-view\s*\{|\.timeline-month\s*\{/);
+  assert.match(globalCss, /\.blog-card\s+\.knowledge-entry-content\s+\.knowledge-tags\s*\{[^}]*margin-top:\s*0;/);
+  assert.match(globalCss, /\.toc-module-btn\.is-current\s*\{[^}]*border-color:\s*transparent;\s*background:\s*var\(--ac-soft\);/);
 
   for (const slug of modules) {
     const html = read(`dist/study-notes/837/${slug}/index.html`);
@@ -491,6 +498,111 @@ test('study module pages include module switcher and omit quick jump dialog and 
     assert.doesNotMatch(html, /id="study-quick-jump-dialog"|data-study-jump-open/);
     assert.doesNotMatch(html, /class="home-about-links"/);
   }
+
+  const blogHtml = read('dist/blog/index.html');
+  assert.doesNotMatch(blogHtml, /data-archive-description|class="masthead-stat-sub"|class="note-description"|class="note-taxonomy"|class="notes-view"|class="timeline-month"|class="blog-timeline-layout"|class="blog-time-rail"|data-blog-time-rail|data-active-time|data-view-toggle|data-subcategory-filter|data-series-filter|timeline-year-head|data-year-count|timeline-chapter-box|data-time-entry|data-rail-month-count|阅读笔记/);
+  assert.match(blogHtml, /class="result-status visually-hidden"\s+data-result-status/);
+  assert.match(blogHtml, /<section\s+class="timeline-view"\s+data-timeline-view/);
+  assert.match(globalCss, /\.timeline-year\s*\{[^}]*grid-template-columns:\s*180px\s+minmax\(0,\s*1fr\);/);
+  assert.match(globalCss, /\.year-rail\s*\{/);
+  assert.match(globalCss, /\.year-rail::before\s*\{/);
+  assert.match(globalCss, /\.timeline-year-box\s*\{[^}]*position:\s*sticky;/);
+  assert.match(globalCss, /@media\s*\(max-width:\s*899px\)\s*\{[\s\S]*?\.year-rail,\s*\.timeline-month-cell\s*\{\s*display:\s*none;\s*\}/);
+  assert.doesNotMatch(globalCss, /\.blog-timeline-layout\s*\{|\.blog-time-rail\s*\{|\.timeline-year-head\s*\{|\.timeline-chapter-box\s*\{/);
+  const visibleBlogCards = blogHtml.match(/<article\b[^>]*class="timeline-row blog-card knowledge-entry"[^>]*data-id="blog_[^"]*">[\s\S]*?<\/article>/g) ?? [];
+  assert.equal(visibleBlogCards.length, 18);
+  for (const card of visibleBlogCards) {
+    assert.doesNotMatch(card, /editorial-card-cta|note-description|note-taxonomy/);
+    assert.match(card, /data-year="\d{4}"[^>]*data-month="\d{4}-\d{2}"/);
+  }
+  const monthLabels = [...blogHtml.matchAll(/<div class="timeline-month-band" data-timeline-month-band="\d{4}-\d{2}"(?![^>]*\bhidden\b)[^>]*>[\s\S]*?<span class="timeline-month-name">([^<]+)<\/span>/g)].map((m) => m[1]);
+  assert.deepEqual(monthLabels, ['2026 年 10 月', '2025 年 3 月', '2025 年 2 月', '2025 年 1 月', '2024 年 10 月', '2024 年 9 月', '2024 年 7 月']);
+  const visibleYears = [...blogHtml.matchAll(/<section class="timeline-year" data-timeline-year="(\d{4})"(?![^>]*\bhidden\b)[^>]*>[\s\S]*?<span class="timeline-year-label">\1<\/span>/g)];
+  assert.deepEqual(visibleYears.map((m) => m[1]), ['2026', '2025', '2024']);
+});
+
+test('blog sticky year rail filters empty months and years cleanly', async () => {
+  const makeEl = (extra = {}) => {
+    const attrs = new Map(Object.entries(extra.attrs ?? {}));
+    const handlers = new Map();
+    const classes = new Set(extra.classes ?? []);
+    return {
+      ...extra,
+      dataset: { ...(extra.dataset ?? {}) },
+      hidden: Boolean(extra.hidden),
+      value: extra.value ?? '',
+      textContent: extra.textContent ?? '',
+      classList: {
+        toggle: (name, force) => (force === undefined ? (classes.has(name) ? classes.delete(name) : classes.add(name)) : (force ? classes.add(name) : classes.delete(name))),
+        add: (name) => classes.add(name),
+        remove: (name) => classes.delete(name),
+        contains: (name) => classes.has(name),
+      },
+      setAttribute: (k, v) => attrs.set(k, String(v)),
+      getAttribute: (k) => attrs.get(k) ?? null,
+      removeAttribute: (k) => attrs.delete(k),
+      addEventListener: (ev, cb) => { if (!handlers.has(ev)) handlers.set(ev, []); handlers.get(ev).push(cb); },
+      dispatch: (ev, payload = {}) => { for (const cb of handlers.get(ev) ?? []) cb({ preventDefault() {}, ...payload }); },
+      focus() {},
+    };
+  };
+
+  const sampleRecords = [
+    { id: 'cs1', title: 'CS 2026', shortTitle: null, subtitle: null, description: 'd', category: 'Computer Science', subcategory: 'Algorithms', series: 'ACM / OJ', tags: [], knowledgeTags: [], date: '2026-10-09', href: '/blog/cs1/', body: '', searchText: 'cs 2026' },
+    { id: 'res1', title: 'Res 2025', shortTitle: null, subtitle: null, description: 'd', category: 'Research', subcategory: 'Paper Notes', series: 'LLM & Tables', tags: [], knowledgeTags: [], date: '2025-02-28', href: '/blog/res1/', body: '', searchText: 'res 2025' },
+  ];
+  const categoryLinks = ['all', 'Computer Science', 'Research'].map((c) => makeEl({ dataset: { categoryFilter: c } }));
+  const timelineRows = sampleRecords.map((r) => makeEl({ dataset: { id: r.id } }));
+  const monthBands = sampleRecords.map((r, idx) => makeEl({
+    dataset: { timelineMonthBand: r.date.slice(0, 7) },
+    querySelectorAll: (sel) => (sel === '[data-timeline-row]:not([hidden])' ? (timelineRows[idx].hidden ? [] : [timelineRows[idx]]) : []),
+  }));
+  const timelineYears = sampleRecords.map((_r, idx) => makeEl({
+    querySelectorAll: (sel) => (sel === '[data-timeline-row]:not([hidden])' ? (timelineRows[idx].hidden ? [] : [timelineRows[idx]]) : []),
+  }));
+  const clearFilters = makeEl(), empty = makeEl({ hidden: true });
+  const location = { pathname: '/blog/', search: '' };
+  const history = { replaceState(_s, _t, next) { const u = new URL(next, 'https://example.com'); location.pathname = u.pathname; location.search = u.search; } };
+  const window = { matchMedia: () => ({ matches: false }), setTimeout, addEventListener: () => {} };
+  const document = {
+    querySelectorAll: (sel) => ({
+      '[data-category-filter]': categoryLinks,
+      '[data-blog-category]': [],
+      '[data-blog-tag]': [],
+      '[data-timeline-month-band]': monthBands,
+      '[data-timeline-row]': timelineRows,
+      '[data-timeline-year]': timelineYears,
+    }[sel] ?? []),
+    querySelector: (sel) => ({
+      '#notes-index': { textContent: JSON.stringify(sampleRecords) },
+      '[data-archive-empty]': empty,
+      '[data-clear-filters]': clearFilters,
+    }[sel] ?? null),
+  };
+  const script = ts.transpileModule(read('src/scripts/notes.ts'), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 } }).outputText;
+  runInNewContext(script, {
+    document,
+    location,
+    history,
+    window,
+    URLSearchParams,
+    exports: {},
+    require: (id) => (id.includes('sticky-dock') ? { bindStickyAutoHide: () => ({ reveal: () => {} }) } : searchHelper),
+  });
+  await new Promise((r) => setTimeout(r, 10));
+
+  assert.deepEqual(monthBands.map((b) => b.hidden), [false, false]);
+  assert.deepEqual(timelineYears.map((y) => y.hidden), [false, false]);
+
+  categoryLinks[2].dispatch('click');
+  await new Promise((r) => setTimeout(r, 10));
+  assert.deepEqual(monthBands.map((b) => b.hidden), [true, false]);
+  assert.deepEqual(timelineYears.map((y) => y.hidden), [true, false]);
+
+  clearFilters.dispatch('click');
+  await new Promise((r) => setTimeout(r, 10));
+  assert.deepEqual(monthBands.map((b) => b.hidden), [false, false]);
+  assert.deepEqual(timelineYears.map((y) => y.hidden), [false, false]);
 });
 
 test('study articles omit redundant header quick jump row, show shortcut on TOC button, and keep cross-module pagination', () => {

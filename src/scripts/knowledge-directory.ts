@@ -1,4 +1,5 @@
 import { readKnowledgeFilter, matchesKnowledgeTags, writeKnowledgeFilter } from '../lib/knowledge-filter';
+import { bindStickyAutoHide } from '../lib/sticky-dock';
 
 document.querySelectorAll<HTMLElement>('[data-knowledge-directory]').forEach((root) => {
   const rows = [...root.querySelectorAll<HTMLElement>('[data-knowledge-entry]')].map((element) => ({
@@ -53,14 +54,20 @@ document.querySelectorAll<HTMLElement>('[data-knowledge-directory]').forEach((ro
     category = category === button.dataset.knowledgeCategory ? '' : button.dataset.knowledgeCategory!;
     apply(false);
   }));
+  const controls = root.querySelector<HTMLElement>('[data-knowledge-controls]');
+  const toggle = root.querySelector<HTMLButtonElement>('[data-knowledge-toggle]');
+  const dock = bindStickyAutoHide?.({
+    bar: controls,
+    sentinel: root.querySelector<HTMLElement>('[data-knowledge-sentinel]'),
+  });
   root.querySelector('[data-knowledge-clear]')?.addEventListener('click', () => {
-    selected.clear(); apply();
+    selected.clear();
+    dock?.reveal();
+    apply();
     // The clear button is now hidden; return focus to a visible control.
     (legends[0] ?? buttons[0])?.focus();
   });
-  window.addEventListener('popstate', () => { selected = readKnowledgeFilter(location.search); apply(false); });
-  const controls = root.querySelector<HTMLElement>('[data-knowledge-controls]');
-  const toggle = root.querySelector<HTMLButtonElement>('[data-knowledge-toggle]');
+  window.addEventListener('popstate', () => { selected = readKnowledgeFilter(location.search); dock?.reveal(); apply(false); });
   if (controls && toggle) {
     // Desktop sticky horizontal legend bar activates at >= 1024px (matches /blog/ archive-tools).
     const wide = window.matchMedia('(min-width: 1024px)');

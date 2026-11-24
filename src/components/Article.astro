@@ -5,7 +5,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import HeadingText from './HeadingText.astro';
 import KnowledgeChips from './KnowledgeChips.astro';
 import { enrichHeadingsWithMath, normalizeTocSections, stripHeadingBadge } from '../plugins/heading-tokens.mjs';
-import { getKnowledgeTags } from '../lib/knowledge-tags';
+import { getBlogKnowledgeTags, getKnowledgeTags } from '../lib/knowledge-tags';
 import { getBlogPosts, getPostHref, getPostTitle, taxonomyLabel, formatPostDate, type BlogPost } from '../lib/blog';
 import { getChapterHref, getPublicStudyNotes, getStudyChapters, getStudySeries, getStudyModuleHref, studyModules } from '../lib/study';
 interface Props { post: BlogPost }
@@ -15,7 +15,7 @@ const displayHeadings: typeof headings = enrichHeadingsWithMath(headings, post.b
 const sections = normalizeTocSections(displayHeadings);
 const currentPostTitle = getPostTitle(post);
 const study = post.collection === 'study_notes' ? post : undefined;
-const knowledgeTags = study ? getKnowledgeTags(study.id) : [];
+const knowledgeTags = study ? getKnowledgeTags(study.id) : getBlogKnowledgeTags(post.id);
 const info = study ? getStudySeries(study.data.series) : undefined;
 const allStudyNotes = await getPublicStudyNotes();
 const allBlogPosts = study ? [] : await getBlogPosts();
@@ -117,7 +117,7 @@ const canRecall = Boolean(study && headings.some((heading) => heading.depth >= 2
           {post.data.subtitle && <p class="article-subtitle">{post.data.subtitle}</p>}
           {(!knowledgeTags.length || !study) && <p class="article-description">{post.data.description}</p>}
           <div class="article-meta-bar">
-            {knowledgeTags.length && study ? <KnowledgeChips tags={knowledgeTags} href={getStudyModuleHref(study)} /> : <div class="tag-list">{post.data.tags.map((tag) => <a href={`/blog/?tag=${encodeURIComponent(tag)}`}>{tag}</a>)}</div>}
+            {knowledgeTags.length ? <KnowledgeChips tags={knowledgeTags} href={study ? getStudyModuleHref(study) : '/blog/'} /> : <div class="tag-list">{post.data.tags.map((tag) => <a href={`/blog/?tag=${encodeURIComponent(tag)}`}>{tag}</a>)}</div>}
             <div class="article-meta"><time datetime={post.data.pubDate.toISOString()}>{formatPostDate(post.data.pubDate)}</time>{post.data.updatedDate && <><span aria-hidden="true">·</span><span>更新于 <time datetime={post.data.updatedDate.toISOString()}>{formatPostDate(post.data.updatedDate)}</time></span></>}{study?.data.syllabusSection && <><span aria-hidden="true">·</span><span>考纲 {study.data.syllabusSection}</span></>}</div>
           </div>
         </header>

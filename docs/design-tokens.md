@@ -60,7 +60,7 @@
 ## 已核实的模块分类栏与断点
 
 - 【已核实】[StudyModule](../src/components/StudyModule.astro) 为「信息安全」与「网络安全」两个模块均启用 `showLegend`；[KnowledgeDirectory](../src/components/KnowledgeDirectory.astro) 复用 `.archive-tools` 毛玻璃样式渲染「全部 + 七类知识点标签」工具条，定位参照包含介绍、全部章节和底部导航。
-- 【已核实】桌面端（`>= 1024px`）`.knowledge-aside.archive-tools` 与 `/blog/` `.archive-tools` 均以 `width: 100%` 吸附于可见顶栏正下方（`top: calc(12px + var(--header-h, 56px))`，配合 `::before` `var(--bg)` 向上遮罩消除吸顶缝隙），左侧标签与右侧「N 篇笔记」统一收纳在同一边框内部；下方主体采用左侧粘性章节目录（`220px`，长章名支持最多 2 行展示）+ 右侧 2 列等高笔记卡片流（`minmax(0, 1fr)`）两栏布局。CSS `@media (min-width: 1024px)` 与 [knowledge-directory.ts](../src/scripts/knowledge-directory.ts) 的 `matchMedia` 使用同一数值。
+- 【已核实】桌面端（`>= 1024px`）`.knowledge-aside.archive-tools` 与 `/blog/` `.archive-tools` 均以 `width: 100%` 采用 `14px` 紧凑轻阴影毛玻璃（`var(--navg)`、`blur(1rem) saturate(155%)`、`padding: 0.28rem 0.65rem`）吸附于可见顶栏下方（`top: calc(12px + var(--header-h, 56px) + 8px)`），并支持吸顶后「下滑隐藏、上滑显示」；下方主体在 837 模块页采用左侧粘性章节目录（`220px`，长章名支持最多 2 行展示）+ 右侧 2 列等高笔记卡片流（`minmax(0, 1fr)`）两栏布局。CSS `@media (min-width: 1024px)` 与 [knowledge-directory.ts](../src/scripts/knowledge-directory.ts) 的 `matchMedia` 使用同一数值。
 - 【已核实】≥1024px 只显示内联吸附分类栏，CSS `display: none` 和脚本 `hidden` 禁用浮钮；低于 `1024px` 默认只显示右下浮钮（z-index 60），点击展开同一份图例（aside 的 z-index 50），面板高度不超过视口 60%，支持外部点击／Escape／焦点转移。
 - 【已核实】`1100 / 1208 / 1280 / 1440px` 均大于等于断点显示内联双栏与顶部吸附七类标签条；`390px` 低于断点默认仅显示浮钮。图例按钮用 `aria-pressed`，只高亮类别，其他类别标签 opacity 0.3；点击「全部」清除类别高亮，筛选摘要仅有选中标签时出现。依据：[knowledge-directory.ts](../src/scripts/knowledge-directory.ts)、[KnowledgeDirectory](../src/components/KnowledgeDirectory.astro)。
 

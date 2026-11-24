@@ -1,31 +1,25 @@
 ---
-import { getKnowledgeTags, knowledgeCategories } from '../lib/knowledge-tags';
+import { countKnowledgeCategories, getKnowledgeTags } from '../lib/knowledge-tags';
 import type { StudyPost } from '../lib/study';
 import '../styles/knowledge-tags.css';
 interface Props { posts: StudyPost[]; showLegend?: boolean }
 const enabled = Astro.props.posts.some((post) => getKnowledgeTags(post.id).length > 0);
 const showLegend = enabled && Astro.props.showLegend === true;
-const categoryTagSets = new Map<string, Set<string>>();
-for (const post of Astro.props.posts) {
-  for (const kt of getKnowledgeTags(post.id)) {
-    let set = categoryTagSets.get(kt.category);
-    if (!set) {
-      set = new Set<string>();
-      categoryTagSets.set(kt.category, set);
-    }
-    set.add(kt.name);
-  }
-}
+const legendCategories = countKnowledgeCategories(
+  Astro.props.posts.map((post) => post.id),
+  getKnowledgeTags,
+);
 ---
 <div class="knowledge-directory" data-knowledge-directory={enabled || undefined}>
   <slot name="intro" />
   {showLegend && <>
     <button class="knowledge-legend-toggle" type="button" data-knowledge-toggle aria-controls="knowledge-legend-panel" aria-expanded="false" hidden>标签筛选</button>
+    <div class="archive-sentinel" data-knowledge-sentinel aria-hidden="true"></div>
     <aside class="knowledge-aside archive-tools" data-knowledge-controls aria-label="知识点类别图例" hidden>
       <div class="knowledge-legend-panel" id="knowledge-legend-panel">
         <div class="knowledge-legend" role="group" aria-label="知识点类别高亮">
           <button type="button" class="knowledge-cat-all is-active" data-knowledge-category-all aria-pressed="true">全部 <span>{Astro.props.posts.length}</span></button>
-          {Object.entries(knowledgeCategories).map(([id, label]) => <button type="button" data-knowledge-category={id} data-c={id} aria-pressed="false"><span aria-hidden="true" class="knowledge-swatch"></span>{label} <span class="knowledge-cat-count">{categoryTagSets.get(id)?.size ?? 0}</span></button>)}
+          {legendCategories.map((cat) => <button type="button" data-knowledge-category={cat.id} data-c={cat.id} aria-pressed="false"><span aria-hidden="true" class="knowledge-swatch"></span>{cat.label} <span class="knowledge-cat-count">{cat.count}</span></button>)}
         </div>
         <div class="knowledge-aside-right">
           <div class="knowledge-selection" data-knowledge-selection hidden>

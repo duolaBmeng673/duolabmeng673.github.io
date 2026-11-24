@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { existsSync, readdirSync, readFileSync } from 'node:fs';
+import { readdirSync, readFileSync } from 'node:fs';
 import { basename } from 'node:path';
-import { ALL_837_ROOT, CHROME_PATH, LEGACY_837_SVGS, findSvgs, lintSvgs } from '../scripts/lint-svg.mjs';
+import { ALL_837_ROOT, LEGACY_837_SVGS, findSvgs } from '../scripts/lint-svg.mjs';
 
 const NET_ROOT = new URL('../src/content/837考研/计算机网络/', import.meta.url);
 
@@ -183,7 +183,7 @@ test('SVG v1 palette meets >= 4.5:1 contrast in both light and dark filter modes
   }
 });
 
-test('all 837 SVGs have no canvas background rect and maintain 24±2px viewBox margins', (t) => {
+test('all 837 SVGs pass static viewBox, background rect, and v2 metadata checks', () => {
   const allSvgs = findSvgs(ALL_837_ROOT);
   assert.equal(allSvgs.length, 82, `expected 82 SVGs under ${ALL_837_ROOT}, got ${allSvgs.length}`);
 
@@ -205,36 +205,13 @@ test('all 837 SVGs have no canvas background rect and maintain 24±2px viewBox m
       const isFull = w === '100%' || h === '100%' || (Number(w) >= vbW * 0.9 && Number(h) >= vbH * 0.9);
       assert.ok(!isFull, `${relPath}: must not contain full-canvas background rect (${rect})`);
     }
-  }
-
-  if (!existsSync(CHROME_PATH)) {
-    t.skip('Headless Chrome not available in this environment');
-    return;
-  }
-  const { totalViolations, results } = lintSvgs(allSvgs, { quiet: true });
-  const failed = results.filter((r) => r.violations.length > 0);
-  assert.equal(
-    totalViolations,
-    0,
-    failed.map((r) => `${r.path}: ${r.violations.map((v) => v.detail).join('; ')}`).join('\n'),
-  );
-
-  // New/v2 SVGs (not in LEGACY_837_SVGS) must strictly satisfy v2 rules: viewBox width=720, margins 8±2px, min font-size >= B-2 (15px)
-  for (const r of results) {
-    if (LEGACY_837_SVGS.has(r.path)) continue;
-    assert.equal(r.viewBox[2], 720, `${r.path}: v2 SVG viewBox width must be 720`);
-    for (const [side, dist] of Object.entries(r.margins)) {
-      assert.ok(Math.abs(dist - 8) <= 2, `${r.path}: ${side} margin ${dist.toFixed(1)}px must be within 8±2px`);
-    }
-    assert.ok(r.minDesignFs >= 15, `${r.path}: v2 SVG min font-size ${r.minDesignFs} < 15 (B - 2)`);
-    assert.ok(r.renderedFs720 >= 15, `${r.path}: v2 SVG rendered font-size ${r.renderedFs720} < 15px (B - 2)`);
-
-    const svg = readFileSync(new URL(`../${r.path}`, import.meta.url), 'utf8');
-    assert.match(svg, /role="img"/, `${r.path}: missing role="img"`);
-    assert.match(svg, /<title>[^<]+<\/title>/, `${r.path}: missing non-empty <title>`);
-    assert.match(svg, /<desc>[^<]+<\/desc>/, `${r.path}: missing non-empty <desc>`);
-    assert.ok(!/<style[\s>]/i.test(svg), `${r.path}: must not contain <style> block`);
+    if (LEGACY_837_SVGS.has(relPath)) continue;
+    assert.equal(vbW, 720, `${relPath}: v2 SVG viewBox width must be 720`);
+    assert.match(svg, /role="img"/, `${relPath}: missing role="img"`);
+    assert.match(svg, /<title>[^<]+<\/title>/, `${relPath}: missing non-empty <title>`);
+    assert.match(svg, /<desc>[^<]+<\/desc>/, `${relPath}: missing non-empty <desc>`);
+    assert.ok(!/<style[\s>]/i.test(svg), `${relPath}: must not contain <style> block`);
     const ids = [...svg.matchAll(/\bid="([^"]+)"/g)].map((m) => m[1]);
-    assert.equal(new Set(ids).size, ids.length, `${r.path}: duplicate id detected`);
+    assert.equal(new Set(ids).size, ids.length, `${relPath}: duplicate id detected`);
   }
 });

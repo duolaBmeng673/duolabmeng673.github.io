@@ -53,7 +53,7 @@ test('reading down hides the header, reading up reveals it, and focus or open se
   scroll(1000); callbacks.pageshow(); assert.equal(root.dataset.headerHidden, undefined, 'back/forward restores an accessible header');
 });
 
-test('desktop header across all pages stays always visible at top: 12px and switches to 14px rounded rectangle at scrollY >= 8', () => {
+test('desktop header across all pages stays always visible at top: 12px and switches to 12px sheer glass frame at scrollY >= 8', () => {
   for (const page of ['home', 'subpage']) {
     const callbacks = {}, mediaListeners = [];
     const root = { dataset: {}, scrollHeight: 4000 };
@@ -87,7 +87,7 @@ test('desktop header across all pages stays always visible at top: 12px and swit
     assert.equal(root.dataset.headerHidden, undefined);
 
     scroll(500);
-    assert.equal(classes.has('is-scrolled'), true, `${page}: scrollY >= 8 activates 14px rounded rectangle`);
+    assert.equal(classes.has('is-scrolled'), true, `${page}: scrollY >= 8 activates 12px sheer glass frame`);
     assert.equal(root.dataset.headerHidden, undefined, `${page}: desktop header never hides on scroll down`);
 
     scroll(0);
@@ -104,10 +104,72 @@ test('desktop header across all pages stays always visible at top: 12px and swit
   }
 
   const css = read('src/styles/global.css');
-  assert.match(css, /@media \(min-width: 1024px\) and \(hover: hover\) and \(pointer: fine\) \{[^]*?body \.site-header \{[^}]*top: 12px;[^}]*\}[^]*?body \.site-header\.is-scrolled \.header-inner \{[^}]*border-radius: 14px;/);
+  assert.match(css, /@media \(min-width: 1024px\) and \(hover: hover\) and \(pointer: fine\) \{[^]*?body \.site-header \{[^}]*top: 12px;[^}]*\}[^]*?body \.site-header\.is-scrolled \.header-inner \{[^}]*min-height:\s*3\.15rem;[^}]*border-radius:\s*12px;[^}]*backdrop-filter:\s*blur\(12px\)\s*saturate\(140%\);[^}]*box-shadow:\s*none;/);
   assert.match(read('docs/frontend-conventions.md'), /top: 12px/);
   assert.match(read('dist/index.html'), /<header\b[^>]*class="site-header"[^>]*data-page="home"/);
   assert.match(read('dist/blog/index.html'), /<header\b[^>]*class="site-header"[^>]*data-page="subpage"/);
+});
+
+test('sticky lower dock auto-hides on downscroll once stuck and reveals on upscroll, top return, focus, or explicit reveal', () => {
+  const winHandlers = {}, barHandlers = {}, barClasses = new Set();
+  const root = { scrollHeight: 4000 };
+  let focused = false, frame;
+  const bar = {
+    dataset: {},
+    classList: { toggle: (name, force) => (force ? barClasses.add(name) : barClasses.delete(name)) },
+    contains: () => focused,
+    addEventListener: (ev, cb) => { barHandlers[ev] = cb; },
+  };
+  const window = {
+    scrollY: 0,
+    innerHeight: 900,
+    matchMedia: () => ({ matches: true, addEventListener: () => {} }),
+    addEventListener: (ev, cb) => { winHandlers[ev] = cb; },
+  };
+  const sentinel = { getBoundingClientRect: () => ({ top: 200 - window.scrollY }) };
+  const document = { documentElement: root, activeElement: null };
+  const src = ts.transpileModule(read('src/lib/sticky-dock.ts'), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 } }).outputText;
+  const mod = { exports: {} };
+  runInNewContext(src, {
+    document,
+    window,
+    getComputedStyle: () => ({ top: '70px' }),
+    requestAnimationFrame: (cb) => { frame = cb; },
+    exports: mod.exports,
+    module: mod,
+  });
+  const dock = mod.exports.bindStickyAutoHide({ bar, sentinel });
+  const scroll = (y) => { window.scrollY = y; winHandlers.scroll(); frame(); };
+
+  scroll(100);
+  assert.equal(barClasses.has('is-stuck'), false);
+  assert.equal(bar.dataset.dockHidden, undefined, 'above sticky threshold stays visible');
+
+  scroll(220);
+  assert.equal(barClasses.has('is-stuck'), true);
+  assert.equal(bar.dataset.dockHidden, 'true', 'downscroll hides stuck lower dock');
+
+  scroll(215);
+  assert.equal(bar.dataset.dockHidden, 'true', 'sub-12px reverse jitter does not flicker');
+
+  scroll(195);
+  assert.equal(bar.dataset.dockHidden, undefined, 'upscroll >= 12px reveals dock');
+
+  scroll(400);
+  assert.equal(bar.dataset.dockHidden, 'true');
+  focused = true; barHandlers.focusin();
+  assert.equal(bar.dataset.dockHidden, undefined, 'focus inside dock reveals it');
+  scroll(500);
+  assert.equal(bar.dataset.dockHidden, undefined, 'focus pins dock open while scrolling');
+
+  focused = false;
+  scroll(700);
+  assert.equal(bar.dataset.dockHidden, 'true');
+  dock.reveal();
+  assert.equal(bar.dataset.dockHidden, undefined, 'interaction reveal() keeps dock accessible');
+
+  scroll(3200); scroll(3240); scroll(3220);
+  assert.equal(bar.dataset.dockHidden, 'true', 'elastic overscroll bounce does not count as upscroll');
 });
 
 test('settings gear popover controls typography, SVG scrim, persistence, fallback and keyboard Esc', () => {

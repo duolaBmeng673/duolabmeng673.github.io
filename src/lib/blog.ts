@@ -1,7 +1,7 @@
 import { getCollection } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
 import { getPublicStudyNotes, getStudyHref, type StudyPost } from './study';
-import { getKnowledgeTags } from './knowledge-tags';
+import { getBlogKnowledgeTags, getKnowledgeTags, validateBlogKnowledgePosts } from './knowledge-tags';
 import { stripHeadingBadge } from '../plugins/heading-tokens.mjs';
 
 export type BlogPost = CollectionEntry<'blog_read'> | CollectionEntry<'blog_coding_practice'> | StudyPost;
@@ -40,33 +40,21 @@ export function getCategorySummaries(posts: BlogPost[]) {
     .filter((summary) => summary.count > 0);
 }
 
-export function getTimeline(posts: BlogPost[]) {
-  const years = new Map<number, Map<number, BlogPost[]>>();
+export function getYearlyTimeline(posts: BlogPost[]) {
+  const years = new Map<number, BlogPost[]>();
   for (const post of posts) {
     const year = post.data.pubDate.getUTCFullYear();
-    const month = post.data.pubDate.getUTCMonth();
-    if (!years.has(year)) years.set(year, new Map());
-    const months = years.get(year)!;
-    if (!months.has(month)) months.set(month, []);
-    months.get(month)!.push(post);
+    if (!years.has(year)) years.set(year, []);
+    years.get(year)!.push(post);
   }
 
   return [...years.entries()]
     .sort(([a], [b]) => b - a)
-    .map(([year, months]) => ({
-      year,
-      months: [...months.entries()]
-        .sort(([a], [b]) => b - a)
-        .map(([month, monthPosts]) => ({
-          month,
-          label: `${month + 1} 月`,
-          posts: monthPosts,
-        })),
-    }));
+    .map(([year, yearPosts]) => ({ year, posts: yearPosts }));
 }
 
 export function toSearchRecord(post: BlogPost, includeBody = true) {
-  const knowledgeTags = post.collection === 'study_notes' ? getKnowledgeTags(post.id) : [];
+  const knowledgeTags = post.collection === 'study_notes' ? getKnowledgeTags(post.id) : getBlogKnowledgeTags(post.id);
   const rawBody = (post.body ?? '').replace(/^(#{1,6}\s+)(?:[（(【\[]\s*(?:原题|重点)\s*[）)】\]])\s*/gm, '$1');
   const body = includeBody ? rawBody.replace(/<!--[^]*?-->/g, ' ').replace(/<[^>]+>/g, ' ').replace(/!\[([^\]]*)\]\([^)]*\)/g, '$1').replace(/\[([^\]]+)\]\([^)]*\)/g, '$1').replace(/[`#*_~|>]/g, ' ').replace(/\s+/g, ' ').trim() : '';
   const fields = [
@@ -106,9 +94,11 @@ export async function getBlogPosts() {
     getCollection('blog_coding_practice', ({ data }) => !data.draft && !data.publicationHoldReason),
   ]);
 
-  return [...readingNotes, ...codingPracticeNotes].sort(
+  const posts = [...readingNotes, ...codingPracticeNotes].sort(
     (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
   );
+  validateBlogKnowledgePosts(posts);
+  return posts;
 }
 
 export async function getAllPosts(): Promise<BlogPost[]> {

@@ -39,7 +39,7 @@
 
 ### 2.4 桌面顶栏全站统一行为（[site-header.ts](../src/scripts/site-header.ts)）
 
-- **桌面端**（`(min-width: 1024px) and (hover: hover) and (pointer: fine)`）：全站所有页面（首页、归档、837 目录与文章页等）顶栏均常驻显示、**永不因下滑而隐藏**；`.site-header` 固定在 `top: 12px`（并在上方 `0..12px` 加同页背景色 `var(--bg)` 遮罩带防止正文透出）；`scrollY < 8` 时平铺无边框无背景，`scrollY >= 8` 后过渡为 `14px` 圆角矩形、带边框与毛玻璃背景。
+- **桌面端**（`(min-width: 1024px) and (hover: hover) and (pointer: fine)`）：全站所有页面（首页、归档、837 目录与文章页等）顶栏均常驻显示、**永不因下滑而隐藏**；`.site-header` 固定在 `top: 12px`（并在上方 `0..12px` 加同页背景色 `var(--bg)` 遮罩带防止正文透出）；`scrollY < 8` 时平铺无边框无背景，`scrollY >= 8` 后过渡为 `12px` 圆角清透毛玻璃（`min-height: 3.15rem`、`color-mix(in srgb, var(--bg-elev) 72%, transparent)`、`blur(12px) saturate(140%)`、无重阴影）。`/blog/` `.archive-tools` 与 837 模块 `.knowledge-aside.archive-tools` 采用更紧凑的 `14px` 轻阴影胶囊毛玻璃，吸顶后支持「下滑隐藏、上滑显示」（12px 阈值，焦点／交互时保持可见，见 [sticky-dock.ts](../src/lib/sticky-dock.ts)）。
 - **手机端 / 触屏端**（`< 1024px` 或粗指针）：保持下滑隐藏、上滑显示与胶囊外观逻辑不变。
 
 ---

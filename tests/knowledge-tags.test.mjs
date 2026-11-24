@@ -4,11 +4,13 @@ import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { runInNewContext } from 'node:vm';
 import ts from 'typescript';
-import { getKnowledgeTags, validateKnowledgeTags, validateKnowledgePosts, knowledgeCategories } from '../src/lib/knowledge-tags.ts';
+import { getKnowledgeTags, getBlogKnowledgeTags, validateKnowledgeTags, validateKnowledgePosts, validateBlogKnowledgeTags, validateBlogKnowledgePosts, knowledgeCategories } from '../src/lib/knowledge-tags.ts';
 import * as filtering from '../src/lib/knowledge-filter.ts';
 const read = (path) => readFileSync(new URL('../' + path, import.meta.url), 'utf8');
 const entries = JSON.parse(read('src/data/knowledge-entries.json'));
 const dictionary = JSON.parse(read('src/data/tags.json'));
+const blogEntries = JSON.parse(read('src/data/blog-knowledge-entries.json'));
+const blogDictionary = JSON.parse(read('src/data/blog-tags.json'));
 
 test('all 53 notes have knowledge points while the eight approved entries and 47 mappings remain exact', () => {
   const approvedIds = ['symmetric-key-cryptography-des', 'public-key-cryptography-dh-rsa', 'hash-functions-principles', 'symmetric-authentication-kerberos', 'public-key-authentication-pki', 'access-control-models', 'windows-authentication-access-control', 'traditional-computer-viruses'];
@@ -112,7 +114,7 @@ test('article headers and global post listings reuse the same knowledge labels w
     assert.deepEqual([...header.matchAll(/data-knowledge-label="([^"]+)"/g)].map((match) => decode(match[1])), entry.knowledgeTags);
     assert.ok(!header.includes('class="tag-list"'), 'no duplicate legacy pills in the article header');
     assert.ok(html.includes(`name="description" content="${post.description.replace(/&/g, '&amp;').replace(/"/g, '&quot;')}"`), 'SEO description retained');
-    const row = [...archive.matchAll(/<article\b[^>]*data-note-row[^]*?<\/article>/g)].find(([row]) => row.includes(`href="${post.href}"`))?.[0];
+    const row = [...archive.matchAll(/<article\b[^>]*data-timeline-row[^]*?<\/article>/g)].find(([row]) => row.includes(`href="${post.href}"`))?.[0];
     assert.ok(row && !row.includes('note-description'));
     assert.deepEqual([...row.matchAll(/data-knowledge-label="([^"]+)"/g)].map((match) => decode(match[1])), entry.knowledgeTags);
     for (const [, content] of row.matchAll(/<a\b[^>]*>([^]*?)<\/a>/g)) assert.ok(!/<a\b/.test(content), 'title and filter links are siblings');
@@ -132,7 +134,50 @@ test('article headers and global post listings reuse the same knowledge labels w
   }
   const paper = read('dist/blog/bert/index.html');
   assert.ok(paper.includes('class="article-description"'));
-  assert.ok(paper.includes('class="tag-list"'));
+  const paperHeader = paper.match(/<header\b[^>]*class="article-header"[^]*?<\/header>/)?.[0] ?? '';
+  assert.ok(!paperHeader.includes('class="tag-list"'));
+  assert.deepEqual(
+    [...paperHeader.matchAll(/data-knowledge-label="([^"]+)"/g)].map((match) => decode(match[1])),
+    blogEntries.bert.knowledgeTags,
+  );
+  assert.deepEqual(search.find((record) => record.href === '/blog/bert/').tags, ['NLP', 'Transformers', 'Pretraining']);
+});
+
+test('all 18 technical posts have independent curated knowledgeTags rendered across /blog/, search, and article headers', () => {
+  const decode = (text) => text.replace(/&quot;/g, '"').replace(/&#39;|&apos;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
+  assert.equal(Object.keys(blogEntries).length, 18);
+  const warnings = [];
+  validateBlogKnowledgeTags(blogEntries, blogDictionary, dictionary, (msg) => warnings.push(msg));
+  assert.deepEqual(warnings, []);
+  assert.throws(() => validateBlogKnowledgeTags(blogEntries, { ...blogDictionary, BFS: 'concept' }, dictionary), /类别不一致/);
+  assert.throws(() => validateBlogKnowledgePosts([]), /未匹配原文章/);
+
+  const search = JSON.parse(read('dist/search-index.json'));
+  const archive = read('dist/blog/index.html');
+  for (const [id, entry] of Object.entries(blogEntries)) {
+    const href = `/blog/${id}/`;
+    const post = search.find((record) => record.href === href);
+    assert.ok(post, href);
+    assert.deepEqual(post.knowledgeTags, entry.knowledgeTags.map((name) => ({ name, category: blogDictionary[name] })));
+    assert.deepEqual(getBlogKnowledgeTags(id), post.knowledgeTags);
+    for (const name of entry.knowledgeTags) assert.ok(post.searchText.includes(name.toLocaleLowerCase()));
+
+    const timelineRow = [...archive.matchAll(/<article\b[^>]*data-timeline-row[^]*?<\/article>/g)].find(([block]) => block.includes(`href="${href}"`))?.[0];
+    assert.ok(timelineRow && !timelineRow.includes('note-description') && !timelineRow.includes('note-taxonomy') && !timelineRow.includes('阅读笔记'));
+    assert.deepEqual([...timelineRow.matchAll(/data-blog-tag="([^"]+)"/g)].map((m) => decode(m[1])), entry.knowledgeTags);
+    assert.equal((timelineRow.match(/<a\b/g) ?? []).length, 1, 'no nested links in blog timeline card');
+
+    const html = read(`dist${href}index.html`);
+    const header = html.match(/<header\b[^>]*class="article-header"[^]*?<\/header>/)?.[0] ?? '';
+    assert.deepEqual([...header.matchAll(/data-knowledge-label="([^"]+)"/g)].map((m) => decode(m[1])), entry.knowledgeTags);
+  }
+
+  const blogLegendIds = [...archive.matchAll(/data-blog-category="([^"]+)"/g)].map((m) => m[1]);
+  assert.deepEqual(blogLegendIds, Object.keys(knowledgeCategories));
+  for (const catId of Object.keys(knowledgeCategories)) {
+    const count = new Set(Object.values(blogEntries).flatMap((e) => e.knowledgeTags.filter((t) => blogDictionary[t] === catId))).size;
+    assert.match(archive, new RegExp(`data-blog-category="${catId}"[\\s\\S]*?class="knowledge-cat-count">${count}<\\/span>`));
+  }
 });
 
 function control(dataset = {}) {
