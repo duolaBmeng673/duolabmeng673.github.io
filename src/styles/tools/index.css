@@ -49,17 +49,12 @@
 .tool-mark svg { width: 1.05rem; height: 1.05rem; }
 .tool-card-copy { display: grid; min-width: 0; gap: 0.25rem; overflow-wrap: anywhere; }
 .tool-card-copy strong { color: var(--tx); font-family: var(--sans); font-size: 0.98rem; font-weight: var(--fw-h); line-height: 1.35; }
-.tool-card-copy > span { color: var(--ts); font-size: 0.81rem; line-height: 1.45; }
+.tool-card-copy > span { color: var(--ts); font-size: max(12px, 0.81rem); line-height: 1.45; }
 .tool-card-copy .tool-domain { font-family: var(--mono); font-size: 12px; color: var(--tm); }
 .tool-card-arrow { flex-shrink: 0; margin-left: auto; color: var(--tm); transition: transform var(--transition), color var(--transition); }
 .tool-card:hover, .tool-card:focus-visible { border-color: var(--box-hover-border); background: var(--bg-elev); box-shadow: 0 6px 20px var(--sh); transform: var(--lift); }
 .tool-card:hover strong, .tool-card:focus-visible strong { color: var(--ac); }
 .tool-card:is(:hover, :focus-visible) .tool-card-arrow { color: var(--ac); transform: translate(2px, -2px); }
-.home-tool-entry { display: flex; align-items: center; gap: 18px; padding: 18px 0; border-top: 1px solid var(--border); }
-.home-tool-entry > span:nth-child(2) { display: grid; gap: 5px; min-width: 0; }
-.home-tool-entry strong { font: 600 var(--fs-md, 1.0625rem) var(--sans); }
-.home-tool-entry small { color: var(--text-muted); font-size: .8rem; }
-.home-tool-entry:hover strong { color: var(--link); }
 @media (max-width: 520px) {
   .tool-card { padding: 0.85rem; gap: 0.7rem; }
   .tool-card-copy strong { font-size: 0.96rem; }

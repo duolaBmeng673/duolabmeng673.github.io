@@ -130,7 +130,7 @@
 .knowledge-legend button:hover { background: var(--knowledge-legend-hover); color: var(--tx); }
 .knowledge-legend button[aria-pressed="true"] { color: var(--knowledge-legend-selected); border-color: var(--knowledge-legend-selected); background: var(--knowledge-bg); font-weight: var(--fw-m); }
 .knowledge-cat-all span,
-.knowledge-cat-count { font-family: var(--mono); font-size: 0.72rem; color: var(--tm); font-variant-numeric: tabular-nums; }
+.knowledge-cat-count { font-family: var(--mono); font-size: max(12px, 0.72rem); color: var(--tm); font-variant-numeric: tabular-nums; }
 .knowledge-cat-all.is-active span,
 .knowledge-legend button[aria-pressed="true"] .knowledge-cat-count { color: var(--ac); }
 .knowledge-aside-right { display: flex; align-items: center; gap: 0.65rem; flex-wrap: wrap; }
@@ -171,7 +171,7 @@
   gap: 0.45rem;
   padding: 0.32rem 0.55rem;
   border-radius: var(--r-ctl);
-  font-size: 0.8rem;
+  font-size: max(12px, 0.8rem);
   line-height: 1.35;
   color: var(--ts);
   transition: background var(--transition), color var(--transition);
@@ -257,7 +257,7 @@
     min-height: 1.82rem;
     padding: 0.22rem 0.54rem;
     border-radius: calc(var(--r-ctl) - 2px);
-    font-size: 0.78rem;
+    font-size: max(12px, 0.78rem);
   }
   .knowledge-aside.archive-tools .knowledge-legend button[aria-pressed="true"] {
     border-color: transparent;
@@ -402,13 +402,13 @@ span.knowledge-chip { cursor: inherit; }
   background: var(--surface);
   color: var(--tx);
   font-family: var(--sans);
-  font-size: 0.78rem;
+  font-size: max(12px, 0.78rem);
   font-weight: var(--fw-m);
   transition: border-color var(--transition), background var(--transition), color var(--transition);
 }
 .study-module-pill small {
   font-family: var(--mono);
-  font-size: 0.75rem;
+  font-size: max(12px, 0.75rem);
   color: var(--tm);
 }
 .study-module-pill:hover,
@@ -513,14 +513,14 @@ html[data-theme="dark"] .study-jump-backdrop {
   background: var(--glass);
   color: var(--ts);
   font-family: var(--sans);
-  font-size: 0.78rem;
+  font-size: max(12px, 0.78rem);
   font-weight: var(--fw-m);
   cursor: pointer;
   transition: border-color var(--transition), background var(--transition), color var(--transition);
 }
 .study-jump-tab small {
   font-family: var(--mono);
-  font-size: 0.75rem;
+  font-size: max(12px, 0.75rem);
   color: var(--tm);
 }
 .study-jump-tab:hover,
@@ -568,7 +568,7 @@ html[data-theme="dark"] .study-jump-backdrop {
   align-items: center;
   gap: 0.45rem;
   margin: 0 0 0.4rem;
-  font-size: 0.78rem;
+  font-size: max(12px, 0.78rem);
   font-weight: var(--fw-h);
   color: var(--tm);
 }
@@ -577,7 +577,7 @@ html[data-theme="dark"] .study-jump-backdrop {
   border: 1px solid var(--bd);
   border-radius: 999px;
   background: var(--glass);
-  font-size: 0.75rem;
+  font-size: max(12px, 0.75rem);
   font-weight: var(--fw-m);
   color: var(--ts);
 }
@@ -609,7 +609,7 @@ html[data-theme="dark"] .study-jump-backdrop {
 }
 .study-jump-code {
   font-family: var(--mono);
-  font-size: 0.75rem;
+  font-size: max(12px, 0.75rem);
   color: var(--tm);
   font-variant-numeric: tabular-nums;
 }
@@ -623,7 +623,7 @@ html[data-theme="dark"] .study-jump-backdrop {
 .study-jump-arrow {
   justify-self: end;
   font-family: var(--mono);
-  font-size: 0.8rem;
+  font-size: max(12px, 0.8rem);
   color: var(--tm);
 }
 .study-jump-empty {

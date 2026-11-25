@@ -73,18 +73,36 @@ test('local calendar boundaries and labels survive year boundaries and daylight-
 });
 
 test('heat tokens use the site palette with monotonic, distinguishable adjacent levels in both themes', () => {
+  const tokensCss = read('src/styles/tokens.css');
   const css = read('src/styles/global.css');
   const tokens = (source) => Object.fromEntries([...source.matchAll(/(--[\w-]+):\s*([^;]+);/g)].map(([, key, value]) => [key, value]));
-  const light = tokens(css.match(/:root\s*{([^]*?)\n}/)[1]);
-  const dark = { ...light, ...tokens(css.match(/:root\[data-theme="dark"\]\s*{([^]*?)\n}/)[1]) };
+  const rawLight = {
+    ...tokens(tokensCss.match(/:root\s*{([^]*?)\n}/)[1]),
+    ...tokens(css.match(/:root\s*{([^]*?)\n}/)[1]),
+  };
+  const rawDark = {
+    ...rawLight,
+    ...tokens(tokensCss.match(/:root\[data-theme="dark"\]\s*{([^]*?)\n}/)[1]),
+    ...tokens(css.match(/:root\[data-theme="dark"\]\s*{([^]*?)\n}/)[1]),
+  };
+  const resolveToken = (palette, key) => {
+    let cur = palette[key];
+    for (let i = 0; i < 6 && cur; i++) {
+      const m = cur.match(/^var\((--[\w-]+)(?:,\s*([^)]+))?\)$/);
+      if (!m) break;
+      cur = palette[m[1]] ?? m[2];
+    }
+    return cur;
+  };
   const rgb = (hex) => [1, 3, 5].map((index) => parseInt(hex.slice(index, index + 2), 16));
   const luminance = (channels) => channels.map((channel) => channel / 255).map((v) => v <= .04045 ? v / 12.92 : ((v + .055) / 1.055) ** 2.4).reduce((sum, v, i) => sum + v * [.2126, .7152, .0722][i], 0);
-  for (const [theme, palette] of [['light', light], ['dark', dark]]) {
+  for (const [theme, palette] of [['light', rawLight], ['dark', rawDark]]) {
+    const bgRgb = rgb(resolveToken(palette, '--bg'));
     const levels = [0, 1, 2, 3, 4].map((level) => {
       const mix = palette[`--heat-${level}`].match(/^color-mix\(in srgb, var\((--text|--accent)\) (\d+)%, var\(--bg\)\)$/);
       assert.ok(mix, `${theme} level ${level} derives from shared tokens`);
       const weight = Number(mix[2]) / 100;
-      return rgb(palette[mix[1]]).map((channel, i) => channel * weight + rgb(palette['--bg'])[i] * (1 - weight));
+      return rgb(resolveToken(palette, mix[1])).map((channel, i) => channel * weight + bgRgb[i] * (1 - weight));
     }).map(luminance);
     levels.slice(1).forEach((value, index) => {
       assert.ok(theme === 'light' ? value < levels[index] : value > levels[index], `${theme} intensity is monotonic`);
@@ -93,7 +111,7 @@ test('heat tokens use the site palette with monotonic, distinguishable adjacent 
     const site = palette['--heat-site'].match(/^color-mix\(in srgb, var\(--warm\) (\d+)%, var\(--bg\)\)$/);
     assert.ok(site, 'blog feature color derives from the shared warm accent');
     const weight = Number(site[1]) / 100;
-    const feature = luminance(rgb(palette['--warm']).map((channel, index) => channel * weight + rgb(palette['--bg'])[index] * (1 - weight)));
+    const feature = luminance(rgb(resolveToken(palette, '--warm')).map((channel, index) => channel * weight + bgRgb[index] * (1 - weight)));
     assert.ok((Math.max(feature, levels[0]) + .05) / (Math.min(feature, levels[0]) + .05) >= 1.5, `${theme} blog features are distinguishable from empty cells`);
   }
 });
