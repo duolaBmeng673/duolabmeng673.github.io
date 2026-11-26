@@ -635,6 +635,18 @@ test('/about/ renders pure square cells with fixed category priority and graysca
   assert.match(globalCss, /:root\[data-theme="dark"\]\s+\.article\[data-category="Study Notes"\]\s*\{[^}]*--cat-study:\s*#46ab91;/);
 
   const tokensCss = read('src/styles/tokens.css');
+  assert.match(tokensCss, /--preset-all:\s*#5227ff\b/i, '--preset-all uses purple for all-notes preset');
+  assert.match(tokensCss, /--preset-research:\s*#2563eb\b/i, '--preset-research uses blue for paper preset');
+  assert.match(tokensCss, /--preset-cs:\s*#c2416b\b/i, '--preset-cs uses pink for tech preset');
+  assert.match(tokensCss, /--preset-837:\s*#0d9488\b/i, '--preset-837 uses green for study preset');
+  assert.match(tokensCss, /--cat-paper:\s*var\(--c1\)/, '--cat-paper single-sources from --c1');
+  assert.match(globalCss, /--cat-research:\s*var\(--c1\)/, '--cat-research single-sources from --c1');
+
+  const homeData = read('src/lib/home-data.ts');
+  assert.match(homeData, /slug:\s*'all'[\s\S]*?horizonColor:\s*'#5227FF'/i, 'all preset uses purple waves');
+  assert.match(homeData, /slug:\s*'research'[\s\S]*?horizonColor:\s*'#2563EB'/i, 'research preset uses blue waves');
+  assert.match(homeData, /slug:\s*'cs'[\s\S]*?horizonColor:\s*'#C2416B'/i, 'cs preset uses pink waves');
+  assert.match(homeData, /slug:\s*'837'[\s\S]*?horizonColor:\s*'#0D9488'/i, '837 preset uses green waves');
   const hexToRgb = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
   const relLum = (rgb) => rgb
     .map((c) => c / 255)

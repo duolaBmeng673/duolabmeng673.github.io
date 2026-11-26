@@ -91,12 +91,13 @@ test('homepage positively mounts expected React islands without client:load', ()
   const homeHtml = readFileSync(join(ROOT, 'dist', 'index.html'), 'utf8');
   const islands = [...homeHtml.matchAll(/<astro-island\b[^>]*>/gi)].map(([tag]) => tag);
   assert.ok(islands.length >= 3, 'Expected at least 3 <astro-island> elements on homepage');
+  const techText = islands.find((tag) => tag.includes('TechText'));
   const waves = islands.find((tag) => tag.includes('GradientWaves'));
   const heatmap = islands.find((tag) => tag.includes('ActivityHeatmap'));
-  const cardSwap = islands.find((tag) => tag.includes('CardSwap'));
+  assert.ok(!homeHtml.includes('CardSwap'), 'CardSwap island must be removed from homepage');
+  assert.ok(techText && techText.includes('client="media"') && techText.includes('(min-width: 900px)'), 'TechText island must use client:media="(min-width: 900px)"');
   assert.ok(waves && waves.includes('client="media"') && waves.includes('(min-width: 900px)'), 'GradientWaves island must use client:media="(min-width: 900px)"');
   assert.ok(heatmap && heatmap.includes('client="media"') && heatmap.includes('(min-width: 900px)'), 'ActivityHeatmap island must use client:media="(min-width: 900px)"');
-  assert.ok(cardSwap && cardSwap.includes('client="media"') && cardSwap.includes('(min-width: 900px)'), 'CardSwap island must use client:media="(min-width: 900px)"');
   for (const tag of islands) {
     assert.ok(!tag.includes('client="load"'), `Homepage island must not use client:load: ${tag}`);
   }

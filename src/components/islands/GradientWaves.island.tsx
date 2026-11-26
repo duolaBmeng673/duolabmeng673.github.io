@@ -31,7 +31,8 @@ const INTRO_SECONDS = 2.6;
 const CAMERA_HEIGHT = 30;
 const QUALITY_STEPS = 84; // medium quality parity with prototype
 const MAX_WAVE_DPR = 1.5;
-const MIN_FRAME_MS = 1000 / 30; // 30 fps cap to limit GPU/CPU load
+const TARGET_FPS = 30;
+const MIN_FRAME_MS = 1000 / TARGET_FPS; // fixed 30 fps render cadence
 
 const VERTEX = `#version 300 es
 in vec2 aPosition;
@@ -191,7 +192,7 @@ void main() {
 }`;
 
 type RGB = [number, number, number];
-type Swell = { x: number; y: number; at: number };
+type Swell = { x: number; y: number; at: number; scale?: number };
 
 const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
 const easeInOut = (t: number) => (t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2);
@@ -307,15 +308,15 @@ export default function GradientWavesIsland({ presets, defaultSlug = 'all', clas
   );
 
   const horizon = useMemo(
-    () => parseColor(activePreset?.horizonColor ?? '#2563EB', [0.15, 0.39, 0.92]),
+    () => parseColor(activePreset?.horizonColor ?? '#5227FF', [0.32, 0.15, 1.0]),
     [activePreset?.horizonColor],
   );
   const wave = useMemo(
-    () => parseColor(activePreset?.waveColor ?? '#38BDF8', [0.22, 0.74, 0.97]),
+    () => parseColor(activePreset?.waveColor ?? '#C084FC', [0.75, 0.52, 0.99]),
     [activePreset?.waveColor],
   );
   const crest = useMemo(
-    () => parseColor(isDark ? (activePreset?.crestColor ?? '#E0F2FE') : '#FFFFFF', [1, 1, 1]),
+    () => parseColor(isDark ? (activePreset?.crestColor ?? '#F3E8FF') : '#FFFFFF', [1, 1, 1]),
     [isDark, activePreset?.crestColor],
   );
 
@@ -527,7 +528,7 @@ export default function GradientWavesIsland({ presets, defaultSlug = 'all', clas
         const age = state.clock - swell.at;
         const life = age / SWELL_SECONDS;
         const envelope = (1 - Math.exp(-age / 0.25)) * Math.pow(1 - life, 1.6);
-        const lift = cur.amplitude * SWELL_GAIN * envelope;
+        const lift = cur.amplitude * SWELL_GAIN * (swell.scale ?? 1) * envelope;
         swellData.set([swell.x - age * 12, swell.y, lift], index * 3);
         swellPeak = Math.max(swellPeak, lift);
       });
@@ -543,11 +544,13 @@ export default function GradientWavesIsland({ presets, defaultSlug = 'all', clas
       state.raf = 0;
       if (!state.visible || document.hidden) return;
       const s = settingsRef.current;
-      if (state.lastFrameAt && state.seen === s && now - state.lastFrameAt < MIN_FRAME_MS) {
+      const elapsed = now - state.lastFrameAt;
+      if (state.lastFrameAt > 0 && elapsed < MIN_FRAME_MS - 0.5) {
         state.raf = requestAnimationFrame(tick);
         return;
       }
-      state.lastFrameAt = now;
+      // Lock steady 30 fps phase without accelerating on preset/settings changes
+      state.lastFrameAt = state.lastFrameAt > 0 ? now - (elapsed % MIN_FRAME_MS) : now;
       const dt = state.last ? Math.min((now - state.last) / 1000, 0.1) : 0;
       state.last = now;
       const reduced = prefersReduced();
@@ -559,30 +562,29 @@ export default function GradientWavesIsland({ presets, defaultSlug = 'all', clas
       if (nextPresetKey !== state.presetKey) {
         state.presetKey = nextPresetKey;
         if (!reduced) {
-          state.swells.push({ x: -8, y: -4, at: state.clock });
-          state.swells.push({ x: 16, y: 12, at: state.clock });
-          if (state.swells.length > MAX_SWELLS) state.swells.splice(0, state.swells.length - MAX_SWELLS);
+          state.swells.push({ x: 4, y: 2, at: state.clock, scale: 0.36 });
+          if (state.swells.length > MAX_SWELLS) state.swells.shift();
         }
       }
 
-      const morphK = reduced ? 1 : 1 - Math.exp(-dt / 0.36);
+      const colorMorphK = reduced ? 1 : 1 - Math.exp(-dt / 0.14);
+      const motionMorphK = reduced ? 1 : 1 - Math.exp(-dt / 0.55);
       const cur = state.cur;
       let colorDiff = 0;
       for (let i = 0; i < 3; i++) {
-        cur.horizon[i] = lerp(cur.horizon[i], s.horizon[i], morphK);
-        cur.wave[i] = lerp(cur.wave[i], s.wave[i], morphK);
-        cur.crest[i] = lerp(cur.crest[i], s.crest[i], morphK);
+        cur.horizon[i] = lerp(cur.horizon[i], s.horizon[i], colorMorphK);
+        cur.wave[i] = lerp(cur.wave[i], s.wave[i], colorMorphK);
+        cur.crest[i] = lerp(cur.crest[i], s.crest[i], colorMorphK);
         colorDiff +=
           Math.abs(cur.horizon[i] - s.horizon[i]) +
           Math.abs(cur.wave[i] - s.wave[i]) +
           Math.abs(cur.crest[i] - s.crest[i]);
       }
-      cur.amplitude = lerp(cur.amplitude, s.amplitude, morphK);
-      cur.waveScale = lerp(cur.waveScale, s.waveScale, morphK);
-      cur.swell = lerp(cur.swell, s.swell, morphK);
-      cur.turbulence = lerp(cur.turbulence, s.turbulence, morphK);
-      cur.lightAngle = lerp(cur.lightAngle, s.lightAngle, morphK);
-      cur.speed = lerp(cur.speed, s.speed, morphK);
+      cur.amplitude = lerp(cur.amplitude, s.amplitude, motionMorphK);
+      cur.swell = lerp(cur.swell, s.swell, motionMorphK);
+      cur.turbulence = lerp(cur.turbulence, s.turbulence, motionMorphK);
+      cur.lightAngle = lerp(cur.lightAngle, s.lightAngle, motionMorphK);
+      cur.speed = lerp(cur.speed, s.speed, motionMorphK);
       const propDiff =
         colorDiff +
         Math.abs(cur.amplitude - s.amplitude) +

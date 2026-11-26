@@ -77,9 +77,11 @@ test('tool navigation and homepage entry remain available on existing pages', ()
     assert.deepEqual([...nav.matchAll(/<a\b[^>]*>([^]*?)<\/a>/g)].map(([, label]) => label.trim()), expected, path);
     assert.equal((html.match(/<h1\b/g) ?? []).length, 1, path);
   }
-  assert.ok(read('dist/index.html').includes('class="home-tool-entry" href="/tools/"'));
+  const homeHtml = read('dist/index.html');
+  assert.ok(!homeHtml.includes('home-tool-entry'), 'homepage slim tool strip must be removed');
+  assert.ok(homeHtml.includes('href="/tools/"'), 'tools link remains available via homepage navigation/footer/mobile grid');
   assert.ok(read('dist/tools/index.html').includes('aria-current="page">工具'));
-  assert.ok(!read('dist/index.html').includes('哈工大空教室查询'));
+  assert.ok(!homeHtml.includes('哈工大空教室查询'));
 });
 
 test('removed classroom code is not built and external tools stay out of the sitemap and article search', () => {

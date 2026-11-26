@@ -2,7 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import GradientWavesIsland from '../components/islands/GradientWaves.island';
 import ActivityHeatmapIsland from '../components/islands/ActivityHeatmap.island';
-import CardSwapIsland from '../components/islands/CardSwap.island';
+import TechTextIsland from '../components/islands/TechText.island';
 import { tools } from '../data/tools';
 import { getHomePageData } from '../lib/home-data';
 import { loadLucideSvg } from '../lib/tool-icons';
@@ -49,9 +49,13 @@ const wavePresets = data.presets.map((p) => ({
   speed: p.speed,
 }));
 
-const categoryVar = (cat: string) => `var(--knowledge-${cat}, var(--tm))`;
-
-const DANMAKU_LANE_COUNT = 6;
+const initialReview = data.dailyReview.items[data.dailyReview.initialIndex] ?? {
+  question: '进入 837 考纲笔记开始背诵与复习',
+  isExam: false,
+  subject: '837 考纲',
+  noteTitle: '学习笔记目录',
+  href: '/study-notes/837/',
+};
 
 const activityPayloadJson = JSON.stringify({
   buildDate: data.heatmap.buildDate,
@@ -63,12 +67,12 @@ const activityPayloadJson = JSON.stringify({
 ---
 
 <BaseLayout bodyClass="home-page">
-  <div class="home-root" data-home-root data-motion="running">
+  <div class="home-root" data-home-root>
   <section class="hero" aria-labelledby="hero-title">
     <div class="hgrid">
       <div>
         <h1 id="hero-title" lang="en">
-          <span class="hero-line">Welcome to duolaBmeng673’s</span>
+          <span class="hero-line">Welcome to <span class="hero-tech-wrap"><span class="hero-tech-fallback">duolaBmeng673</span><span class="hero-tech-canvas-slot" aria-hidden="true"><TechTextIsland client:media="(min-width: 900px)" text="duolaBmeng673" /></span></span>’s</span>
           <span class="hero-line">notes and blog</span>
         </h1>
         <div class="cta">
@@ -104,24 +108,24 @@ const activityPayloadJson = JSON.stringify({
         </div>
         <div class="wb">
           <div class="codeb">
-            <span class="l"><span class="k">const</span> author = {'{'}</span>
-            <span class="l">{'  '}name: <a class="v" href="/about/">&quot;杨雨飞&quot;</a>,</span>
-            <span class="l">{'  '}handle: <a class="v" href={data.site.github} target="_blank" rel="noreferrer">&quot;{data.site.name}&quot;</a>,</span>
-            <span class="l">{'  '}school: <a class="v" href="/about/">&quot;哈尔滨工业大学 · 信息安全&quot;</a>,</span>
+            <span class="l"><span class="k">const</span> <span class="sym">author</span> = {'{'}</span>
+            <span class="l">{'  '}<span class="prop">name</span>: <a class="v v-str" href="/about/">&quot;杨雨飞&quot;</a>,</span>
+            <span class="l">{'  '}<span class="prop">handle</span>: <a class="v v-str" href={data.site.github} target="_blank" rel="noreferrer">&quot;{data.site.name}&quot;</a>,</span>
+            <span class="l">{'  '}<span class="prop">school</span>: <a class="v v-str" href="/about/">&quot;哈尔滨工业大学 · 信息安全&quot;</a>,</span>
             <span class="l">
-              {'  '}focus: [<a class="v" href="/blog/?series=LLM%20%26%20Tables">&quot;表格理解&quot;</a>, <a class="v" href="/blog/?series=Multimodal">&quot;多模态&quot;</a>, <a class="v" href="/study-notes/837/">&quot;网络安全&quot;</a>],
+              {'  '}<span class="prop">focus</span>: [<a class="v v-str" href="/blog/?series=LLM%20%26%20Tables">&quot;表格理解&quot;</a>, <a class="v v-str" href="/blog/?series=Multimodal">&quot;多模态&quot;</a>, <a class="v v-str" href="/study-notes/837/">&quot;网络安全&quot;</a>],
             </span>
-            <span class="l">{'  '}notes: <a class="v" href="/blog/">{data.totalCount}</a>,</span>
-            <span class="l">{'  '}demo: <a class="v" href="/study-notes/837/kmp-algorithm/">&quot;KMP / 837 背诵模式&quot;</a>,</span>
+            <span class="l">{'  '}<span class="prop">notes</span>: <a class="v v-num" href="/blog/">{data.totalCount}</a>,</span>
+            <span class="l">{'  '}<span class="prop">demo</span>: <a class="v v-str" href="/study-notes/837/kmp-algorithm/">&quot;KMP / 837 背诵模式&quot;</a>,</span>
             <span class="l">{'}'}</span>
-            <span class="l"><span class="k">export default</span> author</span>
+            <span class="l"><span class="k">export default</span> <span class="fn">author</span></span>
           </div>
         </div>
       </div>
 
       <div class="win w3">
         <div class="wt">
-          <span>Presets · 实时切换波浪色相与索引</span>
+          <span>Presets</span>
         </div>
         <div class="wb pst" id="pst" role="radiogroup" aria-label="笔记分类">
           {data.presets.map((cat, idx) => (
@@ -131,8 +135,6 @@ const activityPayloadJson = JSON.stringify({
               role="radio"
               aria-checked={idx === 0 ? 'true' : 'false'}
               data-preset-slug={cat.slug}
-              data-more-href={cat.moreHref}
-              data-more-label={cat.moreLabel}
             >
               <span class="sw" aria-hidden="true">
                 <i style={`background: ${cat.horizonColor};`} />
@@ -144,15 +146,11 @@ const activityPayloadJson = JSON.stringify({
             </button>
           ))}
         </div>
-        <div class="more-row">
-          <span>点击终端内标题可直接阅读</span>
-          <a id="stage-more" data-stage-more href={data.presets[0].moreHref}>{data.presets[0].moreLabel}</a>
-        </div>
       </div>
 
       <div class="win w2">
         <div class="wt">
-          <span>Terminal · 点击右侧切换频道</span>
+          <span>Terminal</span>
           <button class="cp" id="cp" type="button" data-copy-rss aria-label="复制 RSS 订阅地址">⧉ 复制 RSS</button>
         </div>
         <div class="wb term" id="term" aria-live="polite">
@@ -290,86 +288,29 @@ const activityPayloadJson = JSON.stringify({
     </div>
   </section>
 
-  <section class="sec" id="explore-sec" aria-labelledby="explore-heading">
+  <section class="sec" id="daily-review-sec" aria-labelledby="daily-review-heading">
     <div class="sec-head">
       <div>
-        <span class="sec-kicker">QUICK INDEX</span>
-        <h2 id="explore-heading">知识点快查与专题直达</h2>
+        <span class="sec-kicker">DAILY REVIEW</span>
+        <h2 id="daily-review-heading">今日随机复习</h2>
       </div>
-      <div class="sec-head-actions">
-        <span class="sec-sub">悬停弹幕暂停或滑动浏览，右侧卡片可切换专题直达</span>
-        <button
-          type="button"
-          class="motion-toggle"
-          data-motion-toggle
-          aria-pressed="false"
-          aria-label="暂停动效"
-          title="暂停动效"
-        >
-          <svg class="motion-icon-pause" width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-            <rect x="3" y="2.5" width="3.5" height="11" rx="1" />
-            <rect x="9.5" y="2.5" width="3.5" height="11" rx="1" />
-          </svg>
-          <svg class="motion-icon-play" width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-            <path d="M4.2 2.8a.7.7 0 0 1 1.05-.6l8 5.2a.7.7 0 0 1 0 1.2l-8 5.2A.7.7 0 0 1 4.2 13.2V2.8z" />
-          </svg>
-          <span class="motion-toggle-text">暂停动效</span>
-        </button>
-      </div>
+      <a class="card-link" href="/study-notes/837/">全部 837 考纲 →</a>
     </div>
 
-    <div class="bento">
-      <div class="card rb-panel s7">
-        <div class="vis ktag-vis ktag-danmaku" data-danmaku aria-label="837 知识点标签快查弹幕">
-          <div class="ktag-stage" data-danmaku-stage>
-            {Array.from({ length: DANMAKU_LANE_COUNT }, (_, laneIdx) => (
-              <div class="ktag-lane" data-lane={laneIdx} />
-            ))}
-          </div>
-          <div class="ktag-pool" data-danmaku-pool>
-            {data.allKnowledgeTags.map((item) => (
-              <a
-                class="tag ktag-pill-lg"
-                href={item.href}
-                title={item.tooltip}
-                data-knowledge-label={item.name}
-                data-category={item.category}
-              >
-                <span class="ktag-swatch" style={`background: ${categoryVar(item.category)};`} aria-hidden="true" />
-                <span>{item.name}</span>
-              </a>
-            ))}
-          </div>
-        </div>
-        <div class="card-foot">
-          <div>
-            <h3>837 知识点快查（{data.allKnowledgeTags.length}）</h3>
-            <p>悬停暂停、支持横向滑动；点击直达对应笔记或相关集合。</p>
-          </div>
-          <a class="card-link" href="/study-notes/837/information-security/">完整考纲 →</a>
-        </div>
+    <article class="card rb-panel daily-review-card" data-daily-review>
+      <div class="daily-review-meta">
+        <span class="daily-review-badge" data-review-badge hidden={!initialReview.isExam}>原题</span>
+        <span class="daily-review-source" data-review-source>{initialReview.subject} · {initialReview.noteTitle}</span>
+        <span class="daily-review-date" data-review-date>{data.dailyReview.buildDate}</span>
       </div>
-
-      <div class="card rb-panel s5">
-        <CardSwapIsland client:media="(min-width: 900px)" cards={data.swapCards} />
-        <div class="card-foot">
-          <div>
-            <h3>专题传送门</h3>
-            <p>精选专题卡片；点击直达或左右切换。</p>
-          </div>
-          <a class="card-link" href="/blog/">笔记归档 ↗</a>
-        </div>
+      <p class="daily-review-question" data-review-question>{initialReview.question}</p>
+      <div class="daily-review-actions">
+        <button type="button" class="daily-review-shuffle" data-review-shuffle>换一题</button>
+        <a class="btn daily-review-go" data-review-link href={initialReview.href}>去复习 →</a>
       </div>
-    </div>
+      <script is:inline type="application/json" id="daily-review-pool" set:html={JSON.stringify(data.dailyReview).replace(/</g, '\\u003c')} />
+    </article>
   </section>
-
-  <a class="home-tool-entry" href="/tools/">
-    <span class="home-tool-main">
-      <span class="home-tool-mark" aria-hidden="true">⌘</span>
-      <span><strong>常用工具</strong><small>在线工具与常用效率资源外链合集</small></span>
-    </span>
-    <span class="home-tool-arrow" aria-hidden="true">→</span>
-  </a>
   </div>
 
   <script>

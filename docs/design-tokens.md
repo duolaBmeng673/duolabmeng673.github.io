@@ -17,7 +17,7 @@
 
 ## 已核实的令牌入口
 
-- 【已核实】[src/styles/tokens.css](../src/styles/tokens.css) 与 [src/styles/global.css](../src/styles/global.css) 定义全站 React Bits 浅／深色基底、正文、交互、辅色、统一无衬线字体角色（`--serif: var(--sans)`，消除跨平台衬线回退差异）、7 级字号阶梯（`--fs-xs: max(12px, 0.75rem)`、`--fs-sm: max(12px, 0.8125rem)`、`--fs-base: 0.9375rem`、`--fs-md: 1.0625rem`、`--fs-lg: 1.25rem`、`--fs-xl: 1.6rem`、`--fs-display: clamp(2.2rem, 4vw, 3.4rem)`）、3 档动效时长与缓动（`--dur-1: 120ms`、`--dur-2: 220ms`、`--dur-3: 400ms`、`--ease-out: cubic-bezier(.22, 1, .36, 1)`、`--toc-panel-height: min(560px, calc(100vh - var(--header-h, 56px) - 24px))`、`--toc-slide-dur: calc(var(--dur-3) - var(--dur-2))`）、圆角（`--r-nav` 到 `--r-vis`）、首页舞台窗口字号 `--win-fs: clamp(12px, calc(10.85px + 0.302vw), 16px)`、学习笔记正文与目录字号阶梯（`--fs-article-body: 1.02rem`、`--fs-study-h2: 1.46rem`、`--fs-study-h3: 1.22rem`、`--fs-study-label: 1.09rem`、`--fs-toc-2: max(12px, 0.84rem)`、`--fs-toc-3: max(12px, 0.76rem)`）、（`--svg-bg: var(--bg-elev)` 用于 SVG 放大弹窗底色；文章内 `.article-svg-card` 去除边框、圆角、内边距与默认底色，直接贴合页面方格背景，并提供可选羽化衬底开关 `--svg-scrim-opacity`（默认 `0` 关闭；非零时以 `color-mix(in srgb, var(--bg) calc(var(--svg-scrim-opacity) * 100%), transparent)` 与同色大半径 `box-shadow` 柔和羽化边缘，无硬边或边框））与版心变量（`--gutter: clamp(20px, 3vw, 56px)`、`--maxw: 1760px`）；`BaseLayout.astro` 在 `body` 写入 `data-channel`，`/study-notes/**` 频道（`data-channel="study"`）将 `--ac` / `--ac-strong` / `--ac-soft` 映射为学习笔记深绿安全对比度变体（浅色 `#0b6e61` / `#08544a`、深色 `#5fd6b8` / `#86e6cc`），`.site-header` 固定保留全站品牌紫（`--brand-ac`），暗色下学习笔记文章页局部将 `--cat-study` 降明度／降饱和度为 `#46ab91`（不影响浅色 `#0f8a7a` 与热力图色阶）；[BaseLayout](../src/layouts/BaseLayout.astro) 负责首屏主题／字号恢复与共享样式，[typography.ts](../src/scripts/typography.ts) 负责主题／字体设置。没有第二套独立知识点主题状态。
+- 【已核实】[src/styles/tokens.css](../src/styles/tokens.css) 与 [src/styles/global.css](../src/styles/global.css) 定义全站 React Bits 浅／深色基底、正文、交互、辅色、统一无衬线字体角色（`--serif: var(--sans)`，消除跨平台衬线回退差异）、7 级字号阶梯（`--fs-xs: max(12px, 0.75rem)`、`--fs-sm: max(12px, 0.8125rem)`、`--fs-base: 0.9375rem`、`--fs-md: 1.0625rem`、`--fs-lg: 1.25rem`、`--fs-xl: 1.6rem`、`--fs-display: clamp(2.2rem, 4vw, 3.4rem)`）、3 档动效时长与缓动（`--dur-1: 120ms`、`--dur-2: 220ms`、`--dur-3: 400ms`、`--ease-out: cubic-bezier(.22, 1, .36, 1)`、`--toc-panel-height: min(560px, calc(100vh - var(--header-h, 56px) - 24px))`、`--toc-slide-dur: calc(var(--dur-3) - var(--dur-2))`）、圆角（`--r-nav` 到 `--r-vis`）、首页舞台窗口字号 `--win-fs: clamp(12px, calc(10.85px + 0.302vw), 16px)`、学习笔记正文与目录字号阶梯（`--fs-article-body: 1.02rem`、`--fs-study-h2: 1.46rem`、`--fs-study-h3: 1.22rem`、`--fs-study-label: 1.09rem`、`--fs-toc-2: max(12px, 0.84rem)`、`--fs-toc-3: max(12px, 0.76rem)`）、（`--svg-bg: var(--bg-elev)` 用于 SVG 放大弹窗底色；文章内 `.article-svg-card` 去除边框、圆角、内边距与默认底色，直接贴合页面方格背景，并提供可选羽化衬底开关 `--svg-scrim-opacity`（默认 `0` 关闭；非零时以 `color-mix(in srgb, var(--bg) calc(var(--svg-scrim-opacity) * 100%), transparent)` 与同色大半径 `box-shadow` 柔和羽化边缘，无硬边或边框））与版心变量（`--gutter: clamp(20px, 3vw, 56px)`、`--maxw: 1760px`）；`BaseLayout.astro` 在 `body` 写入 `data-channel`，`/study-notes/**` 频道（`data-channel="study"`）将 `--ac` / `--ac-strong` / `--ac-soft` 映射为学习笔记深绿安全对比度变体（浅色 `#0b6e61` / `#08544a`、深色 `#5fd6b8` / `#86e6cc`），`.site-header` 固定保留全站品牌紫（`--brand-ac`），暗色下学习笔记文章页局部将 `--cat-study` 降明度／降饱和度为 `#46ab91`（不影响浅色 `#0f8a7a` 与热力图色阶）；全站分类色与首页预设、`/about/` 热力图及详情页目录高亮统一对应「紫色=全部笔记／全站品牌／功能更新、蓝色=论文笔记（`--c1`）、粉红=技术笔记（`--c2`）、绿色=学习笔记（`--c3`）」；[BaseLayout](../src/layouts/BaseLayout.astro) 负责首屏主题／字号恢复与共享样式，[typography.ts](../src/scripts/typography.ts) 负责主题／字体设置。没有第二套独立知识点主题状态。
 - 【已核实】[src/styles/knowledge-tags.css](../src/styles/knowledge-tags.css) 定义七类 `--knowledge-*`、中性标签与图例样式；条目、文章、搜索候选共用同一组色块变量。
 
 【已核实】以下色值逐项来自上述两个 CSS 文件，十六进制大小写不影响颜色：
@@ -26,7 +26,12 @@
 |---|---|---|
 | `--bg` | `#F7F6F2` | `#08070C` |
 | `--text` | `#121217` | `#F3F2F7` |
-| `--accent` | `#6D28D9` | `#A78BFA` |
+| `--brand-ac`（紫色：全站品牌／全部笔记） | `#6D28D9` | `#A78BFA` |
+| `--study-ac`（绿色：学习笔记交互） | `#0B6E61` | `#5FD6B8` |
+| `--c1` / `--cat-paper`（蓝色：论文笔记） | `#3B5FD0` | `#7AA2FF` |
+| `--c2` / `--cat-tech`（粉红：技术笔记） | `#C2416B` | `#FF8AA8` |
+| `--c3` / `--cat-study`（绿色：学习笔记） | `#0F8A7A` | `#5FD6B8` |
+| `--heat-cat-paper` / `--heat-cat-site` | `#224BBF` / `#45188A` | `#3B76F6` / `#6C2BD9` |
 | `--warm` | `#52525B` | `#A1A1AA` |
 | `--knowledge-concept` | `#E3E1D9` | `#77756E` |
 | `--knowledge-algorithm` | `#D1E3F4` | `#4B83BF` |
@@ -45,7 +50,7 @@
 - 标签 `--r: 6px`，内边距 `5px 10px 5px 7px`；标签间距 6px；色块 11px、圆角 `calc(var(--r) * .6)`、内描边 `rgba(18, 18, 24, .08)`。
 - 标签文字／底／边框：`--ts`／`--bg-elev`／`--bd`。
 - 粗指针设备标签 13px、最小高度 32px、内边距 `8px 10px`。图例文字 13px／400、色块与标签相同、条目间距 4px、每项最小高 32px。
-- 标签与图例选择态均跟随 `/study-notes/**` 频道强调色 `--ac` / `--ac-strong`（浅色深绿 `#08544a`/`#0b6e61`、深色 `#5fd6b8`/`#86e6cc`）；类别识别色仍只在小方块。图例选择态用描边与柔绿背景，不把整项涂成类别色。
+- 标签与图例选择态均跟随 `/study-notes/**` 频道强调色 `--ac` / `--ac-strong`（浅色松绿 `#23523b`/`#2f6a4d`、深色 `#7fb79a`/`#9eceb5`）；类别识别色仍只在小方块。图例选择态用描边与柔绿背景，不把整项涂成类别色。
 
 【已核实】文章 H1、正文容器阅读主栏文本约 `44rem`（`--article-text-max`）舒适中文行长（开启 `text-autospace: normal`），主栏容器 `--article-main-max: 50rem`、右侧目录栏 `--article-toc-w: 16.5rem`、栏间距 `--article-toc-gap: 2.25rem`；宽表格、代码块与 SVG 图表不受限于文本窄栏，其中桌面端（`>= 1180px`）`.article-svg-card` 内容最大宽度以正文列中心对称 break-out 至 `min(720px, 不与右侧目录栏重叠的最大宽度)`，窄视口（`< 1180px`）恢复 `max-width: 100%`；文章 TOC 仅在启用 JS 时按当前 H2 章节展开 H3 子项，并与章节目录共用 `220ms cubic-bezier(.22, 1, .36, 1)` 共享滑动指示块与 `scrollend` + 超时兜底锁定。
 

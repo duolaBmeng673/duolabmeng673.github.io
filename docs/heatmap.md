@@ -43,7 +43,7 @@
      - `tech`（技术笔记，`--heat-cat-tech`）
      - `revision`（修订，`--heat-cat-revision`）
      - `site`（功能更新，`--heat-cat-site`）
-   - 颜色单一定义在 [tokens.css](../src/styles/tokens.css)，同时修正了 `home.css` 与 `tokens.css` 间 `--c1`/`--c2` 语义对调问题；`/about/` 五类热力图颜色按亮/暗两套主题的去饱和灰度明度（`L*` 相邻阶差 ≥ 12）校准，确保灰度下也可辨。
+   - 颜色单一定义在 [tokens.css](../src/styles/tokens.css)，同时修正了 `home.css` 与 `tokens.css` 间类别对应关系（`论文=蓝 #224bbf/#3b76f6`、`技术=粉红 #cc3568/#ff6296`、`学习=绿 #16a38f/#80f2d2`、`修订=金 #eab02a/#ebb038`、`功能更新=紫 #45188a/#6c2bd9`）；`/about/` 五类热力图颜色按亮/暗两套主题的去饱和灰度明度（`L*` 相邻阶差 ≥ 11）校准，确保灰度下也可辨。
 2. **首页（[ActivityHeatmap.island.tsx](../src/components/islands/ActivityHeatmap.island.tsx)）**：
    - 保持 React 岛（`client:visible`）、单行统计栏与旁侧明细卡片结构；格子按热力图容器可用宽度自适应整数正方形边长（`< 340px` 时 `12px`，`< 450px` 时 `15px`，`< 580px` 时 `16px`，`>= 580px` 时 `18px`；间距 `3px`，`2–3px` 圆角），显示周数完全由容器可用宽度反算，统计口径跟随实际显示周数实时计算，窗口高度随内容自然适配。
    - **颜色跟随当前预设主色**：从 `.stage` 的 `--preset-accent` 派生 4 档浅到深色阶（图例同步跟随），主题或预设切换时仅重绘一次。

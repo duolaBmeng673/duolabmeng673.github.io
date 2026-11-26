@@ -1853,6 +1853,8 @@ a.toc-step-btn:focus-visible {
     opacity var(--dur-1, 120ms) ease;
 }
 .toc-slide-indicator.is-ready { opacity: 1; }
+.article[data-category="Research"] .toc-slide-indicator { background: var(--cat-research); }
+.article[data-category="Computer Science"] .toc-slide-indicator { background: var(--cat-tech); }
 .article[data-category="Study Notes"] .toc-slide-indicator { background: var(--cat-study); }
 [data-toc-pane="toc"] ol.has-toc-indicator li:has(> a.is-current)::after { display: none; }
 @keyframes article-arrive {
@@ -1883,6 +1885,14 @@ a.toc-step-btn:focus-visible {
 [data-toc-pane="toc"] li.toc-level-4 a, .article-toc-mobile li.toc-level-4 a { color: var(--tm); font-size: var(--fs-toc-3); font-weight: var(--fw-body); }
 [data-toc-pane="toc"] a:hover, [data-toc-pane="toc"] a.is-current,
 .article-toc-mobile a:hover, .article-toc-mobile a.is-current { color: var(--ac); }
+.article[data-category="Research"] [data-toc-pane="toc"] a:hover,
+.article[data-category="Research"] [data-toc-pane="toc"] a.is-current,
+.article[data-category="Research"] .article-toc-mobile a:hover,
+.article[data-category="Research"] .article-toc-mobile a.is-current { color: var(--cat-research); }
+.article[data-category="Computer Science"] [data-toc-pane="toc"] a:hover,
+.article[data-category="Computer Science"] [data-toc-pane="toc"] a.is-current,
+.article[data-category="Computer Science"] .article-toc-mobile a:hover,
+.article[data-category="Computer Science"] .article-toc-mobile a.is-current { color: var(--cat-tech); }
 .article[data-category="Study Notes"] [data-toc-pane="toc"] a:hover,
 .article[data-category="Study Notes"] [data-toc-pane="toc"] a.is-current,
 .article[data-category="Study Notes"] .article-toc-mobile a:hover,
@@ -1898,6 +1908,10 @@ a.toc-step-btn:focus-visible {
   border-radius: 2px;
   background: var(--ac);
 }
+.article[data-category="Research"] [data-toc-pane="toc"] li:has(> a.is-current)::after,
+.article[data-category="Research"] .article-toc-mobile li:has(> a.is-current)::after { background: var(--cat-research); }
+.article[data-category="Computer Science"] [data-toc-pane="toc"] li:has(> a.is-current)::after,
+.article[data-category="Computer Science"] .article-toc-mobile li:has(> a.is-current)::after { background: var(--cat-tech); }
 .article[data-category="Study Notes"] [data-toc-pane="toc"] li:has(> a.is-current)::after,
 .article[data-category="Study Notes"] .article-toc-mobile li:has(> a.is-current)::after { background: var(--cat-study); }
 .toc-empty-hint,
