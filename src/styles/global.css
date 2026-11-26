@@ -1205,10 +1205,11 @@ a.masthead-stat-card:hover { transform: translateY(-2px); border-color: var(--bd
 }
 .timeline-month-box {
   position: relative;
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  width: 100%;
-  padding: 0.34rem 0.64rem;
+  width: fit-content;
+  max-width: 100%;
+  padding: 0.34rem 0.68rem;
   border: 1px solid var(--bd-strong);
   border-radius: var(--r-ctl);
   background: var(--bg-elev);
