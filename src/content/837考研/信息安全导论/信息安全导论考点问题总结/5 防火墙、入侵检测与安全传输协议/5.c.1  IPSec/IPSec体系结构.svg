@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 448" width="720" height="448" role="img">
+  <title>IPSec 体系结构</title>
+  <desc>展示 IPSec 体系结构中 ESP 协议与 AH 协议对加密算法、认证算法、解释域（DOI）与密钥管理（IKE）的组织与协同关系。</desc>
+  <defs>
+    <marker id="ipsec-arch-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#1f2937" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+  <g font-family="'PingFang SC','Noto Sans SC','Microsoft YaHei',system-ui,sans-serif">
+    <!-- Top Root -->
+    <rect x="280" y="8" width="160" height="40" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
+    <text x="360" y="34" text-anchor="middle" font-size="16" font-weight="600" fill="#1f2937">体系结构</text>
+
+    <!-- Root to ESP / AH -->
+    <path d="M280 28 H212 V84" fill="none" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#ipsec-arch-arrow)"/>
+    <path d="M440 28 H508 V84" fill="none" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#ipsec-arch-arrow)"/>
+
+    <!-- Protocol Boxes -->
+    <rect x="140" y="88" width="144" height="40" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+    <text x="212" y="114" text-anchor="middle" font-size="16" font-weight="600" fill="#1e40af">ESP 协议</text>
+
+    <rect x="436" y="88" width="144" height="40" rx="8" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
+    <text x="508" y="114" text-anchor="middle" font-size="16" font-weight="600" fill="#115e59">AH 协议</text>
+
+    <!-- IKE Scope Group -->
+    <rect x="8" y="156" width="704" height="284" rx="12" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="6 4" data-role="group"/>
+    <text x="24" y="184" font-size="15" font-weight="600" fill="#92400e">密钥协商 IKE</text>
+
+    <!-- Connections from ESP & AH -->
+    <path d="M156 128 V316 H276" fill="none" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#ipsec-arch-arrow)"/>
+    <path d="M224 128 V192" fill="none" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#ipsec-arch-arrow)"/>
+    <path d="M264 128 V172 H472 V192" fill="none" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#ipsec-arch-arrow)"/>
+    <path d="M496 128 V192" fill="none" stroke="#14b8a6" stroke-width="1.5" marker-end="url(#ipsec-arch-arrow)"/>
+    <path d="M564 128 V316 H444" fill="none" stroke="#14b8a6" stroke-width="1.5" marker-end="url(#ipsec-arch-arrow)"/>
+
+    <!-- Stacked Algorithm Boxes -->
+    <rect x="168" y="196" width="128" height="44" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1" data-role="group"/>
+    <rect x="160" y="204" width="128" height="44" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+    <text x="224" y="232" text-anchor="middle" font-size="15" font-weight="600" fill="#1e40af">加密算法</text>
+
+    <rect x="440" y="196" width="128" height="44" rx="8" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1" data-role="group"/>
+    <rect x="432" y="204" width="128" height="44" rx="8" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
+    <text x="496" y="232" text-anchor="middle" font-size="15" font-weight="600" fill="#115e59">认证算法</text>
+
+    <!-- Algorithms to DOI -->
+    <path d="M224 248 V316" fill="none" stroke="#3b82f6" stroke-width="1.5"/>
+    <path d="M496 248 V316" fill="none" stroke="#14b8a6" stroke-width="1.5"/>
+
+    <!-- Interpretation Domain -->
+    <rect x="280" y="296" width="160" height="40" rx="20" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
+    <text x="360" y="322" text-anchor="middle" font-size="15" font-weight="600" fill="#1f2937">解释域（DOI）</text>
+
+    <!-- DOI to Key Management -->
+    <path d="M360 336 V372" fill="none" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#ipsec-arch-arrow)"/>
+
+    <!-- Key Management -->
+    <rect x="272" y="376" width="176" height="44" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
+    <line x1="288" y1="376" x2="288" y2="420" stroke="#94a3b8" stroke-width="1.5"/>
+    <text x="368" y="404" text-anchor="middle" font-size="15" font-weight="600" fill="#1f2937">密钥管理</text>
+  </g>
+</svg>

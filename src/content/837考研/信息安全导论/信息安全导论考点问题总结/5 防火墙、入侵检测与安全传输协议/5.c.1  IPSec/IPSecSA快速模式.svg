@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 292" width="720" height="292" role="img">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 332" width="720" height="332" role="img">
   <title>IPSec SA 快速模式协商过程</title>
-  <desc>展示 IPSec SA 快速模式的三报文交互过程，包含认证者、建议与选择 SA、Nonce、DH 公开值和身份 ID 交换。</desc>
+  <desc>展示 IPSec SA 快速模式的三报文交互过程，包含认证者、建议与选择 SA、Nonce、可选 DH 公开值和身份 ID 交换。</desc>
   <defs>
     <marker id="ipsec-quick-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
       <path d="M2 1L8 5L2 9" fill="none" stroke="#1f2937" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -13,16 +13,18 @@
     <rect x="584" y="8" width="128" height="42" rx="8" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
     <text x="648" y="35" text-anchor="middle" font-size="16" font-weight="600" fill="#115e59">响应方</text>
 
-    <line x1="72" y1="50" x2="72" y2="284" stroke="#94a3b8" stroke-width="1" stroke-dasharray="6 4"/>
-    <line x1="648" y1="50" x2="648" y2="284" stroke="#94a3b8" stroke-width="1" stroke-dasharray="6 4"/>
+    <line x1="72" y1="50" x2="72" y2="324" stroke="#94a3b8" stroke-width="1" stroke-dasharray="6 4"/>
+    <line x1="648" y1="50" x2="648" y2="324" stroke="#94a3b8" stroke-width="1" stroke-dasharray="6 4"/>
 
-    <line x1="72" y1="114" x2="644" y2="114" stroke="#3b82f6" stroke-width="2" marker-end="url(#ipsec-quick-arrow)"/>
-    <text x="360" y="100" text-anchor="middle" font-size="15" font-weight="600" fill="#1e40af" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">1. 认证者 1、建议 SA、Nonceᵢ、DH 公开值、ID 等</text>
+    <line x1="72" y1="136" x2="644" y2="136" stroke="#3b82f6" stroke-width="2" marker-end="url(#ipsec-quick-arrow)"/>
+    <text x="360" y="96" text-anchor="middle" font-size="15" font-weight="600" fill="#1e40af" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">1. 认证者 1、建议 SA、Nonceᵢ、ID 等</text>
+    <text x="360" y="118" text-anchor="middle" font-size="15" font-weight="400" fill="#1e40af" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">及 DH 公开值（可选，启用 PFS 时才有）</text>
 
-    <line x1="648" y1="190" x2="76" y2="190" stroke="#14b8a6" stroke-width="2" marker-end="url(#ipsec-quick-arrow)"/>
-    <text x="360" y="176" text-anchor="middle" font-size="15" font-weight="600" fill="#115e59" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">2. 认证者 2、选择 SA、Nonceᵣ、DH 公开值、ID 等</text>
+    <line x1="648" y1="228" x2="76" y2="228" stroke="#14b8a6" stroke-width="2" marker-end="url(#ipsec-quick-arrow)"/>
+    <text x="360" y="188" text-anchor="middle" font-size="15" font-weight="600" fill="#115e59" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">2. 认证者 2、选择 SA、Nonceᵣ、ID 等</text>
+    <text x="360" y="210" text-anchor="middle" font-size="15" font-weight="400" fill="#115e59" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">及 DH 公开值（可选，启用 PFS 时才有）</text>
 
-    <line x1="72" y1="266" x2="644" y2="266" stroke="#f59e0b" stroke-width="2" marker-end="url(#ipsec-quick-arrow)"/>
-    <text x="360" y="252" text-anchor="middle" font-size="15" font-weight="600" fill="#92400e" paint-order="stroke" stroke="#f7f6f2" stroke-width="2" stroke-linejoin="round">3. 认证者 3</text>
+    <line x1="72" y1="304" x2="644" y2="304" stroke="#f59e0b" stroke-width="2" marker-end="url(#ipsec-quick-arrow)"/>
+    <text x="360" y="290" text-anchor="middle" font-size="15" font-weight="600" fill="#92400e" paint-order="stroke" stroke="#f7f6f2" stroke-width="3" stroke-linejoin="round">3. 认证者 3</text>
   </g>
 </svg>
