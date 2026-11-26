@@ -66,7 +66,7 @@ export function hasLucideIcon(name: string): boolean {
 function normalizeRootSvgAttributes(attrsText: string): string {
   const cleaned = attrsText
     .replace(/\s*\b(?:width|height|stroke|stroke-width|aria-hidden)\s*=\s*(?:"[^"]*"|'[^']*')/gi, '')
-    .replace(/\s*\bclass\s*=\s*(?:"([^"]*)"|'([^']*)')/gi, (_match, dbl: string | undefined, sgl: string | undefined) => {
+    .replace(/\s*\bclass\s*=\s*(?:"([^"]*)"|'([^']*)')/gi, (_match: string, dbl: string | undefined, sgl: string | undefined) => {
       const tokens = (dbl ?? sgl ?? '')
         .split(/\s+/)
         .filter((token) => token && token !== 'preview-icon');
@@ -97,7 +97,7 @@ export function loadLucideSvg(name: string): string {
     .replace(/^(?:\s*<!--[\s\S]*?-->\s*)+/, '')
     .trim();
 
-  const normalizedSvg = raw.replace(/<svg\b([^>]*)>/i, (_full, attrs: string) => {
+  const normalizedSvg = raw.replace(/<svg\b([^>]*)>/i, (_full: string, attrs: string) => {
     return `<svg ${normalizeRootSvgAttributes(attrs)}>`;
   });
 
