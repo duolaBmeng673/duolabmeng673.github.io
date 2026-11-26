@@ -38,13 +38,12 @@ const activityPayloadJson = JSON.stringify({
   <section class="hero" aria-labelledby="hero-title">
     <div class="hgrid">
       <div>
-        <h1 id="hero-title">
-          <span class="hero-line">Welcome to</span>
-          <span class="hero-line">duolaBmeng673&apos;s blog</span>
+        <h1 id="hero-title" lang="en">
+          <span class="hero-line">Welcome to duolaBmeng673’s</span>
+          <span class="hero-line">notes and blog</span>
         </h1>
         <div class="cta">
           <a class="btn" href="/blog/">笔记归档 →</a>
-          <a class="btn ghost" href="/study-notes/837/">HIT 837 学习笔记</a>
         </div>
       </div>
     </div>
@@ -169,13 +168,9 @@ const activityPayloadJson = JSON.stringify({
     <div class="bento">
       <article class="card track-card rb-panel s4">
         <div class="track-head">
-          <div class="track-badge">
-            <span class="cat-dot" data-cat="Research" aria-hidden="true" />
-            <span>Research</span>
-          </div>
+          <h3>论文笔记</h3>
           <span class="track-count">{data.tracks.research.count} 篇</span>
         </div>
-        <h3>论文笔记</h3>
         <p class="track-desc">
           <a href="/blog/?series=NLP">自然语言处理</a>、<a href="/blog/?series=Multimodal">多模态与视觉</a>与<a href="/blog/?series=LLM%20%26%20Tables">大模型与表格</a>论文精读。
         </p>
@@ -196,13 +191,9 @@ const activityPayloadJson = JSON.stringify({
 
       <article class="card track-card rb-panel s4">
         <div class="track-head">
-          <div class="track-badge">
-            <span class="cat-dot" data-cat="Computer Science" aria-hidden="true" />
-            <span>Computer Science</span>
-          </div>
+          <h3>技术笔记</h3>
           <span class="track-count">{data.tracks.cs.count} 篇</span>
         </div>
-        <h3>技术笔记</h3>
         <p class="track-desc">ACM / OJ 算法竞赛题解、输入输出模板与工程实践。</p>
         <ul class="track-list">
           {data.tracks.cs.items.map((item) => (
@@ -221,13 +212,9 @@ const activityPayloadJson = JSON.stringify({
 
       <article class="card track-card rb-panel s4">
         <div class="track-head">
-          <div class="track-badge">
-            <span class="cat-dot" data-cat="Study Notes" aria-hidden="true" />
-            <span>HIT 837</span>
-          </div>
+          <h3>837 学习笔记</h3>
           <span class="track-count">{data.tracks.study.count} 篇</span>
         </div>
-        <h3>837 学习笔记</h3>
         <p class="track-desc">
           围绕<a href="/study-notes/837/">算法与信息安全</a>考纲整理（信息安全导论、网络安全基础与计算机网络，含背诵模式）。
         </p>

@@ -1,6 +1,6 @@
 export const siteConfig = {
   name: 'duolaBmeng673',
-  title: '信息安全、AI 与技术笔记 | duolaBmeng673',
+  title: 'duolaBmeng673 的博客',
   description: '信息安全、AI 与计算机科学方向的研究、代码和学习笔记。',
   education: '哈尔滨工业大学 信息安全专业',
   github: 'https://github.com/duolaBmeng673',

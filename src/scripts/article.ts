@@ -613,11 +613,11 @@ if (tocPanel) {
     transitionToView('tree', { direction: 'forward', focusFirst });
   };
 
-  const openJumpPanel = (trigger?: HTMLElement | null) => {
+  const openJumpPanel = (trigger?: HTMLElement | null, focusFirst = true) => {
     lastJumpTrigger = trigger ?? jumpToggle;
     if (mobileMq?.matches) {
       syncDrawer(true);
-      transitionToView('modules', { direction: 'forward', focusFirst: true });
+      transitionToView('modules', { direction: 'forward', focusFirst });
       return;
     }
     if (getComputedStyle(tocPanel).display === 'none' && navMobile) {
@@ -626,19 +626,20 @@ if (tocPanel) {
       navMobile.querySelector<HTMLElement>('summary')?.focus();
       return;
     }
-    transitionToView('modules', { direction: 'forward', focusFirst: true });
+    transitionToView('modules', { direction: 'forward', focusFirst });
   };
 
-  jumpToggle?.addEventListener('click', () => {
+  jumpToggle?.addEventListener('click', (event) => {
+    const fromKeyboard = event.detail === 0;
     if (view === 'toc') {
-      openJumpPanel(jumpToggle);
+      openJumpPanel(jumpToggle, fromKeyboard);
     } else {
       transitionToView('toc', { direction: 'backward', restoreTrigger: false });
-      jumpToggle.focus({ preventScroll: true });
+      if (fromKeyboard) jumpToggle.focus({ preventScroll: true });
     }
   });
 
-  articleJumpBtns.forEach((btn) => btn.addEventListener('click', () => openJumpPanel(btn)));
+  articleJumpBtns.forEach((btn) => btn.addEventListener('click', (event) => openJumpPanel(btn, event.detail === 0)));
 
   document.addEventListener('keydown', (event) => {
     if (!event.altKey || event.ctrlKey || event.metaKey || event.shiftKey || event.code !== 'KeyJ') return;
@@ -654,14 +655,14 @@ if (tocPanel) {
   });
 
   moduleButtons.forEach((btn) => {
-    btn.addEventListener('click', () => {
+    btn.addEventListener('click', (event) => {
       const slug = btn.dataset.tocSelectModule;
-      if (slug) activateModule(slug, true);
+      if (slug) activateModule(slug, event.detail === 0);
     });
   });
 
-  backModulesBtn?.addEventListener('click', () => {
-    transitionToView('modules', { direction: 'backward', focusFirst: true, preferSelectedModule: true });
+  backModulesBtn?.addEventListener('click', (event) => {
+    transitionToView('modules', { direction: 'backward', focusFirst: event.detail === 0, preferSelectedModule: true });
   });
 
   openBtn?.addEventListener('click', () => {

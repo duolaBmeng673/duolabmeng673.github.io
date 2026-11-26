@@ -48,30 +48,31 @@ const payloadJson = JSON.stringify({
   data-pinned-date={selectedCell?.date ?? dataset.buildDate}
   data-about-heatmap-payload={payloadJson}
 >
-  <div class="about-heat-head">
-    <div class="about-heat-title-wrap">
-      <h2 id="about-heatmap-title">全站活动与部署热力图</h2>
-    </div>
-  </div>
-
-  <div class="about-heat-summary" data-about-summary>
-    <div class="about-summary-metrics">
-      <span data-about-summary-metric="days" data-value={model.activeDays}>
-        总活跃天数 <strong>{model.activeDays} 天</strong>
-      </span>
-      <span aria-hidden="true">·</span>
-      <span data-about-summary-metric="streak" data-value={model.longestStreak}>
-        最长连续 <strong>{model.longestStreak} 天</strong>
-      </span>
-      <span aria-hidden="true">·</span>
-      <span data-about-summary-metric="total" data-value={model.totalActivities} data-raw-value={model.rawTotalActivities}>
-        总活动数 <strong>{model.totalActivities} 次</strong>（明细 {model.rawTotalActivities} 条）
-      </span>
-    </div>
-  </div>
-
   <div class="about-heat-body" data-about-body>
-    <div class="about-heat-grid-col" data-about-grid-col>
+    <div class="about-heat-main">
+      <div class="about-heat-head">
+        <div class="about-heat-title-wrap">
+          <h2 id="about-heatmap-title">全站活动与部署热力图</h2>
+        </div>
+      </div>
+
+      <div class="about-heat-summary" data-about-summary>
+        <div class="about-summary-metrics">
+          <span data-about-summary-metric="days" data-value={model.activeDays}>
+            总活跃天数 <strong>{model.activeDays} 天</strong>
+          </span>
+          <span aria-hidden="true">·</span>
+          <span data-about-summary-metric="streak" data-value={model.longestStreak}>
+            最长连续 <strong>{model.longestStreak} 天</strong>
+          </span>
+          <span aria-hidden="true">·</span>
+          <span data-about-summary-metric="total" data-value={model.totalActivities} data-raw-value={model.rawTotalActivities}>
+            总活动数 <strong>{model.totalActivities} 次</strong>
+          </span>
+        </div>
+      </div>
+
+      <div class="about-heat-grid-col" data-about-grid-col>
       <div class="about-heat-scroll" data-about-scroll tabindex="0" aria-label="活动热力图网格（可左右滑动查看历史记录，支持方向键移动与回车固定）">
         <div
           class="about-heat-calendar"
@@ -176,6 +177,7 @@ const payloadJson = JSON.stringify({
           );
         })}
       </div>
+    </div>
     </div>
 
     <aside

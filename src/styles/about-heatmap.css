@@ -117,12 +117,18 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr) clamp(260px, 28%, 330px);
   gap: 1rem;
-  align-items: start;
+  align-items: stretch;
   min-width: 0;
 }
 
 .about-heat-body[data-grid-fit="fit"] {
   grid-template-columns: max-content minmax(260px, 1fr);
+}
+
+.about-heat-main {
+  display: grid;
+  gap: 0.9rem;
+  min-width: 0;
 }
 
 .about-heat-grid-col {
@@ -275,7 +281,8 @@
   border: 1px solid var(--bd);
   background: color-mix(in srgb, var(--bg-elev) 74%, transparent);
   min-width: 0;
-  height: 214px;
+  height: 0;
+  min-height: 100%;
 }
 
 .about-heat-sidebar-head {
@@ -405,6 +412,7 @@
   }
   .about-heat-sidebar {
     height: 214px;
+    min-height: 0;
     max-height: 214px;
   }
 }

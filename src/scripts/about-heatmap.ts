@@ -211,10 +211,6 @@ function initAboutHeatmap(root: HTMLElement) {
       totalSummaryEl.dataset.rawValue = String(model.rawTotalActivities);
       const strong = totalSummaryEl.querySelector('strong');
       if (strong) strong.textContent = `${model.totalActivities} 次`;
-      const tailText = totalSummaryEl.lastChild;
-      if (tailText && tailText.nodeType === 3) {
-        tailText.textContent = `（明细 ${model.rawTotalActivities} 条）`;
-      }
     }
 
     calendarEl.dataset.start = model.start;

@@ -827,7 +827,7 @@ h1, h2, h3 {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 1.25rem 2rem;
-  align-items: center;
+  align-items: start;
   padding: 1.75rem 0 1.35rem;
 }
 .masthead-stats {
@@ -836,6 +836,19 @@ h1, h2, h3 {
   gap: 0.55rem;
 }
 .masthead-stats.is-two { grid-template-columns: repeat(2, minmax(7.4rem, 1fr)); }
+.masthead-stats.is-two:has(.masthead-module-counts) { grid-template-columns: minmax(9.5rem, auto) auto; }
+.masthead-module-counts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35rem 1rem;
+}
+.masthead-module-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.16rem;
+}
 .masthead-stat-card {
   display: flex;
   flex-direction: column;
@@ -1293,7 +1306,7 @@ a.masthead-stat-card:hover { transform: translateY(-2px); border-color: var(--bd
 .article-layout {
   --article-main-max: 50rem;
   --article-text-max: 44rem;
-  --article-toc-w: 16.5rem;
+  --article-toc-w: 18rem;
   --article-toc-gap: 2.25rem;
   --svg-breakout-max: min(
     720px,
@@ -1570,6 +1583,10 @@ button.quick-jump-pill:hover,
   box-shadow: inset 0 1px 0 var(--hi), 0 0.625rem 1.875rem var(--sh);
   transition: height var(--dur-2) var(--ease-out), max-height var(--dur-2) var(--ease-out);
 }
+.article-toc[data-toc-view="toc"] {
+  height: auto;
+  max-height: none;
+}
 .article-toc[data-toc-view="modules"] {
   height: auto;
   max-height: var(--toc-panel-height);
@@ -1761,7 +1778,10 @@ a.toc-step-btn:focus-visible {
   inset: 0;
   height: 100%;
 }
-[data-toc-pane="toc"],
+[data-toc-pane="toc"] {
+  overflow-y: visible;
+  overflow-x: clip;
+}
 [data-toc-pane="modules"] {
   overflow-y: auto;
   overflow-x: clip;
@@ -2172,22 +2192,23 @@ main:has(.study-module-layout) {
 .study-series-row .note-taxonomy { color: var(--tm); font-family: var(--mono); font-size: max(12px, 0.72rem); }
 .study-series-row .module-title { margin: 0.25rem 0 0.4rem; font-size: var(--fs-lg); }
 .study-series-row .module-desc { margin: 0; color: var(--ts); font-size: var(--fs-sm); line-height: 1.6; }
-.module-metrics { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+.module-metrics { display: flex; flex-wrap: wrap; align-items: center; gap: 0.35rem 0.55rem; }
 .module-metric-chip {
-  padding: 0.18rem 0.62rem;
-  border-radius: 999px;
-  border: 1px solid var(--bd);
-  background: var(--bg);
   color: var(--ts);
   font-size: var(--fs-xs);
   font-variant-numeric: tabular-nums;
 }
+.module-metric-chip + .module-metric-chip::before {
+  content: "·";
+  margin-right: 0.55rem;
+  color: var(--tm);
+}
 .module-preview-list {
   margin: 0;
-  padding: 0.75rem 0 0;
+  padding: 0;
   list-style: none;
   display: grid;
-  gap: 0.36rem;
+  gap: 0;
   border-top: 1px solid var(--bd);
 }
 .module-preview-list li {
@@ -2199,17 +2220,18 @@ main:has(.study-module-layout) {
   grid-template-columns: 2rem minmax(0, 1fr) auto;
   gap: 0.6rem;
   align-items: center;
-  padding: 0.36rem 0.58rem;
-  border: 1px solid transparent;
-  border-radius: var(--r-ctl);
-  background: color-mix(in srgb, var(--bg) 60%, transparent);
+  padding: 0.46rem 0.25rem;
+  border-bottom: 1px solid var(--bd);
+  background: transparent;
   font-size: 0.84rem;
   color: var(--ts);
-  transition: border-color var(--transition), color var(--transition), background var(--transition);
+  transition: color var(--transition), background var(--transition);
+}
+.module-preview-list li:last-child a {
+  border-bottom: 0;
 }
 .module-preview-list li a:is(:hover,:focus-visible) {
-  border-color: var(--bd-strong);
-  background: var(--bg);
+  background: var(--row-hover);
   color: var(--ac);
 }
 .module-preview-list li a:is(:hover,:focus-visible) .preview-count { color: var(--ac); }
@@ -2661,7 +2683,7 @@ body.study-overview-page main { flex: 1 0 auto; min-height: 0; }
 .footer-brand p { margin: 0; line-height: 1.65; max-width: 42ch; }
 .footer-cols { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem 1.5rem; }
 .footer-col { display: grid; gap: 0.42rem; align-content: start; }
-.footer-col-title { font-family: var(--mono); font-size: max(12px, 0.72rem); text-transform: uppercase; letter-spacing: 0.06em; color: var(--tx); margin-bottom: 0.2rem; }
+.footer-col-title { font-family: var(--sans); font-size: max(12px, 0.8125rem); font-weight: 600; color: var(--ts); margin-bottom: 0.2rem; }
 .footer-col a { color: var(--tm); transition: color var(--dur-1) var(--ease-out); }
 .footer-col a:hover { color: var(--ac); }
 .footer-bottom {
@@ -2756,14 +2778,17 @@ body.study-overview-page main { flex: 1 0 auto; min-height: 0; }
     top: calc(var(--header-h, 64px) + 0.35rem);
   }
   .masthead-stats { gap: 0.45rem; }
-  .masthead-stat-card { padding: 0.65rem 0.7rem; gap: 0.15rem; }
+  .masthead-stat-card { justify-content: flex-start; padding: 0.65rem 0.7rem; gap: 0.2rem; }
   .masthead-stat-num { font-size: 1.25rem; }
   .masthead-stat-sub { display: none; }
+  .masthead-stats.is-two:has(.masthead-module-counts) { grid-template-columns: auto minmax(0, 1fr); }
+  .masthead-module-counts { gap: 0.3rem 0.55rem; }
+  .masthead-module-item .masthead-stat-sub { display: block; font-size: max(12px, 0.72rem); }
   .identity-actions { align-items: stretch; flex-direction: column; }
   .identity-actions .button { width: 100%; }
   .section-heading { align-items: start; flex-direction: column; gap: 0.5rem; }
   .editorial-row { grid-template-columns: 4.8rem minmax(0, 1fr) 1rem; gap: 0.55rem; padding-block: 0.9rem; }
-  .study-series-row { align-items: start; flex-direction: column; gap: 0.65rem; padding: 1.05rem 1rem; }
+  .study-series-row { align-items: stretch; flex-direction: column; gap: 0.65rem; padding: 1.05rem 1rem; }
   .module-entry { text-align: left; }
   .study-note-list li > a { grid-template-columns: 3.1rem minmax(0, 1fr) 0.9rem; gap: 0.55rem; padding: 0.85rem 0.95rem; }
   .study-pagination { grid-template-columns: 1fr; }
@@ -2792,10 +2817,16 @@ body.study-overview-page main { flex: 1 0 auto; min-height: 0; }
     transform: translateY(105%);
     transition: transform var(--dur-2) var(--ease-out), height var(--dur-2) var(--ease-out);
   }
+  .article-toc[data-toc-view="toc"],
   .article-toc[data-toc-view="modules"] {
     height: auto;
     max-height: 78vh;
     max-height: 78dvh;
+  }
+  .article-toc [data-toc-pane="toc"] {
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
   }
   .article-toc[data-toc-view="tree"] {
     height: 78vh;

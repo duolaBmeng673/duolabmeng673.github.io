@@ -16,22 +16,24 @@ const overviewDescription = `HIT 837 专业课考研笔记，按${moduleSummary}
   <header class="page-intro page-masthead">
     <div>
       <h1>学习笔记</h1>
-      <p>{overviewDescription}</p>
     </div>
-    <div class="masthead-stats-col">
-      <div class="masthead-stats is-two" aria-label="学习笔记统计">
-        <div class="masthead-stat-card">
-          <span class="masthead-stat-label">公开笔记</span>
-          <CountUp to={posts.length} />
-          <span class="masthead-stat-sub">含公式、图表与交互演示</span>
-        </div>
-        <div class="masthead-stat-card">
-          <span class="masthead-stat-label">专题模块</span>
-          <CountUp to={modules.length} />
-          <span class="masthead-stat-sub">{moduleNames.join(' · ')}</span>
+    <div class="masthead-stats is-two" aria-label="学习笔记统计">
+      <div class="masthead-stat-card">
+        <span class="masthead-stat-label">公开笔记</span>
+        <CountUp to={posts.length} />
+        <span class="masthead-stat-sub">含公式、图表与交互演示</span>
+      </div>
+      <div class="masthead-stat-card">
+        <span class="masthead-stat-label">专题模块</span>
+        <div class="masthead-module-counts">
+          {modules.map((mod) => (
+            <div class="masthead-module-item">
+              <CountUp to={mod.count} />
+              <span class="masthead-stat-sub">{mod.title}</span>
+            </div>
+          ))}
         </div>
       </div>
-      <p class="study-status">公开笔记数量不代表复习完成进度。</p>
     </div>
   </header>
   {series.map(([name, info]) => <section class="study-series-group" aria-label={info.title}><StudyModuleLinks modules={modules.filter((module) => module.series === name)} headingLevel="h2" /></section>)}
