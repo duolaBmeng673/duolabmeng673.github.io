@@ -1,8 +1,11 @@
 /**
- * Drifting architectural square-grid backdrop.
- * - Desktop / fine pointer: follows pointer with fading trailing cells + click ripples.
- * - Touch / coarse pointer: runs an autonomous sweeping diagonal light band without needing pointer events.
- * - prefers-reduced-motion: reduce: renders a crisp static grid and disables drift/animation loops.
+ * Interactive architectural square-grid backdrop.
+ * - Cell pitch is 20px, aligned with article-tile-bg's adjacent tile-gap centerlines (x = 20*c, y = 20*r).
+ * - Desktop / fine pointer: follows pointer with fading trailing cells + click ripples across the full top canvas
+ *   (including the header region and homepage).
+ * - Touch / coarse pointer: runs an autonomous sweeping diagonal light band on the homepage (unless paused);
+ *   stays static on non-home pages via (hover: none), (pointer: coarse).
+ * - prefers-reduced-motion: reduce: renders a crisp static grid and disables animation loops.
  */
 const canvas = document.querySelector<HTMLCanvasElement>('[data-ambient-grid]');
 if (canvas) {
@@ -10,7 +13,7 @@ if (canvas) {
   if (ctx) {
     const homeRoot = document.querySelector<HTMLElement>('[data-home-root]');
     const isHome = Boolean(homeRoot) || document.body.classList.contains('home-page');
-    const squareSize = Math.round((44 * 2) / 3);
+    const squareSize = 20;
     const motionMedia = window.matchMedia?.('(prefers-reduced-motion: reduce)');
     const pointerMedia = window.matchMedia?.('(hover: hover) and (pointer: fine)');
     const coarseOrNoHoverMedia = window.matchMedia?.('(hover: none), (pointer: coarse)');
@@ -19,13 +22,19 @@ if (canvas) {
     let userPaused = homeRoot?.dataset.motion === 'paused';
     let hasFinePointer = pointerMedia?.matches ?? true;
     let isCoarseOrNoHover = coarseOrNoHoverMedia?.matches ?? false;
-    let reduceMotion = systemReduceMotion || userPaused || (!isHome && isCoarseOrNoHover);
-    const syncReduceMotion = () => {
-      reduceMotion = systemReduceMotion || userPaused || (!isHome && isCoarseOrNoHover);
+    let allowPointer = !systemReduceMotion && hasFinePointer;
+    let allowTouchSweep = !systemReduceMotion && !userPaused && !hasFinePointer && !(isCoarseOrNoHover && !isHome);
+
+    const syncMotionState = () => {
+      allowPointer = !systemReduceMotion && hasFinePointer;
+      allowTouchSweep = !systemReduceMotion && !userPaused && !hasFinePointer && !(isCoarseOrNoHover && !isHome);
     };
+
     let theme = document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
     let width = 0;
     let height = 0;
+    let canvasDocLeft = 0;
+    let canvasDocTop = 0;
     let dpr = 1;
     let inView = true;
     let offsetX = 0;
@@ -56,7 +65,7 @@ if (canvas) {
     const syncTrailColor = () => {
       const next = parseTrailRgb();
       if (next[0] === targetRgb[0] && next[1] === targetRgb[1] && next[2] === targetRgb[2]) return;
-      if (reduceMotion) {
+      if (!allowPointer && !allowTouchSweep) {
         currentRgb = next;
         fromRgb = next;
         targetRgb = next;
@@ -87,25 +96,11 @@ if (canvas) {
       const rect = canvas.getBoundingClientRect();
       width = Math.max(1, Math.floor(rect.width));
       height = Math.max(1, Math.floor(rect.height));
+      canvasDocLeft = Math.round(rect.left + window.scrollX);
+      canvasDocTop = Math.round(rect.top + window.scrollY);
       dpr = Math.min(window.devicePixelRatio || 1, 2);
       canvas.width = Math.floor(width * dpr);
       canvas.height = Math.floor(height * dpr);
-    };
-
-    const getHeaderExclusion = (canvasRect?: DOMRect) => {
-      const header = document.querySelector<HTMLElement>('.site-header');
-      if (!header) return null;
-      const hr = header.getBoundingClientRect();
-      const cr = canvasRect ?? canvas.getBoundingClientRect();
-      const left = hr.left - cr.left;
-      const top = hr.top - cr.top;
-      if (hr.width <= 0 || hr.height <= 0 || top > cr.height || top + hr.height < 0) return null;
-      return {
-        left: Math.max(0, left),
-        top: Math.max(0, top - 12),
-        right: Math.min(cr.width, left + hr.width),
-        bottom: Math.min(cr.height, top + hr.height),
-      };
     };
 
     const boostCell = (gx: number, gy: number, energy: number) => {
@@ -115,8 +110,8 @@ if (canvas) {
     };
 
     const igniteAt = (localX: number, localY: number) => {
-      const gx = Math.floor((localX + offsetX) / squareSize);
-      const gy = Math.floor((localY + offsetY) / squareSize);
+      const gx = Math.floor((localX + canvasDocLeft + offsetX) / squareSize);
+      const gy = Math.floor((localY + canvasDocTop + offsetY) / squareSize);
       boostCell(gx, gy, 1.0);
       boostCell(gx + 1, gy, 0.36);
       boostCell(gx - 1, gy, 0.36);
@@ -124,20 +119,22 @@ if (canvas) {
       boostCell(gx, gy - 1, 0.36);
     };
 
+    const snapGridLine = (coord: number) => (dpr >= 2 ? Math.round(coord * dpr) / dpr : Math.round(coord) + 0.5);
+
     const renderFrame = (now: number) => {
       const dt = Math.min((now - lastTime) / 1000, 0.05);
       lastTime = now;
 
-      if (!reduceMotion && !hasFinePointer) {
-        // Touch / coarse pointer: regular drifting + diagonal sweeping band independent of pointer events
+      if (allowTouchSweep) {
+        // Touch / coarse pointer on homepage: drifting + diagonal sweeping band independent of pointer events
         offsetX += dt * 11;
         offsetY += dt * 7;
         elapsed += dt;
 
-        const minCol = Math.floor(offsetX / squareSize) - 1;
-        const maxCol = Math.ceil((width + offsetX) / squareSize) + 1;
-        const minRow = Math.floor(offsetY / squareSize) - 1;
-        const maxRow = Math.ceil((height + offsetY) / squareSize) + 1;
+        const minCol = Math.floor((canvasDocLeft + offsetX) / squareSize) - 1;
+        const maxCol = Math.ceil((canvasDocLeft + width + offsetX) / squareSize) + 1;
+        const minRow = Math.floor((canvasDocTop + offsetY) / squareSize) - 1;
+        const maxRow = Math.ceil((canvasDocTop + height + offsetY) / squareSize) + 1;
         const span = (maxCol - minCol) * 0.72 + (maxRow - minRow) * 0.56 + 10;
         const sweepCenter = ((elapsed * 3.4) % span) - 5;
         for (let gy = minRow; gy <= maxRow; gy += 1) {
@@ -196,24 +193,13 @@ if (canvas) {
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.clearRect(0, 0, width, height);
 
-      const modX = ((offsetX % squareSize) + squareSize) % squareSize;
-      const modY = ((offsetY % squareSize) + squareSize) % squareSize;
+      const totalOffsetX = canvasDocLeft + offsetX;
+      const totalOffsetY = canvasDocTop + offsetY;
+      const modX = ((totalOffsetX % squareSize) + squareSize) % squareSize;
+      const modY = ((totalOffsetY % squareSize) + squareSize) % squareSize;
 
-      if (!reduceMotion) {
+      if (allowPointer || allowTouchSweep) {
         const decay = Math.exp(-dt * 2.7);
-        const headerBox = getHeaderExclusion();
-        ctx.save();
-        if (headerBox) {
-          ctx.beginPath();
-          ctx.rect(0, 0, width, height);
-          ctx.rect(
-            headerBox.left,
-            headerBox.top,
-            Math.max(0, headerBox.right - headerBox.left),
-            Math.max(0, headerBox.bottom - headerBox.top),
-          );
-          ctx.clip('evenodd');
-        }
         for (const [key, energy] of activeCells.entries()) {
           const nextEnergy = energy * decay;
           if (nextEnergy < 0.012) {
@@ -224,8 +210,8 @@ if (canvas) {
           const comma = key.indexOf(',');
           const gx = Number(key.slice(0, comma));
           const gy = Number(key.slice(comma + 1));
-          const sx = gx * squareSize - offsetX;
-          const sy = gy * squareSize - offsetY;
+          const sx = gx * squareSize - totalOffsetX;
+          const sy = gy * squareSize - totalOffsetY;
           if (sx + squareSize < 0 || sx > width || sy + squareSize < 0 || sy > height) continue;
 
           ctx.fillStyle = `rgb(${rgbToken} / ${(nextEnergy * palette.maxFill).toFixed(4)})`;
@@ -235,27 +221,26 @@ if (canvas) {
           ctx.lineWidth = 1;
           ctx.strokeRect(sx + 0.5, sy + 0.5, squareSize - 1, squareSize - 1);
         }
-        ctx.restore();
       }
 
       ctx.strokeStyle = palette.line;
       ctx.lineWidth = 1;
       ctx.beginPath();
       for (let x = -modX; x <= width + squareSize; x += squareSize) {
-        const px = Math.round(x) + 0.5;
+        const px = snapGridLine(x);
         ctx.moveTo(px, 0);
         ctx.lineTo(px, height);
       }
       for (let y = -modY; y <= height + squareSize; y += squareSize) {
-        const py = Math.round(y) + 0.5;
+        const py = snapGridLine(y);
         ctx.moveTo(0, py);
         ctx.lineTo(width, py);
       }
       ctx.stroke();
 
-      if (!reduceMotion && !hasFinePointer && inView && !document.hidden) {
+      if (allowTouchSweep && inView && !document.hidden) {
         rafId = requestAnimationFrame(renderFrame);
-      } else if (!reduceMotion && hasFinePointer && inView && !document.hidden && (activeCells.size > 0 || ripples.length > 0 || colorTransitionStart > 0)) {
+      } else if (allowPointer && inView && !document.hidden && (activeCells.size > 0 || ripples.length > 0 || colorTransitionStart > 0)) {
         rafId = requestAnimationFrame(renderFrame);
       } else {
         rafId = 0;
@@ -263,8 +248,8 @@ if (canvas) {
     };
 
     const startLoop = () => {
-      if (reduceMotion || rafId || !inView || document.hidden) return;
-      if (hasFinePointer && activeCells.size === 0 && ripples.length === 0) return;
+      if ((!allowPointer && !allowTouchSweep) || rafId || !inView || document.hidden) return;
+      if (!allowTouchSweep && activeCells.size === 0 && ripples.length === 0 && colorTransitionStart === 0) return;
       lastTime = performance.now();
       rafId = requestAnimationFrame(renderFrame);
     };
@@ -288,15 +273,11 @@ if (canvas) {
     window.addEventListener(
       'pointermove',
       (e) => {
-        if (reduceMotion || !hasFinePointer) return;
+        if (!allowPointer) return;
         const rect = canvas.getBoundingClientRect();
         const lx = e.clientX - rect.left;
         const ly = e.clientY - rect.top;
-        const headerBox = getHeaderExclusion(rect);
-        const insideHeader = headerBox
-          && lx >= headerBox.left && lx <= headerBox.right
-          && ly >= headerBox.top && ly <= headerBox.bottom;
-        if (!insideHeader && lx >= 0 && lx <= rect.width && ly >= 0 && ly <= rect.height) {
+        if (lx >= 0 && lx <= rect.width && ly >= 0 && ly <= rect.height) {
           pointer.x = lx;
           pointer.y = ly;
           pointer.inside = true;
@@ -312,14 +293,14 @@ if (canvas) {
     window.addEventListener(
       'pointerdown',
       (e) => {
-        if (reduceMotion || !hasFinePointer) return;
+        if (!allowPointer) return;
         const rect = canvas.getBoundingClientRect();
         const lx = e.clientX - rect.left;
         const ly = e.clientY - rect.top;
         if (lx >= 0 && lx <= rect.width && ly >= 0 && ly <= rect.height) {
           ripples.push({
-            wx: lx + offsetX,
-            wy: ly + offsetY,
+            wx: lx + canvasDocLeft + offsetX,
+            wy: ly + canvasDocTop + offsetY,
             age: 0,
             duration: 0.65,
             speed: 380,
@@ -335,7 +316,7 @@ if (canvas) {
     });
 
     document.addEventListener('visibilitychange', () => {
-      if (!document.hidden && inView && !reduceMotion) startLoop();
+      if (!document.hidden && inView && (allowPointer || allowTouchSweep)) startLoop();
       else if (document.hidden) stopLoop();
     });
 
@@ -345,8 +326,8 @@ if (canvas) {
 
     motionMedia?.addEventListener('change', (e) => {
       systemReduceMotion = e.matches;
-      syncReduceMotion();
-      if (reduceMotion) {
+      syncMotionState();
+      if (!allowPointer && !allowTouchSweep) {
         activeCells.clear();
         ripples.length = 0;
         stopLoop();
@@ -359,12 +340,14 @@ if (canvas) {
     if (homeRoot) {
       new MutationObserver(() => {
         userPaused = homeRoot.dataset.motion === 'paused';
-        syncReduceMotion();
-        if (reduceMotion) {
+        syncMotionState();
+        if (!allowPointer && !allowTouchSweep) {
           activeCells.clear();
           ripples.length = 0;
           stopLoop();
           renderFrame(performance.now());
+        } else if (!allowTouchSweep && activeCells.size === 0 && ripples.length === 0) {
+          stopLoop();
         } else {
           startLoop();
         }
@@ -374,16 +357,16 @@ if (canvas) {
     const handlePointerMediaChange = () => {
       hasFinePointer = pointerMedia?.matches ?? true;
       isCoarseOrNoHover = coarseOrNoHoverMedia?.matches ?? false;
-      syncReduceMotion();
+      syncMotionState();
       pointer.inside = false;
-      if (reduceMotion) {
+      if (!allowPointer && !allowTouchSweep) {
         activeCells.clear();
         ripples.length = 0;
         stopLoop();
         renderFrame(performance.now());
-      } else if (!hasFinePointer && inView && !document.hidden) {
+      } else if (allowTouchSweep && inView && !document.hidden) {
         startLoop();
-      } else if (hasFinePointer && activeCells.size === 0 && ripples.length === 0) {
+      } else if (!allowTouchSweep && activeCells.size === 0 && ripples.length === 0) {
         stopLoop();
       }
     };
@@ -395,7 +378,7 @@ if (canvas) {
       new IntersectionObserver(
         ([entry]) => {
           inView = entry?.isIntersecting ?? true;
-          if (inView && !reduceMotion && !document.hidden) startLoop();
+          if (inView && (allowPointer || allowTouchSweep) && !document.hidden) startLoop();
           else if (!inView) stopLoop();
         },
         { threshold: 0.01 }

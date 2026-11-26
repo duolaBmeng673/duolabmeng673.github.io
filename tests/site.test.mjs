@@ -500,7 +500,7 @@ test('study module pages include module switcher and swapped lower dock pill, an
   }
 
   const blogHtml = read('dist/blog/index.html');
-  assert.doesNotMatch(blogHtml, /data-archive-description|class="masthead-stat-sub"|class="note-description"|class="note-taxonomy"|class="notes-view"|class="timeline-month"|class="blog-timeline-layout"|class="blog-time-rail"|data-blog-time-rail|data-active-time|data-view-toggle|data-subcategory-filter|data-series-filter|timeline-year-head|data-year-count|timeline-chapter-box|data-time-entry|data-rail-month-count|阅读笔记/);
+  assert.doesNotMatch(blogHtml, /data-archive-description|class="eyebrow"|论文 · 算法|class="note-description"|class="note-taxonomy"|class="notes-view"|class="timeline-month"|class="blog-timeline-layout"|class="blog-time-rail"|data-blog-time-rail|data-active-time|data-view-toggle|data-subcategory-filter|data-series-filter|timeline-year-head|data-year-count|timeline-chapter-box|data-time-entry|data-rail-month-count|阅读笔记/);
   assert.match(blogHtml, /class="result-status visually-hidden"\s+data-result-status/);
   assert.match(blogHtml, /<section\s+class="timeline-view"\s+data-timeline-view/);
   assert.match(globalCss, /\.timeline-year\s*\{[^}]*grid-template-columns:\s*180px\s+minmax\(0,\s*1fr\);/);
@@ -635,6 +635,14 @@ test('study articles omit redundant header quick jump row, show shortcut on TOC 
   assert.match(tokensCss, /--toc-tree-height:\s*min\(760px,\s*calc\(100vh - var\(--header-h, 56px\) - 36px\)\)/);
   const globalCss = read('src/styles/global.css');
   assert.match(globalCss, /overscroll-behavior:\s*contain/);
+  const articleScript = read('src/scripts/article.ts');
+  assert.ok(!articleScript.includes('toc-sub-group'), 'article TOC must keep all section subheadings expanded instead of collapsing them');
+  const vulnHtml = read('dist/study-notes/837/network-protocol-vulnerabilities/index.html');
+  const vulnTocPane = vulnHtml.match(/data-toc-pane="toc"[^>]*>([\s\S]*?)<\/div>\s*<div class="toc-pane" data-toc-pane="modules"/)?.[1] ?? '';
+  assert.match(vulnTocPane, /<li class="toc-level-3"><a data-toc-link[^>]*>路由协议<\/a><\/li>/);
+  assert.match(vulnTocPane, /<li class="toc-level-4"><a data-toc-link[^>]*>RIP<\/a><\/li>/);
+  assert.match(vulnTocPane, /<li class="toc-level-4"><a data-toc-link[^>]*>OSPF<\/a><\/li>/);
+  assert.match(vulnTocPane, /<li class="toc-level-4"><a data-toc-link[^>]*>BGP<\/a><\/li>/);
   assert.match(globalCss, /\.article-toc\[data-toc-view="modules"\]\s*\{[^}]*height:\s*auto;/);
   assert.match(globalCss, /\.article-toc\[data-toc-view="tree"\]\s*\{[^}]*height:\s*var\(--toc-tree-height\)/);
 
@@ -680,9 +688,13 @@ test('article pages mount fixed non-repeating random tile background while non-a
   const tileScript = read('src/scripts/article-tile-bg.ts');
   assert.ok(!tileScript.includes('requestAnimationFrame'), 'article-tile-bg must not run a requestAnimationFrame animation loop');
   assert.ok(!tileScript.includes('setInterval'), 'article-tile-bg must not run a setInterval loop');
+  assert.match(tileScript, /const CELL = 20;/, 'article-tile-bg pitch must stay 20px');
+  assert.match(tileScript, /const HALF_GAP = \(CELL - TILE\) \/ 2;/, 'article-tile-bg must center tiles so gap centerlines sit on 20*c');
 
   const ambientGrid = read('src/scripts/ambient-grid.ts');
-  assert.match(ambientGrid, /const squareSize = Math\.round\(\(44 \* 2\) \/ 3\);/, 'ambient grid side length across all pages must be 2/3 of 44px');
+  assert.match(ambientGrid, /const squareSize = 20;/, 'ambient grid cell pitch must match lower tile gap centerline spacing (20px)');
+  assert.ok(!ambientGrid.includes('getHeaderExclusion'), 'ambient grid must remain interactive under the header bar');
+  assert.match(ambientGrid, /allowPointer = !systemReduceMotion && hasFinePointer;/, 'desktop pointer hover/click must stay active on homepage even when motion toggle pauses idle animations');
 });
 
 test('article TOC preserves smooth scrolling, study cards/chapter nav omit left green bars, and nav aligns numbers', () => {

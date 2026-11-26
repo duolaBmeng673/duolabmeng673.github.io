@@ -124,6 +124,7 @@ test('normalizeTocSections removes single top-level wrapper heading and promotes
   const normal = [
     { depth: 2, slug: 'a', text: '1 对称密钥密码' },
     { depth: 3, slug: 'a1', text: '1.1 分组密码' },
+    { depth: 4, slug: 'a11', text: 'RIP' },
     { depth: 2, slug: 'b', text: '2 DES' },
   ];
   assert.deepEqual(normalizeTocSections(normal), normal);

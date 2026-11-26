@@ -2,6 +2,13 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { existsSync, readFileSync } from 'node:fs';
 import { defineTools, groupTools, tools } from '../src/data/tools.ts';
+import {
+  CATEGORY_FALLBACK_ICONS,
+  DEFAULT_TOOL_ICON,
+  hasLucideIcon,
+  loadLucideSvg,
+  resolveToolIconName,
+} from '../src/lib/tool-icons.ts';
 
 const file = (path) => new URL('../' + path, import.meta.url);
 const read = (path) => readFileSync(file(path), 'utf8');
@@ -10,8 +17,11 @@ test('tool links can be maintained with only a name and URL', () => {
   assert.deepEqual(defineTools([{ name: ' 我的工具 ', url: ' https://example.com/tool ' }]), [
     { name: '我的工具', url: 'https://example.com/tool' },
   ]);
-  assert.deepEqual(defineTools([{ name: '工具', url: 'https://example.com', description: ' ', category: '' }]), [
+  assert.deepEqual(defineTools([{ name: '工具', url: 'https://example.com', description: ' ', category: '', icon: '  ' }]), [
     { name: '工具', url: 'https://example.com' },
+  ]);
+  assert.deepEqual(defineTools([{ name: '带图标工具', url: 'https://example.com/icon', icon: ' sparkles ' }]), [
+    { name: '带图标工具', url: 'https://example.com/icon', icon: 'sparkles' },
   ]);
   assert.deepEqual(defineTools([]), []);
   for (const url of ['javascript:alert(1)', 'data:text/html,test', '/tools/test/', 'https://user:password@example.com']) {
@@ -87,4 +97,61 @@ test('removed classroom code is not built and external tools stay out of the sit
   assert.doesNotMatch(read('dist/tools/index.html'), /常用的在线工具与资源，点击后在新窗口打开。/);
   assert.match(read('dist/tools/index.html'), /收录工具/);
   assert.match(read('dist/tools/index.html'), /工具分组/);
+});
+
+test('all configured and fallback tool icons exist in lucide-static and inline cleanly without runtime JS', () => {
+  const rawTools = JSON.parse(read('src/data/tools.json'));
+  assert.equal(rawTools.length, tools.length);
+
+  for (const tool of rawTools) {
+    assert.equal(typeof tool.icon, 'string', `${tool.name} must configure an icon field`);
+    assert.ok(tool.icon.trim().length > 0, `${tool.name} icon field must not be empty`);
+    assert.ok(
+      hasLucideIcon(tool.icon),
+      `${tool.name} icon "${tool.icon}" must exist in node_modules/lucide-static/icons`,
+    );
+    assert.ok(
+      existsSync(file(`node_modules/lucide-static/icons/${tool.icon.trim()}.svg`)),
+      `Missing SVG file for ${tool.name}: ${tool.icon}.svg`,
+    );
+  }
+
+  for (const [category, fallbackIcon] of Object.entries(CATEGORY_FALLBACK_ICONS)) {
+    assert.ok(
+      hasLucideIcon(fallbackIcon),
+      `Fallback icon "${fallbackIcon}" for category "${category}" must exist in lucide-static`,
+    );
+  }
+  assert.ok(
+    hasLucideIcon(DEFAULT_TOOL_ICON),
+    `Default fallback icon "${DEFAULT_TOOL_ICON}" must exist in lucide-static`,
+  );
+
+  assert.throws(() => loadLucideSvg('nonexistent-icon-xyz'), /lucide-static/);
+  assert.equal(resolveToolIconName({ icon: 'sparkles', category: '壁纸' }), 'sparkles');
+  assert.equal(resolveToolIconName({ category: '壁纸' }), CATEGORY_FALLBACK_ICONS['壁纸']);
+  assert.equal(resolveToolIconName({ category: '未知分组' }), DEFAULT_TOOL_ICON);
+  assert.equal(resolveToolIconName({}), DEFAULT_TOOL_ICON);
+
+  const html = read('dist/tools/index.html');
+  assert.ok(!html.includes('preview-icon'), 'tools page must not contain preview-icon class');
+  assert.ok(!html.includes('<astro-island'), 'tools page must not mount any React islands');
+
+  const cards = [...html.matchAll(/<a\b[^>]*class="tool-card"[^>]*>([^]*?)<\/a>/g)];
+  const ordered = groupTools(tools).flatMap((group) => group.tools);
+  assert.equal(cards.length, ordered.length);
+
+  for (const [index, card] of cards.entries()) {
+    const tool = ordered[index];
+    const markMatch = card[1].match(/<span class="tool-mark" aria-hidden="true">([^]*?)<\/span>/);
+    assert.ok(markMatch, `${tool.name} must render .tool-mark`);
+    const svgMatch = markMatch[1].match(/<svg\b[^>]*>/);
+    assert.ok(svgMatch, `${tool.name} .tool-mark must contain an inline <svg>`);
+    assert.match(svgMatch[0], /\bstroke="currentColor"/);
+    assert.match(svgMatch[0], /\bstroke-width="2"/);
+    assert.match(svgMatch[0], /\baria-hidden="true"/);
+    assert.doesNotMatch(svgMatch[0], /preview-icon/);
+    assert.ok(svgMatch[0].includes(`lucide-${resolveToolIconName(tool)}`), `${tool.name} rendered wrong icon`);
+    assert.ok(card[1].includes('<span class="tool-card-arrow" aria-hidden="true">↗</span>'));
+  }
 });

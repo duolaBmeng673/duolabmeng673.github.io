@@ -161,35 +161,6 @@ const revealInsideFold = (element: HTMLElement) => {
 const links = [...document.querySelectorAll<HTMLAnchorElement>('[data-toc-link]')];
 const headings = links.map((link) => document.getElementById(decodeURIComponent(link.hash.slice(1)))).filter((heading): heading is HTMLElement => Boolean(heading));
 const tocList = document.querySelector<HTMLOListElement>('[data-toc-pane="toc"] ol');
-const parentH2ById = new Map<string, string>();
-const groupByH2 = new Map<string, HTMLLIElement>();
-if (tocList && links.length) {
-  const items = [...tocList.children].filter((el): el is HTMLLIElement => el.tagName === 'LI');
-  let currentH2Id = '';
-  let currentSubList: HTMLOListElement | null = null;
-  for (const li of items) {
-    const a = li.querySelector<HTMLAnchorElement>('a[data-toc-link]');
-    const slug = a?.hash ? decodeURIComponent(a.hash.slice(1)) : '';
-    if (li.classList.contains('toc-level-2')) {
-      currentH2Id = slug;
-      currentSubList = null;
-    } else if (li.classList.contains('toc-level-3') && currentH2Id) {
-      if (slug) parentH2ById.set(slug, currentH2Id);
-      if (!currentSubList) {
-        const groupLi = document.createElement('li');
-        groupLi.className = 'toc-sub-group';
-        groupLi.dataset.tocGroup = currentH2Id;
-        currentSubList = document.createElement('ol');
-        currentSubList.className = 'toc-sub-list';
-        groupLi.append(currentSubList);
-        li.before(groupLi);
-        groupByH2.set(currentH2Id, groupLi);
-      }
-      currentSubList.append(li);
-    }
-  }
-  if (groupByH2.size > 0) tocList.classList.add('has-toc-collapse');
-}
 let tocIndicator: HTMLSpanElement | null = null;
 if (tocList && links.length) {
   tocIndicator = document.createElement('span');
@@ -212,27 +183,12 @@ const syncTocIndicator = () => {
   tocIndicator.style.height = `${Math.round(height)}px`;
   tocIndicator.classList.add('is-ready');
 };
-const syncExpandedGroups = (activeId?: string) => {
-  if (!groupByH2.size) return;
-  const activeH2 = activeId
-    ? (parentH2ById.get(activeId) ?? (groupByH2.has(activeId) ? activeId : ''))
-    : '';
-  for (const [h2Id, group] of groupByH2) {
-    const expanded = h2Id === activeH2;
-    group.classList.toggle('is-expanded', expanded);
-    group.querySelectorAll<HTMLAnchorElement>('a[data-toc-link]').forEach((a) => {
-      if (expanded) a.removeAttribute('tabindex');
-      else a.setAttribute('tabindex', '-1');
-    });
-  }
-};
 const setCurrentById = (activeId?: string) => {
   links.forEach((link) => {
     const active = Boolean(activeId) && activeId === decodeURIComponent(link.hash.slice(1));
     link.classList.toggle('is-current', active);
     if (active) link.setAttribute('aria-current', 'location'); else link.removeAttribute('aria-current');
   });
-  syncExpandedGroups(activeId);
   syncTocIndicator();
 };
 let tocScrollLock = false;
@@ -319,13 +275,8 @@ document.addEventListener('study-mode-change', (event) => {
   clearTocScrollLock();
   updateCurrent();
 });
-if (tocList) {
-  tocList.addEventListener('transitionend', (e) => {
-    if ((e.target as HTMLElement)?.classList?.contains('toc-sub-group')) syncTocIndicator();
-  });
-  if ('ResizeObserver' in window) {
-    new ResizeObserver(syncTocIndicator).observe(tocList);
-  }
+if (tocList && 'ResizeObserver' in window) {
+  new ResizeObserver(syncTocIndicator).observe(tocList);
 }
 if (headings.length) {
   window.addEventListener('scroll', () => {

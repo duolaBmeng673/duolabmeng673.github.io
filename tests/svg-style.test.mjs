@@ -185,7 +185,7 @@ test('SVG v1 palette meets >= 4.5:1 contrast in both light and dark filter modes
 
 test('all 837 SVGs pass static viewBox, background rect, and v2 metadata checks', () => {
   const allSvgs = findSvgs(ALL_837_ROOT);
-  assert.equal(allSvgs.length, 82, `expected 82 SVGs under ${ALL_837_ROOT}, got ${allSvgs.length}`);
+  assert.equal(allSvgs.length, 84, `expected 84 SVGs under ${ALL_837_ROOT}, got ${allSvgs.length}`);
 
   for (const relPath of allSvgs) {
     const svg = readFileSync(new URL(`../${relPath}`, import.meta.url), 'utf8');

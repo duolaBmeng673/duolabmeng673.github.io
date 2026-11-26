@@ -1,8 +1,11 @@
 // Static fixed-position non-repeating random square-tile background for article reading pages.
 // Renders once on load, resize, and theme toggle (zero animation loop, 0% idle CPU, zero periodic tiling).
+// Tiles sit inside each 20px cell with a symmetric 1px margin (2px gap between adjacent tiles),
+// so adjacent tile-gap centerlines fall exactly on x = 20*c and y = 20*r, matching ambient-grid.
 
 const CELL = 20;
 const TILE = 18;
+const HALF_GAP = (CELL - TILE) / 2;
 
 const hash2d = (x: number, y: number, seed: number): number => {
   let h = (Math.imul(x, 374761393) + Math.imul(y, 668265263) + Math.imul(seed, 1442695041)) | 0;
@@ -26,7 +29,7 @@ function initArticleFixedTileBg() {
     const rect = canvas.getBoundingClientRect();
     const width = Math.max(1, Math.ceil(rect.width));
     const height = Math.max(1, Math.ceil(rect.height));
-    const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
 
     canvas.width = Math.round(width * dpr);
     canvas.height = Math.round(height * dpr);
@@ -43,12 +46,12 @@ function initArticleFixedTileBg() {
     const cols = Math.ceil(width / CELL);
     const rows = Math.ceil(height / CELL);
 
-    // Base micro-tile matrix
+    // Base micro-tile matrix centered inside each CELL so gap centerlines sit on 20*c / 20*r
     ctx.fillStyle = `rgba(${baseColor}, ${baseAlpha})`;
     for (let r = 0; r < rows; r += 1) {
-      const y = r * CELL;
+      const y = r * CELL + HALF_GAP;
       for (let c = 0; c < cols; c += 1) {
-        ctx.fillRect(c * CELL, y, TILE, TILE);
+        ctx.fillRect(c * CELL + HALF_GAP, y, TILE, TILE);
       }
     }
 
@@ -61,11 +64,11 @@ function initArticleFixedTileBg() {
       for (let c = 0; c < cols; c += 1) {
         const h = hash2d(c, r, seed);
         if (h < 0.008) {
-          tier3.push([c * CELL, r * CELL]);
+          tier3.push([c * CELL + HALF_GAP, r * CELL + HALF_GAP]);
         } else if (h < 0.024) {
-          tier2.push([c * CELL, r * CELL]);
+          tier2.push([c * CELL + HALF_GAP, r * CELL + HALF_GAP]);
         } else if (h < 0.052) {
-          tier1.push([c * CELL, r * CELL]);
+          tier1.push([c * CELL + HALF_GAP, r * CELL + HALF_GAP]);
         }
       }
     }

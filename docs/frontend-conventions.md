@@ -48,8 +48,8 @@
 
 1. **目录与命名**：全部 React 岛文件只允许存放在 `src/components/islands/` 目录下，文件名强制采用 `*.island.tsx`（辅以同目录局部样式或工具模块，严禁把无关 React 代码散落到其他目录）。
 2. **水合指令**：
-   - `ActivityHeatmap`（首屏舞台核心交互）、`CardSwap`（底部专题叠卡交互）与 `CountUp`（统计卡计数器跃动）使用 `client:visible`；
-   - `GradientWaves`（顶部装饰着色器背景，且已配备同等尺寸静态渐变占位）允许使用 `client:idle` 推迟 React 运行时加载，避免阻塞首屏；
+   - 首页桌面端（`>= 900px`）的 `GradientWaves`（顶部装饰着色器背景，配备静态渐变占位）、`ActivityHeatmap`（首屏舞台核心交互）与 `CardSwap`（底部专题叠卡交互）统一使用 `client:media="(min-width: 900px)"`，手机端 `< 900px` 不加载也不激活上述 React 运行时与舞台岛；
+   - `/about/`、`/blog/`、`/study-notes/` 统计卡上的 `CountUp`（计数器跃动）使用 `client:visible`；
    - **禁止使用 `client:load`**（除非事前报告理由并获得用户明确批准）。
 3. **数据流**：全部业务数据（活动记录、写作日期、预设色板等）只能在 `.astro` 页面于构建期准备好，并通过**可序列化的 `props`** 传入岛内；**严禁**在岛内 `fetch` 站内数据、导入大型内容集合或硬编码快照。
 4. **副作用与资源清理**：岛内每个 `useEffect` / `useLayoutEffect` **必须返回清理函数**，确保卸载或重跑时完整清理：

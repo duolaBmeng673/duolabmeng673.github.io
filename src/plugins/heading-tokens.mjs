@@ -191,5 +191,5 @@ export function normalizeTocSections(headings) {
       items = rest.map((heading) => ({ ...heading, depth: Math.max(2, heading.depth - delta) }));
     }
   }
-  return items.filter((heading) => heading.depth >= 2 && heading.depth <= 3);
+  return items.filter((heading) => heading.depth >= 2 && heading.depth <= 4);
 }

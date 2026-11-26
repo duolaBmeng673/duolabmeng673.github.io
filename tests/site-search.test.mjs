@@ -130,3 +130,55 @@ test('platform shortcut detection, labels, event.code matching, and pre-paint HT
   assert.doesNotMatch(homeHtml, /Cmd K/);
   assert.match(studyHtml, /data-jump-shortcut\s+data-shortcut-kind="jump"/);
 });
+
+test('mobile search icon button toggles search drawer and restores focus on Escape', () => {
+  const script = ts.transpileModule(
+    readFileSync(new URL('../src/scripts/site-search.ts', import.meta.url), 'utf8'),
+    { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 } },
+  ).outputText;
+
+  class Element {
+    constructor(tag = 'div') { this.tag = tag; this.children = []; this.handlers = {}; this.dataset = {}; this.attrs = {}; this.value = ''; }
+    addEventListener(name, fn) { this.handlers[name] = fn; }
+    setAttribute(name, value) { this.attrs[name] = value; }
+    append(...nodes) { for (const node of nodes) { node.parent = this; this.children.push(node); } }
+    replaceChildren() { this.children.forEach((child) => { child.parent = null; }); this.children = []; }
+    contains(node) { return node === this || this.children.some((child) => child.contains(node)); }
+    querySelectorAll() { return []; }
+    focus() { document.activeElement = this; }
+  }
+
+  const shell = new Element(), trigger = new Element('button'), input = new Element('input'), popover = new Element(), results = new Element('ul'), status = new Element(), all = new Element('a');
+  shell.append(trigger, input, popover); popover.append(status, results, all);
+  const elements = {
+    '[data-search-shell]': shell,
+    '[data-search-trigger]': trigger,
+    '[data-search-input]': input,
+    '[data-search-popover]': popover,
+    '[data-search-results]': results,
+    '[data-search-status]': status,
+    '[data-search-all]': all,
+  };
+  const document = { activeElement: null, handlers: {}, querySelector: (selector) => elements[selector], createElement: (tag) => new Element(tag), addEventListener(name, fn) { this.handlers[name] = fn; } };
+  const platformShortcuts = loadPlatformShortcuts();
+
+  runInNewContext(script, {
+    document,
+    URLSearchParams,
+    navigator: { platform: 'Linux', userAgent: 'Mozilla/5.0' },
+    exports: {},
+    require: (id) => (id.includes('platform-shortcuts') ? platformShortcuts : { rankSearch: () => [], searchSnippet: () => '', loadSearchIndex: async () => [] }),
+  });
+
+  trigger.handlers.click();
+  assert.equal(shell.dataset.mobileSearchOpen, 'true');
+  assert.equal(trigger.attrs['aria-expanded'], 'true');
+  assert.equal(popover.hidden, false);
+  assert.equal(document.activeElement, input);
+
+  document.handlers.keydown({ key: 'Escape', target: input, preventDefault() {} });
+  assert.equal(shell.dataset.mobileSearchOpen, undefined);
+  assert.equal(trigger.attrs['aria-expanded'], 'false');
+  assert.equal(popover.hidden, true);
+  assert.equal(document.activeElement, trigger);
+});

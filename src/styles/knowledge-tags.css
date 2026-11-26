@@ -359,16 +359,16 @@ span.knowledge-chip { cursor: inherit; }
 @media (max-width: 639px) {
   .study-note-list .knowledge-tags,
   .knowledge-entry .knowledge-tags,
-  .knowledge-post-row .knowledge-tags {
-    display: none;
-  }
+  .knowledge-post-row .knowledge-tags,
   .blog-card.knowledge-entry .knowledge-tags,
-  .article[data-category="Research"] .article-header .knowledge-tags,
-  .article[data-category="Computer Science"] .article-header .knowledge-tags {
-    display: flex;
-  }
-  .article[data-category="Study Notes"] .article-header .knowledge-tags {
-    display: none;
+  .article .article-header .knowledge-tags,
+  .article .article-header .tag-list,
+  .archive-tools .blog-legend,
+  .knowledge-directory .knowledge-legend-toggle,
+  .knowledge-directory .knowledge-aside,
+  .study-chapter-nav,
+  .chapter-count {
+    display: none !important;
   }
 }
 

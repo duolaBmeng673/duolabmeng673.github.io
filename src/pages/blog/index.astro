@@ -36,22 +36,27 @@ const timeline = getYearlyTimeline(posts).map((yearGroup) => {
 <BaseLayout title="技术笔记" description="论文阅读与算法题解。" bodyClass="archive-page">
   <header class="page-intro page-masthead">
     <div>
-      <p class="eyebrow">论文 · 算法</p>
       <h1 data-archive-title>技术笔记</h1>
     </div>
-    <div class="masthead-stats" aria-label="技术归档统计">
+    <div class="masthead-stats is-two" aria-label="技术归档统计">
       <div class="masthead-stat-card">
         <span class="masthead-stat-label">公开技术与论文</span>
         <CountUp to={regularPosts.length} />
+        <span class="masthead-stat-sub">论文精读与算法题解</span>
       </div>
-      <a class="masthead-stat-card" href="/blog/?category=Research">
-        <span class="masthead-stat-label">论文精读</span>
-        <CountUp to={researchCount} />
-      </a>
-      <a class="masthead-stat-card" href="/blog/?category=Computer%20Science">
-        <span class="masthead-stat-label">算法题解</span>
-        <CountUp to={csCount} />
-      </a>
+      <div class="masthead-stat-card">
+        <span class="masthead-stat-label">专题分类</span>
+        <div class="masthead-module-counts">
+          <a class="masthead-module-item" href="/blog/?category=Research">
+            <CountUp to={researchCount} />
+            <span class="masthead-stat-sub">论文精读</span>
+          </a>
+          <a class="masthead-module-item" href="/blog/?category=Computer%20Science">
+            <CountUp to={csCount} />
+            <span class="masthead-stat-sub">算法题解</span>
+          </a>
+        </div>
+      </div>
     </div>
   </header>
   <div class="archive-sentinel" data-archive-sentinel aria-hidden="true"></div>

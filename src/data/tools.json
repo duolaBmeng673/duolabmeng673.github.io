@@ -3,114 +3,133 @@
     "name": "哲风壁纸",
     "url": "https://haowallpaper.com/homeView",
     "category": "壁纸",
+    "icon": "wallpaper",
     "description": "壁纸浏览与下载。"
   },
   {
     "name": "Konachan",
     "url": "https://konachan.net/post",
     "category": "壁纸",
+    "icon": "images",
     "description": "动漫壁纸图库。"
   },
   {
     "name": "docsmall",
     "url": "https://docsmall.com",
     "category": "文档",
+    "icon": "file-sliders",
     "description": "在线图片与 PDF 处理工具。"
   },
   {
     "name": "iLovePDF",
     "url": "https://www.ilovepdf.com",
     "category": "文档",
+    "icon": "file-text",
     "description": "在线 PDF 处理工具。"
   },
   {
     "name": "Twitter GIF Downloader",
     "url": "https://savetools.net/tools/x-twitter-gif-downloader/",
     "category": "下载",
+    "icon": "image-play",
     "description": "X / Twitter GIF 下载工具。"
   },
   {
     "name": "React Bits",
     "url": "https://reactbits.dev/",
     "category": "前端组件",
+    "icon": "sparkles",
     "description": "React 动效与交互组件。"
   },
   {
     "name": "React Drops",
     "url": "https://reactdrops.dev",
     "category": "前端组件",
+    "icon": "component",
     "description": "React 组件资源。"
   },
   {
     "name": "RareUI",
     "url": "https://www.rareui.com/components",
     "category": "前端组件",
+    "icon": "layers",
     "description": "现代 UI 组件与交互效果库。"
   },
   {
     "name": "AI 中转站评测",
     "url": "https://aitshirtdesign.com",
     "category": "AI 工具",
+    "icon": "clipboard-check",
     "description": "AI 中转服务评测参考。"
   },
   {
     "name": "Simular Box",
     "url": "https://box.simular.ai",
     "category": "AI 工具",
+    "icon": "box",
     "description": "AI 智能体云端虚拟机与浏览器运行环境。"
   },
   {
     "name": "PriceAI",
     "url": "https://priceai.cc",
     "category": "AI 工具",
+    "icon": "radar",
     "description": "AI 订阅与中转 API 比价雷达。"
   },
   {
     "name": "水獭比价",
     "url": "https://shuita.xyz",
     "category": "AI 工具",
+    "icon": "scale",
     "description": "AI 会员订阅与渠道价格对比参考。"
   },
   {
     "name": "837 开源考研知识库",
     "url": "https://wangan.online",
     "category": "学习与社区",
+    "icon": "book-open",
     "description": "837 信息安全考研开源学习知识库。"
   },
   {
     "name": "中国大学 MOOC",
     "url": "https://www.icourse163.org",
     "category": "学习与社区",
+    "icon": "graduation-cap",
     "description": "高校精品在线开放课程平台。"
   },
   {
     "name": "吾爱破解社区",
     "url": "https://www.52pojie.cn/index.php",
     "category": "学习与社区",
+    "icon": "binary",
     "description": "软件安全分析与逆向技术交流社区。"
   },
   {
     "name": "菜鸟工具",
     "url": "https://www.jyshare.com",
     "category": "开发工具",
+    "icon": "wrench",
     "description": "常用在线编程与开发辅助工具集合。"
   },
   {
-    "name": "GPT 对话导出器",
-    "url": "https://chromewebstore.google.com/detail/chatgpt-%E5%AF%BC%E5%87%BA%E5%99%A8-chatgpt-%E8%BD%AC%E6%8D%A2%E4%B8%BA-p/ilmdofdhpnhffldihboadndccenlnfll?hl=zh-CN",
+    "name": "AI 对话导出器",
+    "url": "https://chromewebstore.google.com/detail/ai-exporter-save-chatgpt/kagjkiiecagemklhmhkabbalfpbianbe",
     "category": "Google 组件",
-    "description": "将 ChatGPT 对话导出为 PDF / Markdown 等格式。"
+    "icon": "message-square-share",
+    "description": "将主流 AI 对话导出为 PDF / Markdown 等格式。"
   },
   {
     "name": "Claude Usage Meter",
     "url": "https://chromewebstore.google.com/detail/claude-usage-meter/kgpahkcgadpnklinijdojapiadnfelae?hl=zh-CN",
     "category": "Google 组件",
+    "icon": "gauge",
     "description": "实时查看 Claude 用量限额与重置时间。"
   },
   {
     "name": "Scriber",
     "url": "https://chromewebstore.google.com/detail/scriber-%E2%80%94-download-public/jfbjfbndikbkdccjfdigeinhclgjfdnp?hl=zh-CN",
     "category": "Google 组件",
+    "icon": "file-down",
     "description": "一键下载公开可访问的网页 PDF 文档。"
   }
 ]

@@ -3,10 +3,39 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import GradientWavesIsland from '../components/islands/GradientWaves.island';
 import ActivityHeatmapIsland from '../components/islands/ActivityHeatmap.island';
 import CardSwapIsland from '../components/islands/CardSwap.island';
+import { tools } from '../data/tools';
 import { getHomePageData } from '../lib/home-data';
+import { loadLucideSvg } from '../lib/tool-icons';
 import '../styles/home.css';
 
 const data = await getHomePageData();
+const techNoteCount = data.tracks.research.count + data.tracks.cs.count;
+const mobileStageCards = [
+  {
+    title: '技术笔记',
+    href: '/blog/',
+    meta: `${techNoteCount} 篇 · 论文与算法`,
+    iconSvg: loadLucideSvg('code-xml'),
+  },
+  {
+    title: '学习笔记',
+    href: '/study-notes/',
+    meta: `${data.tracks.study.count} 篇 · HIT 837`,
+    iconSvg: loadLucideSvg('book-open'),
+  },
+  {
+    title: '工具',
+    href: '/tools/',
+    meta: `${tools.length} 项 · 精选效率`,
+    iconSvg: loadLucideSvg('wrench'),
+  },
+  {
+    title: '关于',
+    href: '/about/',
+    meta: '杨雨飞 · 个人主页',
+    iconSvg: loadLucideSvg('user-round'),
+  },
+];
 const wavePresets = data.presets.map((p) => ({
   slug: p.slug,
   horizonColor: p.horizonColor,
@@ -50,8 +79,18 @@ const activityPayloadJson = JSON.stringify({
 
     <div class="stage" data-hero-stage>
       <div class="stage-wave-wrap" aria-hidden="true">
-        <GradientWavesIsland client:idle presets={wavePresets} defaultSlug="all" />
+        <GradientWavesIsland client:media="(min-width: 900px)" presets={wavePresets} defaultSlug="all" />
       </div>
+
+      <nav class="mobile-stage-grid" aria-label="站点主要板块">
+        {mobileStageCards.map((card) => (
+          <a class="mobile-stage-card" href={card.href}>
+            <span class="mobile-stage-icon" aria-hidden="true"><Fragment set:html={card.iconSvg} /></span>
+            <strong class="mobile-stage-title">{card.title}</strong>
+            <span class="mobile-stage-meta">{card.meta}</span>
+          </a>
+        ))}
+      </nav>
 
       <div class="win w1">
         <div class="wt">
@@ -141,7 +180,7 @@ const activityPayloadJson = JSON.stringify({
 
       <div class="win w4" data-activity-payload={activityPayloadJson}>
         <ActivityHeatmapIsland
-          client:visible
+          client:media="(min-width: 900px)"
           buildDate={data.heatmap.buildDate}
           writingItems={data.heatmap.writingItems}
           activityItems={data.heatmap.activityItems}
@@ -210,7 +249,7 @@ const activityPayloadJson = JSON.stringify({
         </div>
       </article>
 
-      <article class="card track-card rb-panel s4">
+      <article class="card track-card rb-panel s4 is-study-track">
         <div class="track-head">
           <h3>837 学习笔记</h3>
           <span class="track-count">{data.tracks.study.count} 篇</span>
@@ -312,7 +351,7 @@ const activityPayloadJson = JSON.stringify({
       </div>
 
       <div class="card rb-panel s5">
-        <CardSwapIsland client:visible cards={data.swapCards} />
+        <CardSwapIsland client:media="(min-width: 900px)" cards={data.swapCards} />
         <div class="card-foot">
           <div>
             <h3>专题传送门</h3>

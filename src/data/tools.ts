@@ -6,6 +6,7 @@ export interface Tool {
   url: string;
   description?: string;
   category?: string;
+  icon?: string;
 }
 
 export function defineTools(entries: readonly Tool[]): Tool[] {
@@ -24,7 +25,14 @@ export function defineTools(entries: readonly Tool[]): Tool[] {
     seen.add(parsed.href);
     const description = entry.description?.trim();
     const category = entry.category?.trim();
-    return { name, url, ...(description ? { description } : {}), ...(category ? { category } : {}) };
+    const icon = entry.icon?.trim();
+    return {
+      name,
+      url,
+      ...(description ? { description } : {}),
+      ...(category ? { category } : {}),
+      ...(icon ? { icon } : {}),
+    };
   });
 }
 

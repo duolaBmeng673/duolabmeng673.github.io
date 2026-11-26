@@ -46,7 +46,7 @@
   background: var(--ac-soft);
   color: var(--ac);
 }
-.tool-mark svg { width: 1.05rem; height: 1.05rem; }
+.tool-mark svg { width: 20px; height: 20px; display: block; }
 .tool-card-copy { display: grid; min-width: 0; gap: 0.25rem; overflow-wrap: anywhere; }
 .tool-card-copy strong { color: var(--tx); font-family: var(--sans); font-size: 0.98rem; font-weight: var(--fw-h); line-height: 1.35; }
 .tool-card-copy > span { color: var(--ts); font-size: max(12px, 0.81rem); line-height: 1.45; }
