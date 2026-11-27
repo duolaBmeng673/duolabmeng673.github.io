@@ -21,15 +21,13 @@ const overviewDescription = `HIT 837 专业课考研笔记，按${moduleSummary}
       <div class="masthead-stat-card">
         <span class="masthead-stat-label">公开笔记</span>
         <CountUp to={posts.length} />
-        <span class="masthead-stat-sub">含公式、图表与交互演示</span>
       </div>
       <div class="masthead-stat-card">
-        <span class="masthead-stat-label">专题模块</span>
         <div class="masthead-module-counts">
           {modules.map((mod) => (
             <div class="masthead-module-item">
+              <span class="masthead-stat-label">{mod.title}</span>
               <CountUp to={mod.count} />
-              <span class="masthead-stat-sub">{mod.title}</span>
             </div>
           ))}
         </div>

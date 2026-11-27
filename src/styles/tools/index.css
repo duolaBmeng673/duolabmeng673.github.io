@@ -1,4 +1,4 @@
-.tool-groups { display: grid; gap: 1.5rem; padding: 1.25rem 0 3rem; }
+.tool-groups { display: grid; gap: 1.5rem; padding: 1rem 0 3rem; }
 .tool-group { min-width: 0; }
 .tool-group + .tool-group { padding-top: 1.5rem; border-top: 1px solid var(--bd); }
 .tool-group-head { display: flex; align-items: baseline; justify-content: space-between; gap: 0.75rem; margin: 0 0 0.8rem; padding-bottom: 0.55rem; border-bottom: 1px solid var(--bd); }

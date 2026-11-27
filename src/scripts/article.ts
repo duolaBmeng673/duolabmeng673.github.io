@@ -160,8 +160,10 @@ const revealInsideFold = (element: HTMLElement) => {
 };
 const links = [...document.querySelectorAll<HTMLAnchorElement>('[data-toc-link]')];
 const headings = links.map((link) => document.getElementById(decodeURIComponent(link.hash.slice(1)))).filter((heading): heading is HTMLElement => Boolean(heading));
-const tocList = document.querySelector<HTMLOListElement>('[data-toc-pane="toc"] ol');
+const tocPane = document.querySelector<HTMLElement>('[data-toc-pane="toc"]');
+const tocList = tocPane?.querySelector<HTMLOListElement>('ol') ?? null;
 let tocIndicator: HTMLSpanElement | null = null;
+let lastScrolledTocId: string | undefined;
 if (tocList && links.length) {
   tocIndicator = document.createElement('span');
   tocIndicator.className = 'toc-slide-indicator';
@@ -169,6 +171,27 @@ if (tocList && links.length) {
   tocList.prepend(tocIndicator);
   tocList.classList.add('has-toc-indicator');
 }
+const ensureTocItemInView = (item: HTMLElement) => {
+  if (!tocPane || tocPane.clientHeight <= 0 || tocPane.scrollHeight <= tocPane.clientHeight + 2) return;
+  const edgePad = 10;
+  const paneRect = tocPane.getBoundingClientRect();
+  const itemRect = item.getBoundingClientRect();
+  if (paneRect.height <= 0 || itemRect.height <= 0) return;
+
+  const minTop = paneRect.top + edgePad;
+  const maxBottom = paneRect.bottom - edgePad;
+  let nextTop: number | null = null;
+
+  if (itemRect.bottom > maxBottom) {
+    nextTop = tocPane.scrollTop + (itemRect.bottom - maxBottom);
+  } else if (itemRect.top < minTop) {
+    nextTop = tocPane.scrollTop - (minTop - itemRect.top);
+  }
+  if (nextTop === null) return;
+
+  const maxScroll = Math.max(0, tocPane.scrollHeight - tocPane.clientHeight);
+  tocPane.scrollTop = Math.max(0, Math.min(maxScroll, nextTop));
+};
 const syncTocIndicator = () => {
   if (!tocIndicator || !tocList) return;
   const active = links.find((link) => link.classList.contains('is-current'));
@@ -184,11 +207,20 @@ const syncTocIndicator = () => {
   tocIndicator.classList.add('is-ready');
 };
 const setCurrentById = (activeId?: string) => {
+  const changed = activeId !== lastScrolledTocId;
+  lastScrolledTocId = activeId;
+  let activeItem: HTMLElement | null = null;
   links.forEach((link) => {
     const active = Boolean(activeId) && activeId === decodeURIComponent(link.hash.slice(1));
     link.classList.toggle('is-current', active);
-    if (active) link.setAttribute('aria-current', 'location'); else link.removeAttribute('aria-current');
+    if (active) {
+      link.setAttribute('aria-current', 'location');
+      activeItem = link.closest<HTMLElement>('li');
+    } else {
+      link.removeAttribute('aria-current');
+    }
   });
+  if (changed && activeItem) ensureTocItemInView(activeItem);
   syncTocIndicator();
 };
 let tocScrollLock = false;
