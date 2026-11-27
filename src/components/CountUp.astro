@@ -3,10 +3,29 @@ export interface Props {
   to: number;
   from?: number;
   duration?: number;
+  delay?: number;
+  mode?: 'roll' | 'count';
+  easing?: 'spring' | 'easeOut' | 'expo' | 'linear';
+  replayOnHover?: boolean;
+  separator?: string;
+  prefix?: string;
+  suffix?: string;
   class?: string;
 }
 
-const { to, from = 0, duration = 360, class: className = 'masthead-stat-num' } = Astro.props;
+const {
+  to,
+  from = 0,
+  duration = 1.35,
+  delay = 0,
+  mode = 'roll',
+  easing = 'spring',
+  replayOnHover = true,
+  separator = '',
+  prefix = '',
+  suffix = '',
+  class: className = 'masthead-stat-num',
+} = Astro.props;
 ---
 
 <span
@@ -14,6 +33,13 @@ const { to, from = 0, duration = 360, class: className = 'masthead-stat-num' } =
   data-countup={to}
   data-countup-from={from}
   data-countup-duration={duration}
+  data-countup-delay={delay}
+  data-countup-mode={mode}
+  data-countup-easing={easing}
+  data-countup-hover={replayOnHover ? 'true' : 'false'}
+  data-countup-separator={separator || undefined}
+  data-countup-prefix={prefix || undefined}
+  data-countup-suffix={suffix || undefined}
 ><strong class={className}>{to}</strong></span>
 
 <script>

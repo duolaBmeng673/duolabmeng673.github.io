@@ -98,13 +98,20 @@ body[data-channel="study"] {
   --focus: var(--brand-ac);
 }
 
-@keyframes countup-fade {
-  from { opacity: 0.35; transform: translateY(3px); }
-  to { opacity: 1; transform: none; }
+.countup-wrap {
+  display: inline-flex;
+  align-items: baseline;
 }
-.countup-wrap.is-entering {
-  display: inline-block;
-  animation: countup-fade var(--dur-2) var(--ease-out) both;
+.cu-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 html {
@@ -553,7 +560,6 @@ html[data-platform="mac"] [data-shortcut-kind="jump"]:not([data-shortcut-synced]
 }
 .type-settings-panel .panel-label { margin-bottom: 0; }
 .type-size-options { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.35rem; }
-.toc-fold-options { grid-template-columns: repeat(2, 1fr); }
 .type-size-options button {
   min-height: 2rem;
   border: 1px solid var(--bd);
@@ -840,6 +846,9 @@ h1, h2, h3 {
   align-items: start;
   padding: 1.75rem 0 1rem;
 }
+.page-masthead:has(.masthead-stats.is-rail) {
+  align-items: center;
+}
 .page-masthead > div > h1:last-child { margin-bottom: 0; }
 .masthead-stats {
   display: grid;
@@ -848,6 +857,48 @@ h1, h2, h3 {
 }
 .masthead-stats.is-two { grid-template-columns: repeat(2, minmax(7.4rem, 1fr)); }
 .masthead-stats.is-two:has(.masthead-module-counts) { grid-template-columns: minmax(9.5rem, auto) auto; }
+.masthead-stats.is-rail {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  flex-wrap: wrap;
+}
+.masthead-rail-item {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.22rem;
+  padding: 0.1rem 1.05rem;
+  color: var(--tx);
+  text-decoration: none;
+  transition: color var(--lift-dur) ease;
+}
+.masthead-rail-item:first-child { padding-left: 0; }
+.masthead-rail-item:last-child { padding-right: 0; }
+.masthead-rail-item + .masthead-rail-item { border-left: 1px solid var(--bd); }
+a.masthead-rail-item:is(:hover, :focus-visible) .masthead-stat-label,
+a.masthead-rail-item:is(:hover, :focus-visible) .masthead-stat-num { color: var(--ac); }
+.masthead-rail-value {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.24rem;
+}
+.masthead-rail-unit {
+  font-family: var(--sans);
+  font-size: var(--fs-xs);
+  font-weight: 500;
+  color: var(--tm);
+}
+.masthead-rail-item.is-total .masthead-stat-num {
+  font-size: clamp(1.42rem, 2.2vw, 1.68rem);
+  font-weight: 700;
+  color: var(--ac);
+}
+.masthead-rail-item:not(.is-total) .masthead-stat-num {
+  font-size: clamp(1.2rem, 1.8vw, 1.38rem);
+  font-weight: 600;
+  color: var(--tx);
+}
 .masthead-module-counts {
   display: flex;
   flex-wrap: wrap;
@@ -876,9 +927,8 @@ a.masthead-module-item:is(:hover, :focus-visible) .masthead-stat-num { color: va
   transition: transform var(--lift-dur) ease, border-color var(--lift-dur) ease;
 }
 a.masthead-stat-card:hover { transform: translateY(-2px); border-color: var(--bd-strong); }
-.masthead-stat-label { font-family: var(--sans); font-size: var(--fs-xs); line-height: 1.25; color: var(--tm); }
-.masthead-stat-card .countup-wrap { display: contents; }
-.masthead-stat-num { font-family: var(--mono); font-variant-numeric: tabular-nums; font-size: var(--fs-lg); font-weight: 700; line-height: 1.15; color: var(--tx); }
+.masthead-stat-label { font-family: var(--sans); font-size: var(--fs-xs); line-height: 1.25; color: var(--tm); transition: color var(--lift-dur) ease; }
+.masthead-stat-num { display: inline-flex; align-items: baseline; font-family: var(--mono); font-variant-numeric: tabular-nums; font-size: var(--fs-lg); font-weight: 700; line-height: 1.15; color: var(--tx); transition: color var(--lift-dur) ease; }
 .masthead-stat-sub { font-size: var(--fs-xs); color: var(--ts); }
 
 .archive-sentinel { height: 1px; margin-bottom: -1px; pointer-events: none; }
@@ -2865,8 +2915,12 @@ body.study-overview-page main { flex: 1 0 auto; min-height: 0; }
     top: calc(var(--header-h, 64px) + 0.35rem);
   }
   .masthead-stats { gap: 0.45rem; }
+  .masthead-stats.is-rail { row-gap: 0.65rem; }
+  .masthead-rail-item { padding: 0.1rem 0.8rem; }
   .masthead-stat-card { justify-content: flex-start; min-height: 0; padding: 0.65rem 0.7rem; gap: 0.2rem; }
   .masthead-stat-num { font-size: 1.25rem; }
+  .masthead-rail-item.is-total .masthead-stat-num { font-size: 1.38rem; }
+  .masthead-rail-item:not(.is-total) .masthead-stat-num { font-size: 1.15rem; }
   .masthead-stat-sub { display: none; }
   .masthead-stats.is-two:has(.masthead-module-counts) { grid-template-columns: auto minmax(0, 1fr); }
   .masthead-module-counts { gap: 0.3rem 0.55rem; }

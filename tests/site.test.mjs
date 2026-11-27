@@ -661,7 +661,16 @@ test('study articles omit redundant header quick jump row, show shortcut on TOC 
   assert.match(tokensCss, /--toc-tree-height:\s*min\(760px,\s*calc\(100vh - var\(--header-h, 56px\) - 36px\)\)/);
   const globalCss = read('src/styles/global.css');
   assert.match(globalCss, /overscroll-behavior:\s*contain/);
-  assert.match(globalCss, /\.toc-fold-options\s*\{/);
+  assert.match(globalCss, /\.masthead-stats\.is-rail\s*\{/);
+  assert.match(globalCss, /\.cu-sr\s*\{/);
+  for (const pagePath of ['dist/study-notes/index.html', 'dist/blog/index.html', 'dist/tools/index.html']) {
+    const pageHtml = read(pagePath);
+    assert.match(pageHtml, /class="masthead-stats is-rail"/, pagePath);
+    assert.match(pageHtml, /data-countup-mode="roll"/, pagePath);
+    assert.match(pageHtml, /data-countup-easing="spring"/, pagePath);
+    assert.match(pageHtml, /data-countup-duration="1\.35"/, pagePath);
+    assert.match(pageHtml, /data-countup-hover="true"/, pagePath);
+  }
   assert.match(globalCss, /:root\[data-toc-collapsed\]\s+\[data-toc-pane="toc"\]\s+li:is\(\.toc-level-3,\s*\.toc-level-4\)/);
   assert.match(globalCss, /\.toc-slide-indicator\s*\{[^}]*width:\s*3\.5px;/);
   const articleScript = read('src/scripts/article.ts');

@@ -17,21 +17,20 @@ const overviewDescription = `HIT 837 专业课考研笔记，按${moduleSummary}
     <div>
       <h1>学习笔记</h1>
     </div>
-    <div class="masthead-stats is-two" aria-label="学习笔记统计">
-      <div class="masthead-stat-card">
+    <div class="masthead-stats is-rail" aria-label="学习笔记统计">
+      <div class="masthead-rail-item is-total" data-countup-hover-zone>
         <span class="masthead-stat-label">公开笔记</span>
-        <CountUp to={posts.length} />
+        <span class="masthead-rail-value">
+          <CountUp to={posts.length} delay={0} />
+          <span class="masthead-rail-unit">篇</span>
+        </span>
       </div>
-      <div class="masthead-stat-card">
-        <div class="masthead-module-counts">
-          {modules.map((mod) => (
-            <div class="masthead-module-item">
-              <span class="masthead-stat-label">{mod.title}</span>
-              <CountUp to={mod.count} />
-            </div>
-          ))}
-        </div>
-      </div>
+      {modules.map((mod, idx) => (
+        <a class="masthead-rail-item" href={mod.href} data-countup-hover-zone>
+          <span class="masthead-stat-label">{mod.title}</span>
+          <CountUp to={mod.count} delay={Number(((idx + 1) * 0.08).toFixed(2))} />
+        </a>
+      ))}
     </div>
   </header>
   {series.map(([name, info]) => <section class="study-series-group" aria-label={info.title}><StudyModuleLinks modules={modules.filter((module) => module.series === name)} headingLevel="h2" /></section>)}

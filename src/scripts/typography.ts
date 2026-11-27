@@ -8,7 +8,7 @@ const root = document.documentElement;
 const sizes = document.querySelectorAll<HTMLButtonElement>('[data-font-size]');
 const bold = document.querySelector<HTMLButtonElement>('[data-font-bold]');
 const scrim = document.querySelector<HTMLButtonElement>('[data-svg-scrim]');
-const tocFolds = document.querySelectorAll<HTMLButtonElement>('[data-toc-fold]');
+const tocFoldBtn = document.querySelector<HTMLButtonElement>('[data-toc-fold]');
 const panel = document.querySelector<HTMLDetailsElement>('.type-settings');
 const summary = panel?.querySelector<HTMLElement>('summary');
 const theme = document.querySelector<HTMLButtonElement>('[data-theme-cycle]');
@@ -46,9 +46,9 @@ const applyScrim = () => {
   save(STORAGE_KEYS.svgScrim, String(svgScrim));
 };
 const applyTocFold = (notify = false) => {
-  const collapsed = tocFold === 'collapsed';
-  root.toggleAttribute('data-toc-collapsed', collapsed);
-  tocFolds.forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.tocFold === tocFold)));
+  const expanded = tocFold === 'expanded';
+  root.toggleAttribute('data-toc-collapsed', !expanded);
+  tocFoldBtn?.setAttribute('aria-checked', String(expanded));
   save(STORAGE_KEYS.tocFold, tocFold);
   if (notify && typeof CustomEvent === 'function' && typeof document.dispatchEvent === 'function') {
     document.dispatchEvent(new CustomEvent('duolabmeng673:toc-fold-change', { detail: { mode: tocFold } }));
@@ -67,12 +67,10 @@ sizes.forEach((button) => button.addEventListener('click', () => {
 }));
 bold?.addEventListener('click', () => { settings.bold = !settings.bold; applyTypography(); });
 scrim?.addEventListener('click', () => { svgScrim = !svgScrim; applyScrim(); });
-tocFolds.forEach((button) => button.addEventListener('click', () => {
-  const next = button.dataset.tocFold;
-  if (next !== 'expanded' && next !== 'collapsed') return;
-  tocFold = next;
+tocFoldBtn?.addEventListener('click', () => {
+  tocFold = tocFold === 'expanded' ? 'collapsed' : 'expanded';
   applyTocFold(true);
-}));
+});
 panel?.addEventListener('toggle', syncPanelExpanded);
 theme?.addEventListener('click', () => {
   mode = modes[(modes.indexOf(mode) + 1) % 3];

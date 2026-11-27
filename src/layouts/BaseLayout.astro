@@ -223,12 +223,18 @@ const navItems = [
                   <span class="pill-switch-thumb" aria-hidden="true"></span>
                 </button>
               </div>
-              <div class="settings-group">
-                <span class="panel-label">文章目录</span>
-                <div class="type-size-options toc-fold-options" role="group" aria-label="文章目录展开方式">
-                  <button type="button" data-toc-fold="expanded" aria-pressed="true">全部展开</button>
-                  <button type="button" data-toc-fold="collapsed" aria-pressed="false">全部折叠</button>
-                </div>
+              <div class="type-switch-row">
+                <span id="setting-toc-fold-label" class="type-switch-label">文章目录展开</span>
+                <button
+                  type="button"
+                  class="pill-switch"
+                  role="switch"
+                  aria-checked="true"
+                  aria-labelledby="setting-toc-fold-label"
+                  data-toc-fold
+                >
+                  <span class="pill-switch-thumb" aria-hidden="true"></span>
+                </button>
               </div>
             </div>
           </details>

@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
+import CountUp from '../../../components/CountUp.astro';
 import StudyModuleLinks from '../../../components/StudyModuleLinks.astro';
 import { getPublicStudyNotes, getStudyModuleSummaries, studySeries } from '../../../lib/study';
 export async function getStaticPaths() {
@@ -21,16 +22,17 @@ const seriesDescription = `${info.description}包含${moduleSummary}等 ${module
       <h1>{info.title}</h1>
       <p>{seriesDescription}</p>
     </div>
-    <div class="masthead-stats is-two" aria-label="系列统计">
-      <div class="masthead-stat-card">
+    <div class="masthead-stats is-rail" aria-label="系列统计">
+      <div class="masthead-rail-item is-total" data-countup-hover-zone>
         <span class="masthead-stat-label">公开笔记</span>
-        <strong class="masthead-stat-num">{posts.length}</strong>
-        <span class="masthead-stat-sub">按考纲章节组织</span>
+        <span class="masthead-rail-value">
+          <CountUp to={posts.length} delay={0} />
+          <span class="masthead-rail-unit">篇</span>
+        </span>
       </div>
-      <div class="masthead-stat-card">
+      <div class="masthead-rail-item" data-countup-hover-zone>
         <span class="masthead-stat-label">核心模块</span>
-        <strong class="masthead-stat-num">{modules.length}</strong>
-        <span class="masthead-stat-sub">{moduleNames.join(' · ')}</span>
+        <CountUp to={modules.length} delay={0.08} />
       </div>
     </div>
   </header>

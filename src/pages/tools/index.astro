@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import CountUp from '../../components/CountUp.astro';
 import ToolCard from '../../components/ToolCard.astro';
 import { groupTools, tools } from '../../data/tools';
 import '../../styles/tools/index.css';
@@ -10,14 +11,17 @@ const groups = groupTools(tools);
     <div>
       <h1>工具</h1>
     </div>
-    <div class="masthead-stats is-two" aria-label="工具统计">
-      <div class="masthead-stat-card">
+    <div class="masthead-stats is-rail" aria-label="工具统计">
+      <div class="masthead-rail-item is-total" data-countup-hover-zone>
         <span class="masthead-stat-label">收录工具</span>
-        <strong class="masthead-stat-num">{tools.length}</strong>
+        <span class="masthead-rail-value">
+          <CountUp to={tools.length} delay={0} />
+          <span class="masthead-rail-unit">项</span>
+        </span>
       </div>
-      <div class="masthead-stat-card">
+      <div class="masthead-rail-item" data-countup-hover-zone>
         <span class="masthead-stat-label">工具分组</span>
-        <strong class="masthead-stat-num">{groups.length}</strong>
+        <CountUp to={groups.length} delay={0.08} />
       </div>
     </div>
   </header>

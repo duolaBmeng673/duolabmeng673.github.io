@@ -38,23 +38,22 @@ const timeline = getYearlyTimeline(posts).map((yearGroup) => {
     <div>
       <h1 data-archive-title>技术笔记</h1>
     </div>
-    <div class="masthead-stats is-two" aria-label="技术归档统计">
-      <div class="masthead-stat-card">
+    <div class="masthead-stats is-rail" aria-label="技术归档统计">
+      <div class="masthead-rail-item is-total" data-countup-hover-zone>
         <span class="masthead-stat-label">论文精读与算法题解</span>
-        <CountUp to={regularPosts.length} />
+        <span class="masthead-rail-value">
+          <CountUp to={regularPosts.length} delay={0} />
+          <span class="masthead-rail-unit">篇</span>
+        </span>
       </div>
-      <div class="masthead-stat-card">
-        <div class="masthead-module-counts">
-          <a class="masthead-module-item" href="/blog/?category=Research">
-            <span class="masthead-stat-label">论文精读</span>
-            <CountUp to={researchCount} />
-          </a>
-          <a class="masthead-module-item" href="/blog/?category=Computer%20Science">
-            <span class="masthead-stat-label">算法题解</span>
-            <CountUp to={csCount} />
-          </a>
-        </div>
-      </div>
+      <a class="masthead-rail-item" href="/blog/?category=Research" data-countup-hover-zone>
+        <span class="masthead-stat-label">论文精读</span>
+        <CountUp to={researchCount} delay={0.08} />
+      </a>
+      <a class="masthead-rail-item" href="/blog/?category=Computer%20Science" data-countup-hover-zone>
+        <span class="masthead-stat-label">算法题解</span>
+        <CountUp to={csCount} delay={0.16} />
+      </a>
     </div>
   </header>
   <div class="archive-sentinel" data-archive-sentinel aria-hidden="true"></div>

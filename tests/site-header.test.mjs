@@ -178,8 +178,8 @@ test('settings gear popover controls typography, SVG scrim, persistence, fallbac
   assert.doesNotMatch(html, /<details class="type-settings">[^]*?<summary[^>]*>Aa<\/summary>/);
   assert.match(html, /<button\b[^>]*role="switch"[^>]*aria-checked="false"[^>]*data-font-bold/);
   assert.match(html, /<button\b[^>]*role="switch"[^>]*aria-checked="false"[^>]*data-svg-scrim/);
-  assert.match(html, /<button\b[^>]*data-toc-fold="expanded"[^>]*aria-pressed="true">全部展开<\/button>/);
-  assert.match(html, /<button\b[^>]*data-toc-fold="collapsed"[^>]*aria-pressed="false">全部折叠<\/button>/);
+  assert.match(html, /<span id="setting-toc-fold-label" class="type-switch-label">文章目录展开<\/span>/);
+  assert.match(html, /<button\b[^>]*class="pill-switch"[^>]*role="switch"[^>]*aria-checked="true"[^>]*aria-labelledby="setting-toc-fold-label"[^>]*data-toc-fold/);
 
   const css = read('src/styles/global.css');
   assert.match(css, /\.pill-switch:focus-visible\s*\{/);
@@ -222,11 +222,9 @@ test('settings gear popover controls typography, SVG scrim, persistence, fallbac
     const sizeBtns = ['small', 'medium', 'large'].map((size) =>
       makeEl({ dataset: { fontSize: size }, attrs: { 'aria-pressed': 'false' } }),
     );
-    const tocFoldBtns = ['expanded', 'collapsed'].map((mode) =>
-      makeEl({ dataset: { tocFold: mode }, attrs: { 'aria-pressed': String(mode === 'expanded') } }),
-    );
+    const tocFoldBtn = makeEl({ attrs: { role: 'switch', 'aria-checked': 'true' } });
     const panel = makeEl({ open: false });
-    panel.contains = (node) => node === panel || node === boldBtn || node === scrimBtn;
+    panel.contains = (node) => node === panel || node === boldBtn || node === scrimBtn || node === tocFoldBtn;
     panel.querySelector = (sel) => (sel === 'summary' ? summary : null);
 
     const root = {
@@ -258,12 +256,12 @@ test('settings gear popover controls typography, SVG scrim, persistence, fallbac
       documentElement: root,
       querySelectorAll: (sel) => {
         if (sel === '[data-font-size]') return sizeBtns;
-        if (sel === '[data-toc-fold]') return tocFoldBtns;
         return [];
       },
       querySelector: (sel) => {
         if (sel === '[data-font-bold]') return boldBtn;
         if (sel === '[data-svg-scrim]') return scrimBtn;
+        if (sel === '[data-toc-fold]') return tocFoldBtn;
         if (sel === '.type-settings') return panel;
         return null;
       },
@@ -305,7 +303,7 @@ test('settings gear popover controls typography, SVG scrim, persistence, fallbac
       boldBtn,
       scrimBtn,
       sizeBtns,
-      tocFoldBtns,
+      tocFoldBtn,
       panel,
       emitDoc,
       getFocused: () => focusedElement,
@@ -318,11 +316,12 @@ test('settings gear popover controls typography, SVG scrim, persistence, fallbac
   assert.equal(session1.styles.get('--svg-scrim-opacity'), '0');
   assert.equal(session1.scrimBtn.getAttribute('aria-checked'), 'false');
   assert.equal(session1.boldBtn.getAttribute('aria-checked'), 'false');
+  assert.equal(session1.tocFoldBtn.getAttribute('aria-checked'), 'true');
 
   session1.sizeBtns[2].click(); // large
   session1.boldBtn.click();
   session1.scrimBtn.click();
-  session1.tocFoldBtns[1].click(); // collapsed
+  session1.tocFoldBtn.click(); // collapsed
 
   assert.equal(session1.styles.get('--font-scale'), '1.12');
   assert.equal(session1.sizeBtns[2].getAttribute('aria-pressed'), 'true');
@@ -331,12 +330,12 @@ test('settings gear popover controls typography, SVG scrim, persistence, fallbac
   assert.equal(session1.styles.get('--svg-scrim-opacity'), '0.8');
   assert.equal(session1.scrimBtn.getAttribute('aria-checked'), 'true');
   assert.equal(session1.root.hasAttribute('data-toc-collapsed'), true);
-  assert.equal(session1.tocFoldBtns[1].getAttribute('aria-pressed'), 'true');
-  assert.equal(session1.tocFoldBtns[0].getAttribute('aria-pressed'), 'false');
+  assert.equal(session1.tocFoldBtn.getAttribute('aria-checked'), 'false');
 
   // 2. Reload with persisted storage: inline head script restores before paint & module syncs controls
   const persisted = Object.fromEntries(session1.store.entries());
   const session2 = createHarness(persisted);
+  assert.equal(session2.tocFoldBtn.getAttribute('aria-checked'), 'false');
   session2.styles.clear();
   session2.root.toggleAttribute('data-font-bold', false);
   session2.root.toggleAttribute('data-toc-collapsed', false);
@@ -345,6 +344,10 @@ test('settings gear popover controls typography, SVG scrim, persistence, fallbac
   assert.equal(session2.root.hasAttribute('data-font-bold'), true);
   assert.equal(session2.styles.get('--svg-scrim-opacity'), '0.8');
   assert.equal(session2.root.hasAttribute('data-toc-collapsed'), true);
+
+  session2.tocFoldBtn.click(); // back to expanded
+  assert.equal(session2.root.hasAttribute('data-toc-collapsed'), false);
+  assert.equal(session2.tocFoldBtn.getAttribute('aria-checked'), 'true');
 
   // 3. Keyboard Escape closes panel & returns focus to summary; outside click closes panel; toggle syncs aria-expanded
   session2.panel.open = true;
@@ -367,9 +370,10 @@ test('settings gear popover controls typography, SVG scrim, persistence, fallbac
   incognito.sizeBtns[0].click();
   incognito.boldBtn.click();
   incognito.scrimBtn.click();
-  incognito.tocFoldBtns[1].click();
+  incognito.tocFoldBtn.click();
   assert.equal(incognito.styles.get('--font-scale'), '0.94');
   assert.equal(incognito.root.hasAttribute('data-font-bold'), true);
   assert.equal(incognito.styles.get('--svg-scrim-opacity'), '0.8');
   assert.equal(incognito.root.hasAttribute('data-toc-collapsed'), true);
+  assert.equal(incognito.tocFoldBtn.getAttribute('aria-checked'), 'false');
 });
