@@ -22,7 +22,14 @@ function resolveLucideIconsDir(): string {
   return join(process.cwd(), 'node_modules', 'lucide-static', 'icons');
 }
 
+function resolveCustomToolIconsDir(): string {
+  const fromRelative = fileURLToPath(new URL('../assets/tool-icons', import.meta.url));
+  if (existsSync(fromRelative)) return fromRelative;
+  return join(process.cwd(), 'src', 'assets', 'tool-icons');
+}
+
 export const LUCIDE_ICONS_DIR = resolveLucideIconsDir();
+export const CUSTOM_TOOL_ICONS_DIR = resolveCustomToolIconsDir();
 
 export const CATEGORY_FALLBACK_ICONS: Record<string, string> = {
   壁纸: 'image',
@@ -56,11 +63,23 @@ export function resolveToolIconName(tool: Pick<Tool, 'icon' | 'category'>): stri
   return DEFAULT_TOOL_ICON;
 }
 
+/** Check whether the named icon SVG exists in src/assets/tool-icons. */
+export function hasCustomToolIcon(name: string): boolean {
+  const normalized = name.trim();
+  if (!isValidIconName(normalized)) return false;
+  return existsSync(join(CUSTOM_TOOL_ICONS_DIR, `${normalized}.svg`));
+}
+
 /** Check whether the named icon SVG exists in node_modules/lucide-static/icons. */
 export function hasLucideIcon(name: string): boolean {
   const normalized = name.trim();
   if (!isValidIconName(normalized)) return false;
   return existsSync(join(LUCIDE_ICONS_DIR, `${normalized}.svg`));
+}
+
+/** Check whether the named tool icon exists in custom assets or lucide-static. */
+export function hasToolIcon(name: string): boolean {
+  return hasCustomToolIcon(name) || hasLucideIcon(name);
 }
 
 function normalizeRootSvgAttributes(attrsText: string): string {
@@ -88,7 +107,8 @@ export function loadLucideSvg(name: string): string {
   const cached = svgCache.get(normalized);
   if (cached) return cached;
 
-  const iconPath = join(LUCIDE_ICONS_DIR, `${normalized}.svg`);
+  const customPath = join(CUSTOM_TOOL_ICONS_DIR, `${normalized}.svg`);
+  const iconPath = existsSync(customPath) ? customPath : join(LUCIDE_ICONS_DIR, `${normalized}.svg`);
   if (!existsSync(iconPath)) {
     throw new Error(`未在 lucide-static 找到图标文件：${normalized}.svg`);
   }

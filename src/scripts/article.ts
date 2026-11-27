@@ -164,6 +164,8 @@ const tocPane = document.querySelector<HTMLElement>('[data-toc-pane="toc"]');
 const tocList = tocPane?.querySelector<HTMLOListElement>('ol') ?? null;
 let tocIndicator: HTMLSpanElement | null = null;
 let lastScrolledTocId: string | undefined;
+let lastIndicatorTop = -1;
+let lastIndicatorHeight = -1;
 if (tocList && links.length) {
   tocIndicator = document.createElement('span');
   tocIndicator.className = 'toc-slide-indicator';
@@ -171,12 +173,12 @@ if (tocList && links.length) {
   tocList.prepend(tocIndicator);
   tocList.classList.add('has-toc-indicator');
 }
-const ensureTocItemInView = (item: HTMLElement) => {
-  if (!tocPane || tocPane.clientHeight <= 0 || tocPane.scrollHeight <= tocPane.clientHeight + 2) return;
+const ensureTocItemInView = (item: HTMLElement): number => {
+  if (!tocPane || tocPane.clientHeight <= 0 || tocPane.scrollHeight <= tocPane.clientHeight + 2) return 0;
   const edgePad = 10;
   const paneRect = tocPane.getBoundingClientRect();
   const itemRect = item.getBoundingClientRect();
-  if (paneRect.height <= 0 || itemRect.height <= 0) return;
+  if (paneRect.height <= 0 || itemRect.height <= 0) return 0;
 
   const minTop = paneRect.top + edgePad;
   const maxBottom = paneRect.bottom - edgePad;
@@ -187,26 +189,61 @@ const ensureTocItemInView = (item: HTMLElement) => {
   } else if (itemRect.top < minTop) {
     nextTop = tocPane.scrollTop - (minTop - itemRect.top);
   }
-  if (nextTop === null) return;
+  if (nextTop === null) return 0;
 
+  const prevScrollTop = tocPane.scrollTop;
   const maxScroll = Math.max(0, tocPane.scrollHeight - tocPane.clientHeight);
   tocPane.scrollTop = Math.max(0, Math.min(maxScroll, nextTop));
+  return tocPane.scrollTop - prevScrollTop;
 };
-const syncTocIndicator = () => {
+const getCurrentIndicatorY = (el: HTMLElement, fallback: number): number => {
+  const tx = getComputedStyle(el).transform;
+  if (!tx || tx === 'none' || typeof DOMMatrix !== 'function') return fallback;
+  try {
+    const matrix = new DOMMatrix(tx);
+    return Number.isFinite(matrix.m42) ? matrix.m42 : fallback;
+  } catch {
+    return fallback;
+  }
+};
+const syncTocIndicator = (scrollDelta = 0, instant = false) => {
   if (!tocIndicator || !tocList) return;
   const active = links.find((link) => link.classList.contains('is-current'));
   const item = active?.closest<HTMLElement>('li');
   if (!item || item.offsetHeight === 0 || tocList.offsetHeight === 0) {
     tocIndicator.classList.remove('is-ready');
+    lastIndicatorTop = -1;
+    lastIndicatorHeight = -1;
     return;
   }
-  const top = item.getBoundingClientRect().top - tocList.getBoundingClientRect().top + 2;
-  const height = Math.max(12, item.getBoundingClientRect().height - 4);
-  tocIndicator.style.transform = `translateY(${Math.round(top)}px)`;
-  tocIndicator.style.height = `${Math.round(height)}px`;
-  tocIndicator.classList.add('is-ready');
+  const top = Math.round(item.offsetTop + 2);
+  const height = Math.max(12, Math.round(item.offsetHeight - 4));
+  if (instant || !tocIndicator.classList.contains('is-ready')) {
+    tocIndicator.style.transition = 'none';
+    tocIndicator.style.transform = `translateY(${top}px)`;
+    tocIndicator.style.height = `${height}px`;
+    void tocIndicator.offsetWidth;
+    tocIndicator.style.transition = '';
+    tocIndicator.classList.add('is-ready');
+    lastIndicatorTop = top;
+    lastIndicatorHeight = height;
+    return;
+  }
+  if (scrollDelta !== 0) {
+    const curY = getCurrentIndicatorY(tocIndicator, lastIndicatorTop < 0 ? top : lastIndicatorTop);
+    tocIndicator.style.transition = 'none';
+    tocIndicator.style.transform = `translateY(${Math.round(curY + scrollDelta)}px)`;
+    void tocIndicator.offsetWidth;
+    tocIndicator.style.transition = '';
+  } else if (top === lastIndicatorTop && height === lastIndicatorHeight) {
+    return;
+  }
+  lastIndicatorTop = top;
+  lastIndicatorHeight = height;
+  tocIndicator.style.transform = `translateY(${top}px)`;
+  tocIndicator.style.height = `${height}px`;
 };
-const setCurrentById = (activeId?: string) => {
+const setCurrentById = (activeId?: string, instant = false) => {
   const changed = activeId !== lastScrolledTocId;
   lastScrolledTocId = activeId;
   let activeItem: HTMLElement | null = null;
@@ -220,8 +257,8 @@ const setCurrentById = (activeId?: string) => {
       link.removeAttribute('aria-current');
     }
   });
-  if (changed && activeItem) ensureTocItemInView(activeItem);
-  syncTocIndicator();
+  const scrollDelta = changed && activeItem ? ensureTocItemInView(activeItem) : 0;
+  if (changed || instant) syncTocIndicator(scrollDelta, instant);
 };
 let tocScrollLock = false;
 let tocScrollLockTimer = 0;
@@ -243,11 +280,24 @@ const flashArrivedHeading = (target: HTMLElement) => {
   target.classList.add('is-arrived');
   window.setTimeout(() => target.classList.remove('is-arrived'), 680);
 };
-const updateCurrent = () => {
+const updateCurrent = (instant = false) => {
   if (tocScrollLock) return;
-  const visible = headings.filter((heading) => heading.getClientRects().length > 0);
-  const current = [...visible].reverse().find((heading) => heading.getBoundingClientRect().top <= 150) ?? visible[0];
-  setCurrentById(current?.id);
+  const collapsed = document.documentElement.hasAttribute('data-toc-collapsed');
+  const candidateLinks = collapsed
+    ? links.filter((link) => {
+        const li = link.closest('li');
+        return Boolean(li) && !li!.classList.contains('toc-level-3') && !li!.classList.contains('toc-level-4');
+      })
+    : links;
+  const candidateHeadings = (candidateLinks.length ? candidateLinks : links)
+    .map((link) => document.getElementById(decodeURIComponent(link.hash.slice(1))))
+    .filter((heading): heading is HTMLElement => Boolean(heading));
+  const visible = candidateHeadings.filter((heading) => heading.getClientRects().length > 0);
+  const maxPageScroll = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+  const clampedY = Math.max(0, Math.min(window.scrollY, maxPageScroll));
+  const overscroll = window.scrollY - clampedY;
+  const current = [...visible].reverse().find((heading) => heading.getBoundingClientRect().top + overscroll <= 150) ?? visible[0];
+  setCurrentById(current?.id, instant);
 };
 const scrollToHeadingLink = (link: HTMLAnchorElement, event: MouseEvent) => {
   if (!link.hash) return;
@@ -307,8 +357,15 @@ document.addEventListener('study-mode-change', (event) => {
   clearTocScrollLock();
   updateCurrent();
 });
+document.addEventListener('duolabmeng673:toc-fold-change', () => {
+  lastScrolledTocId = undefined;
+  lastIndicatorTop = -1;
+  lastIndicatorHeight = -1;
+  clearTocScrollLock();
+  updateCurrent(true);
+});
 if (tocList && 'ResizeObserver' in window) {
-  new ResizeObserver(syncTocIndicator).observe(tocList);
+  new ResizeObserver(() => syncTocIndicator(0, false)).observe(tocList);
 }
 if (headings.length) {
   window.addEventListener('scroll', () => {
@@ -662,16 +719,33 @@ if (tocPanel) {
   closeBtn?.addEventListener('click', () => closeDrawer(true));
   backdrop?.addEventListener('click', () => closeDrawer(true));
   document.addEventListener('keydown', (e) => {
-    if (e.key !== 'Escape') return;
-    if (drawerOpen) {
-      e.preventDefault();
-      closeDrawer(true);
+    if (e.key === 'Escape') {
+      if (drawerOpen) {
+        e.preventDefault();
+        closeDrawer(true);
+        return;
+      }
+      if (view !== 'toc') {
+        e.preventDefault();
+        transitionToView('toc', { direction: 'backward', restoreTrigger: true });
+      }
       return;
     }
-    if (view !== 'toc') {
-      e.preventDefault();
-      transitionToView('toc', { direction: 'backward', restoreTrigger: true });
-    }
+    if ((e.key !== 'ArrowDown' && e.key !== 'ArrowUp') || view === 'toc') return;
+    if (mobileMq?.matches && !drawerOpen) return;
+    const activePane = paneByView.get(view);
+    if (!activePane || !tocPanel.contains(document.activeElement)) return;
+    const focusables = view === 'modules'
+      ? moduleButtons.filter((el) => el.getClientRects().length > 0)
+      : [...activePane.querySelectorAll<HTMLElement>('.toc-back-btn, [data-toc-module-panel]:not([hidden]) summary.toc-jump-group-title, [data-toc-module-panel]:not([hidden]) .toc-jump-note-list a')].filter((el) => el.getClientRects().length > 0);
+    if (!focusables.length) return;
+    e.preventDefault();
+    const cur = focusables.indexOf(document.activeElement as HTMLElement);
+    const delta = e.key === 'ArrowDown' ? 1 : -1;
+    const nextIdx = cur < 0 ? (delta > 0 ? 0 : focusables.length - 1) : (cur + delta + focusables.length) % focusables.length;
+    const nextEl = focusables[nextIdx];
+    nextEl.focus({ preventScroll: true });
+    nextEl.scrollIntoView({ block: 'nearest' });
   });
   links.forEach((link) => link.addEventListener('click', () => {
     if (mobileMq?.matches && drawerOpen) closeDrawer(false);
@@ -679,6 +753,35 @@ if (tocPanel) {
   mobileMq?.addEventListener('change', () => syncDrawer(false));
   syncDrawer(false);
 }
+
+document.addEventListener('keydown', (event) => {
+  if (event.defaultPrevented || event.repeat || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
+  if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+  const target = event.target instanceof Element ? event.target : null;
+  if (
+    target &&
+    (/^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName) ||
+      (target as HTMLElement).isContentEditable ||
+      target.closest('.site-header, [role="slider"], [role="tablist"], [role="switch"], button, summary, canvas, iframe'))
+  ) {
+    return;
+  }
+  if (document.querySelector('dialog[open], .type-settings[open], [data-search-popover]:not([hidden])')) return;
+  const panel = document.querySelector<HTMLElement>('[data-toc-panel]');
+  if (panel && (panel.dataset.tocView !== 'toc' || panel.classList.contains('is-open'))) return;
+  if (window.getSelection?.()?.toString()) return;
+  const activeEl = document.activeElement instanceof Element ? document.activeElement : null;
+  const scrollBox = activeEl?.closest<HTMLElement>('pre, table, .katex-display');
+  if (scrollBox && scrollBox.scrollWidth > scrollBox.clientWidth + 2) return;
+
+  const rel = event.key === 'ArrowLeft' ? 'prev' : 'next';
+  const stepLink =
+    document.querySelector<HTMLAnchorElement>(`.toc-step-nav a[rel="${rel}"]`) ??
+    document.querySelector<HTMLAnchorElement>(`.study-pagination a[rel="${rel}"]`);
+  if (!stepLink?.getAttribute('href')) return;
+  event.preventDefault();
+  stepLink.click();
+});
 
 // Sandboxed local demos have opaque origins; trust only their Window and build key.
 const demos = [...document.querySelectorAll<HTMLIFrameElement>('iframe[data-demo-key]')];

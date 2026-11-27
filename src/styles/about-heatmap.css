@@ -267,7 +267,7 @@
 }
 
 .about-heat-cell:focus-visible {
-  outline: 2px solid var(--ac);
+  outline: 2px solid var(--tx);
   outline-offset: 2px;
   z-index: 3;
 }
@@ -355,8 +355,9 @@
 
 .about-heat-entry-card:hover,
 .about-heat-entry-card:focus-visible {
-  border-color: var(--ac);
-  background: color-mix(in srgb, var(--ac-soft) 55%, var(--bg-elev));
+  outline: none;
+  border-color: var(--bd-strong);
+  background: var(--row-hover);
 }
 
 .about-heat-entry-meta {

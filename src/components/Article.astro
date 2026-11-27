@@ -164,7 +164,7 @@ const canRecall = Boolean(study && headings.some((heading) => heading.depth >= 2
                 class="toc-step-btn"
                 href={getPostHref(previous)}
                 rel="prev"
-                title={`${prevJumpText}：${prevJumpTitle}`}
+                title={`${prevJumpText}：${prevJumpTitle}（快捷键 ←）`}
                 aria-label={`${prevJumpText}：${prevJumpTitle}`}
               >
                 <span aria-hidden="true">←</span><span>{study ? '上一章' : '上一篇'}</span>
@@ -179,7 +179,7 @@ const canRecall = Boolean(study && headings.some((heading) => heading.depth >= 2
                 class="toc-step-btn"
                 href={getPostHref(next)}
                 rel="next"
-                title={`${nextJumpText}：${nextJumpTitle}`}
+                title={`${nextJumpText}：${nextJumpTitle}（快捷键 →）`}
                 aria-label={`${nextJumpText}：${nextJumpTitle}`}
               >
                 <span>{study ? '下一章' : '下一篇'}</span><span aria-hidden="true">→</span>

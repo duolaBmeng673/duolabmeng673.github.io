@@ -4,8 +4,10 @@ import { existsSync, readFileSync } from 'node:fs';
 import { defineTools, groupTools, tools } from '../src/data/tools.ts';
 import {
   CATEGORY_FALLBACK_ICONS,
+  CUSTOM_TOOL_ICONS_DIR,
   DEFAULT_TOOL_ICON,
   hasLucideIcon,
+  hasToolIcon,
   loadLucideSvg,
   resolveToolIconName,
 } from '../src/lib/tool-icons.ts';
@@ -108,14 +110,14 @@ test('all configured and fallback tool icons exist in lucide-static and inline c
   for (const tool of rawTools) {
     assert.equal(typeof tool.icon, 'string', `${tool.name} must configure an icon field`);
     assert.ok(tool.icon.trim().length > 0, `${tool.name} icon field must not be empty`);
+    const iconName = tool.icon.trim();
     assert.ok(
-      hasLucideIcon(tool.icon),
-      `${tool.name} icon "${tool.icon}" must exist in node_modules/lucide-static/icons`,
+      hasToolIcon(iconName),
+      `${tool.name} icon "${tool.icon}" must exist in custom tool-icons or node_modules/lucide-static/icons`,
     );
-    assert.ok(
-      existsSync(file(`node_modules/lucide-static/icons/${tool.icon.trim()}.svg`)),
-      `Missing SVG file for ${tool.name}: ${tool.icon}.svg`,
-    );
+    const hasCustom = existsSync(`${CUSTOM_TOOL_ICONS_DIR}/${iconName}.svg`);
+    const hasPkg = existsSync(file(`node_modules/lucide-static/icons/${iconName}.svg`));
+    assert.ok(hasCustom || hasPkg, `Missing SVG file for ${tool.name}: ${iconName}.svg`);
   }
 
   for (const [category, fallbackIcon] of Object.entries(CATEGORY_FALLBACK_ICONS)) {

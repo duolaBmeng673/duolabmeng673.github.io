@@ -56,6 +56,13 @@
     "description": "现代 UI 组件与交互效果库。"
   },
   {
+    "name": "Lucide Icons",
+    "url": "https://lucide.dev/icons/",
+    "category": "前端组件",
+    "icon": "lucide-brand",
+    "description": "简洁一致的开源 SVG 图标库，支持直接复制与多框架引入。"
+  },
+  {
     "name": "AI 中转站评测",
     "url": "https://aitshirtdesign.com",
     "category": "AI 工具",

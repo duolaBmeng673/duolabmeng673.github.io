@@ -74,7 +74,7 @@
 }
 .knowledge-title::after { position: absolute; inset: 0; content: ""; }
 .knowledge-title:focus-visible { outline: none; }
-.knowledge-title:focus-visible::after { outline: 2px solid var(--focus); outline-offset: 3px; border-radius: var(--r-row); }
+.knowledge-title:focus-visible::after { outline: none; }
 .knowledge-code { font-family: var(--mono); font-size: 12px; margin-top: 0.14rem; align-self: start; }
 .knowledge-arrow { color: var(--text-muted); margin-top: 0.14rem; align-self: start; }
 .study-note-list .knowledge-entry:hover,
@@ -350,7 +350,7 @@ span.knowledge-chip { cursor: inherit; }
 .knowledge-post-row { position: relative; }
 .knowledge-post-title::after { position: absolute; inset: 0; content: ""; }
 .knowledge-post-title:focus-visible { outline: none; }
-.knowledge-post-title:focus-visible::after { outline: 2px solid var(--focus); outline-offset: -2px; }
+.knowledge-post-title:focus-visible::after { outline: none; background: var(--row-hover); border-radius: var(--r-row); }
 .knowledge-post-row .knowledge-tags { margin-top: 5px; }
 .note-row .knowledge-post-title strong { font-size: 1.35rem; line-height: 1.15; }
 .article-header > .knowledge-tags { margin-bottom: 17px; }
@@ -548,9 +548,8 @@ html[data-theme="dark"] .study-jump-backdrop {
   font-size: 0.85rem;
 }
 .study-jump-filter:focus {
-  outline: 2px solid var(--ac);
-  outline-offset: 1px;
-  border-color: var(--ac);
+  outline: none;
+  border-color: var(--bd-strong);
 }
 .study-jump-body {
   flex: 1 1 auto;

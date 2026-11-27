@@ -82,6 +82,7 @@ const navItems = [
         themeLegacyKey: STORAGE_KEYS.themeLegacy,
         typographyKey: STORAGE_KEYS.typography,
         svgScrimKey: STORAGE_KEYS.svgScrim,
+        tocFoldKey: STORAGE_KEYS.tocFold,
         presetKey: STORAGE_KEYS.preset,
       }}
     >
@@ -96,6 +97,7 @@ const navItems = [
           if (typo.size && scales[typo.size]) root.style.setProperty('--font-scale', scales[typo.size]);
           if (typo.bold === true) root.setAttribute('data-font-bold', '');
           root.style.setProperty('--svg-scrim-opacity', localStorage.getItem(svgScrimKey) === 'true' ? '0.8' : '0');
+          if (localStorage.getItem(tocFoldKey) === 'collapsed') root.setAttribute('data-toc-collapsed', '');
           const savedPreset = localStorage.getItem(presetKey);
           if (savedPreset && /^[a-z0-9-]+$/i.test(savedPreset)) root.dataset.preset = savedPreset;
         } catch {}
@@ -220,6 +222,13 @@ const navItems = [
                 >
                   <span class="pill-switch-thumb" aria-hidden="true"></span>
                 </button>
+              </div>
+              <div class="settings-group">
+                <span class="panel-label">文章目录</span>
+                <div class="type-size-options toc-fold-options" role="group" aria-label="文章目录展开方式">
+                  <button type="button" data-toc-fold="expanded" aria-pressed="true">全部展开</button>
+                  <button type="button" data-toc-fold="collapsed" aria-pressed="false">全部折叠</button>
+                </div>
               </div>
             </div>
           </details>

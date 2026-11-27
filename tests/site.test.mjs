@@ -145,24 +145,32 @@ test('technical archive offers only papers and algorithms while global search re
 test('home keeps identity and four linked directions without the five removed descriptions', () => {
   const html = read('dist/index.html');
   for (const text of ['从 Transformers、BERT 到 GPT-1，整理语言模型的结构与训练方法。', '阅读 CLIP、MathVista、MMMU 与视觉任务相关论文。', '记录表格表示、理解和自动化处理方向的论文。', '整理 Python 输入输出，以及 HIT 837 两个安全模块的学习笔记。', '整理语言模型、多模态与表格理解论文，也记录算法练习和 HIT 837 学习笔记。']) assert.ok(!html.includes(text));
-  for (const text of ['自然语言处理', '多模态与视觉', '大模型与表格', '算法与信息安全', '杨雨飞', '哈尔滨工业大学']) assert.ok(html.includes(text));
-  for (const href of ['/blog/?series=NLP', '/blog/?series=Multimodal', '/blog/?series=LLM%20%26%20Tables', '/study-notes/837/']) assert.ok(html.includes(`href="${href}"`), href);
-  for (const marker of ['about.ts', 'Terminal', 'Presets', 'activity.heatmap', '三条主线', '今日随机复习', 'data-activity-fallback', 'data-daily-review']) assert.ok(html.includes(marker), marker);
-  for (const removed of ['实时切换波浪色相与索引', '点击右侧切换频道', '点击终端内标题可直接阅读', '查看全部学习笔记', 'data-stage-more', 'explore-sec', 'CardSwap', 'home-tool-entry', '837 知识点快查']) {
+  for (const text of ['杨雨飞', '哈尔滨工业大学']) assert.ok(html.includes(text));
+  for (const href of ['/about/', '/blog/', '/study-notes/837/information-security/', '/study-notes/837/network-security/', '/study-notes/837/computer-networks/']) assert.ok(html.includes(`href="${href}"`), href);
+  for (const marker of ['about.ts', 'Terminal', 'Presets', 'activity.heatmap', 'data-activity-fallback']) assert.ok(html.includes(marker), marker);
+  for (const removed of ['实时切换波浪色相与索引', '点击右侧切换频道', '点击终端内标题可直接阅读', '查看全部学习笔记', 'data-stage-more', 'explore-sec', 'CardSwap', 'home-tool-entry', '837 知识点快查', '三条主线', '今日随机复习', 'id="tracks"', 'data-daily-review', 'daily-review-pool']) {
     assert.ok(!html.includes(removed), `homepage must not contain removed marker: ${removed}`);
   }
   assert.ok(html.includes('Welcome to') && html.includes('duolaBmeng673') && html.includes('notes and blog'));
 
-  const poolMatch = html.match(/<script\b[^>]*id="daily-review-pool"[^>]*>([^]*?)<\/script>/);
-  assert.ok(poolMatch, 'homepage embeds #daily-review-pool JSON');
-  const pool = JSON.parse(poolMatch[1]);
-  assert.ok(Array.isArray(pool.items) && pool.items.length >= 20, 'daily review pool collects 837 questions');
-  const initialItem = pool.items[pool.initialIndex];
-  assert.ok(initialItem?.question && html.includes(initialItem.question), 'SSR renders today initial review question without JS');
-  for (const item of pool.items) {
-    const url = new URL(item.href, 'https://duolabmeng673.github.io');
-    const builtNote = read(`dist${decodeURIComponent(url.pathname)}index.html`);
-    assert.ok(builtNote.includes(`id="${decodeURIComponent(url.hash.slice(1))}"`), `daily review link anchor exists: ${item.href}`);
+  const aboutWindow = html.match(/<div class="win w1"[\s\S]*?<div class="win w3"/)?.[0] ?? '';
+  assert.ok(!aboutWindow.includes('<span class="prop">name</span>'), 'about.ts must not expose name field');
+  assert.match(aboutWindow, /<span class="prop">school<\/span>:\s*<a class="v v-str" href="\/about\/">(?:&quot;|")哈尔滨工业大学(?:&quot;|")<\/a>/);
+  assert.match(aboutWindow, /<span class="prop">major<\/span>:\s*<a class="v v-str" href="\/about\/">(?:&quot;|")信息安全(?:&quot;|")<\/a>/);
+  for (const [label, href] of [
+    ['信息安全', '/study-notes/837/information-security/'],
+    ['网络安全', '/study-notes/837/network-security/'],
+    ['计算机网络', '/study-notes/837/computer-networks/'],
+  ]) {
+    assert.ok(
+      aboutWindow.includes(`<a class="v v-str" href="${href}">&quot;${label}&quot;</a>`) ||
+      aboutWindow.includes(`<a class="v v-str" href="${href}">"${label}"</a>`),
+      `about.ts focus must link ${label} -> ${href}`,
+    );
+  }
+  const homeCss = read('src/styles/home.css');
+  for (const preset of ['research', 'cs', '837']) {
+    assert.match(homeCss, new RegExp(`:root\\[data-preset="${preset}"\\] \\.stage \\.w1\\s*\\{[^}]*--code-kw:[^}]*--code-str:[^}]*--code-num:`));
   }
 });
 
@@ -644,13 +652,18 @@ test('study articles omit redundant header quick jump row, show shortcut on TOC 
 
   const firstNote = read('dist/study-notes/837/security-basics/index.html');
   assert.match(firstNote, /class="toc-step-btn is-disabled"[^>]*aria-disabled="true"[^>]*><span aria-hidden="true">←<\/span><span>上一章<\/span>/);
-  assert.match(firstNote, /class="toc-step-btn"[^>]*><span>下一章<\/span><span aria-hidden="true">→<\/span>/);
+  assert.match(firstNote, /class="toc-step-btn"[^>]*title="[^"]*（快捷键 →）"[^>]*><span>下一章<\/span><span aria-hidden="true">→<\/span>/);
+  assert.match(c45, /class="toc-step-btn"[^>]*rel="prev"[^>]*title="[^"]*（快捷键 ←）"/);
+  assert.match(c45, /class="toc-step-btn"[^>]*rel="next"[^>]*title="[^"]*（快捷键 →）"/);
 
   const tokensCss = read('src/styles/tokens.css');
   assert.match(tokensCss, /--toc-panel-height:\s*min\(560px,\s*calc\(100vh - var\(--header-h, 56px\) - 24px\)\)/);
   assert.match(tokensCss, /--toc-tree-height:\s*min\(760px,\s*calc\(100vh - var\(--header-h, 56px\) - 36px\)\)/);
   const globalCss = read('src/styles/global.css');
   assert.match(globalCss, /overscroll-behavior:\s*contain/);
+  assert.match(globalCss, /\.toc-fold-options\s*\{/);
+  assert.match(globalCss, /:root\[data-toc-collapsed\]\s+\[data-toc-pane="toc"\]\s+li:is\(\.toc-level-3,\s*\.toc-level-4\)/);
+  assert.match(globalCss, /\.toc-slide-indicator\s*\{[^}]*width:\s*3\.5px;/);
   const articleScript = read('src/scripts/article.ts');
   assert.ok(!articleScript.includes('toc-sub-group'), 'article TOC must keep all section subheadings expanded instead of collapsing them');
   const vulnHtml = read('dist/study-notes/837/network-protocol-vulnerabilities/index.html');

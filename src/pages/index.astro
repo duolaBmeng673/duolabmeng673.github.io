@@ -49,14 +49,6 @@ const wavePresets = data.presets.map((p) => ({
   speed: p.speed,
 }));
 
-const initialReview = data.dailyReview.items[data.dailyReview.initialIndex] ?? {
-  question: '进入 837 考纲笔记开始背诵与复习',
-  isExam: false,
-  subject: '837 考纲',
-  noteTitle: '学习笔记目录',
-  href: '/study-notes/837/',
-};
-
 const activityPayloadJson = JSON.stringify({
   buildDate: data.heatmap.buildDate,
   activeDays: data.heatmap.activeDays,
@@ -109,11 +101,11 @@ const activityPayloadJson = JSON.stringify({
         <div class="wb">
           <div class="codeb">
             <span class="l"><span class="k">const</span> <span class="sym">author</span> = {'{'}</span>
-            <span class="l">{'  '}<span class="prop">name</span>: <a class="v v-str" href="/about/">&quot;杨雨飞&quot;</a>,</span>
             <span class="l">{'  '}<span class="prop">handle</span>: <a class="v v-str" href={data.site.github} target="_blank" rel="noreferrer">&quot;{data.site.name}&quot;</a>,</span>
-            <span class="l">{'  '}<span class="prop">school</span>: <a class="v v-str" href="/about/">&quot;哈尔滨工业大学 · 信息安全&quot;</a>,</span>
+            <span class="l">{'  '}<span class="prop">school</span>: <a class="v v-str" href="/about/">&quot;哈尔滨工业大学&quot;</a>,</span>
+            <span class="l">{'  '}<span class="prop">major</span>: <a class="v v-str" href="/about/">&quot;信息安全&quot;</a>,</span>
             <span class="l">
-              {'  '}<span class="prop">focus</span>: [<a class="v v-str" href="/blog/?series=LLM%20%26%20Tables">&quot;表格理解&quot;</a>, <a class="v v-str" href="/blog/?series=Multimodal">&quot;多模态&quot;</a>, <a class="v v-str" href="/study-notes/837/">&quot;网络安全&quot;</a>],
+              {'  '}<span class="prop">focus</span>: [<a class="v v-str" href="/study-notes/837/information-security/">&quot;信息安全&quot;</a>, <a class="v v-str" href="/study-notes/837/network-security/">&quot;网络安全&quot;</a>, <a class="v v-str" href="/study-notes/837/computer-networks/">&quot;计算机网络&quot;</a>],
             </span>
             <span class="l">{'  '}<span class="prop">notes</span>: <a class="v v-num" href="/blog/">{data.totalCount}</a>,</span>
             <span class="l">{'  '}<span class="prop">demo</span>: <a class="v v-str" href="/study-notes/837/kmp-algorithm/">&quot;KMP / 837 背诵模式&quot;</a>,</span>
@@ -191,125 +183,6 @@ const activityPayloadJson = JSON.stringify({
         />
       </div>
     </div>
-  </section>
-
-  <section class="sec" id="tracks" aria-labelledby="tracks-heading">
-    <div class="sec-head">
-      <div>
-        <span class="sec-kicker">THREE TRACKS</span>
-        <h2 id="tracks-heading">三条主线</h2>
-      </div>
-      <a class="card-link" href="/blog/?view=timeline">时间线浏览 →</a>
-    </div>
-
-    <div class="bento">
-      <article class="card track-card rb-panel s4">
-        <div class="track-head">
-          <h3>论文笔记</h3>
-          <span class="track-count">{data.tracks.research.count} 篇</span>
-        </div>
-        <p class="track-desc">
-          <a href="/blog/?series=NLP">自然语言处理</a>、<a href="/blog/?series=Multimodal">多模态与视觉</a>与<a href="/blog/?series=LLM%20%26%20Tables">大模型与表格</a>论文精读。
-        </p>
-        <ul class="track-list">
-          {data.tracks.research.items.map((item) => (
-            <li>
-              <a href={item.href}>
-                <span class="track-item-title">{item.title}</span>
-                <time>{item.dateShort}</time>
-              </a>
-            </li>
-          ))}
-        </ul>
-        <div class="track-foot">
-          <a class="card-link" href="/blog/?category=Research">全部论文 →</a>
-        </div>
-      </article>
-
-      <article class="card track-card rb-panel s4">
-        <div class="track-head">
-          <h3>技术笔记</h3>
-          <span class="track-count">{data.tracks.cs.count} 篇</span>
-        </div>
-        <p class="track-desc">ACM / OJ 算法竞赛题解、输入输出模板与工程实践。</p>
-        <ul class="track-list">
-          {data.tracks.cs.items.map((item) => (
-            <li>
-              <a href={item.href}>
-                <span class="track-item-title">{item.title}</span>
-                <time>{item.dateShort}</time>
-              </a>
-            </li>
-          ))}
-        </ul>
-        <div class="track-foot">
-          <a class="card-link" href="/blog/?category=Computer+Science">全部技术 →</a>
-        </div>
-      </article>
-
-      <article class="card track-card rb-panel s4 is-study-track">
-        <div class="track-head">
-          <h3>837 学习笔记</h3>
-          <span class="track-count">{data.tracks.study.count} 篇</span>
-        </div>
-        <p class="track-desc">
-          围绕<a href="/study-notes/837/">算法与信息安全</a>考纲整理（信息安全导论、网络安全基础与计算机网络，含背诵模式）。
-        </p>
-        <ul class="track-list">
-          <li>
-            <a href="/study-notes/837/information-security/">
-              <span class="track-item-title">《信息安全导论》考纲目录</span>
-              <time>{data.tracks.study.infoSecCount} 篇</time>
-            </a>
-          </li>
-          <li>
-            <a href="/study-notes/837/network-security/">
-              <span class="track-item-title">《网络安全基础》考纲目录</span>
-              <time>{data.tracks.study.netSecCount} 篇</time>
-            </a>
-          </li>
-          <li>
-            <a href="/study-notes/837/computer-networks/">
-              <span class="track-item-title">《计算机网络》考纲目录</span>
-              <time>{data.tracks.study.cnCount} 篇</time>
-            </a>
-          </li>
-          <li>
-            <a href="/study-notes/837/kmp-algorithm/">
-              <span class="track-item-title">KMP 算法交互式分步演算</span>
-              <time>交互</time>
-            </a>
-          </li>
-        </ul>
-        <div class="track-foot">
-          <a class="card-link" href="/study-notes/837/">进入考纲系统 →</a>
-        </div>
-      </article>
-    </div>
-  </section>
-
-  <section class="sec" id="daily-review-sec" aria-labelledby="daily-review-heading">
-    <div class="sec-head">
-      <div>
-        <span class="sec-kicker">DAILY REVIEW</span>
-        <h2 id="daily-review-heading">今日随机复习</h2>
-      </div>
-      <a class="card-link" href="/study-notes/837/">全部 837 考纲 →</a>
-    </div>
-
-    <article class="card rb-panel daily-review-card" data-daily-review>
-      <div class="daily-review-meta">
-        <span class="daily-review-badge" data-review-badge hidden={!initialReview.isExam}>原题</span>
-        <span class="daily-review-source" data-review-source>{initialReview.subject} · {initialReview.noteTitle}</span>
-        <span class="daily-review-date" data-review-date>{data.dailyReview.buildDate}</span>
-      </div>
-      <p class="daily-review-question" data-review-question>{initialReview.question}</p>
-      <div class="daily-review-actions">
-        <button type="button" class="daily-review-shuffle" data-review-shuffle>换一题</button>
-        <a class="btn daily-review-go" data-review-link href={initialReview.href}>去复习 →</a>
-      </div>
-      <script is:inline type="application/json" id="daily-review-pool" set:html={JSON.stringify(data.dailyReview).replace(/</g, '\\u003c')} />
-    </article>
   </section>
   </div>
 

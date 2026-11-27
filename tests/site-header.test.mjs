@@ -178,6 +178,8 @@ test('settings gear popover controls typography, SVG scrim, persistence, fallbac
   assert.doesNotMatch(html, /<details class="type-settings">[^]*?<summary[^>]*>Aa<\/summary>/);
   assert.match(html, /<button\b[^>]*role="switch"[^>]*aria-checked="false"[^>]*data-font-bold/);
   assert.match(html, /<button\b[^>]*role="switch"[^>]*aria-checked="false"[^>]*data-svg-scrim/);
+  assert.match(html, /<button\b[^>]*data-toc-fold="expanded"[^>]*aria-pressed="true">全部展开<\/button>/);
+  assert.match(html, /<button\b[^>]*data-toc-fold="collapsed"[^>]*aria-pressed="false">全部折叠<\/button>/);
 
   const css = read('src/styles/global.css');
   assert.match(css, /\.pill-switch:focus-visible\s*\{/);
@@ -220,6 +222,9 @@ test('settings gear popover controls typography, SVG scrim, persistence, fallbac
     const sizeBtns = ['small', 'medium', 'large'].map((size) =>
       makeEl({ dataset: { fontSize: size }, attrs: { 'aria-pressed': 'false' } }),
     );
+    const tocFoldBtns = ['expanded', 'collapsed'].map((mode) =>
+      makeEl({ dataset: { tocFold: mode }, attrs: { 'aria-pressed': String(mode === 'expanded') } }),
+    );
     const panel = makeEl({ open: false });
     panel.contains = (node) => node === panel || node === boldBtn || node === scrimBtn;
     panel.querySelector = (sel) => (sel === 'summary' ? summary : null);
@@ -251,7 +256,11 @@ test('settings gear popover controls typography, SVG scrim, persistence, fallbac
 
     const document = {
       documentElement: root,
-      querySelectorAll: (sel) => (sel === '[data-font-size]' ? sizeBtns : []),
+      querySelectorAll: (sel) => {
+        if (sel === '[data-font-size]') return sizeBtns;
+        if (sel === '[data-toc-fold]') return tocFoldBtns;
+        return [];
+      },
       querySelector: (sel) => {
         if (sel === '[data-font-bold]') return boldBtn;
         if (sel === '[data-svg-scrim]') return scrimBtn;
@@ -296,6 +305,7 @@ test('settings gear popover controls typography, SVG scrim, persistence, fallbac
       boldBtn,
       scrimBtn,
       sizeBtns,
+      tocFoldBtns,
       panel,
       emitDoc,
       getFocused: () => focusedElement,
@@ -312,6 +322,7 @@ test('settings gear popover controls typography, SVG scrim, persistence, fallbac
   session1.sizeBtns[2].click(); // large
   session1.boldBtn.click();
   session1.scrimBtn.click();
+  session1.tocFoldBtns[1].click(); // collapsed
 
   assert.equal(session1.styles.get('--font-scale'), '1.12');
   assert.equal(session1.sizeBtns[2].getAttribute('aria-pressed'), 'true');
@@ -319,16 +330,21 @@ test('settings gear popover controls typography, SVG scrim, persistence, fallbac
   assert.equal(session1.boldBtn.getAttribute('aria-checked'), 'true');
   assert.equal(session1.styles.get('--svg-scrim-opacity'), '0.8');
   assert.equal(session1.scrimBtn.getAttribute('aria-checked'), 'true');
+  assert.equal(session1.root.hasAttribute('data-toc-collapsed'), true);
+  assert.equal(session1.tocFoldBtns[1].getAttribute('aria-pressed'), 'true');
+  assert.equal(session1.tocFoldBtns[0].getAttribute('aria-pressed'), 'false');
 
   // 2. Reload with persisted storage: inline head script restores before paint & module syncs controls
   const persisted = Object.fromEntries(session1.store.entries());
   const session2 = createHarness(persisted);
   session2.styles.clear();
   session2.root.toggleAttribute('data-font-bold', false);
+  session2.root.toggleAttribute('data-toc-collapsed', false);
   session2.runHead();
   assert.equal(session2.styles.get('--font-scale'), '1.12');
   assert.equal(session2.root.hasAttribute('data-font-bold'), true);
   assert.equal(session2.styles.get('--svg-scrim-opacity'), '0.8');
+  assert.equal(session2.root.hasAttribute('data-toc-collapsed'), true);
 
   // 3. Keyboard Escape closes panel & returns focus to summary; outside click closes panel; toggle syncs aria-expanded
   session2.panel.open = true;
@@ -351,7 +367,9 @@ test('settings gear popover controls typography, SVG scrim, persistence, fallbac
   incognito.sizeBtns[0].click();
   incognito.boldBtn.click();
   incognito.scrimBtn.click();
+  incognito.tocFoldBtns[1].click();
   assert.equal(incognito.styles.get('--font-scale'), '0.94');
   assert.equal(incognito.root.hasAttribute('data-font-bold'), true);
   assert.equal(incognito.styles.get('--svg-scrim-opacity'), '0.8');
+  assert.equal(incognito.root.hasAttribute('data-toc-collapsed'), true);
 });
